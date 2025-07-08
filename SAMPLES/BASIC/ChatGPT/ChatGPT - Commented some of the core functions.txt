@@ -1,0 +1,573 @@
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetWindowType
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the window type for a given form. The window
+ *    type is stored in the global array _HMG_aFormType, indexed by the 
+ *    form's index in the system.
+ * 
+ * PARAMETERS:
+ *    FormName (Character) - The name of the form whose window type is being
+ *    requested.
+ * 
+ * RETURN VALUE:
+ *    If the form is found, it returns the form's window type (Character) from
+ *    the _HMG_aFormType array.
+ *    If the form is not found, it returns an empty string ('').
+ */
+FUNCTION GetWindowType ( FormName )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetFormIndex ( FormName ) ) == 0
+      RETURN ''
+   ENDIF
+
+RETURN ( _HMG_aFormType [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetFormName
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the form name for a given form. If the application
+ *    is in MDI (Multiple Document Interface) mode and an MDI window is active,
+ *    it returns the active MDI form name or the main MDI client form name.
+ *    Otherwise, it retrieves the form name from the _HMG_aFormNames array.
+ * 
+ * PARAMETERS:
+ *    FormName (Character) - The name of the form for which the actual form 
+ *    name is being requested.
+ * 
+ * RETURN VALUE:
+ *    Returns the form name (Character) from the _HMG_aFormNames array or, 
+ *    in MDI mode, the active MDI form name or main MDI client name.
+ *    Returns an empty string ('') if the form is not found.
+ */
+FUNCTION GetFormName ( FormName )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF _HMG_BeginWindowMDIActive
+
+      IF GetActiveMdiHandle() == 0
+         RETURN _HMG_MainClientMDIName
+      ELSE
+         RETURN _GetWindowProperty ( GetActiveMdiHandle(), "PROP_FORMNAME" )
+      ENDIF
+
+   ENDIF
+
+   IF ( i := GetFormIndex ( FormName ) ) == 0
+      RETURN ''
+   ENDIF
+
+RETURN ( _HMG_aFormNames [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetFormToolTipHandle
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the tooltip handle for a given form. If the 
+ *    application is in MDI mode, it first retrieves the active form name.
+ *    The tooltip handle is stored in the _HMG_aFormToolTipHandle array.
+ * 
+ * PARAMETERS:
+ *    FormName (Character) - The name of the form for which the tooltip handle
+ *    is being requested.
+ * 
+ * RETURN VALUE:
+ *    Returns the tooltip handle (Numeric) from the _HMG_aFormToolTipHandle array.
+ *    Displays an error message and exits if the form is not found.
+ */
+FUNCTION GetFormToolTipHandle ( FormName )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF _HMG_BeginWindowMDIActive
+      FormName := GetFormName ( FormName )
+   ENDIF
+
+   IF ( i := GetFormIndex ( FormName ) ) == 0
+      MsgMiniGuiError( "Form " + FormName + " is not defined." )
+   ENDIF
+
+RETURN ( _HMG_aFormToolTipHandle [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetFormHandle
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the handle for a given form. The form handle is
+ *    stored in the _HMG_aFormHandles array.
+ * 
+ * PARAMETERS:
+ *    FormName (Character) - The name of the form whose handle is being requested.
+ * 
+ * RETURN VALUE:
+ *    Returns the form handle (Numeric) from the _HMG_aFormHandles array.
+ *    Displays an error message and exits if the form is not found.
+ */
+FUNCTION GetFormHandle ( FormName )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetFormIndex ( FormName ) ) == 0
+      MsgMiniGuiError( "Form " + FormName + " is not defined." )
+   ENDIF
+
+RETURN ( _HMG_aFormHandles [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetControlIndex
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the index of a control within a specific parent form.
+ *    The index is used to access various control properties in other arrays. It
+ *    either uses the _GetNameList function or the __mvGetDef function to find the
+ *    control's index, depending on the presence of the _NAMES_LIST_ directive.
+ * 
+ * PARAMETERS:
+ *    ControlName (Character) - The name of the control whose index is requested.
+ *    ParentForm  (Character) - The name of the parent form where the control resides.
+ * 
+ * RETURN VALUE:
+ *    Returns the index (Numeric) of the control if found.
+ *    Returns 0 if the control is not found.
+ */
+FUNCTION GetControlIndex ( ControlName , ParentForm )
+*-----------------------------------------------------------------------------*
+   LOCAL mVar := '_' + ParentForm + '_' + ControlName
+
+#ifdef _NAMES_LIST_
+RETURN _GetNameList ( mVar )
+#else
+RETURN __mvGetDef ( mVar , 0 )
+#endif
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetControlName
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the name of a control based on its index within the
+ *    specified parent form. The control name is stored in the _HMG_aControlNames
+ *    array.
+ * 
+ * PARAMETERS:
+ *    ControlName (Character) - The name of the control whose actual name is requested.
+ *    ParentForm  (Character) - The name of the parent form where the control resides.
+ * 
+ * RETURN VALUE:
+ *    Returns the control name (Character) from the _HMG_aControlNames array.
+ *    Returns an empty string ('') if the control is not found.
+ */
+FUNCTION GetControlName ( ControlName , ParentForm )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetControlIndex ( ControlName , ParentForm ) ) == 0
+      RETURN ''
+   ENDIF
+
+RETURN ( _HMG_aControlNames [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetControlHandle
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the handle of a control based on its index within the
+ *    specified parent form. The handle is stored in the _HMG_aControlHandles array.
+ *    If the control is not found, it triggers an error message.
+ * 
+ * PARAMETERS:
+ *    ControlName (Character) - The name of the control whose handle is requested.
+ *    ParentForm  (Character) - The name of the parent form where the control resides.
+ * 
+ * RETURN VALUE:
+ *    Returns the control handle (Numeric) from the _HMG_aControlHandles array.
+ *    Displays an error message and exits if the control is not found.
+ */
+FUNCTION GetControlHandle ( ControlName , ParentForm )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetControlIndex ( ControlName , ParentForm ) ) == 0
+      MsgMiniGuiError ( "Control " + ControlName + " Of " + ParentForm + " Not defined." )
+   ENDIF
+
+RETURN ( _HMG_aControlHandles [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetControlContainerHandle
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the container handle for a control, typically used 
+ *    in container controls like panels or group boxes. The container handle is 
+ *    stored in the _HMG_aControlContainerHandle array.
+ * 
+ * PARAMETERS:
+ *    ControlName (Character) - The name of the control whose container handle is requested.
+ *    ParentForm  (Character) - The name of the parent form where the control resides.
+ * 
+ * RETURN VALUE:
+ *    Returns the container handle (Numeric) from the _HMG_aControlContainerHandle array.
+ *    Returns 0 if the control is not found.
+ */
+FUNCTION GetControlContainerHandle ( ControlName , ParentForm )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetControlIndex ( ControlName , ParentForm ) ) == 0
+      RETURN 0
+   ENDIF
+
+RETURN ( _HMG_aControlContainerHandle [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetControlParentHandle
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the parent handle of a control, which is useful for 
+ *    understanding the control's hierarchy within the parent form. The parent handle
+ *    is stored in the _HMG_aControlParentHandles array.
+ * 
+ * PARAMETERS:
+ *    ControlName (Character) - The name of the control whose parent handle is requested.
+ *    ParentForm  (Character) - The name of the parent form where the control resides.
+ * 
+ * RETURN VALUE:
+ *    Returns the parent handle (Numeric) from the _HMG_aControlParentHandles array.
+ *    Returns 0 if the control is not found.
+ */
+FUNCTION GetControlParentHandle ( ControlName , ParentForm )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetControlIndex ( ControlName , ParentForm ) ) == 0
+      RETURN 0
+   ENDIF
+
+RETURN ( _HMG_aControlParentHandles [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetControlId
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the control's ID based on its index within the 
+ *    parent form. Control IDs are stored in the _HMG_aControlIds array and can
+ *    be used for referencing controls programmatically.
+ * 
+ * PARAMETERS:
+ *    ControlName (Character) - The name of the control whose ID is requested.
+ *    ParentForm  (Character) - The name of the parent form where the control resides.
+ * 
+ * RETURN VALUE:
+ *    Returns the control ID (Numeric) from the _HMG_aControlIds array.
+ *    Returns 0 if the control is not found.
+ */
+FUNCTION GetControlId ( ControlName , ParentForm )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetControlIndex ( ControlName , ParentForm ) ) == 0
+      RETURN 0
+   ENDIF
+
+RETURN ( _HMG_aControlIds [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetControlType
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the type of a control (e.g., Button, TextBox) based
+ *    on its index within the parent form. The control types are stored in the 
+ *    _HMG_aControlType array.
+ * 
+ * PARAMETERS:
+ *    ControlName (Character) - The name of the control whose type is requested.
+ *    ParentForm  (Character) - The name of the parent form where the control resides.
+ * 
+ * RETURN VALUE:
+ *    Returns the control type (Character) from the _HMG_aControlType array.
+ *    Returns an empty string ('') if the control is not found.
+ */
+FUNCTION GetControlType ( ControlName , ParentForm )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetControlIndex ( ControlName , ParentForm ) ) == 0
+      RETURN ''
+   ENDIF
+
+RETURN ( _HMG_aControlType [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetControlValue
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the current value of a control (e.g., text in a textbox,
+ *    selection in a dropdown) based on its index within the parent form. Control values
+ *    are stored in the _HMG_aControlValue array.
+ * 
+ * PARAMETERS:
+ *    ControlName (Character) - The name of the control whose value is requested.
+ *    ParentForm  (Character) - The name of the parent form where the control resides.
+ * 
+ * RETURN VALUE:
+ *    Returns the control value (Various types depending on control type) from 
+ *    the _HMG_aControlValue array.
+ *    Returns Nil if the control is not found.
+ */
+FUNCTION GetControlValue ( ControlName , ParentForm )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetControlIndex ( ControlName , ParentForm ) ) == 0
+      RETURN Nil
+   ENDIF
+
+RETURN ( _HMG_aControlValue [ i ] )
+
+*-----------------------------------------------------------------------------*
+/*
+ * FUNCTION: GetControlPageMap
+ * 
+ * DESCRIPTION:
+ *    This function retrieves the page map of a control, which is typically used for 
+ *    controls that support multiple pages (e.g., Tab controls). The page map is 
+ *    stored in the _HMG_aControlPageMap array.
+ * 
+ * PARAMETERS:
+ *    ControlName (Character) - The name of the control whose page map is requested.
+ *    ParentForm  (Character) - The name of the parent form where the control resides.
+ * 
+ * RETURN VALUE:
+ *    Returns the page map (Array) from the _HMG_aControlPageMap array.
+ *    Returns an empty array ({}) if the control is not found.
+ */
+FUNCTION GetControlPageMap ( ControlName , ParentForm )
+*-----------------------------------------------------------------------------*
+   LOCAL i
+
+   IF ( i := GetControlIndex ( ControlName , ParentForm ) ) == 0
+      RETURN {}
+   ENDIF
+
+RETURN ( _HMG_aControlPageMap [ i ] )
+
+*=============================================================================*
+*                          Auxiliary Functions
+*=============================================================================*
+
+/*
+   HMG_DbfToArray: Converts the data from a DBF file to an array.
+   
+   Parameters:
+   - cFieldList: A comma-separated string of field names.
+   - bFor: A conditional block for filtering records.
+   - bWhile: A conditional block to limit processing of records.
+   - nNext: Specifies the number of records to process.
+   - nRec: Specifies a specific record number to process.
+   - lRest: Specifies whether to process remaining records.
+
+   Returns: An array containing data from the specified DBF fields.
+*/
+FUNCTION HMG_DbfToArray( cFieldList, bFor, bWhile, nNext, nRec, lRest )
+
+/*
+   HMG_ArrayToDbf: Transfers data from an array into a DBF file.
+   
+   Parameters:
+   - aData: The array of data to be inserted into the DBF.
+   - cFieldList: A comma-separated string or array of field names to map data.
+   - bProgress: A block for progress indication during data transfer.
+
+   Returns: Logical value (.T.) if successful, otherwise .F.
+*/
+FUNCTION HMG_ArrayToDbf( aData, cFieldList, bProgress )
+
+/*
+   ConvertType: Converts a value to the specified destination data type.
+   
+   Parameters:
+   - uVal: The value to be converted.
+   - cTypeDst: The target data type (e.g., 'C' for character, 'N' for numeric).
+
+   Returns: The converted value based on the target type.
+*/
+STATIC FUNCTION ConvertType( uVal, cTypeDst )
+
+/*
+   HMG_DbfToExcel: Exports data from a DBF file to an Excel spreadsheet.
+   
+   Parameters:
+   - cFieldList: A comma-separated string of field names.
+   - aHeader: An array of header names for the Excel sheet.
+   - bFor: A conditional block for filtering records.
+   - bWhile: A conditional block to limit processing of records.
+   - nNext: Specifies the number of records to process.
+   - nRec: Specifies a specific record number to process.
+   - lRest: Specifies whether to process remaining records.
+
+   Returns: Logical value (.T.) if successful, otherwise .F.
+*/
+FUNCTION HMG_DbfToExcel( cFieldList, aHeader, bFor, bWhile, nNext, nRec, lRest )
+
+/*
+   HMG_DbfStruct: Retrieves the structure of a DBF file (field names, types, and lengths).
+   
+   Parameters:
+   - cFileName: The name of the DBF file to examine.
+
+   Returns: An array containing the structure of the DBF file or NIL if an error occurs.
+*/
+FUNCTION HMG_DbfStruct( cFileName )
+
+/*
+   HMG_RecToHash: Converts the current record of a DBF file into a hash map.
+   
+   Parameters:
+   - cFieldList: A comma-separated string of field names.
+   - cNames: Optional names for the fields in the hash.
+
+   Returns: A hash map where field names are keys and record data are values.
+*/
+FUNCTION HMG_RecToHash( cFieldList, cNames )
+
+/*
+   HMG_HashToRec: Transfers data from a hash map into the current record of a DBF file.
+   
+   Parameters:
+   - hRec: The hash map containing data.
+   - cFieldList: A comma-separated string of field names.
+
+   Returns: Logical value (.T.) if the operation succeeds, otherwise .F.
+*/
+FUNCTION HMG_HashToRec( hRec, cFieldList )
+
+/*
+   DbfCopyRec: Copies the current record to a target DBF area, with optional appending.
+   
+   Parameters:
+   - cnTargetArea: The work area number of the target DBF.
+   - lAppend: Logical flag indicating whether to append the record to the target DBF.
+
+   Returns: None.
+*/
+PROCEDURE DbfCopyRec( cnTargetArea, lAppend )
+
+/*
+   DbfModStru: Modifies the structure of an existing DBF file based on the input array.
+   
+   Parameters:
+   - cDbfName: The name of the DBF file to modify.
+   - aModStru: An array containing new field structure details.
+
+   Returns: Error code (0 if successful, otherwise error code).
+*/
+FUNCTION DbfModStru( cDbfName, aModStru )
+
+*=============================================================================*
+*                          Auxiliary Network Functions
+*=============================================================================*
+
+/*
+   NetLock: Attempts to lock a DBF record or file for a given number of seconds.
+   
+   Parameters:
+   - nType: Type of lock (NET_RECLOCK for record lock, NET_FILELOCK for file lock, NET_APPEND for append operation).
+   - lReleaseLocks: Logical value (.T./.F.) indicating whether to release existing locks.
+   - nSeconds: The maximum number of seconds to try for the lock.
+
+   Returns: Logical value (.T.) if the lock is successfully acquired, otherwise .F.
+*/
+STATIC FUNCTION NetLock( nType, lReleaseLocks, nSeconds )
+
+/*
+   NetDelete: Deletes the current record in a DBF file while acquiring a lock.
+   
+   Parameters: None.
+   
+   Returns: Logical value (.T.) if the record is successfully deleted, otherwise .F.
+*/
+FUNCTION NetDelete()
+
+/*
+   NetRecall: Recalls a previously deleted record in a DBF file while acquiring a lock.
+   
+   Parameters: None.
+
+   Returns: Logical value (.T.) if the record is successfully recalled, otherwise .F.
+*/
+FUNCTION NetRecall()
+
+/*
+   NetRecLock: Attempts to lock the current record for a specified number of seconds.
+   
+   Parameters:
+   - nSeconds: The maximum number of seconds to attempt the lock (defaults to s_nNetDelay if not provided).
+
+   Returns: Logical value (.T.) if the record lock is acquired, otherwise .F.
+*/
+FUNCTION NetRecLock( nSeconds )
+
+/*
+   NetFileLock: Attempts to lock the entire DBF file for a specified number of seconds.
+   
+   Parameters:
+   - nSeconds: The maximum number of seconds to attempt the lock (defaults to s_nNetDelay if not provided).
+
+   Returns: Logical value (.T.) if the file lock is acquired, otherwise .F.
+*/
+FUNCTION NetFileLock( nSeconds )
+
+/*
+   NetAppend: Appends a new blank record to the DBF file after acquiring a lock.
+   
+   Parameters:
+   - nSeconds: The maximum number of seconds to attempt the lock (defaults to s_nNetDelay if not provided).
+   - lReleaseLocks: Logical value (.T./.F.) indicating whether to release locks after appending (defaults to .T.).
+
+   Returns: Logical value (.T.) if the append operation is successful, otherwise .F.
+*/
+FUNCTION NetAppend( nSeconds, lReleaseLocks )
+
+/*
+   IsLocked: Checks if a specific record is locked.
+   
+   Parameters:
+   - nRecID: The record number to check (defaults to the current record if not provided).
+
+   Returns: Logical value (.T.) if the record is locked, otherwise .F.
+*/
+FUNCTION IsLocked( nRecId )
+
+/*
+   NetError: Checks if the last network operation resulted in an error.
+   
+   Parameters: None.
+
+   Returns: Logical value (.T.) if the last operation failed, otherwise .F.
+*/
+FUNCTION NetError()
+
+/*
+   SetNetDelay: Sets the global network delay used for lock attempts, and returns the previous value.
+   
+   Parameters:
+   - nSecs: The new delay value in seconds (can be NIL to just return the current value).
+
+   Returns: The previous network delay value.
+*/
+FUNCTION SetNetDelay( nSecs )

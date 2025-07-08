@@ -1,0 +1,1 @@
+call c:\minigui\batch\compile.bat HmgSpooler /mt /S -p%1 %2 %3 %4 %5 %6 %7 %8 %9

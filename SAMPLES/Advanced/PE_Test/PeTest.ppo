@@ -1,0 +1,53 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 22 "PeTest.prg"
+PROCEDURE Main(ArgIn)
+LOCAL cBuffer, nHandle, nBytes, nPointer
+LOCAL cMachineType, hHex
+LOCAL cText := "It has a UNKNOWN architecture."
+Local cTTExt, nDll
+
+   IF !FILE(ArgIn)
+      ArgIn := GetFile({{"Pe Files","*.dll;*.exe"}} ,"OpenFiles(s)",GetcurrentFolder(),.F.,.T. )
+      if Empty(ArgIn)
+         ReleaseAllWindows ()
+      Endif
+   ENDIF
+
+   nHandle  := FOpen( ArgIn , 0 )
+   cBuffer  := Space(1024)
+   nBytes   := FRead(nHandle, @cBuffer, 1024)
+   FClose( nHandle )
+
+   nPointer := AT( "PE"+CHR(0)+CHR(0), cBuffer )
+
+   IF nPointer > 0
+
+
+      nDll := Bin2l( SUBSTR(cBuffer,nPointer+23,1) )
+
+      if nDll > 31 .AND. nDll < 36
+         cTTExt := "as a dll."
+      Else
+         cTTExt := "as exe."
+      Endif
+
+      cMachineType := SUBSTR(cBuffer,nPointer+4,2)
+
+      hHex := Bin2L (cMachineType)
+
+      DO CASE
+         CASE hHex = 0x14c
+              cText := "With a 32 Bit architecture "+cTTExt
+
+
+         CASE hHex = 0x200 .OR.  hHex = 0x8664
+              cText := "With a 64 Bit architecture "+cTTExt
+
+      ENDCASE
+      MsgInfo ( cText, Space(3)+cFilenopath(ArgIn)+ " is build", , .F. )
+   Else
+      MsgStop ( cText, Space(3)+cFilenopath(ArgIn), , .F. )
+   Endif
+
+RETURN

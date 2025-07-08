@@ -1,0 +1,11 @@
+//
+// Resource     Resource         Resource
+// Name          Type             FileName
+//            
+1MAIN_ICO         ICON           res\1MG.ico
+test1log          RCDATA         res\test1.log  
+test2log          RCDATA         res\test2.log  
+xtest1lst         RCDATA         res\xtest1.lst 
+xtest2lst         RCDATA         res\xtest2.lst 
+ztest1txt         RCDATA         res\ztest1.txt 
+ztest2txt         RCDATA         res\ztest2.txt 

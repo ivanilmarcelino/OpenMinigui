@@ -1,0 +1,19 @@
+//
+// Resource      Resource        Resource
+// Name           Type            FileName
+//              
+1MG              ICON            res\1MG.ico
+iMg1x64          ICON            res\iLogoMg1x64.ico
+iMg2x64          ICON            res\iLogoMg2x64.ico
+iMg3x64          ICON            res\iLogoMg3x64.ico
+iDebug64         ICON            res\iDebug64.ico
+GRABBED32        CURSOR          res\Grabbed32x32.cur
+HAND32           CURSOR          res\hand32x32.cur
+
+
+// ------ form_debug_log.prg -----------------
+iW_Yellow        ICON            res\iW_Yellow16.ico
+iW_Green         ICON            res\iW_Green16.ico
+iW_Invert        ICON            res\iW_Invert16.ico
+iW_cas16         ICON            res\iW_cas16.ico
+                              

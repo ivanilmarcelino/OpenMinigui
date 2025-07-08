@@ -1,0 +1,52 @@
+# Keys compile
+#-prgflag=-w0 -es1 
+-prgflag=-w2 -es1 
+
+# Enable multi/single-thread Harbour VM
+-mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-omg_dbf
+
+# to list all * .prg
+0main.prg
+1about.prg
+2file.prg
+3dbase.prg
+3dbaseColumn.prg
+4Filter.prg
+5export.prg
+5exportForm.prg
+5exportSqlite.prg
+6Config.prg
+tsb_ViewDbf.prg
+tsb_memo_cell.prg
+util_dbf.prg
+util_other.prg
+util_fonts.prg
+util_tsb.prg
+menu_context3.prg
+hb_CodePage.prg
+# --- export
+TsbCell.prg
+TsbExport8.prg
+Tsb7odsCalc.prg
+Tsb7xlsOle.prg
+Tsb7xlsTuning.prg
+WaitThreadIco.prg
+
+# project Resources
+#demo.rc
+
+# paths to the main and extension *.Lib
+-lrddbm
+-lhmgaddon
+-lsqlite3
+-lhbsqlit3
+

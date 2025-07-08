@@ -1,0 +1,60 @@
+﻿Comparison of standard and professional MiniGUI builds
+Compiler: Borland C++ 5.8.2 (32-bit)
+
++---------------------------+------------+-------------+
+|                           |  STANDARD  |  PRO        |
++---------------------------+------------+-------------+
+| Harbour binary            |  Standard  |  Optimized  |
++---------------------------+------------+-------------+
+| MiniGUI library           |  Debug     |  Release    |
++---------------------------+------------+-------------+
+| Hmgs-Ide binary           |  Supported |  Supported  |
++---------------------------+------------+-------------+
+| HMG IDE binary and source |      -     |  Supported  |
++---------------------------+------------+-------------+
+| Basic samples             |  Supported |  Supported  |
++---------------------------+------------+-------------+
+| Advanced samples          |  Supported |  Supported  |
++---------------------------+------------+-------------+
+| Applications samples      |      -     |  Supported  |
++---------------------------+------------+-------------+
+| Utils samples and tools   |      -     |  Supported  |
++---------------------------+------------+-------------+
+| SQLRDD library and samples|      -     |  Supported  |
++---------------------------+------------+-------------+
+
+🔧 Key Differences Between Pro and Standard Builds
+
+Standard Build:
+
+* Free to download and use.
+* Includes a debug version of the MiniGUI library.
+* Utilizes the standard Harbour compiler without optimizations.
+* Excludes sample applications, utilities, and the SQLRDD library.
+
+Pro Build:
+
+* Available exclusively to donors.
+* Features a compressed MiniGUI library without debugging information.
+* Employs an optimized Harbour virtual machine tailored for GUI applications.
+* Includes advanced components such as the SQLRDD library, sample applications, and utilities.
+* Supports additional compilers like MinGW C (32-bit and 64-bit) and Embarcadero C++ 7.70 for Win32.
+
+✅ Reasons to Choose the Pro Build
+
+1. Enhanced Performance:
+
+   * The optimized Harbour VM in the Pro build offers better execution speed and efficiency for GUI applications.
+
+2. Access to Advanced Features:
+
+   * Inclusion of the SQLRDD library facilitates integration with various SQL servers like MySQL, PostgreSQL, Firebird, Oracle, and MS SQL.
+   * Provides additional sample applications and utilities to accelerate development.
+
+3. Broader Compiler Support:
+
+   * Compatibility with multiple compilers allows for greater flexibility in development environments.
+
+💡 Conclusion
+
+If your development requires optimized performance, advanced database integration, and access to a broader set of tools and features, the Pro MiniGUI build is the preferable choice. However, for basic applications or initial development phases, the Standard build may suffice.

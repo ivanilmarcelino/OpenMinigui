@@ -1,0 +1,17 @@
+#
+# easy_sql.hbp
+#
+
+{bcc}-env:DEBUG=yes
+
+-hblib
+-inc
+-o../../lib/easy_sql
+
+-I../../include
+
+-w2 -es2 -ko -q0
+
+{!DEBUG&bcc|allmingw}-l
+
+core.prg

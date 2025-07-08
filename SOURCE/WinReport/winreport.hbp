@@ -1,0 +1,19 @@
+#
+# winreport.hbp
+#
+
+-hblib
+-inc
+-o../../lib/winreport
+
+-I../../include
+
+-hbx=../../include/winreport.hbx
+
+-w2 -es2 -ko -q0
+
+h_wrepint.prg
+h_wremix.prg
+h_WrePdf.prg
+hmg_hpdf.prg
+fncMyError.prg

@@ -1,0 +1,286 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 18 "Demo.prg"
+STATIC aObjButton := {},  aObjImage := {}, lStatusBar := .T.
+
+Function Main()
+     LOCAL cResIco, cResPict := NIL, bAction, cTooltip, nWidth, nHeight
+     LOCAL nStRow1 := 60, nStRow2 := 188, nStRow3 := 317, nStRow4 := 447
+     LOCAL aFontColor := { 255 , 255 , 255 }
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Form_1", "ButtonEx with METRO color background (1)", 0, 0, 870, 650, .F., .F., .F., .F., .F., {870, 650}, {,},, ,, { || MyRefresh() } , ,, {215,166, 0} , , .F. , .F. , .T. , "1MAIN" , .F. , ,, , , ,, , , , , , , , , , .F. , { || MyRefresh() } , , , .F. , { || MyExit() } , , , , .F. , .F. , , , .F. , , , )
+
+                MyPopup()
+
+              nWidth  := GetProperty ( "Form_1", "Width" )
+            nHeight := GetProperty ( "Form_1", "Height" )
+
+        _DefineLabel ( "label_1",, 30, 20, "Start", 120, 28, , 18 , .T., .F. , .F. , .F. , .F. , .T. ,, { 255 , 255 , 255 },,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+
+                cResIco  := NIL  ; cResPict := "bMail"
+                bAction  := 'MsgInfo("PRESS OButton_1x1 BUTTONEX")'
+                cTooltip := "OButton_1x1 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_1x1",nStRow1,50,247,120,"Mail",cResPict,cResIco, aFontColor,{  0,155,173},bAction,cTooltip)
+
+                cResIco  := NIL
+                cResPict := "bWeather"
+                bAction  := 'MsgInfo("PRESS OButton_1x2 BUTTONEX")'
+                cTooltip := "OButton_1x2 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_1x2",nStRow1,300+5,247,120,"Weather",cResPict,cResIco, aFontColor,{ 40,122,237},bAction,cTooltip)
+
+                cResIco  := NIL
+                cResPict := "bMaps"
+                bAction  := 'MsgInfo("PRESS OButton_1x3 BUTTONEX")'
+                cTooltip := "OButton_1x3 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_1x3",nStRow1,554+5,121,120,"Maps",cResPict,cResIco, aFontColor,{151,  0,160},bAction,cTooltip)
+
+                cResIco  := NIL
+                cResPict := "bSkyDrive"
+                bAction  := 'MsgInfo("PRESS OButton_1x4 BUTTONEX")'
+                cTooltip := "OButton_1x4 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_1x4",nStRow1,683+5,121,120,"SkyDrive",cResPict,cResIco, aFontColor,{  9, 77,181},bAction,cTooltip)
+
+
+                cResIco  := "iPeople"
+                cResPict := NIL
+                bAction  := 'MsgInfo("PRESS OButton_2x1 BUTTONEX")'
+                cTooltip := "OButton_2x1 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_2x1",nStRow2,50,247,120,"People",cResPict,cResIco, aFontColor,{ 94, 59,185},bAction,cTooltip)
+
+                cResPict := "Desktop"
+                bAction  := 'MsgInfo("PRESS OImage_2x2 IMAGE")'
+
+                METRO_IMAGE("OImage_2x2",nStRow2,300+5,247,120,"Desktop",cResPict, aFontColor,bAction)
+
+                cResIco  := NIL
+                cResPict := "bNews"
+                bAction  := 'MsgInfo("PRESS OButton_2x3 BUTTONEX")'
+                cTooltip := "OButton_2x3 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_2x3",nStRow2,555+5,247,120,"News",cResPict,cResIco, aFontColor,{189, 30, 73},bAction,cTooltip)
+
+
+                cResIco  := "iMusic"
+                cResPict := NIL
+                bAction  := 'MsgInfo("PRESS OButton_3x1 BUTTONEX")'
+                cTooltip := "OButton_3x1 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_3x1",nStRow3,50,247,120,"Music",cResPict,cResIco, aFontColor,{210, 71, 38},bAction,cTooltip)
+
+                cResIco  := NIL
+                cResPict := "bIE"
+                bAction  := 'MsgInfo("PRESS OButton_3x2 BUTTONEX")'
+                cTooltip := "OButton_3x2 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_3x2",nStRow3,300+5,121,120,"Internet Explorer", cResPict,cResIco,aFontColor,{ 82,  0,141},bAction,cTooltip)
+
+                cResIco  := NIL
+                cResPict := "bShop"
+                bAction  := 'MsgInfo("PRESS OButton_1x4 BUTTONEX")'
+                cTooltip := "OButton_3x3 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_3x3",nStRow3,427+5,121,120,"Shop",cResPict,cResIco, aFontColor,{  0,145,  0},bAction,cTooltip)
+
+                cResIco  := NIL
+                cResPict := "MyFoto"
+                bAction  := 'MsgInfo("PRESS OImage_3x4 IMAGE")'
+
+                METRO_IMAGE("OImage_3x4",nStRow3,555+5,247,120,"My Foto",cResPict, aFontColor,bAction)
+
+
+                cResIco  := "iMessage"
+                cResPict := NIL
+                bAction  := 'MsgInfo("PRESS OButton_4x1 BUTTONEX")'
+                cTooltip := "OButton_4x1 BUTTONEX with icon"
+
+                METRO_BUTTON("OButton_4x1",nStRow4,50,247,120,"Message",cResPict,cResIco, aFontColor,{151,  0,160},bAction,cTooltip)
+
+                cResIco  := NIL
+                cResPict := "Bing"
+                bAction  := 'MsgInfo("PRESS OImage_4x2 IMAGE")'
+
+                METRO_IMAGE("OImage_4x2",nStRow4,300+5,247,120,"Bing",cResPict, aFontColor,bAction)
+
+
+                cResIco  := "iExit"
+                cResPict := NIL
+                bAction  := "MyExit()"
+                cTooltip := "OButton_4x3 - Exit programm !"
+
+                METRO_BUTTON("OButton_4x3",nStRow4,555+5,247,120,"Exit",cResPict,cResIco, aFontColor,{254, 73, 83},bAction,cTooltip)
+
+                _BeginMessageBar( "StatusBar",, .F.,, 10, .T., .F., .F., .F., )
+                    _DefineItemMessage( "STATUSITEM", , 0, 0, " (c) 2013 Andrey Verchenko, Russia, Dmitrov. " + MiniGUIVersion(),,, 0,,,, .F.,,, iif( .F. == .T., 2, iif( .F. == .T., 1, 0 ) ) )
+                    _SetStatusClock( _HMG_SYSDATA[201] , _HMG_SYSDATA[33] , , , , .F. , , )
+                    _DefineItemMessage( "STATUSITEM", , 0, 0, Dtoc(Date()),, iif( .F. == .F., iif( lower( left( set( 4 ), 4 ) ) == "yyyy" .OR. lower( right( set( 4 ), 4 ) ) == "yyyy", 84, 70 ), ), 0, "", ,, ,, )
+                _EndMessageBar ()
+
+    _EndWindow ()
+
+    DoMethod ( "Form_1", "Center" )
+    _ActivateWindow ( {"Form_1"}, .F., , )
+
+Return NIL
+
+Function MyPopup()
+
+
+    _DefineMainMenu( "Form_1" )
+      _DefineMenuPopup( "File" , , , )
+           _DefineSeparator()
+           _DefineMenuItem ( "Exit" , {|| MyExit()} , , "EXIT" , .F. , .F. ,,,, .F., .F., , .F. )
+      _EndMenuPopup()
+      _DefineMenuPopup( "&BackColor WINDOW" , , , )
+           _DefineMenuItem ( "COLOR_DESKTOP_DARK_CYAN    " , {|| ( SetProperty ( "Form_1", "BackColor" , {0,64,80} )    ,MyRefresh() )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+           _DefineMenuItem ( "COLOR_DESKTOP_DARK_GREEN   " , {|| ( SetProperty ( "Form_1", "BackColor" , {0,62, 0} )   ,MyRefresh() )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+           _DefineMenuItem ( "COLOR_DESKTOP_DARK_PURPLE  " , {|| ( SetProperty ( "Form_1", "BackColor" , {37,0,64} )  ,MyRefresh() )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+           _DefineMenuItem ( "COLOR_DESKTOP_DARK_YELLOW  " , {|| ( SetProperty ( "Form_1", "BackColor" , {215,166, 0} )  ,MyRefresh() )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+           _DefineMenuItem ( "COLOR_DESKTOP_BRIGHT_GREEN " , {|| ( SetProperty ( "Form_1", "BackColor" , {105,182,34} ) ,MyRefresh() )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+           _DefineMenuItem ( "COLOR_DESKTOP_YELLOW_ORANGE" , {|| ( SetProperty ( "Form_1", "BackColor" , {149,67, 1 } ),MyRefresh() )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+      _EndMenuPopup()
+      _DefineMenuPopup( "&Property" , , , )
+           _DefineMenuItem ( "Hide STATUSBAR" , {|| ( SetProperty ( "Form_1", "Statusbar" , "Visible" , .F. ) , lStatusBar := .F.)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+           _DefineMenuItem ( "Show STATUSBAR" , {|| ( SetProperty ( "Form_1", "Statusbar" , "Visible" , .T. ) , lStatusBar := .T.)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+           _DefineSeparator()
+           _DefineMenuItem ( "Hide MENU" , {|| ( ClearMenu() )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+      _EndMenuPopup()
+   _EndMenu()
+
+Return NIL
+
+
+Function METRO_BUTTON( cObject,nRow,nCol,nWidth,nHeight,cCaption,cResPicture,cResIco, aFontColor,aBACKCOLOR,bAction,cTooltip)
+
+    AADD( aObjButton , { cObject,nRow,nCol } )
+
+    _HMG_SYSDATA[316] := cObject ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[358] := NIL ; _HMG_SYSDATA[359] := NIL ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[280] := .F. ; _HMG_SYSDATA[281] := .F. ; _HMG_SYSDATA[283] := .F. ; _HMG_SYSDATA[352] := .F. ; _HMG_SYSDATA[287] := .F. ; _HMG_SYSDATA[339] := -1 ; _HMG_SYSDATA[372] := Nil ; _HMG_SYSDATA[279] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[282] := -1
+        _HMG_SYSDATA[331] := nRow
+            _HMG_SYSDATA[332] := nCol
+            _HMG_SYSDATA[320] := nWidth
+            _HMG_SYSDATA[321] := nHeight
+            _HMG_SYSDATA[333] := cResPicture
+            _HMG_SYSDATA[286] := cResIco
+            _HMG_SYSDATA[318] := cCaption
+            _HMG_SYSDATA[319] := {|| IIF(bAction=="EXIT",DoMethod ( _HMG_SYSDATA[254] , "Release" ),&(bAction))}
+            _HMG_SYSDATA[368] := .T.
+            _HMG_SYSDATA[280] := .F.
+            _HMG_SYSDATA[325] := .F.
+            _HMG_SYSDATA[323] := 10
+            _HMG_SYSDATA[312] := .T.
+            _HMG_SYSDATA[359] := aFontColor
+            _HMG_SYSDATA[358] := aBACKCOLOR
+            _HMG_SYSDATA[281] := .F.
+            _HMG_SYSDATA[324] := cTooltip
+            _HMG_SYSDATA[283] := .F.
+            _HMG_SYSDATA[284] := .T.
+    _DefineOwnerButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[318], _HMG_SYSDATA[319], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[333], _HMG_SYSDATA[324], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[325], ! _HMG_SYSDATA[364], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[328], _HMG_SYSDATA[278], _HMG_SYSDATA[286], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312] , _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[368], _HMG_SYSDATA[280], _HMG_SYSDATA[281], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[283], _HMG_SYSDATA[284], _HMG_SYSDATA[352], _HMG_SYSDATA[287], _HMG_SYSDATA[339], _HMG_SYSDATA[282], _HMG_SYSDATA[372], _HMG_SYSDATA[279], _HMG_SYSDATA[399], _HMG_SYSDATA[403] )
+
+Return NIL
+
+
+Function METRO_IMAGE( cObject,nRow,nCol,nWidth,nHeight,cCaption,cResPicture, aFontColor,bAction)
+   LOCAL aBackgroundColor := GetProperty ( "Form_1", "BackColor" )
+
+   AADD(  aObjImage , { cObject,nRow,nCol } )
+
+   _HMG_SYSDATA[316] := cObject ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[311] := .F. ; _HMG_SYSDATA[310] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[352] := .F. ; _HMG_SYSDATA[360] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[330] := .F.
+      _HMG_SYSDATA[317] := "Form_1"
+      _HMG_SYSDATA[331] := nRow
+      _HMG_SYSDATA[332] := nCol
+      _HMG_SYSDATA[320] := nWidth
+      _HMG_SYSDATA[321] := nHeight
+      _HMG_SYSDATA[333] := cResPicture
+      _HMG_SYSDATA[319] := {||            IIF(bAction=="EXIT",DoMethod ( _HMG_SYSDATA[254] , "Release" ),&(bAction))}
+      _HMG_SYSDATA[311] := .T.
+      _HMG_SYSDATA[364] := .F.
+      _HMG_SYSDATA[310] := aBackgroundColor
+      _HMG_SYSDATA[352] := .F.
+   _DefineImage ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[333], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[311], _HMG_SYSDATA[310], _HMG_SYSDATA[364], _HMG_SYSDATA[352], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[360], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+
+   _DefineLabel ( ( "Label_" + cObject ),, nCol+20, nRow + 90, cCaption, nWidth-20, 20, , 10 , .T., .F. , .F. , .F. , .F. , .T. ,, aFontColor,,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+Return NIL
+
+FUNCTION MyRefresh()
+   LOCAL nI, cWnd := _HMG_SYSDATA[254], cObj
+   LOCAL nHeight, nHeight2, nWidth, nWidth2
+
+   nHeight := GetProperty( cWnd, "Height")
+   nWidth  := GetProperty( cWnd, "Width")
+
+
+   FOR nI := 1 TO LEN(aObjButton)
+       cObj := aObjButton[nI,1]
+       nHeight2 := nHeight - 660 + aObjButton[nI,2]
+       nWidth2  := (nWidth - 870)/2 + aObjButton[nI,3]
+       SetProperty( cWnd, cObj, "Visible" , .F. )
+       SetProperty( cWnd, cObj, "Row"     , nHeight2 )
+       SetProperty( cWnd, cObj, "Col"     , nWidth2 )
+       SetProperty( cWnd, cObj, "Visible" , .T. )
+   NEXT
+
+   FOR nI := 1 TO LEN(aObjImage)
+       cObj := aObjImage[nI,1]
+       nHeight2 := nHeight - 660 + aObjImage[nI,2]
+       nWidth2  := (nWidth  - 870)/2 + aObjImage[nI,3]
+       SetProperty( cWnd, cObj, "Visible" , .F. )
+       SetProperty( cWnd, cObj, "Row"     , nHeight2 )
+       SetProperty( cWnd, cObj, "Col"     , nWidth2 )
+       SetProperty( cWnd, cObj, "Visible" , .T. )
+
+       cObj := "Label_" + aObjImage[nI,1]
+       nHeight2 := nHeight - 660 + aObjImage[nI,2] + 90
+       nWidth2  := (nWidth  - 870)/2 + aObjImage[nI,3] + 20
+       SetProperty( cWnd, cObj, "Visible" , .F. )
+       SetProperty( cWnd, cObj, "Row"     , nHeight2 )
+       SetProperty( cWnd, cObj, "Col"     , nWidth2 )
+       SetProperty( cWnd, cObj, "Visible" , .T. )
+   NEXT
+
+   nHeight := GetProperty( cWnd, "Height") - 660 + 20
+   SetProperty( cWnd, "Label_1", "Visible" , .F. )
+   SetProperty( cWnd, "Label_1", "Row"     , nHeight )
+   SetProperty( cWnd, "Label_1", "Visible" , .T. )
+
+   IF lStatusBar
+      SetProperty( cWnd, "STATUSBAR", "Visible" , .F. )
+      SetProperty( cWnd, "STATUSBAR", "Visible" , .T. )
+   ENDIF
+
+Return NIL
+
+Procedure ClearMenu()
+
+        _DefineMainMenu( "Form_1" )
+
+        _EndMenu()
+
+Return
+
+FUNCTION MyExit()
+   LOCAL lExit, cMess
+
+   cMess := ";Do you really want to exit?  ; ;"
+   cMess := AtRepl( ";", cMess, hb_eol() )
+   lExit := MsgYesNo( cMess, "Exit", .F. )
+   IF lExit
+      ReleaseAllWindows ()
+   ENDIF
+
+RETURN lExit

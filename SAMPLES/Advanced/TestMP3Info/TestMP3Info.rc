@@ -1,0 +1,4 @@
+ICO00    ICON    "res\id3v2.ico"
+NOIMAGE  BITMAP  "res\no_image.bmp"
+STARS    BITMAP  "res\favorite.bmp"
+

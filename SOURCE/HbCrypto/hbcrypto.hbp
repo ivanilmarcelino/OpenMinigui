@@ -1,0 +1,34 @@
+#
+# hbcrypto.hbp
+#
+
+-hblib
+-inc
+
+-o../../harbour/lib/${hb_name}
+
+-w3 -es2
+
+-I./3rd/ed25519;./3rd/scrypt
+
+-cflag=-DHAVE_CONFIG_H
+
+-hbx=${hb_name}.hbx
+
+bcrypt.c
+
+#blake2b.c
+blake2s.c
+
+ed25519.c
+
+sha3.c
+
+pbkdf2.c
+scrypt.c
+strcmpc.c
+
+scryptcf.prg
+
+3rd/ed25519/ed25519.hbc
+3rd/scrypt/scrypt.hbc

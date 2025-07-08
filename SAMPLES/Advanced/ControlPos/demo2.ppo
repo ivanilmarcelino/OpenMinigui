@@ -1,0 +1,315 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 7 "demo2.prg"
+_ProcReq_( "_ControlPos_.prg" )
+
+Memvar Op
+MEMVAR _ControlPosFirst_
+
+Procedure Main
+
+Local aRows [20] [3]
+
+Public Op
+
+    aRows [1]    := {"Simpson","Homer","555-5555"}
+    aRows [2]    := {"Mulder","Fox","324-6432"}
+    aRows [3]    := {"Smart","Max","432-5892"}
+    aRows [4]    := {"Grillo","Pepe","894-2332"}
+    aRows [5]    := {"Kirk","James","346-9873"}
+    aRows [6]    := {"Barriga","Carlos","394-9654"}
+    aRows [7]    := {"Flanders","Ned","435-3211"}
+    aRows [8]    := {"Smith","John","123-1234"}
+    aRows [9]    := {"Pedemonti","Flavio","000-0000"}
+    aRows [10]    := {"Gomez","Juan","583-4832"}
+    aRows [11]    := {"Fernandez","Raul","321-4332"}
+    aRows [12]    := {"Borges","Javier","326-9430"}
+    aRows [13]    := {"Alvarez","Alberto","543-7898"}
+    aRows [14]    := {"Gonzalez","Ambo","437-8473"}
+    aRows [15]    := {"Batistuta","Gol","485-2843"}
+    aRows [16]    := {"Vinazzi","Amigo","394-5983"}
+    aRows [17]    := {"Pedemonti","Flavio","534-7984"}
+    aRows [18]    := {"Samarbide","Armando","854-7873"}
+    aRows [19]    := {"Pradon","Alejandra","???-????"}
+    aRows [20]    := {"Reyes","Monica","432-5836"}
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Form_1", "Hello World!", 0, 0, 630, 480, .F., .F., .F., .F., .F., {,}, {,}, {|| ControlPos()}, ,, , ,, , , .F. , .F. , .T. , , .F. , "Arial" , 9, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+        _HMG_SYSDATA[316] := "Label_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+            _HMG_SYSDATA[331] := 10
+            _HMG_SYSDATA[332] := 10
+            _HMG_SYSDATA[320] := 60
+            _HMG_SYSDATA[334] := "Apellido:"
+        _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+        _HMG_SYSDATA[316] := "Text_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[404] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[343] := Nil ; _HMG_SYSDATA[378] := .F. ; _HMG_SYSDATA[379] := .F. ; _HMG_SYSDATA[372] := Nil ; _HMG_SYSDATA[380] := .F. ; _HMG_SYSDATA[381] := .F. ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[338] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[342] := .F. ; _HMG_SYSDATA[296] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[382] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[360] := .T. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+            _HMG_SYSDATA[331] := 10
+            _HMG_SYSDATA[332] := 70
+            _HMG_SYSDATA[320] := 80
+        iif ( _HMG_SYSDATA[382] == Nil .AND. _HMG_SYSDATA[296] == .F. , _DefineTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[343], _HMG_SYSDATA[378], _HMG_SYSDATA[379], _HMG_SYSDATA[380], _HMG_SYSDATA[381], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329] , _HMG_SYSDATA[342], _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), iif ( _HMG_SYSDATA[380] == .T., _DefineMaskedTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382], _HMG_SYSDATA[320], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[321], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329], _HMG_SYSDATA[403] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), _DefineCharMaskTextBox ( _HMG_SYSDATA[316] , _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382] , _HMG_SYSDATA[320] , _HMG_SYSDATA[334] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[327] , _HMG_SYSDATA[326] , _HMG_SYSDATA[335] , _HMG_SYSDATA[321] , _HMG_SYSDATA[338] , _HMG_SYSDATA[341] , _HMG_SYSDATA[329] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[404] , _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[296], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ) ) )
+
+        _HMG_SYSDATA[316] := "Label_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+            _HMG_SYSDATA[331] := 10
+            _HMG_SYSDATA[332] := 160
+            _HMG_SYSDATA[320] := 60
+            _HMG_SYSDATA[334] := "Nombres:"
+        _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+        _HMG_SYSDATA[316] := "Text_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[404] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[343] := Nil ; _HMG_SYSDATA[378] := .F. ; _HMG_SYSDATA[379] := .F. ; _HMG_SYSDATA[372] := Nil ; _HMG_SYSDATA[380] := .F. ; _HMG_SYSDATA[381] := .F. ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[338] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[342] := .F. ; _HMG_SYSDATA[296] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[382] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[360] := .T. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+            _HMG_SYSDATA[331] := 10
+            _HMG_SYSDATA[332] := 230
+            _HMG_SYSDATA[320] := 80
+        iif ( _HMG_SYSDATA[382] == Nil .AND. _HMG_SYSDATA[296] == .F. , _DefineTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[343], _HMG_SYSDATA[378], _HMG_SYSDATA[379], _HMG_SYSDATA[380], _HMG_SYSDATA[381], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329] , _HMG_SYSDATA[342], _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), iif ( _HMG_SYSDATA[380] == .T., _DefineMaskedTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382], _HMG_SYSDATA[320], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[321], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329], _HMG_SYSDATA[403] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), _DefineCharMaskTextBox ( _HMG_SYSDATA[316] , _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382] , _HMG_SYSDATA[320] , _HMG_SYSDATA[334] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[327] , _HMG_SYSDATA[326] , _HMG_SYSDATA[335] , _HMG_SYSDATA[321] , _HMG_SYSDATA[338] , _HMG_SYSDATA[341] , _HMG_SYSDATA[329] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[404] , _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[296], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ) ) )
+
+        _HMG_SYSDATA[316] := "Label_3" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+            _HMG_SYSDATA[331] := 10
+            _HMG_SYSDATA[332] := 320
+            _HMG_SYSDATA[320] := 60
+            _HMG_SYSDATA[334] := "Telefono:"
+        _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+        _HMG_SYSDATA[316] := "Text_3" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[404] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[343] := Nil ; _HMG_SYSDATA[378] := .F. ; _HMG_SYSDATA[379] := .F. ; _HMG_SYSDATA[372] := Nil ; _HMG_SYSDATA[380] := .F. ; _HMG_SYSDATA[381] := .F. ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[338] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[342] := .F. ; _HMG_SYSDATA[296] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[382] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[360] := .T. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+            _HMG_SYSDATA[331] := 10
+            _HMG_SYSDATA[332] := 390
+            _HMG_SYSDATA[320] := 80
+        iif ( _HMG_SYSDATA[382] == Nil .AND. _HMG_SYSDATA[296] == .F. , _DefineTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[343], _HMG_SYSDATA[378], _HMG_SYSDATA[379], _HMG_SYSDATA[380], _HMG_SYSDATA[381], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329] , _HMG_SYSDATA[342], _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), iif ( _HMG_SYSDATA[380] == .T., _DefineMaskedTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382], _HMG_SYSDATA[320], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[321], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329], _HMG_SYSDATA[403] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), _DefineCharMaskTextBox ( _HMG_SYSDATA[316] , _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382] , _HMG_SYSDATA[320] , _HMG_SYSDATA[334] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[327] , _HMG_SYSDATA[326] , _HMG_SYSDATA[335] , _HMG_SYSDATA[321] , _HMG_SYSDATA[338] , _HMG_SYSDATA[341] , _HMG_SYSDATA[329] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[404] , _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[296], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ) ) )
+
+        _HMG_SYSDATA[316] := "Button_A" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[278] := .F.
+            _HMG_SYSDATA[331] := 10
+            _HMG_SYSDATA[332] := 480
+            _HMG_SYSDATA[320] := 55
+            _HMG_SYSDATA[318] := "Ok"
+            _HMG_SYSDATA[319] := {||    Ok()}
+        iif ( _HMG_SYSDATA[333] == Nil .AND. _HMG_SYSDATA[286] == Nil, _DefineButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317] , _HMG_SYSDATA[332] , _HMG_SYSDATA[331] , _HMG_SYSDATA[318] , _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , _HMG_SYSDATA[328] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[360] , _HMG_SYSDATA[278] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) , _DefineImageButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], "", _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[333] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , ! _HMG_SYSDATA[364] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[328] , _HMG_SYSDATA[278] , _HMG_SYSDATA[286] , (_HMG_SYSDATA[351] <> NIL) , _HMG_SYSDATA[351] , _HMG_SYSDATA[284] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) )
+
+        _HMG_SYSDATA[316] := "Button_B" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[278] := .F.
+            _HMG_SYSDATA[331] := 10
+            _HMG_SYSDATA[332] := 545
+            _HMG_SYSDATA[320] := 55
+            _HMG_SYSDATA[318] := "Cancel"
+            _HMG_SYSDATA[319] := {||    Cancel()}
+        iif ( _HMG_SYSDATA[333] == Nil .AND. _HMG_SYSDATA[286] == Nil, _DefineButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317] , _HMG_SYSDATA[332] , _HMG_SYSDATA[331] , _HMG_SYSDATA[318] , _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , _HMG_SYSDATA[328] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[360] , _HMG_SYSDATA[278] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) , _DefineImageButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], "", _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[333] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , ! _HMG_SYSDATA[364] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[328] , _HMG_SYSDATA[278] , _HMG_SYSDATA[286] , (_HMG_SYSDATA[351] <> NIL) , _HMG_SYSDATA[351] , _HMG_SYSDATA[284] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) )
+
+        _HMG_SYSDATA[89] := .T. ; _HMG_SYSDATA[316] := "Grid_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[346] := Nil ; _HMG_SYSDATA[373] := Nil ; _HMG_SYSDATA[347] := Nil ; _HMG_SYSDATA[337] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[304] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[349] := Nil ; _HMG_SYSDATA[350] := .F. ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[352] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[356] := .F. ; _HMG_SYSDATA[357] := .F. ; _HMG_SYSDATA[344] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[307] := Nil ; _HMG_SYSDATA[306] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[299] := Nil ; _HMG_SYSDATA[298] := Nil ; _HMG_SYSDATA[409] := Nil ; _HMG_SYSDATA[393] := .F. ; _HMG_SYSDATA[308] := Nil ; _HMG_SYSDATA[342] := Nil ; _HMG_SYSDATA[300] := .F. ; _HMG_SYSDATA[386] := Nil ; _HMG_SYSDATA[297] := Nil ; _HMG_SYSDATA[387] := Nil ; _HMG_SYSDATA[200] := Nil ; _HMG_SYSDATA[309] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[366] := .F. ; _HMG_SYSDATA[367] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[372] := .F. ; _HMG_SYSDATA[365] := Nil ; _HMG_SYSDATA[336] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[360] := .F.
+            _HMG_SYSDATA[331] := 40
+            _HMG_SYSDATA[332] := 10
+            _HMG_SYSDATA[320] := 590
+            _HMG_SYSDATA[321] := 330
+            _HMG_SYSDATA[346] := { "Apellido" , "Nombres" , "Telefono" }
+            _HMG_SYSDATA[347] := { 185 , 185 , 185 }
+            _HMG_SYSDATA[337] := aRows
+            _HMG_SYSDATA[334] := 1
+        _HMG_SYSDATA[89] := .F. ; _DefineGrid ( _HMG_SYSDATA[316] , _HMG_SYSDATA[317] , _HMG_SYSDATA[332] , _HMG_SYSDATA[331] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[346] , _HMG_SYSDATA[347] , _HMG_SYSDATA[337] , _HMG_SYSDATA[334] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[335] , _HMG_SYSDATA[348] , _HMG_SYSDATA[349] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327], _HMG_SYSDATA[350], _HMG_SYSDATA[351], _HMG_SYSDATA[352] , _HMG_SYSDATA[344] , _HMG_SYSDATA[329] , _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314] , _HMG_SYSDATA[309] , _HMG_SYSDATA[307] , _HMG_SYSDATA[306] , _HMG_SYSDATA[357] , _HMG_SYSDATA[298] , _HMG_SYSDATA[299] , _HMG_SYSDATA[356], _HMG_SYSDATA[300], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[406], _HMG_SYSDATA[386], _HMG_SYSDATA[297], _HMG_SYSDATA[387], _HMG_SYSDATA[373], _HMG_SYSDATA[200], _HMG_SYSDATA[328], _HMG_SYSDATA[360], _HMG_SYSDATA[366], _HMG_SYSDATA[304], _HMG_SYSDATA[367], _HMG_SYSDATA[364], _HMG_SYSDATA[372], _HMG_SYSDATA[365], _HMG_SYSDATA[409], _HMG_SYSDATA[336], _HMG_SYSDATA[399], _HMG_SYSDATA[308], _HMG_SYSDATA[393], _HMG_SYSDATA[303], _HMG_SYSDATA[333] )
+
+        _HMG_SYSDATA[316] := "Button_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[278] := .F.
+            _HMG_SYSDATA[331] := 380
+            _HMG_SYSDATA[332] := 10
+            _HMG_SYSDATA[318] := "Agregar"
+            _HMG_SYSDATA[319] := {||    Agregar()}
+        iif ( _HMG_SYSDATA[333] == Nil .AND. _HMG_SYSDATA[286] == Nil, _DefineButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317] , _HMG_SYSDATA[332] , _HMG_SYSDATA[331] , _HMG_SYSDATA[318] , _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , _HMG_SYSDATA[328] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[360] , _HMG_SYSDATA[278] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) , _DefineImageButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], "", _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[333] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , ! _HMG_SYSDATA[364] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[328] , _HMG_SYSDATA[278] , _HMG_SYSDATA[286] , (_HMG_SYSDATA[351] <> NIL) , _HMG_SYSDATA[351] , _HMG_SYSDATA[284] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) )
+
+        _HMG_SYSDATA[316] := "Button_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[278] := .F.
+            _HMG_SYSDATA[331] := 380
+            _HMG_SYSDATA[332] := 140
+            _HMG_SYSDATA[318] := "Eliminar"
+            _HMG_SYSDATA[319] := {||    Eliminar()}
+        iif ( _HMG_SYSDATA[333] == Nil .AND. _HMG_SYSDATA[286] == Nil, _DefineButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317] , _HMG_SYSDATA[332] , _HMG_SYSDATA[331] , _HMG_SYSDATA[318] , _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , _HMG_SYSDATA[328] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[360] , _HMG_SYSDATA[278] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) , _DefineImageButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], "", _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[333] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , ! _HMG_SYSDATA[364] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[328] , _HMG_SYSDATA[278] , _HMG_SYSDATA[286] , (_HMG_SYSDATA[351] <> NIL) , _HMG_SYSDATA[351] , _HMG_SYSDATA[284] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) )
+
+        _HMG_SYSDATA[316] := "Button_3" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[278] := .F.
+            _HMG_SYSDATA[331] := 380
+            _HMG_SYSDATA[332] := 270
+            _HMG_SYSDATA[318] := "Modificar"
+            _HMG_SYSDATA[319] := {||    Modificar()}
+        iif ( _HMG_SYSDATA[333] == Nil .AND. _HMG_SYSDATA[286] == Nil, _DefineButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317] , _HMG_SYSDATA[332] , _HMG_SYSDATA[331] , _HMG_SYSDATA[318] , _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , _HMG_SYSDATA[328] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[360] , _HMG_SYSDATA[278] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) , _DefineImageButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], "", _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[333] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , ! _HMG_SYSDATA[364] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[328] , _HMG_SYSDATA[278] , _HMG_SYSDATA[286] , (_HMG_SYSDATA[351] <> NIL) , _HMG_SYSDATA[351] , _HMG_SYSDATA[284] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) )
+
+    _EndWindow ()
+
+    SetProperty ( "Form_1", "Text_1" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Text_2" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Text_3" , "Enabled" , .F. )
+
+    SetProperty ( "Form_1", "Button_A" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Button_B" , "Enabled" , .F. )
+
+    ControlPosSTART()
+
+    DoMethod ( "Form_1", "Center" )
+
+    _ActivateWindow ( {"Form_1"}, .F., , )
+
+Return
+
+Procedure ControlPos()
+
+      SetProperty ( "Form_1", "Label_1" , "Row" , 14 )
+      SetProperty ( "Form_1", "Label_1" , "Col" , 12 )
+      SetProperty ( "Form_1", "Label_1" , "Width" , 50 )
+      SetProperty ( "Form_1", "Label_1" , "Height" , 18 )
+
+      SetProperty ( "Form_1", "Text_1" , "Row" , 10 )
+      SetProperty ( "Form_1", "Text_1" , "Col" , 70 )
+      SetProperty ( "Form_1", "Text_1" , "Width" , 80 )
+      SetProperty ( "Form_1", "Text_1" , "Height" , 24 )
+
+      SetProperty ( "Form_1", "Label_2" , "Row" , 14 )
+      SetProperty ( "Form_1", "Label_2" , "Col" , 160 )
+      SetProperty ( "Form_1", "Label_2" , "Width" , 60 )
+      SetProperty ( "Form_1", "Label_2" , "Height" , 18 )
+
+      SetProperty ( "Form_1", "Text_2" , "Row" , 10 )
+      SetProperty ( "Form_1", "Text_2" , "Col" , 230 )
+      SetProperty ( "Form_1", "Text_2" , "Width" , 80 )
+      SetProperty ( "Form_1", "Text_2" , "Height" , 24 )
+
+      SetProperty ( "Form_1", "Label_3" , "Row" , 14 )
+      SetProperty ( "Form_1", "Label_3" , "Col" , 320 )
+      SetProperty ( "Form_1", "Label_3" , "Width" , 58 )
+      SetProperty ( "Form_1", "Label_3" , "Height" , 18 )
+
+      SetProperty ( "Form_1", "Text_3" , "Row" , 10 )
+      SetProperty ( "Form_1", "Text_3" , "Col" , 390 )
+      SetProperty ( "Form_1", "Text_3" , "Width" , 80 )
+      SetProperty ( "Form_1", "Text_3" , "Height" , 24 )
+
+      SetProperty ( "Form_1", "Button_A" , "Row" , 12 )
+      SetProperty ( "Form_1", "Button_A" , "Col" , 480 )
+      SetProperty ( "Form_1", "Button_A" , "Width" , 58 )
+      SetProperty ( "Form_1", "Button_A" , "Height" , 21 )
+
+      SetProperty ( "Form_1", "Button_B" , "Row" , 12 )
+      SetProperty ( "Form_1", "Button_B" , "Col" , 545 )
+      SetProperty ( "Form_1", "Button_B" , "Width" , 55 )
+      SetProperty ( "Form_1", "Button_B" , "Height" , 21 )
+
+    _ControlPosButtonGetClick_()
+
+Return
+
+Procedure Agregar()
+
+    Op := "AGREGAR"
+
+    SetProperty ( "Form_1", "Text_1" , "Enabled" , .T. )
+    SetProperty ( "Form_1", "Text_2" , "Enabled" , .T. )
+    SetProperty ( "Form_1", "Text_3" , "Enabled" , .T. )
+
+    SetProperty ( "Form_1", "Button_1" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Button_2" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Button_3" , "Enabled" , .F. )
+
+    SetProperty ( "Form_1", "Button_A" , "Enabled" , .T. )
+    SetProperty ( "Form_1", "Button_B" , "Enabled" , .T. )
+
+    SetProperty ( "Form_1", "Grid_1" , "Enabled" , .F. )
+
+    Domethod ( "Form_1", "Text_1" , "SetFocus" )
+
+Return
+
+Procedure Eliminar()
+Local i := GetProperty ( "Form_1", "Grid_1" , "Value" )
+
+    If i <> 0
+        Domethod ( "Form_1", "Grid_1" , "DeleteItem" , i )
+    EndIf
+
+Return
+
+Procedure Modificar()
+Local i := GetProperty ( "Form_1", "Grid_1" , "Value" ) , aTemp
+
+    Op := "MODIFICAR"
+
+    If i <> 0
+
+        aTemp := GetProperty ( "Form_1", "Grid_1" , "Item" , i )
+
+        SetProperty ( "Form_1", "Text_1" , "Value" , aTemp [1] )
+        SetProperty ( "Form_1", "Text_2" , "Value" , aTemp [2] )
+        SetProperty ( "Form_1", "Text_3" , "Value" , aTemp [3] )
+
+        SetProperty ( "Form_1", "Text_1" , "Enabled" , .T. )
+        SetProperty ( "Form_1", "Text_2" , "Enabled" , .T. )
+        SetProperty ( "Form_1", "Text_3" , "Enabled" , .T. )
+
+        SetProperty ( "Form_1", "Button_1" , "Enabled" , .F. )
+        SetProperty ( "Form_1", "Button_2" , "Enabled" , .F. )
+        SetProperty ( "Form_1", "Button_3" , "Enabled" , .F. )
+
+        SetProperty ( "Form_1", "Button_A" , "Enabled" , .T. )
+        SetProperty ( "Form_1", "Button_B" , "Enabled" , .T. )
+
+        SetProperty ( "Form_1", "Grid_1" , "Enabled" , .F. )
+
+        Domethod ( "Form_1", "Text_1" , "SetFocus" )
+
+    EndIf
+
+Return
+
+Procedure Ok()
+Local aTemp := {} , i
+
+    If    Op == "AGREGAR"
+
+        Domethod ( "Form_1", "Grid_1" , "AddItem" , { GetProperty ( "Form_1", "Text_1" , "Value" ) , GetProperty ( "Form_1", "Text_2" , "Value" ) , GetProperty ( "Form_1", "Text_3" , "Value" ) } )
+        SetProperty ( "Form_1", "Grid_1" , "Value" , GetProperty ( "Form_1", "Grid_1" , "ItemCount" ) )
+
+
+    ElseIf    Op == "MODIFICAR"
+
+        i := GetProperty ( "Form_1", "Grid_1" , "Value" )
+        SetProperty ( "Form_1", "Grid_1" , "Item" , i , { GetProperty ( "Form_1", "Text_1" , "Value" ),GetProperty ( "Form_1", "Text_2" , "Value" ) ,GetProperty ( "Form_1", "Text_3" , "Value" ) } )
+
+    EndIf
+
+    SetProperty ( "Form_1", "Text_1" , "Value" , "" )
+    SetProperty ( "Form_1", "Text_2" , "Value" , "" )
+    SetProperty ( "Form_1", "Text_3" , "Value" , "" )
+
+    SetProperty ( "Form_1", "Text_1" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Text_2" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Text_3" , "Enabled" , .F. )
+
+    SetProperty ( "Form_1", "Button_1" , "Enabled" , .T. )
+    SetProperty ( "Form_1", "Button_2" , "Enabled" , .T. )
+    SetProperty ( "Form_1", "Button_3" , "Enabled" , .T. )
+
+    SetProperty ( "Form_1", "Button_A" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Button_B" , "Enabled" , .F. )
+
+    SetProperty ( "Form_1", "Grid_1" , "Enabled" , .T. )
+
+    Domethod ( "Form_1", "Grid_1" , "SetFocus" )
+
+Return
+
+Procedure Cancel()
+
+    SetProperty ( "Form_1", "Text_1" , "Value" , "" )
+    SetProperty ( "Form_1", "Text_2" , "Value" , "" )
+    SetProperty ( "Form_1", "Text_3" , "Value" , "" )
+
+    SetProperty ( "Form_1", "Text_1" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Text_2" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Text_3" , "Enabled" , .F. )
+
+    SetProperty ( "Form_1", "Button_1" , "Enabled" , .T. )
+    SetProperty ( "Form_1", "Button_2" , "Enabled" , .T. )
+    SetProperty ( "Form_1", "Button_3" , "Enabled" , .T. )
+
+    SetProperty ( "Form_1", "Button_A" , "Enabled" , .F. )
+    SetProperty ( "Form_1", "Button_B" , "Enabled" , .F. )
+
+    SetProperty ( "Form_1", "Grid_1" , "Enabled" , .T. )
+
+    Domethod ( "Form_1", "Grid_1" , "SetFocus" )
+Return

@@ -1,0 +1,21 @@
+# Keys compile
+-prgflag=-w2 -es1 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-odemo
+
+# to list all * .prg
+demo.prg
+demo_util.prg
+test_AviAchoice.prg
+test_zeroAchoice.prg
+util_AviAchoice.prg
+
+# project Resources
+#demo.rc

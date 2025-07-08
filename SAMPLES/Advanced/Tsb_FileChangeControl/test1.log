@@ -1,0 +1,8 @@
+From the new version 18.12.21
+-------------------------------------------------
+You can try
+nWr := _HMG_MainCargo:TextWidth( cText[, nSize[, cFont[, lBold[, cChar]]]] )
+  or
+nWr := _GetAppCargo():TextWidth( cText[, nSize[, cFont[, lBold[, cChar]]]] )
+  or
+nWR := App.Object:TextWidth( cText[, nSize[, cFont[, lBold[, cChar]]]] )

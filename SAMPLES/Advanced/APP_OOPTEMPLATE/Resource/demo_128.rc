@@ -1,0 +1,16 @@
+//                            
+// Resource     Resource       Resource
+// Name          Type           FileName
+//                            
+iSanta1          ICON          Resource\res_128\iSanta128x1.ico
+iSanta2          ICON          Resource\res_128\iSanta128x2.ico
+iFolder1         ICON          Resource\res_128\iFolder128x1.ico
+iFolder2         ICON          Resource\res_128\iFolder128x2.ico
+iHP1             ICON          Resource\res_128\iHP128x1.ico
+iHP2             ICON          Resource\res_128\iHP128x2.ico
+iHmg1            ICON          Resource\res_128\iHMG128x1.ico
+iHmg2            ICON          Resource\res_128\iHMG128x2.ico
+iExit1           ICON          Resource\res_128\iExit128x1.ico
+iExit2           ICON          Resource\res_128\iExit128x2.ico
+iClock1          ICON          Resource\res_128\iClock128x1.ico
+iClock2          ICON          Resource\res_128\iClock128x2.ico

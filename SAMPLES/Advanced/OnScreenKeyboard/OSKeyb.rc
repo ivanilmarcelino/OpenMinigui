@@ -1,0 +1,48 @@
+// Using a resource file like this, you can include bitmaps, icons and sounds
+// inside EXE.
+//
+//	Resource name	Resource Type	Resource FileName
+//   
+
+        W10           PNG               RES\KEYBOARD\W10.png
+        DESNO_K       PNG               RES\KEYBOARD\DESNO.png
+        LEVO_K        PNG               RES\KEYBOARD\levo.png
+        GOR_K         PNG               RES\KEYBOARD\GOR.png
+        DOL_K         PNG               RES\KEYBOARD\DOL.png
+        TAB_K         PNG               RES\KEYBOARD\TAB.png
+        RETURN_K      PNG               RES\KEYBOARD\RETURN.png
+        BACKSPACE_K   PNG               RES\KEYBOARD\BACKSPACE.png
+        TIPKO         BITMAP            res\tipkovnica.bmp
+        TIPKO_OFF     BITMAP            res\tipkovnica_OFF.bmp
+        MAINICO       ICON              RES\TIPKOVNICA.ICO
+
+
+1 VERSIONINFO
+FILEVERSION 10,0,0,0
+PRODUCTVERSION 10,0,0,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+	BLOCK "040904b0"
+	{
+		VALUE "CompanyName", "By Kristjan , Slovenija\000"
+		VALUE "FileDescription", "OnScreenKeyboard\000"
+		VALUE "FileVersion", "DX10\000"
+		VALUE "InternalName", "OnScreenKeyboard\000"
+		VALUE "LegalCopyright", "Copyright © 1989-2018 by Kristjan\000"
+		VALUE "LegalTrademarks", "Harbour\000"
+		VALUE "OriginalFilename", "OnScreenKeyboard.exe\000"
+		VALUE "ProductName", "OnScreenKeyboard\000"
+		VALUE "ProductVersion", "DX10\000"
+		VALUE "Comments", "Brezplaèna razlièica\000"
+		VALUE "Aditional Notes", "Razmnoževanje dovoljeno samo z avtorjevim dovoljenjem\000"
+	}
+}
+
+BLOCK "VarFileInfo"
+{
+	VALUE "Translation", 0x0409 0x04B0
+}
+}

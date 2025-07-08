@@ -1,0 +1,15 @@
+# Keys compile
+-prgflag=-w2 -es1 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-odemo
+
+# to list all * .prg
+demo.prg
+alert_tsb.prg

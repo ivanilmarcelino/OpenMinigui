@@ -1,0 +1,13 @@
+class with variable-properties, methods-functions in MiniGuy:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ow:SetFocus('Buff')
+  ow:Release()
+
+  oWnd:StatusBar:Say(cVers, 2)
+  oWnd:StatusBar:Say(cDate, 3)
+
+Where can I see all these commands?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+h_objects.prg
+h_objmisc.prg

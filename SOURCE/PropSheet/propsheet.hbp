@@ -1,0 +1,18 @@
+#
+# propsheet.hbp
+#
+
+-hblib
+-inc
+-o../../lib/propsheet
+
+-I../../include
+
+-warn=max
+
+-w2 -es2 -ko -q0
+
+-hbx=../../include/propsheet.hbx
+
+h_propsheet.prg
+c_propsheet.c

@@ -1,0 +1,10 @@
+//
+// Resource     Resource         Resource
+// Name          Type             FileName
+//            
+1MAIN_ICO         ICON           res\1MG.ico
+iDebug64          ICON           res\iDebug64.ico
+iSmile64          ICON           res\iSmile64.ico
+iStop64           ICON           res\iStop64.ico  
+iAlert64          ICON           res\iAlert64.ico
+

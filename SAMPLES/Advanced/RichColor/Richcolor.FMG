@@ -1,0 +1,23 @@
+/*
+Versão Designer : 3.2412.0.0 RELEASE SPECIAL PALLADIUM (Pd) Year V 241218 2249
+==============================================================================================================
+https://github.com/ivanilmarcelino/designer by IVANIL MARCELINO <ivanil.marcelino@yahoo.com.br>
+--------------------------------------------------------------------------------------------------------------
+Projeto : Richcolor
+--------------------------------------------------------------------------------------------------------------
+*/
+
+DEFINE WINDOW TEMPLATE AT 0, 0 WIDTH 600 HEIGHT 550 TITLE NIL MAIN
+
+    DEFINE RICHEDITBOXEX oRichEditEX1
+        BACKCOLOR {252,252,252}
+        FONTCOLOR {0,0,0}
+        COL 5
+        HEIGHT 500
+        ROW 4
+        WIDTH 572
+    END RICHEDITBOXEX
+
+END WINDOW
+
+

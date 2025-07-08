@@ -1,0 +1,19 @@
+//
+// Resource      Resource        Resource
+// Name           Type            FileName
+//              
+1MG                ICON           res\1MG.ico
+LogoDEMO           JPG            res\LogoDemo.jpg
+
+i1Clear48x1        ICON           res\i1Clear48x1.ico
+i1Clear48x2        ICON           res\i1Clear48x2.ico
+i1Exit48x1         ICON           res\i1Exit48x1.ico
+i1Exit48x2         ICON           res\i1Exit48x2.ico
+i1Help48x1         ICON           res\i1Help48x1.ico
+i1Help48x2         ICON           res\i1Help48x2.ico
+i1Search48x1       ICON           res\i1Search48x1.ico
+i1Search48x2       ICON           res\i1Search48x2.ico
+i1Text48x1         ICON           res\i1Text48x1.ico
+i1Text48x2         ICON           res\i1Text48x2.ico
+i1Print48x1        ICON           res\i1Print48x1.ico
+i1Print48x2        ICON           res\i1Print48x2.ico

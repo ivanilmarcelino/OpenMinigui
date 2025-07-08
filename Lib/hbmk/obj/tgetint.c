@@ -1,0 +1,105 @@
+/*
+ * Harbour 3.2.0dev (r2503200530)
+ * Borland C++ 5.8.2 (32-bit)
+ * Generated C source from ".\tget\tgetint.prg"
+ */
+
+#include "hbvmpub.h"
+#include "hbinit.h"
+
+
+HB_FUNC( GETNEW );
+HB_FUNC_EXTERN( GET );
+HB_FUNC( __GET );
+HB_FUNC_EXTERN( FIELDPOS );
+HB_FUNC_EXTERN( HB_MACROBLOCK );
+HB_FUNC_EXTERN( __MVEXIST );
+HB_FUNC_EXTERN( __MVGET );
+HB_FUNC_EXTERN( __MVPUT );
+HB_FUNC( __GETA );
+HB_FUNC_EXTERN( HB_PVALUE );
+HB_FUNC_EXTERN( PCOUNT );
+
+
+HB_INIT_SYMBOLS_BEGIN( hb_vm_SymbolInit_TGETINT )
+{ "GETNEW", {HB_FS_PUBLIC | HB_FS_LOCAL}, {HB_FUNCNAME( GETNEW )}, NULL },
+{ "NEW", {HB_FS_PUBLIC | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "GET", {HB_FS_PUBLIC}, {HB_FUNCNAME( GET )}, NULL },
+{ "__GET", {HB_FS_PUBLIC | HB_FS_LOCAL}, {HB_FUNCNAME( __GET )}, NULL },
+{ "FIELDPOS", {HB_FS_PUBLIC}, {HB_FUNCNAME( FIELDPOS )}, NULL },
+{ "HB_MACROBLOCK", {HB_FS_PUBLIC}, {HB_FUNCNAME( HB_MACROBLOCK )}, NULL },
+{ "__MVEXIST", {HB_FS_PUBLIC}, {HB_FUNCNAME( __MVEXIST )}, NULL },
+{ "__MVGET", {HB_FS_PUBLIC}, {HB_FUNCNAME( __MVGET )}, NULL },
+{ "__MVPUT", {HB_FS_PUBLIC}, {HB_FUNCNAME( __MVPUT )}, NULL },
+{ "_PREBLOCK", {HB_FS_PUBLIC | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "_POSTBLOCK", {HB_FS_PUBLIC | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "__GETA", {HB_FS_PUBLIC | HB_FS_LOCAL}, {HB_FUNCNAME( __GETA )}, NULL },
+{ "_SUBSCRIPT", {HB_FS_PUBLIC | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "HB_PVALUE", {HB_FS_PUBLIC}, {HB_FUNCNAME( HB_PVALUE )}, NULL },
+{ "PCOUNT", {HB_FS_PUBLIC}, {HB_FUNCNAME( PCOUNT )}, NULL }
+HB_INIT_SYMBOLS_EX_END( hb_vm_SymbolInit_TGETINT, ".\\tget\\tgetint.prg", 0x0, 0x0003 )
+
+#if defined( HB_PRAGMA_STARTUP )
+   #pragma startup hb_vm_SymbolInit_TGETINT
+#elif defined( HB_DATASEG_STARTUP )
+   #define HB_DATASEG_BODY    HB_DATASEG_FUNC( hb_vm_SymbolInit_TGETINT )
+   #include "hbiniseg.h"
+#endif
+
+HB_FUNC( GETNEW )
+{
+	static const HB_BYTE pcode[] =
+	{
+		13,0,6,48,1,0,176,2,0,12,0,95,1,95,
+		2,95,3,95,4,95,5,95,6,112,6,110,7
+	};
+
+	hb_vmExecute( pcode, symbols );
+}
+
+HB_FUNC( __GET )
+{
+	static const HB_BYTE pcode[] =
+	{
+		13,1,5,95,1,100,8,29,189,0,176,4,0,95,
+		2,12,1,121,15,28,74,176,5,0,106,24,105,105,
+		102,40,80,67,111,117,110,116,40,41,61,61,48,44,
+		70,73,69,76,68,45,62,0,95,2,72,106,9,44,
+		70,73,69,76,68,45,62,0,72,95,2,72,106,16,
+		58,61,104,98,95,80,86,97,108,117,101,40,49,41,
+		41,0,72,12,1,80,1,25,105,176,6,0,95,2,
+		12,1,28,40,89,34,0,1,0,1,0,2,0,95,
+		1,100,8,28,11,176,7,0,95,255,12,1,25,11,
+		176,8,0,95,255,95,1,12,2,6,80,1,25,58,
+		176,5,0,106,17,105,105,102,40,80,67,111,117,110,
+		116,40,41,61,61,48,44,0,95,2,72,106,2,44,
+		0,72,95,2,72,106,16,58,61,104,98,95,80,86,
+		97,108,117,101,40,49,41,41,0,72,12,1,80,1,
+		48,1,0,176,2,0,12,0,100,100,95,1,95,2,
+		95,3,112,5,80,6,48,9,0,95,6,95,5,112,
+		1,73,48,10,0,95,6,95,4,112,1,73,95,6,
+		110,7
+	};
+
+	hb_vmExecute( pcode, symbols );
+}
+
+HB_FUNC( __GETA )
+{
+	static const HB_BYTE pcode[] =
+	{
+		13,1,6,95,1,100,8,28,74,176,4,0,95,2,
+		12,1,121,15,28,24,176,5,0,106,8,70,73,69,
+		76,68,45,62,0,95,2,72,12,1,80,1,25,41,
+		176,6,0,95,2,12,1,28,23,89,17,0,0,0,
+		1,0,2,0,176,7,0,95,255,12,1,6,80,1,
+		25,11,176,5,0,95,2,12,1,80,1,48,1,0,
+		176,2,0,12,0,100,100,95,1,95,2,95,3,112,
+		5,80,7,48,12,0,95,7,95,6,112,1,73,48,
+		9,0,95,7,95,5,112,1,73,48,10,0,95,7,
+		95,4,112,1,73,95,7,110,7
+	};
+
+	hb_vmExecute( pcode, symbols );
+}
+

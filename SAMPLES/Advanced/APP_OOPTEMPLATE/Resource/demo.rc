@@ -1,0 +1,43 @@
+//                            
+// Resource     Resource       Resource
+// Name          Type           FileName
+//                            
+1_MAIN           ICON         Resource\res\1IconWin.ico
+1MG              ICON         Resource\res\1Mg.ico
+GRABBED32        CURSOR       Resource\res\Grabbed32x32.cur
+HAND32           CURSOR       Resource\res\hand32x32.cur
+DEMO             JPG          Resource\res\demo.jpg
+DemoPass         PNG          Resource\res\DemoPass_500x353x1.png
+GETPASS          JPG          Resource\res\GetPassword.jpg
+Ani3dMan128      GIF          Resource\res\man3d128.gif
+Avi3dMan         AVI          Resource\res\man3d128.avi
+ZipAVI           AVI          Resource\res\a_compress.avi
+
+iW_Yellow        ICON         Resource\res\iW_Yellow16.ico
+iW_Green         ICON         Resource\res\iW_Green16.ico
+iW_Invert        ICON         Resource\res\iW_Invert16.ico
+iW_cas16         ICON         Resource\res\iW_cas16.ico
+                              
+i_About32        ICON         Resource\res\i_About32.ico
+i_Exit32         ICON         Resource\res\i_Exit32.ico
+i_Menu32x1       ICON         Resource\res\i_Menu32x1.ico
+i_Menu32x2       ICON         Resource\res\i_Menu32x2.ico
+i_Smile32        ICON         Resource\res\i_Smile32.ico
+i_Stop32         ICON         Resource\res\i_Stop32.ico
+i_FDel32         ICON         Resource\res\i_FDel32.ico
+i_FDelNo32       ICON         Resource\res\i_FDelNo32.ico
+                              
+bRecOff32        BITMAP       Resource\res\bRecnoOff32.bmp
+bRecOn32         BITMAP       Resource\res\bRecnoOn32.bmp
+bFDel32          BITMAP       Resource\res\bFDel32.bmp
+bFDelNo32        BITMAP       Resource\res\bFDelNo32.bmp
+
+Tick32           BITMAP       Resource\res\tick32.bmp
+
+/* TBROWSE IMA GES */         
+MG_TSB_RECDEL    BITMAP       Resource\res\br_no.bmp
+MG_TSB_UP        PNG          Resource\res\MG_Arrow_Up24.png  
+MG_TSB_DW        PNG          Resource\res\MG_Arrow_Down24.png
+MG_TSB_ChkF24    BITMAP       Resource\res\MG_bCheckF24.bmp
+MG_TSB_ChkT24    BITMAP       Resource\res\MG_bCheckT24.bmp
+

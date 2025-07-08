@@ -1,0 +1,96 @@
+//
+// Resource      Resource        Resource
+// Name           Type            FileName
+//              
+1MG              ICON           res\i1SQLite.ico
+2MG_64           ICON           res\2MG64.ico
+HmgClipper       PNG            res\Hmg_clipper.png
+bRecDel16        BITMAP         res\bRecDel.bmp
+iMG48            ICON           res\iMGLogo48.ico
+iSQLite48        ICON           res\iSQLite48.ico
+iExit48          ICON           res\iExit48.ico
+iBase48          ICON           res\iBase48.ico
+iConfig48        ICON           res\iConfig48.ico
+iExample48       ICON           res\iExample48.ico
+iSqlite32        ICON           res\iSqlite32.ico
+iAExit32x1       ICON           res\iAExit32x1.ico
+iAExit32x2       ICON           res\iAExit32x2.ico
+iAExport32x1     ICON           res\iAExport32x1.ico
+iAExport32x2     ICON           res\iAExport32x2.ico
+iATable32x1      ICON           res\iATable32x1.ico
+iATable32x2      ICON           res\iATable32x2.ico
+iDbf32           ICON           res\iDbf32.ico          
+iCsv32           ICON           res\iCsv32.ico              
+iXls32           ICON           res\iXls32.ico              
+iOOCalc32        ICON           res\iOOCalc32.ico
+iWinClose32      ICON           res\iWinClose32.ico
+iWinOpen32       ICON           res\iWinOpen32.ico
+CheckF32         BITMAP         res\check_box_yellow_false32.bmp
+CheckT32         BITMAP         res\check_box_yellow_true32.bmp
+iFFile32x1       ICON           res\iFindFile32x1.ico
+iFFile32x2       ICON           res\iFindFile32x2.ico
+iFlag_Bel32      ICON           res\iFlag_Bel32.ico
+iFlag_En32       ICON           res\iFlag_En32.ico
+iFlag_Kaz32      ICON           res\iFlag_Kaz32.ico
+iFlag_Ru32       ICON           res\iFlag_Ru32.ico
+iFlag_Uk32       ICON           res\iFlag_Uk32.ico
+iLang32          ICON           res\iLang32.ico
+iUtf32           ICON           res\iUtf32.ico
+iReturn64x1      ICON           res\iReturn64x1.ico         
+iReturn64x2      ICON           res\iReturn64x2.ico         
+iConn48x1        ICON           res\iConnect48x1.ico
+iConn48x2        ICON           res\iConnect48x2.ico
+iArrow64         ICON           res\iArrow64.ico
+iADbase32x1      ICON           res\iADbase32x1.ico
+iADbase32x2      ICON           res\iADbase32x2.ico
+iAFilter32x1     ICON           res\iAFilter32x1.ico
+iAFilter32x2     ICON           res\iAFilter32x2.ico
+iAFilter32x3     ICON           res\iAFilter32x3.ico
+iFilter48        ICON           res\iFilterx48.ico
+iFiltr64x1       ICON           res\iFilter64x1.ico
+iFiltr64x2       ICON           res\iFilter64x2.ico
+iQuestion64      ICON           res\iQuestion64.ico   
+iQuestion64x2    ICON           res\iQuestion64x2.ico 
+iOk32            ICON           res\iOk32.ico
+iCancel32        ICON           res\iCancel32.ico
+iSQLite64        ICON           res\iSQLite64.ico
+// ------ WaitThreadIco.prg
+zmk01          ICON          res\zmk01.ico
+zmk02          ICON          res\zmk02.ico
+zmk03          ICON          res\zmk03.ico
+zmk04          ICON          res\zmk04.ico
+zmk05          ICON          res\zmk05.ico
+zmk06          ICON          res\zmk06.ico
+zmk07          ICON          res\zmk07.ico
+zmk08          ICON          res\zmk08.ico
+
+1 VERSIONINFO
+FILEVERSION 1,0
+PRODUCTVERSION 1,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+  BLOCK "040904b0"
+  {
+    VALUE "FileDescription", "Demo MiniGui\000"
+    VALUE "FileVersion", "1.0."
+    VALUE "InternalName", "demo.exe\000"
+    VALUE "LegalCopyright", "(c) Copyright 2024 Verchenko Andrey (Dmitrov)\000"
+    VALUE "LegalTrademarks", "Harbour + MiniGui\000"
+    VALUE "OriginalFilename", "demo.exe\000"
+    VALUE "CompanyName", "V-Soft Dmitrov, Moscow region\000"
+    VALUE "ProductName", "Demo MiniGui Harbour\000"
+    VALUE "ProductVersion", "1.0."
+    VALUE "Comments", "Created by Verchenko Andrey <verchenkoag@gmail.com>\000"
+  }
+}
+
+BLOCK "VarFileInfo"
+{
+  VALUE "Translation", 0x0409 0x04B0
+}
+}
+
+

@@ -1,0 +1,24 @@
+# Keys compile
+-prgflag=-w0 -es1 
+#-prgflag=-w2 -es1 
+
+# Enable multi/single-thread Harbour VM
+-mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-oDemoMdi
+
+# to list all * .prg
+demoMdi.prg
+WaitThreadIco.prg
+
+# project Resources
+.\res\MGDBU_.res
+.\res\TEST_.res
+

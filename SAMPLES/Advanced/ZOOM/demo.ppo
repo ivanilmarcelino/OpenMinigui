@@ -1,0 +1,233 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 12 "demo.prg"
+PROCEDURE Main
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Form_1", "Zoom",,,,, .F., .T., .T., .F., .F., {,}, {,},, ,, , ,, , , .F. , .F. , .T. , , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , 550 , 350 )
+
+      _HMG_SYSDATA[316] := "Label_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+         _HMG_SYSDATA[331] := 5
+         _HMG_SYSDATA[332] := 5
+         _HMG_SYSDATA[320] := 120
+         _HMG_SYSDATA[321] := 40
+         _HMG_SYSDATA[334] := ""
+         _HMG_SYSDATA[361] := .T.
+      _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+      _HMG_SYSDATA[316] := "Label_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+         _HMG_SYSDATA[331] := 50
+         _HMG_SYSDATA[332] := 5
+         _HMG_SYSDATA[320] := 120
+         _HMG_SYSDATA[321] := 30
+         _HMG_SYSDATA[334] := ""
+         _HMG_SYSDATA[322] := "Courier New"
+         _HMG_SYSDATA[323] := 12
+         _HMG_SYSDATA[312] := .T.
+         _HMG_SYSDATA[359] := { 255, 255, 255 }
+         _HMG_SYSDATA[358] := { 000, 105, 000 }
+         _HMG_SYSDATA[288] := .T.
+         _HMG_SYSDATA[361] := .T.
+      _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+      _DefineMainMenu( )
+
+         _DefineMenuPopup( "Zoom" , , , )
+
+         _DefineMenuItem ( "Factor 1" , {|| check_menu( 1 )} , "Factor1" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+         _DefineMenuItem ( "Factor 2" , {|| check_menu( 2 )} , "Factor2" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+         _DefineMenuItem ( "Factor 3" , {|| check_menu( 3 )} , "Factor3" , , .T. , .F. ,,,, .F., .F. ,, .F. )
+         _DefineMenuItem ( "Factor 4" , {|| check_menu( 4 )} , "Factor4" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+         _DefineMenuItem ( "Factor 5" , {|| check_menu( 5 )} , "Factor5" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+         _DefineSeparator()
+         _DefineMenuItem ( "Exit" , {|| DoMethod ( "Form_1", "Release" )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+
+         _EndMenuPopup()
+
+      _EndMenu()
+
+      _DefineHotKey ( , 0 , 27 , {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )} )
+
+      _DefineTimer ( "oTimer",, 40, {|| ZoomImage()}, .F., )
+
+   _EndWindow ()
+
+   DoMethod ( "Form_1", "Center" )
+
+   _ActivateWindow ( {"Form_1"}, .F., , )
+
+RETURN
+
+
+STATIC FUNCTION check_menu( nFactor )
+
+
+
+
+
+
+
+
+
+
+
+
+   LOCAL n
+
+   FOR n := 1 TO 5
+      SetProperty( "Form_1", "Factor" + Str( n, 1 ), "Checked", ( n == nFactor ) )
+   NEXT
+
+RETURN NIL
+
+
+STATIC FUNCTION GetZoom()
+
+
+
+
+
+
+
+
+
+
+
+
+   LOCAL n
+   LOCAL nZoom := 3
+
+   FOR n := 1 TO 5
+      IF GetProperty( "Form_1", "Factor" + Str( n, 1 ), "Checked" ) == .T.
+         nZoom := n
+         EXIT
+      ENDIF
+   NEXT
+
+RETURN nZoom
+
+
+STATIC FUNCTION ZoomImage()
+
+
+
+
+
+
+
+
+
+
+
+
+
+   LOCAL nZoom
+   LOCAL hDeskTop
+   LOCAL aPos
+   LOCAL hWnd
+   LOCAL hDC
+   LOCAL hPen
+   LOCAL hOldPen, aColor := { 0, 0, 0 }
+   LOCAL nTop, nLeft, nWidth, nHeight
+
+   nZoom := GetZoom()
+
+   hDeskTop := GetDC( 0 )
+
+   aPos := GetCursorPos()
+
+   IF GetPixelColor( hDeskTop, aPos[ 2 ], aPos[ 1 ], aColor )
+      SetProperty ( "Form_1", "Label_1" , "Backcolor" , aColor )
+      SetProperty ( "Form_1", "Label_2" , "Value" , StrZero( aColor[ 1 ], 3 ) + "," + StrZero( aColor[ 2 ], 3 ) + "," + StrZero( aColor[ 3 ], 3 ) )
+   ENDIF
+
+   hWnd := GetProperty ( _HMG_SYSDATA[254] , "Handle" )
+   hDC := GetDC( hWnd )
+   hPen := CreatePen( 0, 1, 255 )
+
+   nTop := 10
+   nLeft := 130
+   nWidth := 400
+   nHeight := 300
+
+   Moveto( hDC, nLeft - 1, nTop - 1 )
+   Lineto( hDC, nLeft + nWidth, nTop - 1 )
+   Lineto( hDC, nLeft + nWidth, nTop + nHeight )
+   Lineto( hDC, nLeft - 1, nTop + nHeight )
+   Lineto( hDC, nLeft - 1, nTop - 1 )
+
+   StretchBlt( hDC, nLeft, nTop, nWidth, nHeight, hDeskTop, aPos[ 2 ] - nWidth / ( 2 * nZoom ), aPos[ 1 ] - nHeight / ( 2 * nZoom ), nWidth / nZoom, nHeight / nZoom, 0x00CC0020 )
+
+   hOldPen := SelectObject( hDC, hPen )
+
+   Moveto( hDC, nLeft + nWidth / 2 + 1, nTop - 1 )
+   Lineto( hDC, nLeft + nWidth / 2 + 1, nTop + nHeight + 1 )
+
+   Moveto( hDC, nLeft + 1, nTop + nHeight / 2 + 1 )
+   Lineto( hDC, nLeft + nWidth + 1, nTop + nHeight / 2 + 1 )
+
+   SelectObject( hDC, hOldPen )
+   DeleteObject( hPen )
+
+   ReleaseDC( hWnd, hDC )
+
+   ReleaseDC( 0, hDeskTop )
+
+RETURN NIL
+
+
+#pragma BEGINDUMP
+
+#include "mgdefs.h"
+
+HB_FUNC( STRETCHBLT )
+{
+   /*
+    * HB_FUNC( STRETCHBLT )
+    * -------------------------------------------------------------------------------------------------
+    * Purpose: This function is a Harbour wrapper for the Windows API StretchBlt function. It allows
+    *          Harbour code to call the StretchBlt function, which performs a bit-block transfer (bitblt)
+    *          from a source device context to a destination device context, stretching or compressing
+    *          the bitmap to fit the destination rectangle, if necessary. This is essential for zooming
+    *          the image captured from the screen.
+    *
+    * Parameters:
+    *   1: hDC - Handle to the destination device context.
+    *   2: nX - X-coordinate of the upper-left corner of the destination rectangle.
+    *   3: nY - Y-coordinate of the upper-left corner of the destination rectangle.
+    *   4: nWidth - Width of the destination rectangle.
+    *   5: nHeight - Height of the destination rectangle.
+    *   6: hDC - Handle to the source device context.
+    *   7: nX1 - X-coordinate of the upper-left corner of the source rectangle.
+    *   8: nY1 - Y-coordinate of the upper-left corner of the source rectangle.
+    *   9: nWidth1 - Width of the source rectangle.
+    *  10: nHeight1 - Height of the source rectangle.
+    *  11: nROP - Raster operation code (ROP code).  Specifies how the source color data is to be combined with the destination color data.
+    *
+    * Return Value:
+    *   Returns .T. (TRUE) if the function succeeds, .F. (FALSE) otherwise.
+    */
+   hb_retl( StretchBlt( ( HDC ) HB_PARNL( 1 ) ,
+                        hb_parni( 2 ) ,
+                        hb_parni( 3 ) ,
+                        hb_parni( 4 ) ,
+                        hb_parni( 5 ) ,
+                        ( HDC ) HB_PARNL( 6 ) ,
+                        hb_parni( 7 ) ,
+                        hb_parni( 8 ) ,
+                        hb_parni( 9 ) ,
+                        hb_parni( 10 ) ,
+                        ( DWORD ) hb_parnl( 11 )
+                        ) );
+}
+
+#pragma ENDDUMP

@@ -1,0 +1,16 @@
+# Compilation keys
+-prgflag=-w2 -es1
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all the (*.obj) this project
+-workdir=OBJ
+
+# Name of output EXE-file
+-oDemo2
+
+# List all (*.prg) this project
+demo2.prg
+demo_util.prg
+WaitWinAvi.prg

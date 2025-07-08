@@ -1,0 +1,120 @@
+<!DOCTYPE html><html><head><meta charset="windows-1251"><title>Harbour MiniGUI Errorlog File</title><style>body{font-family:sans-serif;background-color:#fff;font-size:100%;color:#000;padding:15px}.summary,details summary{color:#069;background:#ffc;border:1px solid #9af;padding:5px;margin:10px 5px;cursor:pointer}.link{display:block;background:#cfc;text-decoration:none}h1{font-family:sans-serif;font-size:150%;color:#00c;font-weight:700;background-color:#f0f0f0}.updated{font-family:sans-serif;color:#c00;font-size:110%}.normaltext{font-family:sans-serif;font-size:100%;color:#000;font-weight:400;text-transform:none;text-decoration:none}.large-select{font-size:125%;padding:8px;margin:5px;background:#cdf}</style><script>const filterBy=(r,e,l,n=null)=>{let t=r.map(l);t=t.reduce((e,t)=>(t in e||(e[t]=0),e[t]++,e),{}),t=Object.entries(t).reduce((e,[t,r])=>(e[t]=[t,r,`[${r}] ${t}`],e),{});const c=document.querySelector(e);Object.values(t).sort((e,t)=>t[1]-e[1]).forEach(([e,,t])=>{const r=document.createElement("option");r.value=e,r.innerText=t,c.appendChild(r)});c.addEventListener("change",e=>{n&&n(c);const t=e.target.value;r.forEach(e=>((e,t)=>{var r;"null"!==t?(r=l(e),e.style.display=r===t?null:"none",console.log(e,e.style.display)):e.style.display=null})(e,t))})};document.addEventListener("DOMContentLoaded",function(e){var t=[...document.querySelectorAll(".record")],r=t=>document.querySelector("#extra-panel").querySelectorAll("select").forEach(e=>t!==e&&(e.selectedIndex=0));filterBy(t,"#filterByDate",e=>e.querySelector(".date").innerText,r),filterBy(t,"#filterByStacktrace",e=>e.querySelector(".stacktrace")?.childNodes[0]?.data.trim(),r),filterBy(t,"#filterByError",e=>e.querySelector(".error").innerText.replace(/(\r\n|\n|\r)/gm,"").replace(/\s{2,}/g," ").trim(),r),document.querySelector("#extra-panel").style.display=null,console.log("DOMContentLoaded")})</script></head><body><h1 style="text-align:center">Harbour MiniGUI Errorlog File</h1><div id="extra-panel" style="display:none"><select autocomplete="off" id="filterByDate" class="large-select"><option selected="selected" disabled="disabled" value="null">Filter by Date</option><option value="null">All dates</option></select> <select autocomplete="off" id="filterByStacktrace" class="large-select"><option selected="selected" disabled="disabled" value="null">Filter by StackTrace</option><option value="null">All stacktraces</option></select> <select autocomplete="off" id="filterByError" class="large-select"><option selected="selected" disabled="disabled" value="null">Filter by Error</option><option value="null">All errors</option></select></div></body></html><HR>
+<div class="record">
+<p class="updated">
+Date: <span class="date">24-03-2023</span> Time: <span class="time">14:36:40</span><BR>
+Application: c:\minigui\SAMPLES\BASIC\ErrorLog\demo.exe<BR>
+User: ADMIN / Фвьшт<BR>
+Time from start: 0 days 0 hours 0 mins 3 secs<BR>
+<span class="error">Error MGERROR/0  Strongly Typed Variable Assignment: Data Type Mismatch. Program terminated.</span>
+</p>
+<details><summary>
+--------------------------------- Stack Trace ---------------------------------
+<br/></summary><span class="stacktrace">
+Called from MSGMINIGUIERROR(0)
+<BR>
+Called from _ISTYPED(0)
+<BR>
+Called from SOMEERROR(91) in module: demo.prg
+<BR>
+Called from (b)MAIN(42) in module: demo.prg
+<BR>
+Called from _DOCONTROLEVENTPROCEDURE(0)
+<BR>
+Called from EVENTS(0)
+<BR>
+Called from DOMESSAGELOOP(0)
+<BR>
+Called from _ACTIVATEWINDOW(0)
+<BR>
+Called from DOMETHOD(0)
+<BR>
+Called from MAIN(55) in module: demo.prg
+<BR>
+</span></details>
+<details><summary>
+----------------------------- System Information ------------------------------
+<br/></summary>
+Workstation name...: ADMIN<BR>
+Active user name...: Фвьшт<BR>
+Available memory...: 3327 MB<BR>
+Current disk.......: C<BR>
+Current directory..: minigui\SAMPLES\BASIC\ErrorLog<BR>
+Free disk space....: 80058 MB<BR>
+<BR>
+Operating system...: Windows 10 10.0<BR>
+MiniGUI version....: Harbour MiniGUI Extended Edition 23.02.4 (32-bit) ANSI<BR>
+Harbour version....: Harbour 3.2.0dev (r2303091450)<BR>
+Harbour built on...: Mar 10 2023 12:48:26<BR>
+C/C++ compiler.....: Borland C++ 5.8.2 (32-bit)<BR>
+Multi Threading....: NO<BR>
+VM Optimization....: YES<BR>
+<BR>
+Current Work Area..: 1<BR>
+</details>
+<details><summary>
+-------------------------- Environmental Information --------------------------
+<br/></summary>
+SET ALTERNATE......: OFF<BR>
+SET ALTFILE........:<BR>
+SET AUTOPEN........: ON<BR>
+SET AUTORDER.......: 0<BR>
+SET AUTOSHARE......: 0<BR>
+SET CENTURY........: ON<BR>
+SET COUNT..........: 0<BR>
+SET DATE FORMAT....: DD-MM-YYYY<BR>
+SET DBFLOCKSCHEME..: 0<BR>
+SET DEBUG..........: OFF<BR>
+SET DECIMALS.......: 2<BR>
+SET DEFAULT........:<BR>
+SET DEFEXTENSIONS..: ON<BR>
+SET DELETED........: OFF<BR>
+SET DELIMCHARS.....: ::<BR>
+SET DELIMETERS.....: ON<BR>
+SET DIRCASE........: 0<BR>
+SET DIRSEPARATOR...: \<BR>
+SET EOL............: 13<BR>
+SET EPOCH..........: 1900<BR>
+SET ERRORLOG.......: c:\minigui\SAMPLES\BASIC\ErrorLog\ErrorLog.htm<BR>
+SET EXACT..........: OFF<BR>
+SET EXCLUSIVE......: ON<BR>
+SET EXTRA..........: OFF<BR>
+SET EXTRAFILE......:<BR>
+SET FILECASE.......: 0<BR>
+SET FIXED..........: OFF<BR>
+SET FORCEOPT.......: OFF<BR>
+SET HARDCOMMIT.....: ON<BR>
+SET IDLEREPEAT.....: ON<BR>
+SET LANGUAGE.......: en<BR>
+SET MARGIN.........: 0<BR>
+SET MBLOCKSIZE.....: 64<BR>
+SET MFILEEXT.......:<BR>
+SET OPTIMIZE.......: ON<BR>
+SET PATH...........:<BR>
+SET PRINTER........: OFF<BR>
+SET PRINTFILE......: LPT1<BR>
+SET SOFTSEEK.......: OFF<BR>
+SET TRIMFILENAME...: .F.<BR>
+SET UNIQUE.........: OFF<BR>
+</details>
+<details><summary>
+-------------------------- Detailed Work Area Items ---------------------------
+<br/></summary>
+</details>
+<details><summary>
+--------------------- Internal Error Handling Information ---------------------
+<br/></summary>
+Subsystem Call ....: MGERROR<BR>
+System Code .......: 0<BR>
+Default Status ....: .F.<BR>
+Description .......: Strongly Typed Variable Assignment: Data Type Mismatch. Program terminated.<BR>
+Operation .........:<BR>
+Involved File .....:<BR>
+Dos Error Code ....: 0<BR>
+</details>
+<details><summary>
+------------------------- Available Memory Variables --------------------------
+<br/></summary>
+</details>
+<HR>
+</div>
+</BODY></HTML>

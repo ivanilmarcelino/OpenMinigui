@@ -1,0 +1,35 @@
+//
+// Resource    Resource         Resource
+// Name         Type            FileName
+//
+1MAIN_ICO        ICON           res\1MG.ico
+2MAIN_64         ICON           res\2MG64.ico
+
+Ok24             ICON           res\Ok24.ico
+Open24           ICON           res\Open24.ico
+Lang24           ICON           res\Lang24.ico
+Lists24          ICON           res\Lists24.ico
+Base24           ICON           res\Base24.ico
+Edit16           ICON           res\Edit16.ico
+
+Empty16          BITMAP         res\br_emp.bmp
+Pen16            BITMAP         res\br_pen.bmp
+Rec16            BITMAP         res\br_rec.bmp
+View16           BITMAP         res\br_view.bmp
+Boxes16          BITMAP         res\br_box.bmp
+Itog16           BITMAP         res\br_123.bmp
+Fltr16           BITMAP         res\br_fltr.bmp
+
+Mod16            BITMAP         res\Mod16.bmp
+
+// ------ WaitThreadIco.prg
+zmk01          ICON          res\zmk01.ico
+zmk02          ICON          res\zmk02.ico
+zmk03          ICON          res\zmk03.ico
+zmk04          ICON          res\zmk04.ico
+zmk05          ICON          res\zmk05.ico
+zmk06          ICON          res\zmk06.ico
+zmk07          ICON          res\zmk07.ico
+zmk08          ICON          res\zmk08.ico
+
+

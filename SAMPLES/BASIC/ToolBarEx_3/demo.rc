@@ -1,0 +1,16 @@
+//
+// Resource     Resource         Resource
+// Name          Type             FileName
+//            
+1MG              ICON            res\1MG.ico
+2MG_64           ICON            res\2MG64.ico
+
+iDelete48        ICON           res\iDelete48.ico
+iInsert48        ICON           res\iInsert48.ico
+iExit48          ICON           res\iExit48.ico
+iHelp48          ICON           res\iHelp48.ico
+iFind48          ICON           res\iFind48.ico
+iPrint48         ICON           res\iPrint48.ico
+
+TB_empty32       BITMAP         res\TB_empty32.bmp
+

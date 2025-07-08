@@ -1,0 +1,18 @@
+//
+// Resource      Resource       Resource
+// Name          Type           FileName
+//              
+1MG48            ICON           res\1MG.ico
+
+br_no            BITMAP         res\br_no.bmp
+br_view          BITMAP         res\br_view.bmp
+bCheckF24        BITMAP         res\b_check_Fx24.bmp
+bCheckT24        BITMAP         res\b_check_Tx24.bmp
+
+// demo2.prg
+iOk32            ICON            res\iOk32.ico
+iCancel32        ICON            res\iCancel32.ico
+bSearch32        BITMAP          res\bSearch32.bmp
+bSearch32x2      BITMAP          res\bSearch32x2.bmp
+bSearch32x3      BITMAP          res\bSearch32x3.bmp
+pSearch32        PNG             res\Search32.png

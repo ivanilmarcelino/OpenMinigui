@@ -1,0 +1,251 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 16 "Demo.prg"
+MEMVAR cFileIni
+MEMVAR oXmlDoc, lIniChanged, cId, cIdXML
+MEMVAR mVar
+
+
+FUNCTION Main
+
+   LOCAL oXmlNode, i, fname, action
+
+   PUBLIC cFileIni := "demo.xml"
+
+   cFileIni := hb_CurDrive() + ":\" + CurDir() + "\" + cFileIni
+
+   PRIVATE oXmlDoc, lIniChanged := .F., cId := "XML_", cIdXML
+
+   oXmlDoc := HXMLDoc():Read( cFileIni )
+
+   _DefineFont ( "font_0", "Tahoma", 9, .F., .F., .F., .F.,, .T., )
+
+
+
+
+
+
+
+ _DefineWindow ( "Form_1", "MiniGUI XML Demo", 0, 0, 640, 480, .F., .F., .F., .F., .F., {,}, {,},, {|| SaveOptions()} ,, , ,, , , .F. , .F. , .T. , "demo.ico" , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+   _BeginMessageBar( "StatusBar",, .F.,,, .F., .F., .F., .F., )
+      _DefineItemMessage( "STATUSITEM", , 0, 0, "[x] Harbour Power Ready!",,, 0,,,, .F.,,, iif( .F. == .T., 2, iif( .F. == .T., 1, 0 ) ) )
+   _EndMessageBar ()
+
+   _DefineMainMenu( )
+
+   _DefineMenuPopup( "&File" , , , )
+      _DefineMenuItem ( "New item" , {|| NewItem( 0 )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+      _DefineSeparator()
+      IF !Empty( oXmlDoc:aItems )
+         FOR i := 1 TO Len( oXmlDoc:aItems[ 1 ]:aItems )
+            oXmlNode := oXmlDoc:aItems[ 1 ]:aItems[ i ]
+            fname := oXmlNode:GetAttribute( "name" )
+            action := &( "{||NewItem(" + LTrim( Str( i, 2 ) ) + ")}" )
+            IF i == 1
+               cIdXML := cId + LTrim( Str( i ) )
+               _DefineMenuItem ( "" , {|| Nil } , cIdXML , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _ModifyMenuItem ( cIdXML, "Form_1", fname, action )
+            ELSE
+               _InsertMenuItem ( cIdXML, "Form_1", fname, action, cId + LTrim( Str( i ) ) )
+            ENDIF
+         NEXT
+         _DefineSeparator()
+      ENDIF
+      _DefineMenuItem ( "E&xit" , {|| DoMethod ( _HMG_SYSDATA[254] , "release" )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+   _EndMenuPopup()
+
+   _DefineMenuPopup( "&Info" , , , )
+      _DefineMenuItem ( "About" , {||  MsgInfo ( MiniGUIVersion(), "MiniGUI XML Demo", , .F. )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+   _EndMenuPopup()
+
+   _EndMenu()
+
+   _EndWindow ()
+
+   DoMethod ( "Form_1", "Center" )
+
+   _ActivateWindow ( {"Form_1"}, .F., , )
+
+RETURN NIL
+
+
+FUNCTION NewItem( nItem )
+
+   LOCAL aItemFont, aFontNew := { "" }
+   LOCAL oXmlNode, i, action, nId
+   LOCAL cName, cInfo, lResult := .F.
+
+   IF nItem > 0
+      oXmlNode := oXmlDoc:aItems[ 1 ]:aItems[ nItem ]
+      cName := oXmlNode:GetAttribute( "name" )
+      FOR i := 1 TO Len( oXmlNode:aItems )
+         IF ValType( oXmlNode:aItems[ i ] ) == "C"
+            cInfo := oXmlNode:aItems[ i ]
+         ELSEIF oXmlNode:aItems[ i ]:title == "font"
+            aItemFont := FontFromXML( oXmlNode:aItems[ i ] )
+         ENDIF
+      NEXT
+   ELSE
+      cName := ""
+      cInfo := ""
+      aItemFont := { "Times New Roman", 12, .F., .F., { 0, 0, 0 }, .F., .F., 0 }
+   ENDIF
+
+
+
+
+
+
+ _DefineModalWindow ( "Form_2", iif( nItem == 0, "New item", "Change item" ), 0, 0, 308, 178, "" , .T., .F., .F., {,}, {,},, , , , ,, , , , "Times New Roman" , 12 ,, , , , , , , , , , .F. , , .F. , .F. , , , , , , .F. )
+
+   _DefineLabel ( "Label_1",, 20, 24, "Name:",,, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .T. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+
+
+
+
+   _DefineTextBox( "Text_1",, 80, 20, 150, 26, cName,,,,, .F., .F., .F., .F.,,, {|| cName := GetProperty ( "Form_2", "Text_1" , "Value" )},, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+
+
+
+
+
+   _DefineButton ( "Button_0", , 240, 20, "Font", {|| aFontNew := GetFont( aItemFont[ 1 ], aItemFont[ 2 ], aItemFont[ 3 ],  aItemFont[ 4 ], aItemFont[ 5 ], aItemFont[ 6 ], aItemFont[ 7 ], aItemFont[ 8 ] )}, 44, 26,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+   _DefineLabel ( "Label_2",, 20, 54, "Info:",,, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .T. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+
+
+
+
+   _DefineTextBox( "Text_2",, 80, 50, 150, 26, cInfo,,,,, .F., .F., .F., .F.,,, {|| cInfo := GetProperty ( "Form_2", "Text_2" , "Value" )},, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+
+
+
+
+   _DefineButton ( "Button_1", , 20, 110, "Ok", {|| ( lResult := .T., DoMethod ( _HMG_SYSDATA[254] , "Release" ) )}, 100, 30,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+
+   _DefineButton ( "Button_2", , 184, 110, "Cancel", {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )}, 100, 30,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+   _DefineHotKey ( , 0 , 27 , {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )} )
+
+   _EndWindow ()
+
+   DoMethod ( "Form_2", "Center" )
+
+   DoMethod ( "Form_2", "Activate" )
+
+   IF lResult == .T. .AND. !Empty( cName ) .AND. !Empty( cInfo )
+      IF nItem == 0
+         oXmlNode := oXmlDoc:aItems[ 1 ]:Add( HXMLNode():New( "item" ) )
+         oXmlNode:SetAttribute( "name", Trim( cName ) )
+         oXmlNode:Add( Trim( cInfo ) )
+         oXMLNode:Add( Font2XML( iif( Empty( aFontNew[ 1 ] ), aItemFont, aFontNew ) ) )
+         lIniChanged := .T.
+
+         nId := Len( oXmlNode:aItems ) + 1
+         action := &( "{||NewItem(" + LTrim( Str( nId, 2 ) ) + ")}" )
+         _InsertMenuItem ( cIdXML, "Form_1", cName, action, cId + LTrim( Str( nId ) )  )
+      ELSE
+         IF oXmlNode:GetAttribute( "name" ) <> cName
+            oXmlNode:SetAttribute( "name", cName )
+            lIniChanged := .T.
+
+            action := &( "{||NewItem(" + LTrim( Str( nItem, 2 ) ) + ")}" )
+            _ModifyMenuItem ( cId + LTrim( Str( nItem ) ), "Form_1", cName, action )
+         ENDIF
+         FOR i := 1 TO Len( oXmlNode:aItems )
+            IF ValType( oXmlNode:aItems[ i ] ) == "C"
+               IF cInfo <> oXmlNode:aItems[ i ]
+                  oXmlNode:aItems[ i ] := cInfo
+                  lIniChanged := .T.
+               ENDIF
+            ELSEIF oXmlNode:aItems[ i ]:title == "font"
+               IF !Empty( aFontNew[ 1 ] )
+                  oXMLNode:aItems[ i ] := Font2XML( aFontNew )
+                  lIniChanged := .T.
+               ENDIF
+            ENDIF
+         NEXT
+      ENDIF
+   ENDIF
+
+RETURN NIL
+
+
+FUNCTION FontFromXML( oXmlNode )
+
+   LOCAL height  := oXmlNode:GetAttribute( "height" )
+   LOCAL bold := oXmlNode:GetAttribute( "bold" )
+   LOCAL italic := oXmlNode:GetAttribute( "italic" )
+   LOCAL under := oXmlNode:GetAttribute( "underline" )
+   LOCAL strike := oXmlNode:GetAttribute( "strikeout" )
+   LOCAL charset := oXmlNode:GetAttribute( "charset" )
+
+   IF height <> Nil
+      height := Val( height )
+   ENDIF
+
+   IF bold <> Nil
+      bold := ( bold == "1" )
+   ENDIF
+   IF italic <> Nil
+      italic := ( italic == "1" )
+   ENDIF
+   IF under <> Nil
+      under := ( under == "1" )
+   ENDIF
+   IF strike <> Nil
+      strike := ( strike == "1" )
+   ENDIF
+
+   bold := iif( bold == NIL, .F., bold ) ; italic := iif( italic == NIL, .F., italic ) ; under := iif( under == NIL, .F., under ) ; strike := iif( strike == NIL, .F., strike )
+
+   IF charset <> Nil
+      charset := Val( charset )
+   ENDIF
+
+RETURN { oXmlNode:GetAttribute( "name" ), height, bold, italic, { 0, 0, 0 }, under, strike, charset }
+
+
+FUNCTION Font2XML( aFont )
+
+   LOCAL aAttr := {}
+
+   AAdd( aAttr, { "name", aFont[ 1 ] } )
+   AAdd( aAttr, { "height", LTrim( Str( aFont[ 2 ] ) ) } )
+
+   IF aFont[ 3 ] == .T.
+      AAdd( aAttr, { "bold", LTrim( Str( 1 ) ) } )
+   ENDIF
+   IF aFont[ 4 ] == .T.
+      AAdd( aAttr, { "italic", LTrim( Str( 1 ) ) } )
+   ENDIF
+   IF aFont[ 6 ] == .T.
+      AAdd( aAttr, { "underline", LTrim( Str( 1 ) ) } )
+   ENDIF
+   IF aFont[ 7 ] == .T.
+      AAdd( aAttr, { "strikeout", LTrim( Str( 1 ) ) } )
+   ENDIF
+   IF aFont[ 8 ] <> 0
+      AAdd( aAttr, { "charset", LTrim( Str( aFont[ 8 ] ) ) } )
+   ENDIF
+
+RETURN HXMLNode():New( "font", 1, aAttr )
+
+
+FUNCTION SaveOptions()
+
+   IF lIniChanged
+      oXmlDoc:Save( cFileIni )
+   ENDIF
+   dbCloseAll() ; dbSelectArea( "1" ) ; __SetFormat( NIL )
+
+RETURN NIL

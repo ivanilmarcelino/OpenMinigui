@@ -1,0 +1,118 @@
+Manual for AlertTsb Function
+
+Purpose
+
+The AlertTsb function is designed to display a custom alert dialog with various configuration options such as type, icon, table content, and buttons. It provides a flexible way to handle user interactions through a graphical interface in MiniGUI applications.
+
+---
+
+Syntax
+
+AlertTsb(cType, nIcoSize, aXDim, cTitle, aButton, oWin, o1Brw, bInitForm)
+
+---
+
+Parameters
+
+1. cType (String):
+   - Specifies the type of alert window (e.g., INFO, STOP, EXCLAM, YESNO, etc.).
+   - Determines the icon and styling of the dialog.
+   - Default: "".
+
+2. nIcoSize (Numeric):
+   - Defines the size of the icon displayed in the dialog.
+   - Default: 128.
+
+3. aXDim (Array):
+   - A multidimensional array representing the table's content displayed in the alert.
+   - Each row is a subarray.
+   - Default: An error message if not provided.
+
+4. cTitle (String):
+   - The title of the alert window.
+   - Default: "ATTENTION!" or localized equivalent.
+
+5. aButton (Array):
+   - An array for custom button texts or parameters.
+   - If used, buttons will display custom labels.
+   - Default: {}.
+
+6. oWin (Object):
+   - Parent window or context object that defines styling for the alert (e.g., colors, button properties).
+   - Default: The global oHmgData() object.
+
+7. o1Brw (Object):
+   - Represents the data source for the table in the alert window.
+   - Default: The global oHmgData() object.
+
+8. bInitForm (Block/Code Block):
+   - Optional block of code executed during the initialization of the alert.
+   - Default: {|| NIL}.
+
+---
+
+Return Value
+
+The function returns an array aRet containing details about the user's interaction:
+1. Button index clicked.
+2. Button name.
+3. Table content (if applicable).
+4. Row number in table.
+5. Key or event data.
+
+---
+
+Behavior
+
+- Dynamic Styling: Changes the appearance of the dialog based on cType.
+  - Examples:
+    - "INFO": Blue-themed dialog with informational icon.
+    - "STOP": Red-themed dialog for critical errors.
+    - "YESNO": Dialog with Yes/No buttons for decision-making.
+
+- Table Support: Displays data in a table format from the aXDim array.
+
+- Custom Buttons: Allows defining buttons dynamically through xParam.
+
+- Localization: Adjusts text and labels based on application language settings.
+
+---
+
+Example Usage
+
+1. Basic Alert:
+
+   AlertTsb("INFO", 128, {{"Title", "Message Content"}}, "Information")
+
+2. Alert with Custom Buttons:
+
+   AlertTsb("YESNO", 128, {{"Row1", "Data1"}, {"Row2", "Data2"}}, "Confirm Action", {"Yes", "No"})
+
+3. Custom Initialization:
+
+   AlertTsb("EXCLAM", 128, {{"Warning!", "Please check your input"}}, "Warning", {}, , , {|| MsgInfo("Init Code Executed")})
+
+---
+
+Notes
+
+- Ensure aXDim is properly structured as a multidimensional array for table content. Errors will be thrown if the structure is invalid.
+- If no cType is specified, a default icon and style will be used.
+- Always verify that custom button arrays (xParam) match the expected dialog behavior.
+
+---
+
+Error Handling
+
+- The function validates critical inputs like aXDim and xParam. If mismatched sizes or invalid types are detected, an error message is displayed.
+
+---
+
+Dependencies
+
+- MiniGUI library.
+- Custom utility functions like GetFontParam, ProcNL, TsbParam, and _TBrowse.
+
+---
+
+By using AlertTsb, developers can create user-friendly and visually appealing alert dialogs tailored to their application's needs.

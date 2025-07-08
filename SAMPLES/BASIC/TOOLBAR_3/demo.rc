@@ -1,0 +1,9 @@
+
+new      BITMAP "res/new.bmp"
+open     BITMAP "res/open.bmp"
+check    BITMAP "res/check.bmp"
+search   BITMAP "res/search.bmp"
+print    BITMAP "res/print.bmp"
+internet BITMAP "res/internet.bmp"
+keys     BITMAP "res/keys.bmp"
+quit     BITMAP "res/quit.bmp"

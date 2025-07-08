@@ -1,0 +1,21 @@
+#
+# TsbViewer.hbp
+#
+
+-hblib
+
+-inc
+-workdir=c:/minigui/lib/hbmk/obj
+
+-oc:/minigui/lib/TsbViewer
+
+-Ic:/minigui/include
+
+-warn=max
+
+-w2 -es2 -q0
+
+TsbViewer.prg
+TsbViewLang.prg
+TsbViewMenu.prg
+TsbViewMisc.prg

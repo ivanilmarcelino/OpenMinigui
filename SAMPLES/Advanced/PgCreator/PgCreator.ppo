@@ -1,0 +1,1005 @@
+
+
+
+
+
+
+
+ANNOUNCE RDDSYS
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 48 "S:\Mega\Dev\32\BCC\Minigui\include\i_propgrid.ch"
+EXTERNAL PROPGRIDONCUSTOMDRAW
+#line 50 "PgCreator.prg"
+MEMVAR clCategory, nDefId, FormTest, PG_test, Form1, PGrid1
+
+
+Function main()
+
+   PUBLIC clCategory := "Init Category (ROOT)", nDefId := 100
+   PUBLIC FormTest := "FormTest" , PG_test := "PG_Test"
+   PUBLIC Form1 := "Form_1" , PGrid1 := "PropGrid_1"
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Form_1", "Property Grid Creator Ver 1.1", 50, 100, 750, 510, .F., .T., .T., .F., .F., {,}, {,},, ,, , ,, , , .F. , .F. , .T. , "PgGen.ico" , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+      _DefineMainMenu( )
+         _DefineMenuPopup( "&File" , , , )
+            _DefineMenuItem ( "Exit" , {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+         _EndMenuPopup()
+         _DefineMenuPopup( "&Test" , , , )
+            _DefineMenuItem ( "Get Value selected Item" , {|| DisplPGValue("PropGrid_1","Form_1",0)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+            _DefineMenuItem ( "Get Property Info selected Item" , {|| DisplPGInfo("PropGrid_1","Form_1",0)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+         _EndMenuPopup()
+          _DefineMenuPopup( "&Info" , , , )
+            _DefineMenuItem ( "About..." , {|| About()} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+         _EndMenuPopup()
+
+      _EndMenu()
+
+
+
+
+      _DefineButton ( "btn_20", , 30, 20, "Create Property", {|| CreateTestPG("Form_1" ,"PropGrid_1",FormTest, PG_Test)}, 120, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+      _DefineButton ( "btn_21", , 200, 20, "Add Item", {|| AddItemPG( "Form_1", "PropGrid_1", FormTest, PG_Test)}, 120, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+
+
+
+      _DefinePropGrid ( "PropGrid_1" , , 55 , 10 , 350 , 380 , ,"",.F., , , , , ,,.F., ,, .F., .F., .F., .F., .F., {240,240,240}, {0,0,0}, 10,, 180 ,, .F., .T. ,, {||  ChdItem("PropGrid_1","Form_1")}, {" Name","Value"}, .T., .F., .F.,, .F.,,)
+
+      _DefinePropertyItem ( "category", "Main PG Property", "", "", .T.,.F., 1000 )
+         _DefinePropertyItem ( "category", "Header", "", "", .T.,.F., 1010 )
+            _DefinePropertyItem ( "check", "Header", "Excluded", "Excluded;Included", .F., .F., 100, "Check to include Header to Property Grid",, '"Excluded"' )
+            _DefinePropertyItem ( "string", "Header Name", "Property Name",, .T., .F., 110, "Insert Header Name",, '"Property Name"' )
+            _DefinePropertyItem ( "string", "Header Value", "Value",, .T., .F., 120, "Insert Header Name for Value",, '"Value"' )
+         _EndCategory()
+         _DefinePropertyItem ( "size", "Control Position", "(50,40)", "Row; Col", .F., .F., 130, "Insert Positon for Property Control",, '"(50,40)"' )
+         _DefinePropertyItem ( "size", "Control Size", "(300,400)", "Width; Height", .F., .F., 140, "Insert Size for Property Control",, '"(300,400)"' )
+         _DefinePropertyItem ( "category", "Item", "", "", .T.,.F., 1020 )
+            _DefinePropertyItem ( "integer", "Indent", 20, "", .F., .F., 150, "Insert value for Indent",, "20" )
+            _DefinePropertyItem ( "integer", "Width of Data", 150, "", .F., .F., 160, "Insert column size for Value",, "150" )
+            _DefinePropertyItem ( "integer", "Height of Item", 20, "", .F., .F., 170, "Insert height of item",, "20" )
+            _DefinePropertyItem ( "check", "Item Expand", "Included", "Excluded;Included", .F., .F., 240, "Check this option to expand a Category at start",, '"Included"' )
+            _DefinePropertyItem ( "check", "Single Expand", "Excluded", "Excluded;Included", .F., .F., 230, "Check this option to expand only one Category",, '"Excluded"' )
+         _EndCategory()
+         _DefinePropertyItem ( "font", "Font", "Arial, 8, Italic", "Arial; 8; false; true; false; false", .F., .F., 200, "Basic font for application",, '"Arial, 8, Italic"' )
+         _DefinePropertyItem ( "color", "Fontcolor", {   0 ,   0 ,   0 }, "0;0;0", .F., .F., 180, "Color for Font, choose from palette of colours",, "{   0 ,   0 ,   0 }" )
+         _DefinePropertyItem ( "color", "Backcolor", {240,240,240}, "208;205;188", .F., .F., 190, "Colour for background, choose from palette of colours",, "{240,240,240}" )
+         _DefinePropertyItem ( "check", "Info", "Hide", "Hide;Show", .F., .F., 220, "Check this option to show window with Info",, '"Hide"' )
+      _EndCategory()
+      _DefinePropertyItem ( "category", "INIT Category", "", "", .T.,.F., 1030 )
+         _DefinePropertyItem ( "string", "Init Category (ROOT)", "Name of Init Category",, .F., .F., 210, "Insert name of Init Category to create Property Grid",, '"Name of Init Category"' )
+      _EndCategory()
+
+      _DefinePropertyItem ( "category", "Item Property", "", "", .T.,.F., 1100 )
+         _DefinePropertyItem ( "list", "CATEGORY", "Name of Init Category", clCategory, .F., .F., 500, "Insert a parent Category for Item",, '"Name of Init Category"' )
+         _DefinePropertyItem ( "enum", "Type", "string", "category;string;numeric;double;syscolor;color;logic;date;font;array;enum;flag;sysinfo;image;check;size;file;folder;list;userfun", .F., .F., 510, "Select type of Item",, '"string"' )
+         _DefinePropertyItem ( "string", "Name", "",, .F., .F., 520, "Insert a Name for Item",, '""' )
+         _DefinePropertyItem ( "userfun", "Value", "", "{|x| DefFunData(PGrid1,Form1,.f.,x)}", .F., .F., 530, "Insert a Value for Item, use appropriate function mit help of button.",, '""' )
+         _DefinePropertyItem ( "userfun", "Data", "", "{|x| DefFunData(PGrid1,Form1,.t.,x)}", .F., .F., 540, "Insert adequate data to type of Item, use appropriate function mit help of button.",, '""' )
+         _DefinePropertyItem ( "check", "Disabled", "Enabled", "Enabled;Disabled", .F., .F., 550, "Check to disable this Item",, '"Enabled"' )
+         _DefinePropertyItem ( "check", "Disable Edit", "Disabled", "Enabled;Disabled", .F., .F., 560, "Check to disable this Item",, '"Disabled"' )
+         _DefinePropertyItem ( "integer", "Id", nDefId, "", .F., .F., 570, "Automatically or manually invent new ID Numbers for new Item",, "nDefId" )
+         _DefinePropertyItem ( "string", "Info", "",, .F., .F., 580, "Inser a Information for Item",, '""' )
+         _DefinePropertyItem ( "string", "Varable Name ", "",, .F., .F., 590, "Inser a Variable Name for Value to saved in file *.mem",, '""' )
+      _EndCategory()
+
+   _EndPropGrid()
+
+   ExpandCategPG("Form_1","PropGrid_1","Main Property",1)
+
+   _EndWindow ()
+
+   SetProperty ( "Form_1", "Btn_21" , "Enabled" , .F. )
+
+   _ActivateWindow ( {"Form_1"}, .F., , )
+
+Return Nil
+
+
+FUNCTION ChdItem(PGname,cForm)
+
+   LOCAL aValue, nId, xValue, cValue, ItType
+
+   aValue:=GetPropGridValue ( cForm, PGName,, .T., 0 )
+   IF valtype(aValue)=="A"
+      nId := aValue[8]
+      xValue := ValueTran(aValue[1], aValue[7], aValue[2])
+      DO CASE
+      CASE nId == 100
+         IF xValue
+            EnablePropGridItem ( cForm, PGName, 110, .T. )
+            EnablePropGridItem ( cForm, PGName, 120, .T. )
+         ELSE
+            EnablePropGridItem ( cForm, PGName, 110, .F. )
+            EnablePropGridItem ( cForm, PGName, 120, .F. )
+         endif
+      CASE nId == 210
+         xValue := aValue[2 ]
+         IF !Empty(xValue)
+
+            SetPropGridValue ( cForm, PGName, 500, xValue, xValue )
+            SetProperty ( "Form_1", "Btn_20" , "Enabled" , .T. )
+         endif
+
+      CASE nId == 510
+         ItType := PgIdentType(xValue)
+
+         EnablePropGridItem ( cForm, PGName, 530, .T. )
+         EnablePropGridItem ( cForm, PGName, 540, .T. )
+         EnablePropGridItem ( cForm, PGName, 550, .T. )
+         EnablePropGridItem ( cForm, PGName, 590, .T. )
+         SetPropGridValue ( cForm, PGName, 520, "", )
+         RedrawPropGridItem ( cForm, PGName, 520 )
+         SetPropGridValue ( cForm, PGName, 530, "", )
+         RedrawPropGridItem ( cForm, PGName, 530 )
+         SetPropGridValue ( cForm, PGName, 540, "", )
+         RedrawPropGridItem ( cForm, PGName, 540 )
+         SetPropGridValue ( cForm, PGName, 580, "", )
+         RedrawPropGridItem ( cForm, PGName, 580 )
+         SetPropGridValue ( cForm, PGName, 590, "", )
+         RedrawPropGridItem ( cForm, PGName, 590 )
+         SetPropGridValue ( cForm, PGName, 550, "Enabled", )
+         RedrawPropGridItem ( cForm, PGName, 550 )
+
+         DO CASE
+         CASE ItType == 1
+            EnablePropGridItem ( cForm, PGName, 530, .F. )
+            EnablePropGridItem ( cForm, PGName, 540, .F. )
+            EnablePropGridItem ( cForm, PGName, 550, .F. )
+            EnablePropGridItem ( cForm, PGName, 590, .F. )
+
+
+         CASE ItType == 2 .OR. ItType == 3  .OR. ItType == 4 .OR. ItType == 7 .OR. ItType == 8  .OR. ItType == 5
+            EnablePropGridItem ( cForm, PGName, 540, .F. )
+         CASE ItType == 16
+            EnablePropGridItem ( cForm, PGName, 530, .F. )
+         ENDCASE
+      CASE nId == 520
+         cValue:=GetPropGridValue (cForm, PGName, 520, .F., )
+         IF !Empty(cValue)
+            SetProperty ( "Form_1", "Btn_21" , "Enabled" , .T. )
+         ENDIF
+      ENDCASE
+   endif
+RETURN nil
+
+
+Function CreateTestPG(FormName,ControlName,FormTest, PG_Test)
+
+   LOCAL lHD, cHdName, cHdValue, xPos, yPos, xSize, ySize, aFontColor, aBackColor, nIndent, nDataWidth
+   LOCAL cInitCateg, aFont, nItemHeight, lPgExp, lPgSinExp, lInfo
+
+   cHdName:=GetPropGridValue (FormName, ControlName, 110, .F., )
+   cHdValue:=GetPropGridValue (FormName, ControlName, 120, .F., )
+   xPos:=GetPropGridValue (FormName, ControlName, 130, .F., 1 )
+   yPos:=GetPropGridValue (FormName, ControlName, 130, .F., 2 )
+   xSize:=GetPropGridValue (FormName, ControlName, 140, .F., 1 )
+   ySize:=GetPropGridValue (FormName, ControlName, 140, .F., 2 )
+   nIndent:=GetPropGridValue (FormName, ControlName, 150, .F., )
+   nDataWidth:=GetPropGridValue (FormName, ControlName, 160, .F., )
+   nItemHeight:=GetPropGridValue (FormName, ControlName, 170, .F., )
+   lPgExp:=GetPropGridValue (FormName, ControlName, 240, .F., )
+   lPgSinExp:=GetPropGridValue (FormName, ControlName, 230, .F., )
+   lInfo:=GetPropGridValue (FormName, ControlName, 220, .F., )
+
+
+   aFontColor:=GetPropGridValue (FormName, ControlName, 180, .F., )
+   aBackColor:=GetPropGridValue (FormName, ControlName, 190, .F., )
+   aFont:=GetPropGridValue (FormName, ControlName, 200, .F., )
+
+   cInitCateg:=GetPropGridValue (FormName, ControlName, 210, .F., )
+
+
+   SetProperty ( "Form_1", "Btn_20" , "Enabled" , .F. )
+
+
+
+
+
+
+
+ _DefineWindow ( FormTest, "PropertyGrid Test", 130 + xSize +xPos, 130, xSize +xPos +200, ySize +100, .F., .F., .F., .F., .F., {,}, {,},, {|| ReleaseTest()} ,, , ,, , , .F. , .F. , .F. , , .T. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+
+
+      _DefinePropGrid ( PG_Test, FormTest, yPos,xPos , xSize, ySize, , , .F., ,  aFont[1], aFont[2], , , ,.F., , , aFont[3], aFont[4], aFont[6], aFont[7], lPgExp, aBackColor, aFontColor, nIndent, nItemHeight, nDataWidth, 0, .F., lInfo, , , {cHdName,cHdValue}, lPgExp )
+
+      _DefinePropertyItem ( "category", cInitCateg, "", "", .T.,.F., nDefId )
+
+      _EndCategory()
+      nDefId += 10
+
+
+      SetPropGridValue ( FormName, ControlName, 570, nDefId, )
+
+   _EndPropGrid()
+
+      _BeginFrame ( "Frame_1",, 10, 380, 140, 120 , "Property from:" , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+
+
+      _DefineButton ( "btn_1", , 400, 30, "File Txt", {|| LoadPropertyFile(FormTest,PG_Test,"PgTest.txt",FormName, ControlName)}, 100, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+      _DefineButton ( "btn_2", , 400, 60, "File Xml", {|| LoadPropertyFile(FormTest,PG_Test,"PgTest.xml",FormName, ControlName)}, 100, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+      _DefineButton ( "btn_3", , 400, 90, "File Ini", {|| LoadPropertyFile(FormTest,PG_Test,"PgTest.ini",FormName, ControlName)}, 100, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+      _BeginFrame ( "Frame_2",, 160, 380, 140, 130 , "Property save to:" , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+
+
+
+      _DefineButton ( "btn_5", , 400, 180, "File Txt", {|| SaveToFile(FormTest,PG_Test,"PgTest.txt",2)}, 100, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+      _DefineButton ( "btn_6", , 400, 215, "File Xml", {|| SaveToFile(FormTest,PG_Test,"PgTest.xml",1)}, 100, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+      _DefineButton ( "btn_7", , 400, 250, "File Ini", {|| SaveToFile(FormTest,PG_Test,"PgTest.ini",3)}, 100, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+   _EndWindow ()
+
+   _ActivateWindow ( {FormTest}, .F., , )
+
+Return nil
+
+
+FUNCTION ReleaseTest()
+
+
+   SetProperty ( "Form_1", "Btn_20" , "Enabled" , .T. )
+   SetProperty ( "Form_1", "Btn_21" , "Enabled" , .F. )
+
+RETURN Nil
+
+
+Function AddItemPG( FormName, ControlName, FormTest, PG_Test)
+
+
+LOCAL cCateg, cType,cName, cValue, cData, lDisab, lDisEd, nId, cInfo, cVarName, aValue,aData
+
+   cCateg:=GetPropGridValue (FormName, ControlName, 500, .F., )
+   cType:=GetPropGridValue (FormName, ControlName, 510, .F., )
+   cName:=GetPropGridValue (FormName, ControlName, 520, .F., )
+   cValue:=GetPropGridValue (FormName, ControlName, 530, .F., )
+   cData:=GetPropGridValue (FormName, ControlName, 540, .F., )
+   lDisab:=GetPropGridValue (FormName, ControlName, 550, .F., )
+   lDisEd:=GetPropGridValue (FormName, ControlName, 550, .F., )
+   nId:=GetPropGridValue (FormName, ControlName, 570, .F., )
+   cInfo:=GetPropGridValue (FormName, ControlName, 580, .F., )
+   cVarName:=GetPropGridValue (FormName, ControlName, 590, .F., )
+
+   IF cType == "category"
+
+
+
+
+
+      _AddPropertyCategory (PG_Test , FormTest, cCateg, cName, nId, cInfo )
+
+      aValue:=GetPropGridValue ( FormTest, PG_Test, nId, .T., 0 )
+
+      IF ValType(aValue) =="A"
+         IF aValue[1] == cName
+            aValue:=GetPropGridValue ( FormName, ControlName, 500, .T., 0 )
+            aData :=PgIdentData(aValue[2])
+            IF AScan(aData,cName)==0
+
+
+
+               SetPropGridValue ( FormName, ControlName, 500, cName, aValue[2]+";"+cName )
+            endif
+
+
+
+            SetPropGridValue ( FormName, ControlName, 570, nId +10, )
+         endif
+      endif
+
+   else
+
+      _AddPropertyItem  (PG_Test , FormTest, cCateg, cType, cName, cValue, cData, lDisab, lDisEd, nId ,cInfo, cVarName, , 1 )
+
+      SetPropGridValue ( FormName, ControlName, 570, nId +10, )
+
+   endif
+
+Return nil
+
+
+FUNCTION DefFunData( PGname, cForm, lData, cData )
+
+   LOCAL cType, ItType, cInputPrompt, cDataNew, xData
+   cData := iif( cData == NIL, "Default Data", cData )
+   cType:=GetPropGridValue (cForm, PGName, 510, .F., )
+   ItType := PgIdentType(cType)
+
+   cInputPrompt := IF(lData, "Insert Data for Item", "Insert Value for Item" )
+   IF ItType  == 1
+      cData := InputPgData ("Insert a new Category" , "Item Type: "+cType , cData, ItType )
+   ELSE
+      IF lData
+         xData:=GetPropGridValue (cForm, PGName, 530, .F., )
+         IF Empty(cData)
+            IF ItType == 14
+               cData := "*.bmp"
+            elseif ItType == 17
+               cData := "*.txt, *.*"
+            else
+               cData := xData
+            endif
+         ENDIF
+      else
+          xData:=GetPropGridValue (cForm, PGName, 540, .F., )
+         IF Empty(cData)
+            IF ItType == 16
+               cData := "(  )"
+            else
+               cData := xData
+            endif
+         ENDIF
+      endif
+
+
+
+      IF ItType == 10  .OR.( ItType == 11 .AND. lData) .OR. (ItType == 14 .AND. lData) .OR.  ( ItType == 12 .AND. lData) .OR. ( ItType == 19 .AND. lData ).OR. ( ItType == 17 .AND. lData ) .OR. ( ItType == 16 .AND. lData)
+         IF lData
+            cData := CHARREPL (";", cData, ",")
+         endif
+         cDataNew :=ArrayDlg( cData, cForm  )
+         cData := IF(!Empty( cDataNew ),cdataNew, cData )
+         IF lData
+            cData := CHARREPL (",", cData, ";")
+         endif
+         IF ItType == 16 .AND. !Empty(cData)
+            EnablePropGridItem ( cForm, PGName, 530, .T. )
+         endif
+      ELSE
+
+         cData :=InputPgData ( cInputPrompt , "Item Type: "+cType , cData, xData, ItType,lData )
+      endif
+   endif
+
+RETURN cData
+
+
+Function InputPgData ( cInputPrompt , cDialogCaption , cDefValue, cDefData, ItType,lData   )
+
+   LOCAL RetVal := "", bRetVal, aData, aFltr
+   LOCAL n, BmpW, BmpH, aColorName, aSysColor, nPos
+
+   IF cInputPrompt == NIL ; cInputPrompt := "" ; END
+   IF cDialogCaption == NIL ; cDialogCaption := "" ; END
+   IF cDefValue == NIL ; cDefValue := "" ; END
+
+
+
+
+
+
+
+
+
+
+ _DefineModalWindow ( "_InputPG", cDialogCaption, 0, 0, 250, 115 +  GetTitleHeight(), "" , .T., .F., .F., {,}, {,},, , , , ,, , , , "Arial" , 10 ,, , , , , , , , , , .F. , , .F. , .F. , , , , , , .F. )
+
+
+
+         _DefineLabel ( "_Label",, 10, 07, cInputPrompt, 280,, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+         bRetVal := {|| GetProperty ( "_InputPG", "_DataBox" , "Value" ) }
+         _DefineHotKey ( , 0 , 27 , {|| ( _HMG_SYSDATA[237] := .T. , DoMethod ( "_InputPG", "Release" ) )} )
+
+         DO CASE
+
+         CASE ItType == 1 .OR. ItType == 2 .OR. ItType == 0 .OR.  ItType == 3 .OR. ItType == 4
+
+            IF ItType == 3 .OR. ItType == 4
+               bRetVal := {|| AllTrim(Str(GetProperty ( "_InputPG", "_DataBox" , "Value" ) ))}
+
+
+
+               _DefineTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue,,,,, .F., .F., .T., .F.,,,, {|| ( _HMG_SYSDATA[237] := .F. , RetVal := Eval(bRetVal) , DoMethod ( "_InputPG", "Release" ) )}, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+            else
+
+
+               _DefineTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue,,,,, .F., .F., .F., .F.,,,, {|| ( _HMG_SYSDATA[237] := .F. , RetVal := Eval(bRetVal), DoMethod ( "_InputPG", "Release" ) )}, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+            endif
+
+         CASE ItType == 7
+
+            bRetVal := {|| IF(GetProperty ( "_InputPG", "_DataBox" , "Value" ) ==1,"true","false") }
+
+
+
+            _DefineRadioGroup ( "_DataBox",, 10, 30, {"true","false"}, 1 , , , , {||  (  RetVal := Eval(bRetVal) )} , , ,, .F., .F., .F., .F., .F., .F. , , , .F. , .T. , .F. , , .F. , , , , )
+
+         CASE ItType == 9
+
+            IF lData
+               IF Empty(cDefValue)
+                  cDefValue := "Arial;8;false;false;false"
+               ELSE
+                  cDefValue := CHARREPL (";", cDefValue, ",")
+                  aData := PgIdentData(cDefValue,9,,",")
+                  cDefValue:= AttrTran(aData,"A")
+               ENDIF
+            else
+               IF Empty(cDefValue)
+                  cDefValue := "Arial,8"
+               ELSE
+                  aData := PgIdentData(cDefValue,9,,",")
+                  cDefValue := aFont2Str(aData)
+               ENDIF
+            ENDIF
+
+
+
+
+            _DefineBtnTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue, {|| SetProperty ( "_InputPG", "_DataBox" , "Value" , InsertFont( cDefValue ,lData) ) },,,,,,,, .F., .F., .F., .F.,,,,, .F.,, .F., .F., .F., .F.,,,, .F., .F.,, .F., .F.,, !.F., )
+
+         CASE ItType == 6
+
+            IF lData
+               IF Empty(cDefValue)
+                  cDefValue := "0;0;0"
+               ELSE
+                  cDefValue := CHARREPL (";", cDefValue, ",")
+                  aData := PgIdentData(cDefValue,6,,",")
+                  cDefValue:= AttrTran(aData,"A")
+               ENDIF
+            else
+               IF Empty(cDefValue)
+                  cDefValue := "{0,0,0)"
+               ELSE
+                  aData := PgIdentData(cDefValue,6,,",")
+                  cDefValue := aCol2Str(aData)
+               ENDIF
+            ENDIF
+
+
+
+            _DefineBtnTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue, {|| SetProperty ( "_InputPG", "_DataBox" , "Value" , InsertColor( cDefValue, lData) ) },,,,,,,, .F., .F., .F., .F.,,,,, .F.,, .F., .F., .F., .F.,,,, .F., .F.,, .F., .F.,, !.F., )
+
+         CASE ItType == 5
+
+            BmpW := 28
+            BmpH := 20
+            aColorName := {}
+            bRetVal := {|| nPos:= GetProperty ( "_InputPG", "_DataBox" , "Value" ), IF(nPos > 0, aColorName[nPos],cDefValue)  }
+            aSysColor := PgIdentColor(1)
+            AEval(aSysColor, {|x| AAdd(aColorName, x[2]) })
+            nPos := IF(Empty(cDefValue),1,AScan(aColorName, cDefValue))
+
+
+
+            _DefineImageList ( "Imagelst_1" , , BmpW, BmpH ,{} ,, , , .F. )
+
+            FOR n:=1 TO Len(aSysColor)
+               HMG_SetSysColorBtm(aSysColor[n,1], BmpW, BmpH)
+               HMG_SetSysColorBtm(aSysColor[n,1], BmpW, BmpH)
+               HMG_SetSysColorBtm(aSysColor[n,1], BmpW, BmpH)
+            NEXT
+
+
+
+
+
+
+
+
+            _DefineComboEx ( "_DataBox",, 10, 30, 220, aColorName , nPos,,,,, 100,,, {|| Eval( bRetVal)},, .F., .F., .F. , .F., .F., .F., .F. , , , .F. , , .F. , "",,, , , ,, "Imagelst_1",,, .F. , , )
+         CASE ItType == 11 .OR. ItType == 19
+
+
+
+            _DefineTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue,,,,, .F., .F., .F., .F.,,,, {|| ( _HMG_SYSDATA[237] := .F. , RetVal := Eval(bRetVal), DoMethod ( "_InputPG", "Release" ) )}, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+         CASE ItType == 8
+
+            bRetVal := {|| DToC( GetProperty ( "_InputPG", "_DataBox" , "Value" ))  }
+            cDefValue := IF(Empty(cDefValue),CToD(""), CToD(cDefValue))
+
+
+
+            _DefineDatePick ( "_DataBox" , , 10 , 30 , 220 , , cDefValue , , , , , , , .F. , .F. , .F. , , .F., .F., .F., .F., .F., .F. , , {|| ( _HMG_SYSDATA[237] := .F. , RetVal := Eval(bRetVal), DoMethod ( "_InputPG", "Release" ) )},,,,,,, , ,, )
+
+         CASE ItType == 14
+
+               aFltr := PgIdentData( cDefData,14 )
+
+
+
+               _DefineBtnTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue, {|| SetProperty ( "_InputPG", "_DataBox" , "Value" , GetFile ( aFltr , "Image File", cDefValue , .F. , .T.) )  },,,,,,,, .F., .F., .F., .F.,,,,, .F.,, .F., .F., .F., .F.,,,, .F., .F.,, .F., .F.,, !.F., )
+
+         CASE ItType == 13
+
+            IF lData
+               aData:= {"SYSTEM","USERHOME","USERID", "USERNAME"}
+               bRetVal := {|| nPos:= GetProperty ( "_InputPG", "_DataBox" , "Value" ), IF(nPos > 0, aData[nPos],cDefValue)  }
+               nPos := IF(Empty(cDefValue),1,AScan(aData, cDefValue))
+
+
+
+
+
+               _DefineComboEx ( "_DataBox",, 10, 30, 220, aData , nPos,,,,, 100,,, {|| Eval( bRetVal)},, .F., .F., .F. , .F., .F., .F., .F. , , , .F. , , .F. , "",,, , , ,,,,, .F. , , )
+            ELSE
+               IF cDefData == "USERHOME"
+                  cDefValue := IF(cDefValue == "USERHOME","",cDefValue )
+
+
+
+                  _DefineBtnTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue, {|| SetProperty ( "_InputPG", "_DataBox" , "Value" , GetMyDocumentsFolder ( ) ) },,,,,,,, .F., .F., .F., .F.,,,,, .F.,, .F., .F., .F., .F.,,,, .F., .F.,, .F., .F.,, !.F., )
+               ELSE
+                  bRetVal := {|| ""  }
+
+
+
+                  _DefineLabel ( "_DataBox",, 10, 25, "Value for Item Data of type"+cDefData+ " does not be required", 220, 33, , , .T., .F. , .F. , .F. , .F. , .F. ,, {   0 ,   0 , 255 },,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+               ENDIF
+            ENDIF
+
+         CASE ItType == 12
+
+            bRetVal := {|| "["+GetProperty ( "_InputPG", "_DataBox" , "Value" )+"]" }
+
+
+            _DefineTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue,,,,, .F., .F., .F., .F.,,,, {|| ( _HMG_SYSDATA[237] := .F. , RetVal := Eval(bRetVal), DoMethod ( "_InputPG", "Release" ) )}, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+         CASE ItType == 15
+
+            IF lData
+               IF Empty(cDefValue) .OR. cDefValue == cDefData
+                  cDefValue := "False;True"
+               ELSE
+                  cDefValue := CHARREPL (",", cDefValue, ";")
+               ENDIF
+            else
+               IF Empty(cDefValue)
+                  cDefValue := "False"
+               ELSE
+                  IF !Empty(cDefData)
+                     aData := PgIdentData(cDefData)
+                     IF ValType(aData) == "A"
+                        cDefValue := aData[1]
+                     ELSE
+                        cDefValue := cDefData
+                     ENDIF
+                  endif
+               ENDIF
+            ENDIF
+
+
+            _DefineTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue,,,,, .F., .F., .F., .F.,,,, {|| ( _HMG_SYSDATA[237] := .F. , RetVal := Eval(bRetVal), DoMethod ( "_InputPG", "Release" ) )}, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+         CASE ItType == 16
+
+
+
+
+            _DefineBtnTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue, {|| SetProperty ( "_InputPG", "_DataBox" , "Value" , InsertSize( cDefValue,cDefData ) )   },,,,,,,, .F., .F., .F., .F.,,,,, .F.,, .F., .F., .F., .F.,,,, .F., .F.,, .F., .F.,, !.F., )
+
+         CASE ItType == 17
+
+            aFltr := PgIdentData( cDefData,17 )
+
+
+
+            _DefineBtnTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue, {|| SetProperty ( "_InputPG", "_DataBox" , "Value" , GetFile ( aFltr , "File", cDefValue , .F. , .T.) )  },,,,,,,, .F., .F., .F., .F.,,,,, .F.,, .F., .F., .F., .F.,,,, .F., .F.,, .F., .F.,, !.F., )
+
+         CASE ItType == 18
+
+            IF lData
+
+
+               _DefineTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue,,,,, .F., .F., .F., .F.,,,, {|| ( _HMG_SYSDATA[237] := .F. , RetVal := Eval(bRetVal), DoMethod ( "_InputPG", "Release" ) )}, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+            else
+
+
+
+               _DefineBtnTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue, {|| SetProperty ( "_InputPG", "_DataBox" , "Value" , GetFolder( cDefData, cDefValue ) ) },,,,,,,, .F., .F., .F., .F.,,,,, .F.,, .F., .F., .F., .F.,,,, .F., .F.,, .F., .F.,, !.F., )
+            endif
+
+         CASE ItType == 20
+
+
+
+            _DefineTextBox( "_DataBox",, 10, 30, 220, 26, cDefValue,,,,, .F., .F., .F., .F.,,,, {|| ( _HMG_SYSDATA[237] := .F. , RetVal := Eval(bRetVal), DoMethod ( "_InputPG", "Release" ) )}, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+         ENDCASE
+
+
+
+         _DefineButton ( "_Ok", , 20, 67, _HMG_SYSDATA[262] [6], {|| ( _HMG_SYSDATA[237] := .F. , RetVal := Eval(bRetVal) ,   DoMethod ( "_InputPG", "Release" ) )},,,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+         _DefineButton ( "_Cancel", , 130, 67, _HMG_SYSDATA[262] [7], {||   ( _HMG_SYSDATA[237] := .T. , DoMethod ( "_InputPG", "Release" ) )},,,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+      _EndWindow ()
+
+      Domethod ( "_InputPG", "_DataBox" , "SetFocus" )
+
+      DoMethod ( "_InputPG", "Center" )
+      _ActivateWindow ( {"_InputPG"}, .F., , )
+
+Return ( RetVal )
+
+
+FUNCTION InsertFont( cValue ,lData)
+
+   LOCAL adata, aDataNew,cData:=""
+
+   IF lData
+      aData := PgIdentData( cValue,9)
+      aDataNew := GetFont (aData[1,3], Val(aData[2,3]) ,aData[3,3]=="true" , aData[4,3]=="true" , , aData[5,3]=="true" , aData[6,3]=="true" )
+   else
+      aData := PgIdentData( cValue,9,,",")
+      aDataNew := GetFont (aData[1], Val(aData[2]) ,aData[3]=="true" , aData[4]=="true" , , aData[5]=="true" , aData[6]=="true" )
+   endif
+   IF !Empty(aDataNew[1])
+      ADel(aDataNew,5)
+      ASize(aDataNew,6)
+      cData:= AttrTran(aDataNew,"A")
+      aData :=PgIdentData(cData,9)
+      cValue  := aFont2Str(aData)
+   ENDIF
+RETURN IF(lData,cData,cValue)
+
+
+FUNCTION InsertColor( cValue,lData )
+
+   LOCAL adata, aDataNew,cData
+
+   aData := PgIdentData( cValue,6,,",")
+   aDataNew := GetColor (aData)
+   IF aDataNew[1] <> NIL
+      cData:= AttrTran(aDataNew,"A")
+      cValue  := aCol2Str(aDataNew)
+   endif
+RETURN IF(lData,cData,cValue)
+
+
+FUNCTION InsertSize( cValue,cData )
+
+   LOCAL adata, nValueNew, n, cInput
+
+   aData := PgIdentData(cData,16,cValue)
+   cValue := ""
+   IF Len(aData) > 0
+      FOR n := 1 to   Len(aData)
+         cValue += IF(n==1,"(",",")
+         cInput := "Size for Item: "+aData[n,1]
+         nValueNew := InputBox (cInput, "Value for Item type SIZE" , aData[n,2])
+         IF IsDigit(nValueNew)
+            aData[n,2] := Val(nValueNew)
+         ENDIF
+         cValue += AllTrim(Str( aData[n,2]))
+      NEXT
+      cValue += ")"
+   endif
+RETURN cValue
+
+
+Function HMG_SetSysColorBtm(Color, BmpWidh, BmpHeight)
+
+LOCAL hImage, hImageLst, nColor
+   hImageLst := GetControlHandle ( "imagelst_1" , _HMG_SYSDATA[33] )
+   nColor := GetSysColor ( Color)
+   hImage := CreateColorBMP( GetFormHandle (_HMG_SYSDATA[33]), nColor, BmpWidh, BmpHeight )
+   IL_AddMaskedIndirect( hImageLst , hImage , , BmpWidh , BmpHeight , 1 )
+RETURN Nil
+
+
+FUNCTION GetSystemColor(aColor)
+
+   LOCAL nPos, cStr, nColorSys
+
+   nPos := GetProperty ( "Form_1", "ComboEx_2" , "Value" )
+   nColorSys := GetSysColor ( aColor[nPos,1] )
+   IF nPos > 0
+      cStr := aColor[nPos,2]+ "  { "+ AllTrim( Str(GetRed(nColorSys)))+","+ AllTrim( Str(GetGreen(nColorSys))) +","+ AllTrim( Str(GetBlue(nColorSys))) +" }"
+      MsgInfo ( cStr, "Selected color", , .F. )
+   endif
+RETURN nil
+
+
+FUNCTION LoadPropertyFile(ParentForm,ControlName,cFile,FormGen, ControlGen)
+
+LOCAL aProp, k, cExt, aFlt, aCateg, cData, lXml
+
+   cExt:= Lower(SubStr(cFile,RAt(".",cFile)+1))
+   DO case
+   CASE cExt == "xml"
+      aFlt := {{"File *.xml","*.xml"}}
+   CASE cExt == "txt"
+      aFlt := {{"Text File ","*.txt"}}
+   CASE cExt == "ini"
+      aFlt := {{"Ini File ","*.ini"}}
+   ENDCASE
+   cFile := GetFile ( aFlt , "Store File Property Grid" ,cFile , .F. , .F. )
+   if Empty(cFile)
+        Return .F.
+   endif
+   IF File(cFile)
+      IF Lower(SubStr(cFile,RAt(".",cFile)+1)) == "xml"
+         lXml := .T.
+      ENDIF
+      IF  !Empty(cFile) .AND. File(cFile)
+         k := GetControlIndex ( ControlName, ParentForm )
+         IF !lXml
+            aProp := _LoadProperty(cFile, k)
+         endif
+         _InitPgArray(aProp, cFile, lXml, k)
+         _HMG_SYSDATA[165]   [k] :=  cFile
+         _HMG_SYSDATA[171] [k,5] := lXml
+         _ChangeBtnState( _HMG_SYSDATA[137] [k], .F., k )
+      ENDIF
+
+      aCateg := IdentCateg( ControlName, ParentForm )
+      cData := aVal2Str(aCateg)
+      SetPropGridValue ( FormGen, ControlGen, 500, "ROOT", cData )
+   ENDIF
+RETURN Nil
+
+
+FUNCTION ReadTxt(ParentForm,ControlName,cFile)
+
+   LOCAL aProp,k
+   k := GetControlIndex ( ControlName, ParentForm )
+   aProp := _LoadProperty(cFile, k)
+   DispArray(aProp)
+RETURN Nil
+
+
+FUNCTION DispArray(aProp)
+
+   LOCAL n,i, cStr:="",cItem
+   FOR n:=1 TO Len(aProp)
+      cItem:=aProp[n]
+      IF ValType(cItem) == "A"
+         FOR i:=1 TO Len(cItem)
+            IF ValType(cItem[i]) == "C"
+               cStr += cItem[i]+","
+            ELSE
+               if  ValType(cItem[i])=="L"
+                  cStr += IF(cItem[i],".T.",".F.")+","
+               else
+                  cStr += ValType(cItem[i])+","
+               endif
+            ENDIF
+         NEXT
+         cStr += hb_eol()
+      ENDIF
+   NEXT
+   MsgInfo( cStr, , , .F. )
+RETURN Nil
+
+
+FUNCTION ReadXml(cFile)
+
+   LOCAL oXmlDoc := HXMLDoc():Read( cFile )
+   MsgInfo( oXmlDoc:Save2String(), , , .F. )
+RETURN Nil
+
+
+FUNCTION DisplPGValue(PGname,cForm,nId)
+
+   LOCAL xValue,cType
+   LOCAL cStr
+   IF nId==0
+      cStr:= "The variable for selected item "
+   else
+      cStr :="The variable for item of ID "+alltrim(Str(nId))+" is type: "
+   endif
+   xValue:=GetPropGridValue (cForm, PGName, nId, .F., )
+   IF valtype(xValue)<>"U"
+      cStr += " is type: "
+      cType := valtype(xValue)
+   ELSE
+      cStr += " is not available"
+      cType := ""
+   endif
+   DO CASE
+      CASE cType $  "CM";  MsgInfo( cStr+cType+hb_eol()+xValue, , , .F. )
+      CASE cType == "D" ;  MsgInfo( cStr+cType+hb_eol()+DToC( xValue ), , , .F. )
+      CASE cType == "N" ;  MsgInfo( cStr+cType+hb_eol()+Str( xValue ), , , .F. )
+      CASE cType == "L" ;  MsgInfo( cStr+cType+hb_eol()+if(xValue == .T.,"TRUE","FALSE"), , , .F. )
+      CASE cType == "A" ;  MsgInfo( cStr+cType+hb_eol()+ AToC( xValue ), , , .F. )
+      OTHERWISE;           MsgInfo( cStr+cType+hb_eol()+"NIL", , , .F. )
+   ENDCASE
+RETURN Nil
+
+
+FUNCTION DisplPGInfo(PGname,cForm,nId)
+
+   LOCAL xValue,aValue,n
+   LOCAL cStr
+
+
+
+
+
+
+
+
+
+   LOCAL aType := {"Name      - ", "Value     - ", "Data      - ", "Disabled  - ", "Changed   - ", "Item Type - ", "Item ID   - ", "Variable  - ", "Info      - ", "InitValue - "}
+   IF nId==0
+      cStr:= "The array info for selected item: "+hb_eol()+hb_eol()
+   else
+      cStr :="The array info for item of ID "+alltrim(Str(nId))+":"+hb_eol()
+   endif
+   aValue:=GetPropGridValue ( cForm, PGName, nId, .T., 0 )
+   IF valtype(aValue)<>"A"
+      cStr += " ERROR by read Property Info! "
+   ELSE
+      FOR n:= 1 TO Len (aValue)
+         cStr += aType[n]
+         xValue := aValue[n]
+         DO CASE
+         CASE ValType(xValue) $  "CM";  cStr += xValue+hb_eol()
+         CASE ValType(xValue) == "D" ;  cStr += DToC( xValue )+hb_eol()
+         CASE ValType(xValue) == "N" .AND. n==7;  cStr += PgIdentType( xValue )+hb_eol()
+         CASE ValType(xValue) == "N" .AND. n==8;  cStr += Str( xValue )+hb_eol()
+         CASE ValType(xValue) == "L" ;  cStr += if(xValue == .T.,"TRUE","FALSE") +hb_eol()
+         OTHERWISE;                     cStr += "NIL" +hb_eol()
+         ENDCASE
+      NEXT
+   Endif
+   MsgInfo ( cStr, "Info", , .F. )
+
+RETURN Nil
+
+
+FUNCTION SaveToFile(ParentForm,ControlName,cFile,met)
+
+LOCAL oXmlDoc, cExt, lSave := .T.
+LOCAL aFlt, nH
+
+   cExt:= Lower(SubStr(cFile,RAt(".",cFile)+1))
+   DO case
+   CASE cExt == "xml".OR. met == 1
+      aFlt := {{"File *.xml","*.xml"}}
+   CASE cExt == "txt" .OR. met == 2
+      aFlt := {{"Text File ","*.txt"}}
+   CASE cExt == "ini" .OR. met == 3
+      aFlt := {{"Ini File ","*.ini"}}
+   ENDCASE
+   cFile := PutFile ( aFlt , "Store File Property Grid" , , .F. , cFile )
+   if Empty(cFile)
+        Return .F.
+   endif
+   IF File(cFile)
+      IF !MsgYesNo("Overwrite File :"+cFile+" ?", "Warning", , , .F.)
+         lSave := .F.
+      ENDIF
+   ENDIF
+   IF lSave
+      DO case
+      CASE cExt == "xml" .OR. met == 1
+         oXmlDoc := CreatePropXml(ParentForm,ControlName)
+         oXmlDoc:Save( cFile )
+         ReadXml(cFile)
+      CASE cExt == "txt" .OR. met == 2
+         lSave := CreatePropFile(ParentForm,ControlName,cFile)
+         ReadTxt(ParentForm,ControlName,cFile)
+      CASE cExt == "ini" .OR. met == 3
+         lSave := CreateIniFile(ParentForm,ControlName,cFile)
+         IF lSave
+            IF ( nH := FOPEN(cFile) ) > 0
+               MsgInfo( Freadstr(nH,32000), , , .F. )
+            ENDIF
+            FCLOSE(nH)
+         endif
+      ENDCASE
+   ENDIF
+RETURN lSave
+
+
+FUNCTION IdentCateg( ControlName, ParentForm )
+
+LOCAL hItem, hWndPG, k, cValue,aCateg := {"ROOT"}
+   k := GetControlIndex ( ControlName, ParentForm )
+   IF k > 0
+      hWndPG := _HMG_SYSDATA[137]  [k]
+      hItem := PG_GetRoot( hWndPG )
+      WHILE hItem <> 0
+         IF PG_GetItem( hWndPG, hItem, 7) ==  1
+            cValue := PG_GETITEM(hWndPG,hItem,1)
+            AAdd(aCateg,cValue)
+         ENDIF
+         hItem := PG_GetNextItem( hWndPG, hItem )
+      ENDDO
+   ENDIF
+RETURN aCateg
+
+
+FUNCTION IdentRootCateg( ControlName, ParentForm )
+
+LOCAL hItem, hWndPG, k, cValue:=""
+   k := GetControlIndex ( ControlName, ParentForm )
+   IF k > 0
+      hWndPG := _HMG_SYSDATA[137]  [k]
+      hItem := PG_GetRoot( hWndPG )
+      if hItem <> 0
+         cValue := PG_GETITEM(hWndPG,hItem,1)
+      ENDIF
+   ENDIF
+RETURN cValue
+
+
+Function About()
+
+   IF !_IsWindowDefined ( "Form_About" )
+
+
+
+
+
+ _DefineWindow ( "Form_About", "", 0, 0, 250, 110, .F., .F., .F., .F., .T., {,}, {,},, ,, , ,, , , .F. , .T. , .F. , , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+      _DefineImage ( "Icon_1",, 10, 10, "PgGen.ico", 50, 50,,,, .F., .F.,, .F., .F.,,,,,, , )
+
+
+      _BeginFrame ( "Frame_1",, 5, 5, 235, 90 , , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+
+
+
+      _DefineLabel ( "Label_1",, 70, 10, "Property Grid Creator", 180, 20, "Arial" , 11 , .T., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+
+
+
+      _DefineLabel ( "Label_2",, 70, 35, "(c) 2008 Janusz Pora", 180, 20, "Arial" , 9 , .F., .F. , .F. , .F. , .F. , .F. ,, {   0 ,   0 , 255 },,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+
+
+
+      _DefineLabel ( "Label_3",, 70, 60, "HMG Harbour MiniGui", 180, 20, "Arial" , 9 , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+
+
+
+
+      _DefineButton ( "Btn_splash", , 15, 65, "OK", {|| DoMethod ( "Form_About", "Release" ) }, 40, 20, "Arial", 9,,,, .F., .F.,, .F. , .T., .F., .F., .F., .F., .F.,, )
+
+      _EndWindow ()
+      DoMethod ( "Form_About", "Center" )
+      _ActivateWindow ( {"Form_About"}, .F., , )
+   ENDIF
+Return Nil

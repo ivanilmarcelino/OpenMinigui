@@ -1,0 +1,119 @@
+{\rtf1\ansi\ansicpg1253\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}{\f1\fmodern\fprq1\fcharset161{\*\fname Courier New;}Courier New Greek;}{\f2\froman\fprq2\fcharset161 Palatino Linotype;}{\f3\froman\fprq2\fcharset0 Palatino Linotype;}{\f4\fswiss\fprq2\fcharset0 Arial;}{\f5\fswiss\fprq2\fcharset161{\*\fname Arial;}Arial Greek;}}
+{\colortbl ;\red0\green0\blue255;}
+{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\qc\lang1033\ul\b\f0\fs32 HBNETIO Documentation\par
+\lang1032\ulnone\b0\f1\fs16\par
+\f2\fs20 Copyright 2010 Przemyslaw Czerpak <druzus / at / priv.onet.pl>\par
+www - http://www.harbour-project.org\par
+\pard\f1\par
+\fs24\par
+\f2\fs20 HBNETIO is implementation of alternative RDD IO API for Harbour with\par
+additional RPC support. It contains either client and server code.\f1\fs24\par
+\f2\fs20 It supports connection stream compression using ZLIB compression and\f1\fs24\par
+\f2\fs20 encryption using blowfish algorithm.\f1\fs24\par
+\f2\fs20 After registering on the client side all files used by Harbour native\f1\fs24\par
+\f2\fs20 RDDs with name starting with "net:" are redirected to the hbnetio server.\f1\fs24\par
+\fs20\par
+\cf1\ul\b Client side functions:\par
+\cf0\ulnone\b0\par
+\fs24   \b\fs20 NETIO_CONNECT( [<cServer>], [<nPort>], [<nTimeOut>], ;\b0\fs24\par
+\b\fs20                   [<cPasswd>], [<nCompressionLevel>], [<nStrategy>] )\par
+\b0\fs24          \b\fs20 -> <lConnected>\b0\fs24\par
+\pard\qj\lang1033\f3\fs20\tab\lang1032\f2 Register HBNETIO as alternative RDD IO API redirecting all files with name starting \par
+\lang1033\f3\tab\lang1032\f2 with "net:" to HBNETIO server, set default\lang1033\f3  \lang1032\f2 server address, port and\lang1033\f3  \lang1032\f2 connection\lang1033\f3  \par
+\tab\lang1032\f2 parameters and tries to set\lang1033\f3  \lang1032\f2 the connection to this server.\par
+\f1\fs24\par
+\pard\lang1033\f3\fs20\tab\lang1032\f2 When executed 1-st time it sets default connection parameters\f1\fs24  \f2\fs20 for all threads. Each \par
+\lang1033\f3\tab\lang1032\f2 thread can overwrite these default settings\lang1033\f3  \lang1032\f2 with its own local ones calling\lang1033\f3  \par
+\tab\lang1032\f2 NETIO_CONNECT() function.\f1\fs24\par
+\lang1033\f3\fs20\tab\lang1032\f2 Each successful call to NETIO_CONNECT() increase the reference\lang1033\f3  \lang1032\f2 counter for given \par
+\lang1033\f3\tab\lang1032\f2 connection. NETIO_DISCONNECT() decrease the\lang1033\f3  \lang1032\f2 reference. Connection is closed when \par
+\lang1033\f3\tab\lang1032\f2 the counter reach 0. \par
+\lang1033\f3\par
+\tab I\lang1032\f2 t\lang1033\f3  \lang1032\f2 means that each NETIO_CONNECT() call needs corresponding call\lang1033\f3  \lang1032\f2 to \par
+\lang1033\f3\tab\lang1032\f2 NETIO_DISCONNEC(). The connections are recognized by IP server\lang1033\f3  \lang1032\f2 address and port \par
+\lang1033\f3\tab\lang1032\f2 number and they are shared between threads. So when\lang1033\f3  \lang1032\f2 more then one thread call \par
+\lang1033\f3\tab\lang1032\f2 NETIO_CONNECT() then only one connection\lang1033\f3  \lang1032\f2 is created. It also means that \par
+\lang1033\f3\tab\lang1032\f2 NETIO_DISCONNECT() does not have to\f1\fs24  \f2\fs20 be called by the same thread which called \par
+\lang1033\f3\tab\lang1032\f2 NETIO_CONNECT().\par
+\f1\fs24\par
+\lang1033\f3\fs20\tab\lang1032\f2 On application exist all connections are automatically closed.\par
+\lang1033\f3\tab\lang1032\f2 It possible to open many different connections and keep them open.\par
+\lang1033\f3\tab\lang1032\f2 In RDD IO operations and RPC calls it's possible to specify server\f1\fs24  \f2\fs20 address as part of file \par
+\lang1033\f3\tab\lang1032\f2 or procedure/function name, i.e.\par
+\f1\fs24          \f2\fs20 USE net:192.168.0.2:2942:path/to/file\f1\fs24\par
+         \f2\fs20 NETIO_PROCEXEC( "192.168.0.2:2942:procname" )\f1\fs24\par
+\lang1033\f3\fs20\tab\lang1032\f2 or using UNC paths:\f1\fs24\par
+         \f2\fs20 USE net://192.168.0.2:2942/path/to/file\f1\fs24\par
+         \f2\fs20 NETIO_PROCEXEC( "//192.168.0.2:2942/procname" )\f1\fs24\par
+\lang1033\f3\fs20\tab\lang1032\f2 It's also possible to specify the password. The connection string\lang1033\f0\fs24  \lang1032\f2\fs20 is in format:\f1\fs24\par
+         \f2\fs20 <server>[:<port>[:<passwd>]]:<filepath|funcname>\f1\fs24\par
+      \f2\fs20 or:\f1\fs24\par
+         \f2\fs20 //<server>:<port>:<passwd>:<filepath|funcname>\f1\fs24\par
+      \f2\fs20 or:\f1\fs24\par
+         \f2\fs20 //<server>[:<port>]/<filepath|funcname>\f1\fs24\par
+\lang1033\f3\fs20\tab\lang1032\f2 Backslashes '\\' are also supported and can be used instead of '/'.\par
+\lang1033\f3\tab\lang1032\f2 Password is always terminated by ":" and whole connection strin\f1\fs24  \f2\fs20 is terminated by\par
+\lang1033\f3\tab\lang1032\f2  CHR\lang1033\f3  \lang1032\f2 (0) so it's not possible to use these two\f1\fs24  \f2\fs20 characters as part of password. Anyhow \par
+\lang1033\f3\tab\lang1032\f2 when\lang1033\f3  \lang1032\f2 passwords are required\f1\fs24  \f2\fs20 then it's recommended to open the connection by \par
+\lang1033\f3\tab\lang1032\f2 NETIO_CONNECT()\f1\fs24  \f2\fs20 and then specify only server and port is server is not unique\lang1033\f3  \par
+\tab\lang1032\f2 enough to chose from existing connections. \par
+\lang1033\f3\tab\lang1032\f2 If server is not\lang1033\f3  \lang1032\f2 given then default connection is chosen.\f1\fs24\par
+\fs20\par
+\fs24\par
+  \b\fs20 NETIO_DISCONNECT( [<cServer>], [<nPort>] ) -> <lOK>\b0\fs24\par
+    \f2\fs20 Close the connection created by NETIO_CONNECT()\par
+\f1\par
+\fs24\par
+  \b\fs20 NETIO_DECODE( [@]<cFullName>, [@<cServer>], [@<nPort>],\lang1033\f0  \lang1032\f1 @nTimeOut>],\lang1033\f0  \par
+\tab\tab\tab\lang1032\f1 [@<cPasswd>], [@<nCompressionLevel>], [@<nStrategy>] )\par
+\lang1033\b0\f0\fs24\tab\tab\tab\lang1032\b\f1\fs20 -> <lDecoded>\lang1033\b0\f3  \par
+\tab\lang1032\f2 Decode connection parameters from cFullName> and default settings.\par
+\lang1033\f3\tab\lang1032\f2 Return .T. if <cFullName> contains any connection settings.\par
+\lang1033\f3\tab\lang1032\f2 cFullName> should not contain "net:" prefix.\fs24\par
+\f1\fs20\par
+\lang1033\f0    \lang1032\b\f1 NETIO_PROCEXISTS( <cProcName> ) -> <lExists>\par
+\lang1033\b0\f3\tab\lang1032\f2 Check if function or procedure exists on the server side.\par
+\f1\fs24\par
+\par
+  \b\fs20 NETIO_PROCEXEC( <cProcName> [, <params,...>] ) -> <lSent>\par
+\lang1033\b0\f3\tab\lang1032\f2 Execute function or procedure on server the side do not wait for\lang1033\f3  \lang1032\f2 confirmation from the \par
+\lang1033\f3\tab\lang1032\f2 server.\par
+\f1\par
+\fs24\par
+  \b\fs20 NETIO_PROCEXECW( <cProcName> [, <params,...>] ) -> <lExecuted>\par
+\lang1033\b0\f3\tab\lang1032\f2 Execute function or procedure on the server side and wait for confirmation from the\lang1033\f3  \tab\lang1032\f2 server.\par
+\f1\par
+\fs24\par
+  \b\fs20 NETIO_FUNCEXEC( <cFuncName> [, <params,...>] ) -> <xFuncRetVal>\b0\fs24\par
+\lang1033\f3\fs20\tab\lang1032\f2 Execute function on the server side and wait for function return\lang1033\f3  \lang1032\f2 value sent by the server.\par
+\f1\fs24\par
+\fs20\par
+\fs24\par
+\cf1\ul\b\fs20 Server side functions:\par
+\cf0\ulnone\b0\par
+\fs24    \b\fs20 NETIO_LISTEN( [<nPort>], [<cIfAddr>], [<cRootDir>], [<lRPC>] )\lang1033\b0\f0\fs24  \lang1032\b\f1\fs20 -> <pListenSocket> | NIL\par
+\b0\par
+\fs24    \b\fs20 NETIO_ACCEPT( <pListenSocket>, [<nTimeOut>],\b0\fs24\par
+              \b\fs20 [<cPass>], [<nCompressionLevel>], [<nStrategy>] )\b0\fs24\par
+\lang1033\f0             \lang1032\b\f1\fs20 -> <pConnectionSocket> | NIL\b0\fs24\par
+\fs20\par
+\fs24    \b\fs20 NETIO_COMPRESS( <pConnectionSocket>,\b0\fs24\par
+               \b\fs20 [<cPass>], [<nCompressionLevel>], [<nStrategy>] ) -> NIL\b0\fs24\par
+\fs20\par
+\fs24    \b\fs20 NETIO_SERVER( <pConnectionSocket> ) -> NIL\b0\fs24\par
+\fs20\par
+\fs24    \b\fs20 NETIO_RPC( <pListenSocket> | <pConnectionSocket> [, <lEnable>] ) -> <lPrev>\b0\fs24\par
+\fs20\par
+\fs24    \b\fs20 NETIO_RPCFILTER( <pConnectionSocket>, <sFuncSym> | <hValue> | NIL ) -> NIL\b0\fs24\par
+\fs20\par
+\fs24    \b\fs20 NETIO_SERVERSTOP( <pListenSocket> | <pConnectionSocket> [, <lStop>] ) -> NIL\b0\fs24\par
+\fs20\par
+\fs24    \b\fs20 NETIO_MTSERVER( [<nPort>], [<cIfAddr>], [<cRootDir>],\b0\fs24\par
+                \b\fs20 [<lRPC> | <sFuncSym> | <hValue>],\b0\fs24\par
+                \b\fs20 [<cPasswd>], [<nCompressionLevel>], [<nStrategy>] )\b0\fs24\par
+            \lang1033\f0   \lang1032\b\f1\fs20 -> <pListenSocket>\par
+\par
+\lang1033\f0\par
+\i\f4 (end of doc.)\lang1032\b0\f5\fs24\par
+}
+ 

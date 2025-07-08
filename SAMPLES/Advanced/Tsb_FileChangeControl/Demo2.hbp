@@ -1,0 +1,20 @@
+# Compilation keys
+-prgflag=-w2 -es1
+
+# Enable multi/single-thread Harbor VM
+-mt
+
+# Incremental compilation mode
+-inc
+
+# folder where all *.obj will be
+-workdir=OBJ
+
+# EXE module name
+-oDemo2
+
+# list all *.prg
+demo2.prg
+
+# Paths to main and additional *.lib
+-lhmgaddon

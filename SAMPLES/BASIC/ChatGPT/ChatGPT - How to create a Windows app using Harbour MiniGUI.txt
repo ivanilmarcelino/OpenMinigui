@@ -1,0 +1,173 @@
+Creating a modern application in Windows with Harbour MiniGUI is quite different from DOS programming. In DOS, you have full control over the program’s flow, while in Windows, the system works on an event-driven model. Instead of following a linear structure, the application responds to various events (like button clicks, window resizing, etc.).
+
+Here’s a step-by-step explanation of how to create a Windows app using Harbour MiniGUI, aimed at someone familiar with DOS but new to Windows programming:
+
+1. Understanding Event-Driven Programming
+In Windows, everything revolves around events. These events can be user-generated (like mouse clicks or keyboard presses) or system-generated (like window resize, minimize, etc.).
+
+In DOS, your program would control everything with explicit loops and procedures. In Windows, you define event handlers—functions that the system calls when a particular event occurs. For example, clicking a button will trigger a specific function you define.
+
+2. Basic Structure of a MiniGUI Program
+Here’s what you need to understand:
+
+- Main Window: The central part of your app where everything happens.
+- Controls: Components like buttons, textboxes, grids, etc., that users can interact with.
+- Event Handlers: Functions that respond to user actions (like clicking a button).
+
+3. How to Define the Main Window
+The main window is like the DOS screen, but in Windows, you define its dimensions and position on the desktop.
+
+Here’s a basic example to create a window in Harbour MiniGUI:
+
+#include "minigui.ch"
+
+function Main()
+
+    // Create the main window
+    DEFINE WINDOW oWnd ;
+        AT 0, 0 ;               // Position on the screen
+        WIDTH 600 ;
+        HEIGHT 400 ;
+        TITLE "My First Windows App" ;
+        MAIN                    // This is the main window of the application
+
+    // Activate the window (event loop starts here)
+    ACTIVATE WINDOW oWnd
+
+return nil
+
+In this code:
+- `DEFINE WINDOW` creates a window.
+- `AT 0, 0` specifies where the window should appear on the screen (top-left corner in this case).
+- `WIDTH` and `HEIGHT` set the size.
+- `ACTIVATE WINDOW` is crucial: it launches the event loop and waits for user actions (e.g., mouse clicks).
+
+4. Adding Controls to the Window
+Controls are what users interact with. You can add buttons, textboxes, labels, grids, and more.
+
+Here’s an example of adding a button:
+
+#include "minigui.ch"
+
+function Main()
+
+    LOCAL cText := "Click Me!"
+
+    // Create the main window
+    DEFINE WINDOW oWnd ;
+        AT 0, 0 ;
+        WIDTH 600 ;
+        HEIGHT 400 ;
+        TITLE "Button Example" ;
+        MAIN
+
+    // Add a button control to the window
+    @ 50, 100 BUTTON oBtn ;
+        CAPTION "Click Me" ;       // Button text
+        WIDTH 100 ;
+        HEIGHT 30 ;
+        ACTION MsgInfo("Button Clicked!")  // Event handler for click event
+
+    // Activate the window
+    ACTIVATE WINDOW oWnd
+
+return nil
+
+In this example:
+- The `BUTTON` is placed at position `(50, 100)` inside the window.
+- The `ACTION` clause defines an event handler—when the button is clicked, the `MsgInfo()` function is called, which shows a message box.
+
+5. Handling Events
+In Windows programming, you wait for events (like button clicks) to occur. Each control (e.g., a button) can have event handlers.
+
+Common events include:
+- Click: User clicks a button.
+- Change: Text in a textbox changes.
+- Double-click: User double-clicks an item (e.g., in a grid).
+  
+You define event handlers using the `ACTION` clause, as shown in the button example. When the user performs the event (e.g., clicks the button), the corresponding function is executed.
+
+6. Timers and Real-Time Updates
+If you want to do something periodically, like updating the screen every few seconds, you can use a timer. A timer triggers an event at regular intervals.
+
+Example:
+
+LOCAL nInterval := 2000  // Timer interval in milliseconds (2 seconds)
+
+DEFINE TIMER oTimer INTERVAL nInterval ACTION TimerEvent()
+
+DEFINE WINDOW oWnd ;
+    AT 0, 0 ;
+    WIDTH 600 ;
+    HEIGHT 400 ;
+    TITLE "Timer Example" ;
+    MAIN
+
+ACTIVATE WINDOW oWnd
+
+RETURN NIL
+
+function TimerEvent()
+    MsgInfo("2 seconds have passed!")  // This message will appear every 2 seconds
+return nil
+
+7. Using Grids and Other Complex Controls
+If you want to display tabular data, you can use a GRID control. It works like a table, similar to what you might have done with text output in DOS.
+
+#include "minigui.ch"
+
+function Main()
+
+    LOCAL aData := { ;
+        { "John Doe", 28, "Engineer" }, ;
+        { "Jane Smith", 34, "Manager" }, ;
+        { "Sam Johnson", 25, "Intern" } }
+
+    DEFINE WINDOW oWnd ;
+        AT 0, 0 ;
+        WIDTH 600 ;
+        HEIGHT 400 ;
+        TITLE "Grid Example" ;
+        MAIN
+
+    // Add a grid to display data
+    @ 20, 20 GRID oGrid ;
+        WIDTH 550 ;
+        HEIGHT 300 ;
+        HEADERS { "Name", "Age", "Occupation" } ;
+        WIDTHS { 200, 50, 150 } ;
+        ITEMS aData
+
+    ACTIVATE WINDOW oWnd
+
+return nil
+
+In this example:
+- `GRID` displays a table with data (similar to what you'd do with a looped print in DOS).
+- The `HEADERS` define the column names, and `ITEMS` holds the data.
+
+8. Closing the Window
+In DOS, you just exited the program when done. In Windows, you can specify what happens when the user closes the window. You do this with the `ON RELEASE` event.
+
+DEFINE WINDOW oWnd ;
+    AT 0, 0 ;
+    WIDTH 600 ;
+    HEIGHT 400 ;
+    TITLE "Close Example" ;
+    MAIN ;
+    ON RELEASE MsgInfo("Goodbye!")
+
+When the user closes the window, the `ON RELEASE` event is triggered, displaying the "Goodbye!" message.
+
+9. Differences Between DOS and Windows Programming
+- Sequential vs. Event-Driven: In DOS, you control the flow of the program (usually in a loop), while in Windows, you define event handlers and wait for user interaction.
+- User Interface: In DOS, you'd handle everything via text, whereas in Windows, MiniGUI provides rich UI components like buttons, grids, and menus.
+- Timers and Background Tasks: In Windows, background tasks (like periodic updates) can be managed using timers.
+
+10. Building a Modern App
+- Responsive UI: Windows apps in MiniGUI respond to user events in real-time.
+- Rich Controls: Use grids, buttons, toolbars, and other components to create a professional interface.
+- Timers: Implement real-time features, like syncing data or updating the UI.
+
+Conclusion
+Creating a modern application in Windows with Harbour MiniGUI involves learning about the event-driven architecture, where the system triggers events based on user actions. MiniGUI provides a rich set of tools, like buttons, grids, and event handlers, to create responsive and interactive applications. Understanding how events work and how to define controls and event handlers is key to transitioning from DOS to Windows programming.

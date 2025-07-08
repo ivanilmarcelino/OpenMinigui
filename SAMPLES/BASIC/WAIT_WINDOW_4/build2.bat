@@ -1,0 +1,1 @@
+call ..\..\..\build.bat demo2.hbp

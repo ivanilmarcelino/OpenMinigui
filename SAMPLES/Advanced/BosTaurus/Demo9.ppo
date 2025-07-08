@@ -1,0 +1,113 @@
+
+
+
+
+
+
+
+
+
+
+MEMVAR flag
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 14 "S:\Mega\Dev\32\BCC\Minigui\include\miniprint.ch"
+  MEMVAR _HMG_MINIPRINT
+#line 16 "Demo9.prg"
+FUNCTION MAIN
+PRIVATE flag := .F.
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win1", "Demo9: Draw DC to DC", 600, 200, 500, 400, .T., .F., .F., .F., .F., {,}, {,},, ,, {|| flag := .F., BT_ClientAreaInvalidateAll ("Win2", .T.)} , ,, , {|| Proc_ON_PAINT ()} , .F. , .F. , .T. , , .F. , ,, , , ,, , , , , , , , , , .F. , {|| flag := .F., BT_ClientAreaInvalidateAll ("Win2", .T.)} , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+
+
+        _BeginTab( "Tab_1" , , 50 , 50 , 400 , 200 , , , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F., .F., .F., .F., .F., {,,},,, .F. )
+
+           _BeginTabPage ( "EditBox" , , )
+              _DefineEditBox ( "EditBox_1",, 50, 50, 300, 120, "Write your memories here."+CHR(13)+CHR(10)+CHR(13)+CHR(10),,,,,,,, .F., .F.,, .F., .F., .T., .F., .F., .F.,, { 255 , 128 ,  64 },, .F., .F., .F.,, )
+           _EndTabPage()
+
+           _BeginTabPage ( "Image" , , )
+              _DefineImage ( "Image_1",, 120, 40, "COWBOOK.bmp", 128, 128,,,, .F., .F.,, .F., .F.,,,,,, , )
+           _EndTabPage()
+
+        _EndTab()
+
+        _DefineButton ( "Button_1", , 180, 300, "Click", {|| MsgInfo ("Hello")},,,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+        _DefineTimer ( "Timer1",, 200, {|| Proc_Mirror()}, .F., )
+
+   _EndWindow ()
+
+
+
+
+
+
+
+ _DefineWindow ( "Win2", "Mirror of the Client Area of the Win1", 0, 0, 500, 400, .F., .F., .F., .T., .F., {,}, {,},, ,, , ,, , , .F. , .F. , .F. , , .T. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+   _EndWindow ()
+
+   _ActivateWindow ( {"Win1", "Win2"}, .F., , )
+
+RETURN NIL
+
+
+PROCEDURE Proc_ON_PAINT
+LOCAL Width  := BT_ClientAreaWidth  ("Win1")
+LOCAL Height := BT_ClientAreaHeight ("Win1")
+LOCAL hDC, BTstruct
+   hDC = BT_CreateDC ("Win1", 4, @BTstruct)
+         BT_DrawGradientFillVertical (hDC, 0, 0, Width, Height, { 255 , 255 , 255 }, {   0 ,   0 ,   0 })
+   BT_DeleteDC (BTstruct)
+RETURN
+
+
+PROCEDURE Proc_Mirror
+LOCAL Width1, Height1
+LOCAL Width2, Height2
+LOCAL hDC1, BTstruct1
+LOCAL hDC2, BTstruct2
+LOCAL Alpha := 50
+LOCAL nTypeText
+LOCAL nAlingText
+LOCAL nOrientation
+
+   IF flag == .T.
+      RETURN
+   ENDIF
+
+   flag := .T.
+
+   Width1  := BT_ClientAreaWidth  ("Win1")
+   Height1 := BT_ClientAreaHeight ("Win1")
+   Width2  := BT_ClientAreaWidth  ("Win2")
+   Height2 := BT_ClientAreaHeight ("Win2")
+
+   hDC1 = BT_CreateDC ("Win1", 3, @BTstruct1)
+   hDC2 = BT_CreateDC ("Win2", 3, @BTstruct2)
+
+          BT_DrawDCtoDC (hDC2, 0, 0, Width2, Height2, 0, hDC1, 0, 0, Width1, Height1)
+
+
+          nTypeText    := 1
+          nAlingText   := 0 + 0
+          nOrientation := 45
+          BT_DrawText (hDC2, 300, 50, "Mirror of the Win1", "Times", 42, { 255 , 255 ,   0 }, {   0 ,   0 ,   0 }, nTypeText, nAlingText, nOrientation)
+
+   BT_DeleteDC (BTstruct1)
+   BT_DeleteDC (BTstruct2)
+   BT_ClientAreaInvalidateAll ("Win2")
+
+   flag := .F.
+RETURN

@@ -1,0 +1,29 @@
+//
+// Resource      Resource       Resource
+// Name          Type           FileName
+//              
+iMG48            ICON           res\MiniGuiLogo48.ico
+
+bRecDel16        BITMAP         res\bRecDel.bmp
+
+Base24           BITMAP         res\24\DataBase24.bmp  
+Delete24         BITMAP         res\24\Delete24.bmp     
+List24           BITMAP         res\24\List24.bmp      
+ListN24          BITMAP         res\24\ListNum24.bmp   
+Table24          BITMAP         res\24\Table24.bmp     
+Export24         BITMAP         res\24\Upload24.bmp     
+Exit24           BITMAP         res\24\Exit24.bmp      
+
+Empty32          BITMAP         res\32\TB_empty32.bmp
+
+n1               BITMAP         res\1.bmp
+n2               BITMAP         res\2.bmp
+n3               BITMAP         res\3.bmp
+n4               BITMAP         res\4.bmp
+n5               BITMAP         res\5.bmp
+n6               BITMAP         res\6.bmp
+n7               BITMAP         res\7.bmp
+n8               BITMAP         res\8.bmp
+n9               BITMAP         res\9.bmp
+
+exit             BITMAP         res\exit.bmp

@@ -1,0 +1,25 @@
+//
+// Resource    Resource         Resource
+// Name         Type             FileName
+//
+1_MAIN          ICON      res\1Mg.ico
+DEMO            JPG       res\demo.jpg
+iExit64x1       ICON      res\iExit64x1.ico
+iExit64x2       ICON      res\iExit64x2.ico
+iPiople64x1     ICON      res\iPiople64x1.ico
+iPiople64x2     ICON      res\iPiople64x2.ico
+iMess64x1       ICON      res\iMessage64x1.ico
+iMess64x2       ICON      res\iMessage64x2.ico
+iMusic64x1      ICON      res\iMusic64x1.ico
+iMusic64x2      ICON      res\iMusic64x2.ico
+iAbout64x1      ICON      res\iAbout64x1.ico
+iAbout64x2      ICON      res\iAbout64x2.ico
+iExitDr64x1     ICON      res\iExitDoor64x1.ico
+iExitDr64x2     ICON      res\iExitDoor64x2.ico
+iDbInfo64x1     ICON      res\iDbInfo64x1.ico
+iDbInfo64x2     ICON      res\iDbInfo64x2.ico
+iEdit64x1       ICON      res\iEdit64x1.ico
+iEdit64x2       ICON      res\iEdit64x2.ico
+
+Ani3dMan128     GIF       res\man3d128.gif
+

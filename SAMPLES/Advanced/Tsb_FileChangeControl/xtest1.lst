@@ -1,0 +1,34 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++
+* Updated: Adaptation FiveWin Class TSBrowse 9.0 in HMG:
+           - added the new method ToolTipSet( nToolTipTime, nToolTipLen );
+           - added the new variables :aRowPosAtRec and :lRowPosAtRec.
+           Sample code:
+           :lRowPosAtRec := .T.
+           :ToolTipSet( 7, 1024 )         // 7 sec., 1024 buffer
+           :cToolTip := {|ob,x,y|
+                          Local cRet := "", xVal, nRec, nNew
+                          If ! ISNUMERIC(y) .or. ! ISNUMERIC(x) ; Return cRet
+                          EndIf
+                          If y > 0
+                             nNew := ob:aRowPosAtRec[ y ]
+                             If nNew > 0
+                                nRec := (ob:cAlias)->( RecNo() )
+                                ( ob:cAlias )->( dbGoto( nNew ) )
+                                xVal := ob:GetValue( x )
+                                ( ob:cAlias )->( dbGoto( nRec ) )
+                                If ISCHAR( xVal )
+                                   cRet := Trim( xVal )
+                                   If Len( cRet ) < 50
+                                      cRet := ""
+                                   EndIf
+                                EndIf
+                             EndIf
+                          EndIf
+                          Return cRet
+                        }
+           - added possibility to filter all types of the fields in the method
+             FilterFTS( cFind [, lUpper][, lBottom][, lFocus][, lAllTypes] )
+             Sample code:
+               oBrw_1:FilterFTS( cSeek, .F. ,,, .T. )
+             (see demo in folder \samples\Advanced\Tsb_filter)
+           Contributed by Sergej Kiselev.

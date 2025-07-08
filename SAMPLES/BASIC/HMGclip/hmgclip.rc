@@ -1,0 +1,11 @@
+
+//
+// Bitmap resources
+//
+IDI_MENU1          BITMAP         exit.bmp
+IDI_MENU2          BITMAP         15.bmp
+
+//
+// Icon resources
+//
+IDI_MAIN           ICON           hmgclip.ico

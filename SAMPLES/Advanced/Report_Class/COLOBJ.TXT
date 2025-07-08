@@ -1,0 +1,182 @@
+                       Documentation for Column class
+
+
+    Created by Jon Credit
+    All rights reserved
+
+    I created this class in search of a way to pay more attention to
+    the data that I am reporting on, vs how the data will be outputted on
+    paper.  This report class is the result of many long hours of design,
+    coding and testing to get it to its current state.
+
+    This class is distributed as is with no expressed or implied
+    warranties.  If you find the Report Class to be useful, a donation of
+    $30.00 U.S. Dollars would be appreciated.  Any registered users will
+    automatically be sent any bug fixes or upgrades to the class(es).
+
+    I am also currently working on a front end to the Report Class to allow
+    creation of reports from a txt file using a format similar to a windows
+    ini file.  This utility will support most if not all of the methods and
+    ivars in the class including goTop(), bWhile, bFind, cInitString,
+    cResetString, and will also allow data to be from multiple database files
+    with a bFind block evaled before printing the data.
+    This utility will be sent to the first 30 people who register the report
+    class at no charge, with complete source code.
+
+    I hope you find this class to be as useful as I have.
+
+    If you find any of the concepts dealt with in this report class to
+    be of benifit please contribute $30.00 to the author so that he can
+    justify all the long hours he puts in to his wife!!
+
+    Thanks and Enjoy....
+
+    Jon Credit
+    50 B. Paisley Lane
+    Columbia, S.C. 29210
+    CIS 71371.1675
+
+
+
+   var lChild       - Logical variable that tells the column to go into a
+                      child process if applicable.
+
+
+   VAR lWrap        - Logical variable to determine if the column should be
+                      word wrapped or not.
+                      Default: .F.
+
+   VAR lShowTotal   - Logical to determine if a numeric column should display
+                      its total at the end of the report.  This option is not
+                      currently implemented.
+
+   VAR lMoreToPrint - Logical variable that tells the column object whether it
+                      has more to display when it is wrapping its output.
+                      This ivar is for internal use by the column and the
+                      report object.  DO NOT modify this variable.
+                      Default: .F.
+
+   var bToDo        - Code block to be EVALed when starting a child process.
+                      This code block needs to  return a logical to the  column
+                      object to tell it whether the child condition is
+                      initially met or not.
+                      Default: Nothing. It must be assigned when a column
+                               object is going to be a child.
+
+   var bWhile       - Code block to be EVALed while in a child process.  This
+                      is the WHILE condition to stay in the child process.
+                      Default: {|| ( ::cParentAlias ) -> ( indexkey(0) ) ==;
+                                   ( ::cChildAlias ) -> ( indexkey(0) ) }
+
+   VAR bBlock       - Code block to be EVALed to produce the output to the
+                      printer device.  Since this is a code block you can now
+                      have any function get data for your reports.
+                      Default: {|| ""  )
+
+   VAR bFind        - Code block to be EVALed prior to printing the column
+                      data.   This code block allows seeks in other data files
+                      for any necessary relationships.
+                      Default: {|| Nothing() }
+
+   var aToBlank     - Array of columns NOT to display while in a child
+                      process.
+                      Default: {}
+
+
+   var cJustify     - Character variable to tell the column titles how to
+                      justify themselves. i.e. L-Left, R-Right C-Center.
+                      Default: L
+
+   var cChildAlias  - Character variable to tell the column which alias to
+                      select when processing a child process.
+
+
+   var cColumnTrim  - Character variable depicting the type of trim to do a
+                      the column output. i.e. L-LTRIM  R-RTRIM  A-ALLTRIM
+                      Default: R
+
+   VAR cTitle       - Character variable holding the title for the column.
+                      Default: ""
+
+   VAR cPicture     - Character variable containing the picture clause for the
+                      column output.
+                      Default: ""
+
+   VAR nCol         - Numeric variable containing the column position for the
+                      column object.  This is the starting column location for
+                      the column object.
+                      Default: Nothing, it is assigned at run time by the
+                               report class.
+
+   VAR nWidth       - Numeric variable containing the width of the column
+                      output.
+                      Default: If not passed when the column object is
+                               instantiated, it will be automatically assigned
+                               to the width of the EVALed block.
+
+   VAR nTotal       - Numeric variable to hold the total of columns with
+                      numeric data, if lShowTotal is TRUE.  This
+                      feature is currently not implemented.
+                      Default: 0
+
+
+   class var cDelimeter       - Class character variable that contains a
+                                string to be used as a new line delimiter for
+                                character output and to also place a line
+                                between the data.
+                                Default: ""
+
+   class var cNoLineDelimeter - Class character variable that contains a
+                                string to be used as a new line delimiter for
+                                character output without placing a
+                                line between the data.
+                                Default: ~~
+
+
+   method Init      - Initialization method for the column class.
+                      Default variables are:
+                  //  Init( cTitle, bBlock, lWrap, nWidth, cPicture )
+
+
+   method show      - Method to output the data to the active device.
+
+   method delimit   - Method to parse the character output for the column with
+                      the two class variable delimiters.
+
+   method childProcess - Method to carry out the child process for a column if
+                         lChild is TRUE.
+
+   method ShowTotal    - Method to display the totals of numeric columns if
+                         lShowTotals is TRUE.  NOTE: this feature is not
+                         currently implemented.
+
+   CLASS METHOD InitClass - Class method to initialize the two delimiter
+                            string variables.
+
+   protected:
+
+   var aOldToBlank  - Array to store the old array of columns to blank while
+                      establishing a new child process.  Note:: currently
+                      the report class can only  support a single child
+                      process.  This ivar in addition  to others have been
+                      established for future enhancements.
+                      Default: {}
+
+   var nPRow        - Numeric to keep track of the current row being printed
+                      of a character variable being wrapped versus the number
+                      of actual rows to display.
+
+
+   var lOrigWrap    - Logical variable that stores the wrapping condition
+                      before displaying output to the screen.
+
+   var cParentAlias - Character variable to store the alias of the report
+                      class when a column object is put into child mode.
+                      Default: Nothing. It is assigned at run time.
+
+   var cToPrint     - Character variable to store the EVAL of the bBlock
+                      variable, which is to be printed.  It is saved to an
+                      ivar for purposes of word wrapping.
+                      Default: Nothing, it is assigned at run time.
+
+

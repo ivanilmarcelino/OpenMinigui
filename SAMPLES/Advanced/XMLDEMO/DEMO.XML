@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<table>
+  <item name="aa">
+course    <font name="Courier New" height="10" bold="1"/>
+  </item>
+  <item name="bb">
+Jimmy Hendrix    <font name="Arial" height="12" italic="1"/>
+  </item>
+</table>

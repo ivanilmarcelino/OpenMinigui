@@ -1,0 +1,56 @@
+*HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
+*OPEN SOURCE PROJECT 2005-2016 Walter Formigoni http://sourceforge.net/projects/hmgs-minigui/
+
+DEFINE WINDOW TEMPLATE AT 0 , 0 WIDTH 848 HEIGHT 614 TITLE 'Weather-forecast' MAIN
+
+     DEFINE TEXTBOX Text_1
+            ROW    10
+            COL    95
+            WIDTH  120
+            HEIGHT 24
+            FONTNAME 'Arial'
+            ONENTER ScanUrl( AllTrim( this.value ) )
+     END TEXTBOX 
+
+     DEFINE LABEL Label_1
+            ROW    10
+            COL    10
+            WIDTH  80
+            HEIGHT 24
+            VALUE "Search by City:"
+            FONTNAME 'Arial'
+            FONTSIZE 9
+            ALIGNMENT VCENTER
+     END LABEL  
+
+     DEFINE LABEL Label_2
+            ROW    60
+            COL    20
+            WIDTH  120
+            HEIGHT 24
+            VALUE "Low Temp:"
+            FONTNAME 'Arial'
+            FONTSIZE 9
+     END LABEL  
+
+     DEFINE LABEL Label_3
+            ROW    100
+            COL    20
+            WIDTH  120
+            HEIGHT 24
+            VALUE "High Temp:"
+            FONTNAME 'Arial'
+            FONTSIZE 9
+     END LABEL  
+
+     DEFINE ACTIVEX Activex_1
+            ROW    130
+            COL    20
+            WIDTH  800
+            HEIGHT 440
+            PROGID "shell.explorer.2"
+     END ACTIVEX
+
+END WINDOW
+
+

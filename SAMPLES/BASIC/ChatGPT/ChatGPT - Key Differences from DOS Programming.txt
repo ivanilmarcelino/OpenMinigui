@@ -1,0 +1,131 @@
+Creating a modern app in Windows with Harbour MiniGUI can feel quite different from DOS programming, as Windows uses an event-driven model rather than a linear flow of execution. In DOS, the program typically follows a straight sequence of instructions. In contrast, Windows programs respond to events like mouse clicks, key presses, or timers.
+
+Key Concepts to Understand
+
+1. Event-Driven Model: 
+   In Windows, the operating system waits for events (like a button click) and then calls the appropriate event handlers. These are chunks of code (functions or procedures) that handle the specific events when they occur. The program's flow depends on the user's actions rather than following a pre-defined sequence.
+
+2. GUI Elements (Controls): 
+   You interact with windows, buttons, text boxes, and other GUI elements called "controls." Each control has its own behavior and can trigger specific events.
+
+3. Message Loop: 
+   Windows programs generally have a message loop, which listens for user actions and other system events and dispatches them to the appropriate window or control. In Harbour MiniGUI, this message loop is hidden, and you don't need to manage it directly.
+
+Now, let’s go step by step to explain how to create a simple modern Windows app in Harbour MiniGUI from the perspective of a DOS programmer.
+
+Step-by-Step Explanation
+
+#1. Define the Main Window
+In a Windows app, everything happens inside a window. In Harbour MiniGUI, you define a window where the user can interact with the app.
+
+#include "minigui.ch"  // Include the MiniGUI library
+
+FUNCTION Main()
+   // Define the main window for your application
+   DEFINE WINDOW oWnd ;
+      AT 100, 100 ;  // Window position (X, Y coordinates)
+      WIDTH 600 ;    // Width of the window
+      HEIGHT 400 ;   // Height of the window
+      TITLE "My First Windows App" ;  // Window title
+      MAIN  // This specifies it's the main window
+
+The `DEFINE WINDOW` block creates a window. `AT 100, 100` positions the window 100 pixels from the top-left corner of the screen, and `WIDTH 600 HEIGHT 400` specifies its size.
+
+#2. Adding Controls (GUI Elements)
+Controls like buttons, labels, textboxes, and more, are placed inside the window. They allow users to interact with the app.
+
+For example, adding a button and a label:
+
+   @ 50, 20 LABEL oLbl VALUE "Hello, World!" ;  // Create a label at position (50, 20)
+      WIDTH 200 HEIGHT 24  // Set the size of the label
+
+   @ 100, 20 BUTTON oBtn ;  // Create a button at position (100, 20)
+      CAPTION "Click Me" ;  // The button text
+      ACTION MsgInfo("Button Clicked!")  // This is the event that will occur when the button is clicked
+
+Here, the button will show a message box saying "Button Clicked!" when pressed.
+
+#3. Event Handling (Actions)
+Each control can trigger events. For example:
+- A button can trigger a click event (`ACTION`).
+- A text box can trigger a change event (`ON CHANGE`).
+
+   @ 150, 20 TEXTBOX oText VALUE "Enter your name" ;  // Create a text box at position (150, 20)
+      WIDTH 200 HEIGHT 24 ;
+      ON CHANGE MsgInfo("Text changed!")  // When the text changes, this action will trigger
+
+In this example, when the user types something in the text box, the event handler (`ON CHANGE`) will be called, and a message box will appear saying "Text changed!"
+
+#4. Handling Closing Events
+Unlike DOS apps that just exit when they finish, Windows apps stay open until the user closes the window. When the window is closed, you can trigger an event to clean up resources or ask the user for confirmation.
+
+   ON RELEASE MsgInfo("Goodbye!")  // When the window is closed, display a message
+
+#5. Activating the Window
+After defining the window and its controls, you must "activate" it. This tells Windows to display the window and start responding to events.
+
+   ACTIVATE WINDOW oWnd  // Display and activate the main window
+RETURN NIL
+
+Full Example: A Simple Windows App
+
+#include "minigui.ch"
+
+FUNCTION Main()
+
+   // Define the main window for your application
+   DEFINE WINDOW oWnd ;
+      AT 100, 100 ;  // Window position
+      WIDTH 600 ;    // Window width
+      HEIGHT 400 ;   // Window height
+      TITLE "My First Windows App" ;  // Window title
+      MAIN ; // Set this as the main window
+      ON RELEASE MsgInfo("Goodbye!")  // Event when window is closed
+
+   // Add a label control
+   @ 50, 20 LABEL oLbl PROMPT "Hello, World!" ;
+      WIDTH 200 HEIGHT 24  // Label size
+
+   // Add a button control that triggers an event when clicked
+   @ 100, 20 BUTTON oBtn ;
+      CAPTION "Click Me" ;
+      ACTION MsgInfo("Button Clicked!")  // Event handler for button click
+
+   // Add a text box control
+   @ 150, 20 TEXTBOX oText VALUE "Enter your name" ;
+      WIDTH 200 HEIGHT 24 ;
+      ON CHANGE MsgInfo("Text changed!")  // Event when text changes
+
+   END WINDOW
+
+   // Activate the window and start event handling
+   ACTIVATE WINDOW oWnd
+
+RETURN NIL
+
+Key Differences from DOS Programming
+
+1. Event-driven vs. Sequential Flow: 
+   - In DOS, you would expect the program to run from start to end. In Windows, you define the layout (the controls) and then let the system wait for events (like button clicks). Your code is triggered only when something happens.
+
+2. Multiple Controls:
+   - Instead of printing text or receiving input in a linear way like in DOS, you place multiple controls (buttons, labels, textboxes) on a window. Each control can have its own event handler.
+
+3. Interactive User Experience:
+   - Windows apps are dynamic. Users can interact with multiple controls simultaneously. For example, typing in a text box, clicking a button, or moving a window around the screen.
+
+Tips for Transitioning
+
+1. Think in Events:
+   - Instead of thinking about what comes next in the code, think about what the user will do (e.g., click a button). Your job is to define what happens when the user does something.
+
+2. Use Documentation:
+   - Harbour MiniGUI has many controls and events. Get familiar with common ones like `BUTTON`, `TEXTBOX`, `LABEL`, and `MENU`. Check the documentation to see what events and properties are available for each.
+
+3. Break Down Tasks:
+   - Break your logic into small, modular functions that respond to specific events. For example, a button's `ACTION` might call a function that processes the user input.
+
+4. Experiment with Layout:
+   - Try different `@ row, col` positions to place controls. Adjust widths and heights to fit more information on the screen.
+
+By embracing the event-driven nature of Windows programming, and learning how to handle various controls and events, you can create modern and interactive applications with Harbour MiniGUI that feel at home in a Windows environment.

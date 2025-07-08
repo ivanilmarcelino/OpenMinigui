@@ -1,0 +1,291 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 47 "combosearchbox.prg"
+PROCEDURE _DefineComboSearchBox( cCSBoxName,  cCSBoxParent,  cCSBoxCol,  cCSBoxRow,  cCSBoxWidth,  cCSBoxHeight,  cCSBoxValue,  cFontName,  nFontSize,  cToolTip,  nMaxLenght,  lUpper,  lLower,  lNumeric,  bLostFocus,  bGotFocus,  bEnter,  lRightAlign,  nHelpId,  lBold,  lItalic,  lUnderline,  aBackColor,  aFontColor,  lNoTabStop,  aArray,  bSaveList )
+
+   LOCAL cParentName := ""
+
+   cCSBoxWidth := iif( cCSBoxWidth == NIL, 120, cCSBoxWidth )
+   cCSBoxHeight := iif( cCSBoxHeight == NIL, 24, cCSBoxHeight )
+   cCSBoxValue := iif( cCSBoxValue == NIL, "", cCSBoxValue )
+   bGotFocus := iif( bGotFocus == NIL, "", bGotFocus )
+   bLostFocus := iif( bLostFocus == NIL, "", bLostFocus )
+   nMaxLenght := iif( nMaxLenght == NIL, 255, nMaxLenght )
+   lUpper := iif( lUpper == NIL, .F., lUpper )
+   lLower := iif( lLower == NIL, .F., lLower )
+   lNumeric := iif( lNumeric == NIL, .F., lNumeric )
+   bEnter := iif( bEnter == NIL, "", bEnter )
+
+   IF _HMG_SYSDATA[34]
+      cParentName := _HMG_SYSDATA[33]
+   ELSE
+      cParentName := cCSBoxParent
+   ENDIF
+
+   _HMG_SYSDATA[316] := cCSBoxName ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[404] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[343] := Nil ; _HMG_SYSDATA[378] := .F. ; _HMG_SYSDATA[379] := .F. ; _HMG_SYSDATA[372] := Nil ; _HMG_SYSDATA[380] := .F. ; _HMG_SYSDATA[381] := .F. ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[338] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[342] := .F. ; _HMG_SYSDATA[296] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[382] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[360] := .T. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+      _HMG_SYSDATA[317] := cCSBoxParent
+      _HMG_SYSDATA[331] := cCSBoxRow
+      _HMG_SYSDATA[332] := cCSBoxCol
+      _HMG_SYSDATA[320] := cCSBoxWidth
+      _HMG_SYSDATA[321] := cCSBoxHeight
+      _HMG_SYSDATA[334] := cCSBoxValue
+      _HMG_SYSDATA[322] := cFontName
+      _HMG_SYSDATA[323] := nFontSize
+      _HMG_SYSDATA[324] := cToolTip
+      _HMG_SYSDATA[343] := nMaxLenght
+      _HMG_SYSDATA[378] := lUpper
+      _HMG_SYSDATA[379] := lLower
+      _HMG_SYSDATA[380] := lNumeric
+      _HMG_SYSDATA[327] := {|| iif( hb_IsBlock( bLostFocus ), Eval( bLostFocus ), NIL )}
+      _HMG_SYSDATA[326] := {|| iif( hb_IsBlock( bGotFocus ), Eval( bGotFocus ), NIL )}
+      _HMG_SYSDATA[338] := {|| iif( hb_IsBlock( bEnter ), Eval( bEnter ), NIL )}
+      _HMG_SYSDATA[335] := {|| CreateCSBox( cParentName, cCSBoxName, aArray, cCSBoxRow, cCSBoxCol, bSaveList )}
+      _HMG_SYSDATA[341] := lRightAlign
+      _HMG_SYSDATA[329] := nHelpId
+      _HMG_SYSDATA[312] := lBold
+      _HMG_SYSDATA[313] := lItalic
+      _HMG_SYSDATA[315] := lUnderline
+      _HMG_SYSDATA[358] := aBackColor
+      _HMG_SYSDATA[359] := aFontColor
+      _HMG_SYSDATA[328] := ! lNoTabStop
+   iif ( _HMG_SYSDATA[382] == Nil .AND. _HMG_SYSDATA[296] == .F. , _DefineTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[343], _HMG_SYSDATA[378], _HMG_SYSDATA[379], _HMG_SYSDATA[380], _HMG_SYSDATA[381], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329] , _HMG_SYSDATA[342], _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), iif ( _HMG_SYSDATA[380] == .T., _DefineMaskedTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382], _HMG_SYSDATA[320], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[321], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329], _HMG_SYSDATA[403] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), _DefineCharMaskTextBox ( _HMG_SYSDATA[316] , _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382] , _HMG_SYSDATA[320] , _HMG_SYSDATA[334] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[327] , _HMG_SYSDATA[326] , _HMG_SYSDATA[335] , _HMG_SYSDATA[321] , _HMG_SYSDATA[338] , _HMG_SYSDATA[341] , _HMG_SYSDATA[329] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[404] , _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[296], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ) ) )
+
+RETURN
+
+
+
+STATIC PROCEDURE CreateCSBox( cParentName, cCSBoxName, aitems, cCSBoxRow, cCSBoxCol, bSaveList )
+
+   LOCAL nFormRow := GetProperty ( _HMG_SYSDATA[254] , "ROW" )
+   LOCAL nFormCol := GetProperty ( _HMG_SYSDATA[254] , "COL" )
+   LOCAL nControlRow := iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "ROW" ) , GetProperty ( _HMG_SYSDATA[254] , "ROW" ) ) + 3 + if ( isVistaOrLater(), GetBorderHeight() / 2, 0 )
+   LOCAL nControlCol := iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "COL" ) , GetProperty ( _HMG_SYSDATA[254] , "COL" ) ) + 2 + if ( os_isWinXP(), -1, 1 )
+
+   LOCAL nControlWidth := iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "WIDTH" ) , GetProperty ( _HMG_SYSDATA[254] , "WIDTH" ) ) - if ( _HMG_SYSDATA[414], 1, 0 )
+   LOCAL nControlHeight := iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "HEIGHT" ) , GetProperty ( _HMG_SYSDATA[254] , "HEIGHT" ) )
+   LOCAL cCurValue := GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "VALUE" )
+   LOCAL cFontname := GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "FONTNAME" )
+   LOCAL nFontsize := GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "FONTSIZE" )
+   LOCAL cTooltip := GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "TOOLTIP" )
+   LOCAL lFontbold := GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "FONTBOLD" )
+   LOCAL lFontitalic := GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "fontitalic" )
+   LOCAL lFontunderline := GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "fontunderline" )
+   LOCAL aBackcolor := iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "BACKCOLOR" ) , GetProperty ( _HMG_SYSDATA[254] , "BACKCOLOR" ) )
+   LOCAL aFontcolor := GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "FONTCOLOR" )
+   LOCAL aResults := {}
+   LOCAL nContIndx := GetControlIndex( iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "NAME" ) , GetProperty ( _HMG_SYSDATA[254] , "NAME" ) ), GetProperty ( _HMG_SYSDATA[254] , "name" ) )
+   LOCAL nItemNo
+   LOCAL nListBoxHeight
+   LOCAL nCaret := GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "CaretPos" )
+
+   LOCAL cCSBxName := "frm" + cCSBoxName
+
+   IF ! Empty( cCurValue )
+
+      IF _HMG_SYSDATA[156][ nContIndx ] # -1
+         ncontrolrow += _HMG_SYSDATA[156][ nContIndx ]
+         ncontrolcol += _HMG_SYSDATA[157][ nContIndx ]
+      ENDIF
+
+      FOR nItemNo := 1 TO Len( aitems )
+         IF Upper( aitems[ nItemNo ] ) == Upper( cCurValue )
+            EXIT
+         ENDIF
+         IF Upper( Left( aitems[ nItemNo ], Len( cCurValue ) ) ) == Upper( cCurValue )
+            AAdd( aResults, aitems[ nItemNo ] )
+         ENDIF
+      next
+
+      IF Len( aResults ) > 0
+
+         nListBoxHeight := Max( Min( ( Len(aResults ) * 16 ) + 6, GetProperty ( _HMG_SYSDATA[254] , "HEIGHT" ) - nControlRow - nControlHeight - 14 ), 40 )
+
+
+
+
+
+
+
+
+ _DefineModalWindow ( cCSBxName,, nFormCol + nControlCol + GetBorderWidth() / 2, nFormRow + nControlRow + GetTitleHeight(), nControlWidth + 2, nListBoxHeight, "" , .T., .F., .T., {,}, {,}, {|| SetProperty( cCSBxName, "_cstext", "CaretPos", nCaret )}, , , , ,, , , , , ,, , , , , , , , , , .F. , , .F. , .F. , , , , , , .F. )
+
+            _DefineHotKey ( , 0 , 38 , {|| _CSDoUpKey()} )
+            _DefineHotKey ( , 0 , 40 , {|| _CSDoDownKey()} )
+            _DefineHotKey ( , 0 , 27 , {|| _CSDoEscKey( cParentName, cCSBoxName )} )
+            _DefineHotKey ( , 0 , 46 , {|| _DelArgList( aItems )} )
+
+            _HMG_SYSDATA[316] := "_cstext" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[404] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[343] := Nil ; _HMG_SYSDATA[378] := .F. ; _HMG_SYSDATA[379] := .F. ; _HMG_SYSDATA[372] := Nil ; _HMG_SYSDATA[380] := .F. ; _HMG_SYSDATA[381] := .F. ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[338] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[342] := .F. ; _HMG_SYSDATA[296] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[382] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[360] := .T. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+               _HMG_SYSDATA[331] := 1
+               _HMG_SYSDATA[332] := 1
+               _HMG_SYSDATA[320] := nControlWidth
+               _HMG_SYSDATA[321] := nControlHeight
+               _HMG_SYSDATA[322] := cFontname
+               _HMG_SYSDATA[323] := nFontsize
+               _HMG_SYSDATA[324] := cTooltip
+               _HMG_SYSDATA[312] := lFontbold
+               _HMG_SYSDATA[313] := lFontitalic
+               _HMG_SYSDATA[315] := lFontunderline
+               _HMG_SYSDATA[358] := aBackcolor
+               _HMG_SYSDATA[359] := aFontcolor
+               _HMG_SYSDATA[335] := {|| _CSTextChanged( cParentName, aitems )}
+               _HMG_SYSDATA[338] := {|| _CSItemSelected( cParentName, cCSBoxName, aitems, bSaveList )}
+            iif ( _HMG_SYSDATA[382] == Nil .AND. _HMG_SYSDATA[296] == .F. , _DefineTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[343], _HMG_SYSDATA[378], _HMG_SYSDATA[379], _HMG_SYSDATA[380], _HMG_SYSDATA[381], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329] , _HMG_SYSDATA[342], _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), iif ( _HMG_SYSDATA[380] == .T., _DefineMaskedTextBox ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382], _HMG_SYSDATA[320], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[327], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[321], _HMG_SYSDATA[338], _HMG_SYSDATA[341], _HMG_SYSDATA[329], _HMG_SYSDATA[403] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ), _DefineCharMaskTextBox ( _HMG_SYSDATA[316] , _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[382] , _HMG_SYSDATA[320] , _HMG_SYSDATA[334] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[327] , _HMG_SYSDATA[326] , _HMG_SYSDATA[335] , _HMG_SYSDATA[321] , _HMG_SYSDATA[338] , _HMG_SYSDATA[341] , _HMG_SYSDATA[329] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[404] , _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[296], _HMG_SYSDATA[342], _HMG_SYSDATA[330], _HMG_SYSDATA[328], ! _HMG_SYSDATA[360], _HMG_SYSDATA[372], _HMG_SYSDATA[406], _HMG_SYSDATA[399] ) ) )
+
+            _HMG_SYSDATA[89] := .T. ; _HMG_SYSDATA[316] := "_cslist" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[337] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[356] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[344] := .F. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[365] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[303] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+               _HMG_SYSDATA[331] := nControlHeight
+               _HMG_SYSDATA[332] := 1
+               _HMG_SYSDATA[320] := nControlWidth
+               _HMG_SYSDATA[321] := nListBoxHeight
+               _HMG_SYSDATA[337] := aResults
+               _HMG_SYSDATA[322] := cFontname
+               _HMG_SYSDATA[323] := nFontsize
+               _HMG_SYSDATA[348] := {|| _CSItemSelected( cParentName, cCSBoxName )}
+               _HMG_SYSDATA[334] := 1
+            _HMG_SYSDATA[89] := .F. ; _DefineListBox( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[337], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[335], _HMG_SYSDATA[348], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[344], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[328], _HMG_SYSDATA[365], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[356], _HMG_SYSDATA[304], _HMG_SYSDATA[303], _HMG_SYSDATA[360], _HMG_SYSDATA[403], _HMG_SYSDATA[406] )
+
+         _EndWindow ()
+
+         SetProperty( cCSBxName, "_cstext", "VALUE", cCurValue )
+
+         _ActivateWindow ( {cCSBxName}, .F., , )
+
+      ENDIF
+
+   ENDIF
+
+RETURN
+
+
+
+STATIC PROCEDURE _CSTextChanged( cParentName, aItems )
+
+   LOCAL cCurValue := GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_cstext", "VALUE" )
+   LOCAL aResults := {}
+   LOCAL nListBoxHeight
+   LOCAL nParentHeight := GetProperty( cParentName, "HEIGHT" )
+   LOCAL nParentRow := GetProperty( cParentName, "ROW" )
+
+   DoMethod( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "DeleteAllItems" )
+
+
+   AEval( aItems, {| x | if( Upper( Left(x, Len(cCurValue ) ) ) == Upper( cCurValue ), AAdd( aResults, x ), NIL ) } )
+
+   AEval( aResults, {| x | DoMethod( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "AddItem", x ) } )
+
+   SetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE", 1 )
+
+
+
+
+
+   nListBoxHeight := Max( Min( ( Len(aResults ) * 16 ) + 6, ( nParentHeight + nParentRow -  GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "ROW" ) -  GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csText", "ROW" ) -  GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csText", "HEIGHT" ) - 14 ) ), 40 )
+
+   SetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "HEIGHT", nListBoxHeight - GetBorderHeight() )
+   SetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "HEIGHT", nListBoxHeight + GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_cstext", "HEIGHT" ) - GetBorderHeight() )
+
+RETURN
+
+
+
+STATIC FUNCTION _CSItemSelected( cParentName, cTxBName, aitems, bSaveList )
+
+   LOCAL nListValue
+   LOCAL cListItem
+   LOCAL cRtv := GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE" )
+   LOCAL cCv := GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_CSText", "VALUE" )
+
+   IF cRtv > 0
+
+      nListValue := GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE" )
+      cListItem := GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "ITEM", nListValue )
+
+      SetProperty( cParentName, cTxBName, "VALUE", cListItem )
+
+
+      SetProperty( cParentName, cTxBName, "CARETPOS",  Len( GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "ITEM", cRtv ) ) )
+
+      DoMethod( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "Release" )
+
+      DoMethod( cParentName, cTxBName, "SetFocus" )
+      _PushKey( 13 )
+
+   ELSE
+
+      IF msgYesNo( cCv + hb_eol() + hb_eol() + " Accept this new value ?", "Question!", .T. )
+
+         SetProperty( cParentName, cTxBName, "VALUE", cCv )
+
+         SetProperty( cParentName, cTxBName, "CARETPOS", Len( cCv ) )
+
+         AAdd ( aitems, cCv )
+
+         ASort ( aitems )
+
+         _CSTextChanged( cParentName, aitems )
+
+         _CSItemSelected( cParentName, cTxBName, aitems )
+
+      ELSE
+         DoMethod( cParentName, cTxBName, "SetFocus" )
+      ENDIF
+
+   ENDIF
+
+RETURN aitems
+
+
+
+STATIC PROCEDURE _CSDoUpKey()
+
+
+
+   IF GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "ItemCount" ) > 0 .AND.  GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE" ) > 1
+
+      SetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE", GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE" ) - 1 )
+
+   ENDIF
+
+RETURN
+
+
+
+STATIC PROCEDURE _CSDoDownKey()
+
+
+
+   IF GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "ItemCount" ) > 0 .AND.  GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE" ) <  GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "ItemCount" )
+
+      SetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE", GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE" ) + 1 )
+
+   ENDIF
+
+RETURN
+
+
+
+STATIC PROCEDURE _CSDoEscKey( cParentName, cCSBoxName )
+
+   SetProperty( cParentName, cCSBoxName, "VALUE", "" )
+
+   DoMethod( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "Release" )
+
+RETURN
+
+
+
+
+STATIC PROCEDURE _DelArgList( aList )
+
+   LOCAL nVal := GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "VALUE" )
+   LOCAL nDval := AScan( aList, GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "ITEM", nval ) )
+
+
+   IF GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "ItemCount" ) > 0 .AND.  nVal <= GetProperty( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "ItemCount" )
+
+      IF msgYesNo( aList[ nDval ] + hb_eol() + hb_eol() + " Delete this value ?", "Question!", .T. )
+         alist := hb_ADel( aList, ndval, .T. )
+         DoMethod( GetProperty ( _HMG_SYSDATA[254] , "NAME" ), "_csList", "deleteitem", nval )
+      ENDIF
+   ENDIF
+
+RETURN

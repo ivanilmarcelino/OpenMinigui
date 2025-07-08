@@ -1,0 +1,188 @@
+TSimpleTaskDialog Class Manual
+
+Introduction
+
+The TSimpleTaskDialog class provides a simple interface for creating and displaying task dialogs using Harbour's MiniGUI library. Task dialogs are specialized message boxes with more advanced features, such as customizable titles, instructions, content, and button layouts. This class is ideal for developers who want a simplified interface for creating task dialogs without dealing with the lower-level details.
+
+Class Definition
+
+CREATE CLASS TSimpleTaskDialog FUNCTION SimpleTaskDialog
+
+Key Features
+- Simple Creation of Task Dialogs: The TSimpleTaskDialog class makes it easy to create a task dialog by setting a few properties, such as the title, content, and buttons.
+- Customizable: You can customize the task dialog's title, instructions, main icon, and buttons with ease.
+- Execution Control: The class provides a method to execute the dialog and retrieve the user's input.
+
+---
+
+Class Properties
+
+Public Properties
+
+1. Cargo
+- Type: Generic container for user-defined data.
+- Description: This property can be used to store any additional data that the user might want to associate with the task dialog.
+
+2. lError
+- Type: Logical (Boolean)
+- Access: Read-Only
+- Default: .T. (True)
+- Description: Indicates whether an error occurred during the creation or execution of the task dialog. If set to .F., the task dialog was created and executed successfully.
+
+3. nButtonResult
+- Type: Integer
+- Access: Read-Only
+- Default: NIL
+- Description: Stores the result of the button pressed by the user in the task dialog (e.g., OK, Cancel).
+
+4. nResult
+- Type: Integer
+- Access: Read-Only
+- Default: E_FAIL (Failure code)
+- Description: Represents the overall result of the task dialog execution. On success, this will hold a success code. On failure, it holds E_FAIL.
+
+---
+
+Protected Properties
+
+1. cTitle
+- Type: String
+- Default: NIL
+- Description: The title of the task dialog.
+
+2. cInstruction
+- Type: String
+- Default: NIL
+- Description: A brief instruction or message displayed in the task dialog.
+
+3. cContent
+- Type: String
+- Default: NIL
+- Description: The main content or body of the task dialog.
+
+4. nCommonButtons
+- Type: Integer
+- Default: TDCBF_OK_BUTTON
+- Description: Specifies the common buttons to be shown in the task dialog (e.g., OK, Cancel). These buttons are predefined sets.
+
+5. nMainIcon
+- Type: Integer
+- Default: TD_NO_ICON
+- Description: Specifies the main icon that appears in the task dialog (e.g., an information icon, warning icon, etc.).
+
+---
+
+Class Methods
+
+1. New( cTitle, cInstruction, cContent, nCommonButtons, nMainIcon )
+- Parameters:
+  - cTitle: (String) The title of the task dialog.
+  - cInstruction: (String) Instruction or header text.
+  - cContent: (String) The content or body of the task dialog.
+  - nCommonButtons: (Integer) Common buttons (e.g., OK, Cancel) as predefined by the TaskDlgs.ch constants.
+  - nMainIcon: (Integer) Main icon for the task dialog.
+- Description: Constructor for the TSimpleTaskDialog class. Initializes a new instance of the task dialog with the provided title, instruction, content, buttons, and icon.
+- Usage:
+
+  oDialog := TSimpleTaskDialog():New( "Task Title", "Instruction", "Content", TDCBF_OK_BUTTON, TD_INFORMATION_ICON )
+  
+2. Execute()
+- Description: Executes the task dialog and waits for user input. The method displays the dialog and blocks execution until the user selects an option (e.g., presses OK or Cancel). After the dialog is closed, it updates the properties nButtonResult and nResult.
+- Returns: Integer (dialog result).
+- Usage:
+
+  nResult := oDialog:Execute()
+  
+---
+
+Set/Get Methods
+
+These methods are used to set or get the values of various properties for customizing the task dialog.
+
+3. Title( cTitle )
+- Description: Sets or gets the title of the task dialog.
+- Usage:
+
+  oDialog:Title( "New Title" )
+  
+4. Instruction( cInstruction )
+- Description: Sets or gets the instruction or header text of the task dialog.
+- Usage:
+
+  oDialog:Instruction( "Follow these steps..." )
+  
+5. Content( cContent )
+- Description: Sets or gets the main content (body) of the task dialog.
+- Usage:
+
+  oDialog:Content( "This is the main content of the task dialog." )
+  
+6. CommonButtons( nCBs )
+- Description: Sets or gets the common buttons displayed in the task dialog. Buttons are specified using constants from TaskDlgs.ch (e.g., TDCBF_OK_BUTTON, TDCBF_CANCEL_BUTTON).
+- Usage:
+
+  oDialog:CommonButtons( TDCBF_OK_BUTTON + TDCBF_CANCEL_BUTTON )
+  
+7. MainIcon( nIcon )
+- Description: Sets or gets the main icon for the task dialog (e.g., information, warning, or error icons). Icons are specified using constants from TaskDlgs.ch.
+- Usage:
+
+  oDialog:MainIcon( TD_INFORMATION_ICON )
+  
+---
+
+Usage Example
+
+Here is a basic example that demonstrates how to create and display a task dialog using the TSimpleTaskDialog class.
+
+include "TaskDlgs.ch"
+
+FUNCTION Main()
+   LOCAL oDialog, nResult
+
+   // Create a new task dialog with title, instruction, content, buttons, and icon
+   oDialog := TSimpleTaskDialog():New( "Task Title", ;
+                                       "Instruction Text", ;
+                                       "This is the main content of the dialog.", ;
+                                       TDCBF_OK_BUTTON + TDCBF_CANCEL_BUTTON, ;
+                                       TD_INFORMATION_ICON )
+
+   // Execute the dialog and get the result
+   nResult := oDialog:Execute()
+
+   // Check which button was pressed
+   IF oDialog:nButtonResult == IDOK
+      MsgInfo( "You pressed OK!" )
+   ELSEIF oDialog:nButtonResult == IDCANCEL
+      MsgInfo( "You pressed Cancel!" )
+   ENDIF
+
+RETURN NIL
+
+Output
+
+This example will show a task dialog with the title "Task Title", an instruction, and the content you provided. It will have OK and Cancel buttons, and the result will show a message depending on which button was pressed.
+
+---
+
+Constants from TaskDlgs.ch
+
+Here are some commonly used constants for customizing the buttons and icons of the task dialog:
+
+Button Constants
+- TDCBF_OK_BUTTON: Adds the OK button.
+- TDCBF_CANCEL_BUTTON: Adds the Cancel button.
+- TDCBF_YES_BUTTON: Adds the Yes button.
+- TDCBF_NO_BUTTON: Adds the No button.
+
+Icon Constants
+- TD_NO_ICON: No icon.
+- TD_INFORMATION_ICON: Information icon.
+- TD_WARNING_ICON: Warning icon.
+- TD_ERROR_ICON: Error icon.
+
+---
+
+Conclusion
+
+The TSimpleTaskDialog class simplifies the process of creating task dialogs with customizable titles, content, buttons, and icons. With its straightforward methods and properties, developers can quickly integrate task dialogs into their applications for enhanced user interaction.

@@ -1,0 +1,328 @@
+*HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
+*OPEN SOURCE PROJECT 2005-2020 Walter Formigoni http://sourceforge.net/projects/hmgs-minigui/
+
+DEFINE WINDOW TEMPLATE AT 227 , 662 WIDTH 598 HEIGHT 597 TITLE "Minigui Extended Anchor Utility demo" MAIN NOMINIMIZE
+
+     DEFINE MAIN MENU
+          DEFINE POPUP "Anchor demo"
+               MENUITEM "Anchor choice default with centered Window on form'" ACTION (SEE_OPTIONS( .F. ),MsgInfo(Scegli (,,,,"FC") ,"You have choice:") )
+               MENUITEM "Anchor choice with more item with Graphic choice" ACTION SEE_OPTIONS( .T. )
+               MENUITEM "Anchor choice with more item with Form option" ACTION (SEE_OPTIONS( .F. ),MsgInfo(Scegli ({ "Radio 1","Radio 2","Radio 3","Radio 4" }, Space(25)+"Choose the value","Radio Group choice demo",3 ),"You have choice:") )
+          END POPUP
+          DEFINE POPUP "Info"
+               MENUITEM "About" ACTION MsgInfo("Anchor Demo"+CRLF+"By Pierpaolo Martinello on Dec 2021")
+          End Popup
+     END MENU
+
+     DEFINE STATUSBAR FONT 'ARIAL' SIZE 12 BOLD
+            STATUSITEM "" FONTCOLOR BLUE
+     END STATUSBAR
+
+     DEFINE LABEL Label_0
+            ROW    180
+            COL    75
+            WIDTH  440
+            HEIGHT 23
+            VALUE "Choose the location of the anchor"
+            FONTSIZE 12
+            TRANSPARENT .T.
+            CENTERALIGN .T.
+            VISIBLE .F.
+     END LABEL  
+
+     DEFINE LABEL Label_1
+            ROW    50
+            COL    90
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_2
+            ROW    50
+            COL    280
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL  
+
+     DEFINE LABEL Label_3
+            ROW    50
+            COL    490
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL  
+
+     DEFINE LABEL Label_4
+            ROW    100
+            COL    40
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_5
+            ROW    100
+            COL    90
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_6
+            ROW    100
+            COL    280
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_7
+            ROW    100
+            COL    540
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_8
+            ROW    270
+            COL    40
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_9
+            ROW    440
+            COL    40
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_10
+            ROW    490
+            COL    90
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_11
+            ROW    490
+            COL    280
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_12
+            ROW    490
+            COL    490
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_13
+            ROW    440
+            COL    540
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_14
+            ROW    270
+            COL    540
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_15
+            ROW    100
+            COL    490
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_16
+            ROW    440
+            COL    490
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_17
+            ROW    440
+            COL    280
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_18
+            ROW    270
+            COL    280
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_19
+            ROW    270
+            COL    490
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_20
+            ROW    270
+            COL    90
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+     DEFINE LABEL Label_21
+            ROW    440
+            COL    90
+            WIDTH  20
+            HEIGHT 20
+            VALUE "o"
+            FONTNAME "Wingdings"
+            FONTSIZE 14
+            ONGOTFOCUS Anchor(THIS.NAME,.T.)
+            ONLOSTFOCUS oWindow1.statusbar.item(1) := ""
+            ACTION Anchor(THIS.NAME)
+            VISIBLE .F.
+     END LABEL
+
+END WINDOW
+
+

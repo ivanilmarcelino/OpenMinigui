@@ -1,0 +1,21 @@
+
+# Enable multi/single-thread Harbour VM
+#-mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all *.obj
+-workdir=OBJ
+
+# Name EXE-module
+-oDemo
+
+# list of all *.prg
+demo.prg
+
+# project Resources
+demo.rc
+
+# paths to the Library
+-lrddleto

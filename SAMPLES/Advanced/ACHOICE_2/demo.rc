@@ -1,0 +1,34 @@
+1 VERSIONINFO
+ FILEVERSION 0,0,0,0
+ FILEFLAGSMASK 0x0L
+ FILEFLAGS 0x8L
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041004E4"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName","Pierpaolo Martinello\0"
+            VALUE "FileDescription","\0"
+            VALUE "InternalName","Achoice.Exe\0"
+            VALUE "LegalCopyright", "Copyright © 2024\0"
+            VALUE "LegalTrademarks","\0"
+            VALUE "OriginalFilename","\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "\0"
+            VALUE "ProductVersion", "ALFA 240820-18:11:08\0"
+            VALUE "SpecialBuild","\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0410, 0x04E4
+    END
+END
+
+//Image resources
+//ICON type images
+ThumNails          ICON   "ThumNails.Ico"

@@ -1,0 +1,243 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 28 "demo.prg"
+PROCEDURE Main
+
+   LOCAL aDesk := GetDesktopArea()
+   LOCAL nScrWidth := aDesk[ 3 ] - aDesk[ 1 ], nScrHeight := aDesk[ 4 ] - aDesk[ 2 ]
+   LOCAL nWidth  := nScrWidth * 0.75
+   LOCAL nHeight := nScrHeight * 0.72
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Form_1", "Frame Window", 0, 0, nWidth, nHeight, .F., .F., .F., .F., .F., {,}, {,}, {|| ( _ExtDisableControl( "Edit_1", "Form_1" ), ResizeEdit() )}, ,, {|| ResizeEdit()} , ,, , {|| PaintChildWindow( GetControlHandle( "Edit_1", "Form_1" ), "Client Window" )} , .F. , .F. , .T. , 101 , .F. , ,, , , ,, , , , , , , , , , .F. , {|| ResizeEdit()} , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+   _DefineMainMenu( )
+
+   _DefineMenuPopup( "&File" , , , )
+      _DefineMenuItem ( "New..." , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 201 ),,, .F., .F. ,, .F. )
+      _DefineMenuItem ( "&Open..." , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 202 ),,, .F., .F. ,, .F. )
+      _DefineMenuItem ( "&Save" , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 203 ),,, .F., .F. ,, .F. )
+      _DefineMenuItem ( "Save &As..." , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 204 ),,, .F., .F. ,, .F. )
+      _DefineSeparator()
+      _DefineMenuItem ( "&Print" , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 205 ),,, .F., .F. ,, .F. )
+      _DefineSeparator()
+      _DefineMenuItem ( "E&xit" , {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )} , , , .F. , .F. , hb_LoadString( 206 ),,, .F., .F. ,, .F. )
+   _EndMenuPopup()
+   _DefineMenuPopup( "&Edit" , , , )
+      _DefineMenuItem ( "Undo" , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 210 ),,, .F., .F. ,, .F. )
+      _DefineMenuItem ( "Redo" , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 211 ),,, .F., .F. ,, .F. )
+      _DefineSeparator()
+      _DefineMenuItem ( "Cu&t" , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 212 ),,, .F., .F. ,, .F. )
+      _DefineMenuItem ( "&Copy" , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 213 ),,, .F., .F. ,, .F. )
+      _DefineMenuItem ( "&Paste" , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 214 ),,, .F., .F. ,, .F. )
+      _DefineMenuItem ( "De&lete" , {|| _dummy()} , , , .F. , .F. , hb_LoadString( 215 ),,, .F., .F. ,, .F. )
+   _EndMenuPopup()
+   _DefineMenuPopup( "&View" , , , )
+
+
+      _DefineMenuItem ( "&Tool Bar" , {|| ( SetProperty ( "Form_1", "VIEW_TOOLBAR" , "Checked" , ! GetProperty ( "Form_1", "VIEW_TOOLBAR" , "Checked" ) ),  BuildToolBar( GetProperty ( "Form_1", "VIEW_TOOLBAR" , "Checked" ) ), ResizeEdit() )} , "VIEW_TOOLBAR" , , .T. , .F. , hb_LoadString( 220 ),,, .F., .F. ,, .F. )
+
+
+      _DefineMenuItem ( "&Status Bar" , {|| ( SetProperty ( "Form_1", "VIEW_STATUSBAR" , "Checked" , ! GetProperty ( "Form_1", "VIEW_STATUSBAR" , "Checked" ) ),  BuildStatusBar( GetProperty ( "Form_1", "VIEW_STATUSBAR" , "Checked" ) ), ResizeEdit() )} , "VIEW_STATUSBAR" , , .T. , .F. , hb_LoadString( 221 ),,, .F., .F. ,, .F. )
+   _EndMenuPopup()
+   _DefineMenuPopup( "&Help" , , , )
+      _DefineMenuItem ( "&About" , {|| dlg_about()} , , , .F. , .F. , hb_LoadString( 230 ),,, .F., .F. ,, .F. )
+   _EndMenuPopup()
+
+   _EndMenu()
+
+   BuildToolBar( .T. )
+
+
+
+
+
+
+
+   _DefineEditBox ( "Edit_1",, 0, 28, 0, 0, "", "Arial", 11,,,,,, .F., .F.,, .F., .F., .T., .F., .F., .F.,, { 255 , 255 , 255 },, .T., .T., .F.,, )
+
+   BuildStatusBar( .T. )
+
+   _EndWindow ()
+
+   DoMethod ( "Form_1", "Center" )
+
+   _ActivateWindow ( {"Form_1"}, .F., , )
+
+RETURN
+
+
+PROCEDURE BuildToolBar( lShow )
+
+
+   IF lShow
+
+
+
+
+
+      _DefineImageList ( "ImageList_1" , "Form_1" , 32, 32 ,{ "ID_TOOLBAR" } ,, , 19 , .F. )
+
+      _BeginToolBarEx ( "ToolBar_1", "Form_1", , , 34, 34,, ,,,, .T., .F., .F., .F., .F., .F., .F., .F., .F., .F.,,, "ImageList_1",, .F., .F. )
+
+
+
+
+      _DefineToolButton ( "Button_1", _HMG_SYSDATA[27], , , , {|| _dummy()} , , , "" , hb_LoadString( 201 ) , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F. , 18 , .F. )
+
+
+
+
+      _DefineToolButton ( "Button_2", _HMG_SYSDATA[27], , , , {|| _dummy()} , , , "" , hb_LoadString( 202 ) , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F. , 0 , .F. )
+
+
+
+
+
+      _DefineToolButton ( "Button_3", _HMG_SYSDATA[27], , , , {|| _dummy()} , , , "" , hb_LoadString( 203 ) , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F. , 3 , .F. )
+
+
+
+
+      _DefineToolButton ( "Button_4", _HMG_SYSDATA[27], , , , {|| _dummy()} , , , "" , hb_LoadString( 212 ) , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F. , 6 , .F. )
+
+
+
+
+      _DefineToolButton ( "Button_5", _HMG_SYSDATA[27], , , , {|| _dummy()} , , , "" , hb_LoadString( 213 ) , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F. , 7 , .F. )
+
+
+
+
+
+      _DefineToolButton ( "Button_6", _HMG_SYSDATA[27], , , , {|| _dummy()} , , , "" , hb_LoadString( 214 ) , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F. , 8 , .F. )
+
+
+
+
+
+      _DefineToolButton ( "Button_7", _HMG_SYSDATA[27], , , , {|| _dummy()} , , , "" , hb_LoadString( 205 ) , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F. , 4 , .F. )
+
+
+
+
+      _DefineToolButton ( "Button_8", _HMG_SYSDATA[27], , , , {|| dlg_about()} , , , "" , hb_LoadString( 230 ) , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F. , 10 , .F. )
+
+      _EndToolBar ()
+
+      IF _IsControlDefined ( "StatusBar" , "Form_1" )
+         SetProperty ( "Form_1", "StatusBar" , "Item" , 1 , "Ready" )
+      ENDIF
+
+   ELSE
+
+      Domethod ( "Form_1", "ToolBar_1" , "Release" )
+
+      _DestroyImageList ( "ImageList_1", "Form_1" )
+
+   ENDIF
+
+RETURN
+
+
+PROCEDURE BuildStatusBar( lShow )
+
+
+   IF lShow
+
+      IF Empty( _HMG_SYSDATA[33] )
+         _HMG_SYSDATA[33] := GetProperty ( _HMG_SYSDATA[254] , "Name" )
+      ENDIF
+
+      _HMG_SYSDATA[34] := .T.
+
+      _BeginMessageBar( "StatusBar", _HMG_SYSDATA[33], .T., "MS Sans Serif", 8, .F., .F., .F., .F., )
+
+      _EndMessageBar ()
+
+      SetProperty ( _HMG_SYSDATA[254], "StatusBar" , "Item" , 1 , "Ready" )
+      _HMG_SYSDATA[273] := GetProperty ( _HMG_SYSDATA[254], "StatusBar" , "Item" , 1 )
+
+      _HMG_SYSDATA[34] := .F.
+
+   ELSE
+
+      DoMethod ( _HMG_SYSDATA[254], "StatusBar" , "Release" )
+
+   ENDIF
+
+RETURN
+
+
+PROCEDURE ResizeEdit
+
+
+   SetProperty ( "Form_1", "Edit_1" , "Row" , iif( _IsControlDefined ( "ToolBar_1" , "Form_1" ), 44, 0 ) )
+
+   SetProperty ( "Form_1", "Edit_1" , "Width" , GetProperty ( "Form_1", "Width" ) - 2 * GetBorderWidth() )
+
+
+
+
+   SetProperty ( "Form_1", "Edit_1" , "Height" , GetProperty ( "Form_1", "Height" ) - ( GetTitleHeight() +  2 * GetBorderHeight() + GetMenuBarHeight() +  iif( GetProperty ( "Form_1", "VIEW_TOOLBAR" , "Checked" ), 44, 0 ) +  iif( GetProperty ( "Form_1", "VIEW_STATUSBAR" , "Checked" ), GetProperty ( "Form_1", "StatusBar" , "Height" ), 0 ) ) )
+
+RETURN
+
+
+PROCEDURE dlg_about
+
+
+
+
+
+   _BeginDialog( "f_dialog" , "Form_1" , 301 ,,,,, , , , , { |DialogHandle| C_Center( DialogHandle ) },,.F. ,.F., .F. );
+
+
+      _DefineButton ( "Btn_1",, 0, 0,, {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )}, 0, 0,,,,,, .F., .F.,, .F., .F., .F., .F., .F., .F., .F., , 1 )
+
+      _DefineHotKey ( "f_dialog" , 0 , 27 , {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )} )
+
+   _EndDialog()
+
+RETURN
+
+
+#pragma BEGINDUMP
+
+#include <mgdefs.h>
+
+HB_FUNC( HB_LOADSTRING )
+{
+   LPSTR cBuffer;
+
+   cBuffer = GlobalAlloc( GPTR, 255 );
+   LoadString( GetModuleHandle( NULL ), hb_parni( 1 ), cBuffer, 254 );
+
+   hb_retc( cBuffer );
+   GlobalFree( cBuffer );
+}
+
+HB_FUNC( PAINTCHILDWINDOW )
+{
+   HWND hwnd = (HWND) HB_PARNL( 1 );
+   RECT r;
+   PAINTSTRUCT ps;
+   HDC hDC = BeginPaint( hwnd, &ps );
+
+   GetClientRect( hwnd, &r );
+
+   hb_retni( DrawText( hDC, ( LPCTSTR ) hb_parc( 2 ), -1, &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE ) );
+
+   EndPaint( hwnd, &ps );
+}
+
+#pragma ENDDUMP

@@ -1,0 +1,48 @@
+//
+// Resource    Resource         Resource
+// Name	       Type             FileName
+//
+1MAIN_ICO       ICON         res\1MG.ico
+LogoMG          PNG          res\MiniGuiLogo.png
+
+// ------ WaitThreadIco.prg
+zmk01          ICON          res\zmk01.ico
+zmk02          ICON          res\zmk02.ico
+zmk03          ICON          res\zmk03.ico
+zmk04          ICON          res\zmk04.ico
+zmk05          ICON          res\zmk05.ico
+zmk06          ICON          res\zmk06.ico
+zmk07          ICON          res\zmk07.ico
+zmk08          ICON          res\zmk08.ico
+
+
+#define __VERSION_INFO
+
+1 VERSIONINFO
+FILEVERSION 1,0
+PRODUCTVERSION 1,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+  BLOCK "040904b0"
+  {
+    VALUE "FileDescription", "Table in MiniGui\000"
+    VALUE "FileVersion", "1.0"
+    VALUE "InternalName", "TsbDemo.exe\000"
+    VALUE "LegalCopyright", "(c) Copyright 2020 Verchenko Andrey (Dmitrov)\000"
+    VALUE "LegalTrademarks", "Harbour + MiniGui\000"
+    VALUE "OriginalFilename", "TsbDemo.exe\000"
+    VALUE "CompanyName", "V-Soft Dmitrov, Moscow region\000"
+    VALUE "ProductName", "Table in MiniGui\000"
+    VALUE "ProductVersion", "1.0."
+    VALUE "Comments", "Created by Verchenko Andrey <verchenkoag@gmail.com>\000"
+  }
+}
+
+BLOCK "VarFileInfo"
+{
+  VALUE "Translation", 0x0409 0x04B0
+}
+}

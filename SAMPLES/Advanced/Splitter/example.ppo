@@ -1,0 +1,280 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 8 "example.prg"
+Procedure Main()
+
+    LOCAL splitter1, splitter2, splitter3, splitter4, splitter5
+    LOCAL splitter6, splitter7, splitter8, splitter9
+
+
+    _HMG_SYSDATA[414] := .T. ; _HMG_SYSDATA[433] := .F. ; _HMG_SYSDATA[432] := .F.
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win_1", "SPLITTER Showcase", 0, 0, 1395, 965, .F., .F., .F., .F., .F., {,}, {,}, {|| OpenDBF()}, {|| CloseDBF()} ,, , ,, , , .F. , .F. , .T. , , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+
+
+
+        _DefineEditBox ( "editbox",, 0, 0, 300, 190, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",,,,,,,, .F., .F.,, .F., .F., .F., .F., .F., .F.,,,, .T., .T., .F.,, )
+
+
+
+
+
+        _DefineEditBox ( "tbx2",, 0, 200, 300, 200, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",,,,,,,, .F., .F.,, .F., .F., .F., .F., .F., .F.,,,, .T., .T., .F.,, )
+
+
+
+
+        splitter6 := _DefineSplitter( "splitter6",,,,,, .F., .T., {"editbox"}, {"tbx2"},, .F., .F., .F.,,,,,,,,,,, )
+
+
+
+
+
+
+
+
+
+
+        _DefineBrowse ( "brow" , , 315 , 50 , 750 , 250 , {"LP", "First Name", "Last Name", "Gender", "Married", "Birth Date", "Biography"} , {50 , 140 , 140 , 60 , 60 , 150 , 150} , {"Test->lp", "Test->fname", "Test->lname", "Test->gender", "Test->married", "Test->birth", "Test->bio"} , , , , , , , , ,, "Test" , .F., .F. , , {2, 0, 0, 2, 2, 2, 2} , , .F. , .F. , .F. , .F. , .F. , , , .F. , .F. , .F. , .F. , , , , .T. , , ,,,, .F. , , , .F. , ,, , )
+
+
+
+
+
+
+        splitter1 := _DefineSplitter( "splitter1",,,,,, .T., .F., {"editbox", "tbx2", "splitter6"}, {"brow"}, {5, 15}, .F., .T., .F.,, {179, 70, 62},,,,,,,,, )
+
+
+
+
+
+        _DefineEditBox ( "tbx3",, 1080, 0, 300, 200, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",,,,,,,, .F., .F.,, .F., .F., .F., .F., .F., .F.,,,, .T., .T., .F.,, )
+
+
+
+
+        _DefineEditBox ( "tbx4",, 1080, 210, 300, 190, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",,,,,,,, .F., .F.,, .F., .F., .F., .F., .F., .F.,,,, .T., .T., .F.,, )
+
+
+
+
+
+        splitter7 := _DefineSplitter( "splitter7",,,,,, .F., .T., {"tbx3"}, {"tbx4"},, .F., .F., .T.,,,,,,,,,,, )
+
+
+
+
+
+
+
+
+
+
+        splitter2 := _DefineSplitter( "splitter2",,,,,, .T., .F., {"brow"}, {"tbx3", "tbx4", "splitter7"}, {5, 5}, .T., .F., .F.,, {23, 69, 110}, {23, 133, 230}, {87, 23, 66}, {173, 29, 126},,,,,, )
+
+
+
+
+
+
+
+        _DefineTree ( "tree" , , 425 , 0 , 390 , 500 , , , , , , , , .F. , 15 ,,,, .F. ,.F., .F., .F., .F., .F.,,,, 20, 20,,, .F. )
+
+
+            _DefineTreeNode ( "Node A" , , , )
+                _DefineTreeItem ( "Item A.1" , , , )
+                _DefineTreeItem ( "Item A.2" , , , )
+                _DefineTreeItem ( "Item A.3" , , , )
+                _DefineTreeItem ( "Item A.4" , , , )
+                _DefineTreeItem ( "Item A.5" , , , )
+            _EndTreeNode()
+
+            _DefineTreeNode ( "Node B" , , , )
+                _DefineTreeItem ( "Item B.1" , , , )
+                _DefineTreeItem ( "Item B.2" , , , )
+
+                _DefineTreeNode ( "Node B2" , , , )
+                    _DefineTreeItem ( "Item B2.1" , , , )
+                    _DefineTreeItem ( "Item B2.2" , , , )
+                    _DefineTreeItem ( "Item B2.3" , , , )
+                    _DefineTreeItem ( "Item B2.4" , , , )
+                    _DefineTreeItem ( "Item B2.5" , , , )
+                    _DefineTreeItem ( "Item B2.6" , , , )
+                _EndTreeNode()
+
+                _DefineTreeItem ( "Item B.3" , , , )
+                _DefineTreeItem ( "Item B.4" , , , )
+            _EndTreeNode()
+
+            _DefineTreeNode ( "Node C" , , , )
+                _DefineTreeItem ( "Item C.1" , , , )
+                _DefineTreeItem ( "Item C.2" , , , )
+                _DefineTreeItem ( "Item C.3" , , , )
+                _DefineTreeItem ( "Item C.4" , , , )
+                _DefineTreeItem ( "Item C.5" , , , )
+            _EndTreeNode()
+
+            _DefineTreeNode ( "Node D" , , , )
+                _DefineTreeItem ( "Item D.1" , , , )
+
+                _DefineTreeNode ( "D2" , , , )
+                    _DefineTreeItem ( "Item D2.1" , , , )
+
+                    _DefineTreeNode ( "D3" , , , )
+                        _DefineTreeItem ( "Item D3.1" , , , )
+                        _DefineTreeItem ( "Item D3.2" , , , )
+                    _EndTreeNode()
+
+                    _DefineTreeItem ( "Item D2.2" , , , )
+                _EndTreeNode()
+
+                _DefineTreeItem ( "Item D.2" , , , )
+            _EndTreeNode()
+        _EndTree()
+
+
+
+
+
+        _DefineButton ( "but1", , 400, 475, "Button 1",, 200, 125,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+        _DefineButton ( "but2", , 425, 625, "Button 2",, 150, 100,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+        _DefineButton ( "but3", , 400, 750, "Button 3",, 200, 125,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+        splitter8 := _DefineSplitter( "splitter8",,,,,, .T., .F., {"tree"}, {"but1", "but2", "but3"},, .F., .F., .T.,,,,,,,,,,, )
+
+
+
+
+
+
+
+
+        _DefineGrid ( "grid1" , , 615 , 425 , 500 , 500 , {"First Name", "Last Name", "Age", "Gender"} , {150, 150, 100, 100} , GenerateGridData() , , , , , , , , ,, .F.,, {0, 0, 2, 0} , .F. , , .F., .F., .F., .F. , .F. , , , .T. , , , .F. , , , , 0, , , , !.F. , , .F. , .F. , .F. , , , .F. , .F. , , , , , , .F. , , )
+
+
+
+
+
+
+
+
+        splitter3 := _DefineSplitter( "splitter3",,,,,, .T., .F., {"tree", "but1", "but2", "but3", "splitter8"}, {"grid1"}, {40, 15}, .T., .T., .T.,,,,,, {222, 168, 20}, {209, 209, 36},,,, )
+
+
+
+
+        _DefineListBox ( "list1",, 1130, 425, 250, 240, {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"},,,,,,,,, .F.,, .F., .F., .F. , .F., .F., .F., .F. , , , .F. , .F., .F., .F.,, )
+
+
+
+        _DefineListBox ( "list2",, 1130, 675, 250, 250, {"Item 6", "Item 7", "Item 8", "Item 9", "Item 10"},,,,,,,,, .F.,, .F., .F., .F. , .F., .F., .F., .F. , , , .F. , .F., .F., .F.,, )
+
+
+
+
+        splitter9 := _DefineSplitter( "splitter9",,,,,, .F., .T., {"list1"}, {"list2"},, .F., .F., .F.,,,,,,,,,,, )
+
+
+
+
+
+
+
+
+        splitter4 := _DefineSplitter( "splitter4",,,,,, .T., .F., {"grid1"}, {"list1", "list2", "splitter9"}, {10, 10}, .F., .F., .T.,,,,,, {144, 209, 182}, {92, 184, 145},, {92, 184, 145}, {42, 140, 99}, )
+
+
+
+
+
+
+
+
+
+        splitter5 := _DefineSplitter( "splitter5",,,,,, .F., .T., {"editbox", "tbx2", "tbx3", "tbx4", "brow", "splitter1", "splitter2", "splitter6", "splitter7"}, {"tree", "but1", "but2", "but3", "grid1", "splitter3", "list1", "list2", "splitter4", "splitter8", "splitter9"}, {5, 5}, .F., .F., .T.,,,,,, {191, 191, 64}, {89, 166, 89},, {176, 245, 142}, {39, 64, 26}, {208, 230, 14} )
+
+    _EndWindow ()
+
+
+    _ActivateWindow ( {"Win_1"}, .F., , )
+
+Return
+
+
+Procedure OpenDBF
+    If !File("Test.dbf")
+        GenerateTable()
+    EndIf
+
+    dbUseArea( .F.,, "Test",, iif( .F. .OR. .F., ! .F., NIL ), .F. )
+    dbGoTop()
+    SetProperty ( "Win_1", "brow" , "Value" , RecNo() )
+Return
+
+
+Procedure CloseDBF
+    dbCloseArea()
+Return
+
+
+Function GenerateGridData
+    Local aRows[50][4]
+    Local i
+
+    For i := 1 To 50
+        aRows[i][1] := "First Name " + hb_ntos(i)
+        aRows[i][2] := "Second Name " + hb_ntos(i)
+        aRows[i][3] := "Age - " + hb_ntos(i)
+        aRows[i][4] := If(i % 2 = 0, "Male", "Female")
+    next
+
+Return aRows
+
+
+Procedure GenerateTable
+
+
+
+
+
+
+
+
+    Local dbfStruct := { {"lp", "N", 10, 0}, {"fname", "C", 30, 0}, {"lname", "C", 30, 0}, {"gender", "C", 1, 0}, {"married", "L", 1, 0}, {"birth", "D", 8, 0}, {"bio", "M", 50, 0} }
+    Local i
+
+    DBCreate("Test", dbfStruct)
+    dbUseArea( .F.,, "Test",, iif( .F. .OR. .F., ! .F., NIL ), .F. )
+
+
+    For i:= 1 To 100
+        dbAppend()
+        _FIELD->&(dbfStruct[1][1]) := i
+        _FIELD->&(dbfStruct[2][1]) := "First Name " + hb_ntos(i)
+        _FIELD->&(dbfStruct[3][1]) := "Last Name " + hb_ntos(i)
+        _FIELD->&(dbfStruct[4][1]) := If(i % 2 = 0, "M", "F")
+        _FIELD->&(dbfStruct[5][1]) := If(i % 2 = 0 .OR. i % 3 = 0, .T., .F.)
+        _FIELD->&(dbfStruct[6][1]) := date() - i
+    next
+
+    dbCloseArea()
+
+Return

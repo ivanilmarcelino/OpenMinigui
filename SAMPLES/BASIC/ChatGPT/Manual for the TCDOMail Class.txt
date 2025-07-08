@@ -1,0 +1,104 @@
+TCDOMail Class Manual
+
+Overview
+
+The TCDOMail class provides a structured way to send emails via SMTP using the CDO (Collaboration Data Objects) library in a Harbour environment. It supports various configurations for email, such as specifying recipients, subject, body, attachments, priority, and requesting delivery receipts.
+
+This class makes it easy to configure and send emails from Harbour-based applications, and it handles the email composition and transmission using the CDO.Message object.
+
+Class Structure
+
+Properties (Data Members)
+- bEmail: Callback or block executed when the email is initialized, allowing custom logic.
+- cSubject: The subject line of the email.
+- cTextBody: The body of the email (either plain text or HTML).
+- cServer: The SMTP server address to send the email.
+- nPort: The SMTP server port (default is 465 for SSL).
+- cUser: The username for SMTP authentication.
+- cPass: The password for SMTP authentication.
+- lReceipt: Boolean flag indicating if a delivery receipt should be requested.
+- nPriority: The priority level of the email (CDO_LOW_PRIORITY, CDO_NORMAL_PRIORITY, CDO_HIGH_PRIORITY).
+- aOrigin: Array containing the sender's name and email address.
+- aRecipients: Array of recipient names and email addresses.
+- aFiles: Array of file paths for attachments to be sent with the email.
+- CCopy: String specifying the CC (Carbon Copy) recipients.
+- nTimeout: Numeric value specifying the SMTP connection timeout in seconds (default is 30).
+- lSuccess: Logical flag indicating whether the email was successfully sent (.T. for true, .F. for false).
+
+Methods
+
+#New( cServer, nPort, cUser, cPass, cSubject, cText, nPriority, lReceipt, aOrigin, aRecipients, aFiles )
+Constructor method that initializes a new instance of the TCDOMail class with the given parameters.
+
+- Parameters:
+  - cServer: The SMTP server address.
+  - nPort: The SMTP server port (optional, defaults to 465).
+  - cUser: The SMTP username for authentication.
+  - cPass: The SMTP password for authentication.
+  - cSubject: The email subject line.
+  - cText: The email body (either plain text or HTML).
+  - nPriority: The priority level of the email (optional, defaults to normal).
+  - lReceipt: Boolean to request a delivery receipt (optional).
+  - aOrigin: Array containing the sender's name and email.
+  - aRecipients: Array of recipient names and email addresses.
+  - aFiles: Array of file paths for attachments (optional).
+
+- Returns: A new TCDOMail object.
+
+#Activate()
+Sends the email using the configuration defined in the New() method. It prepares the email message using CDO, attaches files, and sends the email through the specified SMTP server.
+
+- Parameters: None.
+- Returns: NIL.
+
+  If the email is successfully sent, the lSuccess property is set to .T.. Otherwise, an error message will be displayed, and lSuccess remains .F..
+
+Email Sending Process
+
+1. Initialize Email Message: An object of CDO.Message is created to handle the email.
+2. Set Email Headers: The sender, recipients, subject, and body are set. If HTML content is detected (using < and > symbols), the body will be treated as an HTML email.
+3. Add Attachments: If any attachments are provided, they are added to the email.
+4. Configure SMTP Settings: The SMTP server, port, and authentication details are configured through the CDO configuration fields.
+5. Send the Email: The email is sent via the SMTP server using the :Send() method.
+6. Error Handling: If an error occurs during the sending process, a message box (MsgStop) will display the error details.
+
+Static Constants
+- CDO_SENDUSINGPICKUP (1): Use the local SMTP service pickup directory.
+- CDO_SENDUSINGPORT (2): Use SMTP over TCP/IP for sending the email.
+- CDO_AUTH_ANONYMOUS (0): No authentication required.
+- CDO_AUTH_BASIC (1): BASIC clear-text authentication.
+- CDO_AUTH_NTLM (2): Microsoft NTLM authentication.
+- CDO_LOW_PRIORITY (0): Low importance for the email.
+- CDO_NORMAL_PRIORITY (1): Normal importance for the email.
+- CDO_HIGH_PRIORITY (2): High importance for the email.
+- CDO_DSN_DEFAULT (0): Default Delivery Status Notification (DSN) settings.
+
+Usage Example
+
+Here’s an example of how to use the TCDOMail class to send an email:
+
+// Create a new TCDOMail object
+oMail := TCDOMail():New( "smtp.example.com", 465, "user@example.com", "password", ;
+   "Test Subject", "This is a test email body.", CDO_NORMAL_PRIORITY, ;
+   .F., {"Sender Name", "sender@example.com"}, ;
+   {{"Recipient Name", "recipient@example.com"}}, ;
+   {"C:\path\to\file1.txt", "C:\path\to\file2.jpg"} )
+
+// Send the email
+oMail:Activate()
+
+// Check if the email was successfully sent
+IF oMail:lSuccess
+   ? "Email was sent successfully!"
+ELSE
+   ? "Email failed to send."
+ENDIF
+
+Notes
+1. SMTP Configuration: Ensure the SMTP server settings (server address, port, username, password) are correct. Port 465 is commonly used for SSL-encrypted connections.
+2. Attachment Handling: Full file paths must be specified for attachments. If no files are to be attached, simply provide an empty array.
+3. Error Handling: If the email fails to send, the error details will be displayed in a message box, providing information about the error code, subsystem, and description.
+4. SSL Connections: Port 465 is the default for SSL connections. Ensure your SMTP server supports SSL if you use this port.
+5. Delivery Receipts: If the lReceipt parameter is set to .T., a delivery receipt will be requested. However, not all SMTP servers or recipients may support delivery receipts.
+
+This class offers a flexible and easy way to integrate email functionality into Harbour applications, allowing for customized email sending with attachments, priority settings, and authentication handling.

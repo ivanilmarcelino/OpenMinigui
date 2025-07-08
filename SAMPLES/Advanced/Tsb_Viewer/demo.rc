@@ -1,0 +1,12 @@
+//
+// Resource           Resource         Resource
+// Name                Type             FileName
+//            
+//
+1MAIN_ICO              ICON            res\1MG.ico
+ExitDr64x1             ICON            res\ExitDoor64x1.ico
+ExitDr64x2             ICON            res\ExitDoor64x2.ico
+DbInfo64x1             ICON            res\DbInfo64x1.ico
+DbInfo64x2             ICON            res\DbInfo64x2.ico
+About64x1              ICON            res\About64x1.ico
+About64x2              ICON            res\About64x2.ico

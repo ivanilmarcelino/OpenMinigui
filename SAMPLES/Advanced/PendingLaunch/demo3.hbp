@@ -1,0 +1,14 @@
+# Keys compile
+-prgflag=-w2 -es1 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-oDemo3
+
+# to list all * .prg
+demo3.prg

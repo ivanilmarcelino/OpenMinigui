@@ -1,0 +1,11 @@
+//
+// Icon resources
+//
+1                  ICON           "myplayer.ico"
+
+MYPLAYER           ICON           "myplayer.ico"
+
+//
+// Image resources
+//
+VLC                PNG            "vlc.png"

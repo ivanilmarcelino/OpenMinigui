@@ -1,0 +1,42 @@
+//
+// Resource     Resource         Resource
+// Name          Type             FileName
+//            
+1MAIN_ICO         ICON           res\1MG.ico
+2MAIN_64          ICON           res\2MG64.ico
+2MAIN_ICO         ICON           res\2MiniGuiDbf.ico
+iDebug64          ICON           res\iDebug64.ico
+iSmile64          ICON           res\iSmile64.ico
+iStop64           ICON           res\iStop64.ico  
+iAlert64          ICON           res\iAlert64.ico
+
+iConfig128x1      ICON           res\iConfig128x1.ico
+iConfig128x2      ICON           res\iConfig128x2.ico
+iExit128x1        ICON           res\iExit128x1.ico
+iExit128x2        ICON           res\iExit128x2.ico
+iHelp128x1        ICON           res\iHelp128x1.ico
+iHelp128x2        ICON           res\iHelp128x2.ico
+iPrint128x1       ICON           res\iPrint128x1.ico
+iPrint128x2       ICON           res\iPrint128x2.ico
+iReport128x1      ICON           res\iReport128x1.ico
+iReport128x2      ICON           res\iReport128x2.ico
+iSeach128x1       ICON           res\iSeach128x1.ico
+iSeach128x2       ICON           res\iSeach128x2.ico
+CheckF24          BITMAP         res\bCheckF24.bmp
+CheckT24          BITMAP         res\bCheckT24.bmp
+Empty16           BITMAP         res\br_emp.bmp
+Yes16             BITMAP         res\br_ok.bmp
+No16              BITMAP         res\br_no.bmp
+Dbg32             BITMAP         res\debug32.bmp
+Arrow_down        PNG            res\Arrow_down30.png
+Arrow_up          PNG            res\Arrow_up30.png
+ArrowDown20       PNG            res\Arrow_down20.png
+ArrowUp20         PNG            res\Arrow_up20.png
+bFltrAdd20        BITMAP         res\bFilter_add20.bmp
+bFltrAdd28        BITMAP         res\bFilter_add28.bmp
+bFltrDel28        BITMAP         res\bFilter_del28.bmp
+bSortA28          BITMAP         res\bSortA_28.bmp
+bSortZ28          BITMAP         res\bSortZ_28.bmp
+bSupHd40          BITMAP         res\bSupHd40.bmp
+ArrDown40Blue     PNG            res\Arr_down40blue.png
+bBase32           BITMAP         res\bBase32.bmp

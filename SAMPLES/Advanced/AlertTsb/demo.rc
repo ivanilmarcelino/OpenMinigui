@@ -1,0 +1,19 @@
+//               
+// Resource        Resource        Resource
+// Name             Type            FileName
+//                 
+1MG                 ICON           res_AlertTsb\1MG.ico
+iExit32             ICON           res_AlertTsb\iExit32.ico  
+// --------- alert_tsb.prg -----------
+iMgLogfile128       ICON           res_AlertTsb\iMgLogfile128.ico 
+iMgInfo128          ICON           res_AlertTsb\iMgInfo128.ico   
+iMgQuest128         ICON           res_AlertTsb\iMgQuest128.ico  
+iMgStop128          ICON           res_AlertTsb\iMgStop128.ico   
+iMgExclam128        ICON           res_AlertTsb\iMgExclam128.ico 
+iMgNone128          ICON           res_AlertTsb\iMgNone128.ico 
+iMgSave128          ICON           res_AlertTsb\iMgSave128.ico
+bMgCheckF24         BITMAP         res_AlertTsb\bMgCheck_F24.bmp
+bMgCheckT24         BITMAP         res_AlertTsb\bMgCheck_T24.bmp
+iMg_Ok32            ICON           res_AlertTsb\iMg_Ok32.ico
+iMg_Cancel32        ICON           res_AlertTsb\iMg_Cancel32.ico
+

@@ -1,0 +1,18 @@
+
+mg_ico         ICON         res\MG_Main.ico
+                                
+n1             BITMAP       res\1.bmp
+n2             BITMAP       res\2.bmp
+n3             BITMAP       res\3.bmp
+n4             BITMAP       res\4.bmp
+n5             BITMAP       res\5.bmp
+n6             BITMAP       res\6.bmp
+n7             BITMAP       res\7.bmp
+n8             BITMAP       res\8.bmp
+n9             BITMAP       res\9.bmp
+n10            BITMAP       res\10.bmp
+n11            BITMAP       res\11.bmp
+n12            BITMAP       res\12.bmp
+
+exit           BITMAP       res\exit.bmp
+                                

@@ -1,0 +1,27 @@
+# Keys compile
+-prgflag=-w2 -es1
+
+# Enable multi/single-thread Harbour VM
+# -mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-oDemo
+
+# to list all * .prg
+main.prg
+form_table.prg
+form_tbrowse.prg
+form_card.prg
+form_filter.prg
+menu_context.prg
+menu_list.prg
+ListTables.prg
+overlay.cpp
+SetsEnv_misc.prg
+util_InfoDbf.prg

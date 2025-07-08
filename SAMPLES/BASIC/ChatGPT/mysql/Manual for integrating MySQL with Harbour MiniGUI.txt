@@ -1,0 +1,295 @@
+Integrating MySQL with Harbour MiniGUI Extended: A Technical Manual
+
+This manual provides a comprehensive guide on integrating MySQL databases with Harbour MiniGUI Extended (HMG Extended) applications. It covers the necessary setup, connection establishment, data retrieval, manipulation, and best practices for building robust database-driven applications.
+
+Prerequisites:
+
+*   Harbour MiniGUI Extended (HMG Extended):  A working installation of HMG Extended is required. Download and install the latest version from [https://hmgextended.com](https://hmgextended.com).
+*   MySQL Server: A running MySQL server instance is needed.  You can download and install MySQL Community Server from [https://dev.mysql.com/downloads/mysql/](https://dev.mysql.com/downloads/mysql/).
+*   MySQL Client Library (libmysql.dll):  This library is essential for connecting to the MySQL server.  It's typically included with the MySQL server installation.  Ensure it's accessible in your system's PATH or copied to your application's directory.  You might need to download the MySQL Connector/C package from [https://dev.mysql.com/downloads/connector/c/](https://dev.mysql.com/downloads/connector/c/) if it's not already present.
+*   Harbour MySQL Driver (hbmysql.ch): This Harbour driver provides the necessary functions to interact with MySQL.  It's usually included with your Harbour distribution.  If not, you can find it online.
+
+1. Setting up the Environment:
+
+1.  Locate libmysql.dll: Find the libmysql.dll file in your MySQL installation directory (e.g., C:\Program Files\MySQL\MySQL Server 8.0\lib).
+2.  Copy libmysql.dll: Copy libmysql.dll to your HMG Extended application's directory (where your .exe file will reside) or add the MySQL lib directory to your system's PATH environment variable.  Adding to the PATH is generally preferred for system-wide access.
+3.  Include mysql.ch:  In your Harbour source code, include the mysql.ch header file. This provides the necessary declarations for MySQL interaction.
+
+    #include "mysql.ch"
+
+2. Establishing a Connection:
+
+The MYSQL_CONNECT() function is used to establish a connection to the MySQL server.  It takes several parameters:
+
+*   Server: The hostname or IP address of the MySQL server.  Use "localhost" or "127.0.0.1" for local connections.
+*   User: The MySQL username.
+*   Password: The MySQL password.
+*   Database: The name of the database to connect to.
+*   Port: The port number the MySQL server is listening on (default is 3306).
+*   Flags:  Connection flags (optional, usually 0).
+
+PROCEDURE Main()
+
+   LOCAL cServer   := "localhost"
+   LOCAL cUser     := "your_user"
+   LOCAL cPassword := "your_password"
+   LOCAL cDatabase := "your_database"
+   LOCAL nPort     := 3306
+   LOCAL nFlags    := 0
+   LOCAL nConn     := 0
+
+   nConn := MYSQL_CONNECT( cServer, cUser, cPassword, cDatabase, nPort, nFlags )
+
+   IF nConn > 0
+      MsgInfo( "Connection to MySQL successful!" )
+      // Proceed with database operations
+   ELSE
+      MsgStop( "Connection to MySQL failed: " + MYSQL_ERROR() )
+   ENDIF
+
+   // ... Database operations ...
+
+   IF nConn > 0
+      MYSQL_CLOSE( nConn )
+   ENDIF
+
+RETURN
+
+Important: Replace "your_user", "your_password", and "your_database" with your actual MySQL credentials.
+
+3. Executing SQL Queries:
+
+The MYSQL_QUERY() function executes SQL queries against the connected database.  It takes the connection handle and the SQL query string as parameters.
+
+PROCEDURE ExecuteQuery( nConn, cSQL )
+
+   LOCAL lSuccess := MYSQL_QUERY( nConn, cSQL )
+
+   IF ! lSuccess
+      MsgStop( "Query failed: " + MYSQL_ERROR() )
+   ENDIF
+
+RETURN
+
+Example: Creating a Table:
+
+PROCEDURE CreateTable( nConn )
+
+   LOCAL cSQL := "CREATE TABLE IF NOT EXISTS Customers ( " + ;
+                 "CustomerID INT AUTO_INCREMENT PRIMARY KEY, " + ;
+                 "FirstName VARCHAR(255), " + ;
+                 "LastName VARCHAR(255), " + ;
+                 "City VARCHAR(255) )"
+
+   ExecuteQuery( nConn, cSQL )
+
+RETURN
+
+Example: Inserting Data:
+
+PROCEDURE InsertData( nConn )
+
+   LOCAL cSQL := "INSERT INTO Customers (FirstName, LastName, City) VALUES " + ;
+                 "('John', 'Doe', 'New York'), " + ;
+                 "('Jane', 'Smith', 'London')"
+
+   ExecuteQuery( nConn, cSQL )
+
+RETURN
+
+4. Retrieving Data:
+
+After executing a SELECT query, you can retrieve the results using the following functions:
+
+*   MYSQL_USE_RESULT( nConn ):  Retrieves the result set from the server.  This is generally preferred for larger result sets as it doesn't load the entire result into memory at once.
+*   MYSQL_STORE_RESULT( nConn ): Retrieves the entire result set into memory.  Suitable for smaller result sets.
+*   MYSQL_FETCH_ROW( nResult ): Fetches the next row from the result set as an array.
+*   MYSQL_NUM_FIELDS( nResult ): Returns the number of fields (columns) in the result set.
+*   MYSQL_FREE_RESULT( nResult ): Frees the memory allocated for the result set.
+
+Example: Retrieving and Displaying Data:
+
+PROCEDURE RetrieveData( nConn )
+
+   LOCAL cSQL      := "SELECT * FROM Customers"
+   LOCAL nResult   := 0
+   LOCAL aRow      := {}
+   LOCAL nFields   := 0
+   LOCAL i         := 0
+
+   ExecuteQuery( nConn, cSQL )
+
+   nResult := MYSQL_USE_RESULT( nConn )  // Or MYSQL_STORE_RESULT( nConn )
+
+   IF nResult > 0
+      nFields := MYSQL_NUM_FIELDS( nResult )
+
+      WHILE .T.
+         aRow := MYSQL_FETCH_ROW( nResult )
+
+         IF EMPTY( aRow )
+            EXIT  // No more rows
+         ENDIF
+
+         // Display the row data (example: using MsgInfo)
+         cDisplay := ""
+         FOR i := 1 TO nFields
+            cDisplay += aRow[i] + " | "
+         NEXT
+
+         MsgInfo( cDisplay )
+      ENDDO
+
+      MYSQL_FREE_RESULT( nResult )
+   ELSE
+      MsgStop( "No results found." )
+   ENDIF
+
+RETURN
+
+5. Error Handling:
+
+The MYSQL_ERROR() function returns the error message from the last MySQL operation.  Always check for errors after each database operation to ensure data integrity and application stability.
+
+6. Closing the Connection:
+
+The MYSQL_CLOSE() function closes the connection to the MySQL server.  It's crucial to close the connection when you're finished with database operations to release resources.
+
+7. Example HMG Extended Application:
+
+#include "hmg.ch"
+#include "hbmysql.ch"
+
+FUNCTION Main()
+
+   LOCAL cServer   := "localhost"
+   LOCAL cUser     := "your_user"
+   LOCAL cPassword := "your_password"
+   LOCAL cDatabase := "your_database"
+   LOCAL nPort     := 3306
+   LOCAL nFlags    := 0
+   LOCAL nConn     := 0
+
+   DEFINE WINDOW Form_1 ;
+      AT 0,0 ;
+      WIDTH 640 ;
+      HEIGHT 480 ;
+      TITLE 'MySQL Integration with HMG Extended' ;
+      MAIN
+
+      DEFINE BUTTON Button_Connect
+         ROW    10
+         COL    10
+         WIDTH  120
+         HEIGHT 24
+         CAPTION 'Connect'
+         ACTION  ConnectToDatabase( @nConn, cServer, cUser, cPassword, cDatabase, nPort, nFlags )
+      END BUTTON
+
+      DEFINE BUTTON Button_Retrieve
+         ROW    10
+         COL    140
+         WIDTH  120
+         HEIGHT 24
+         CAPTION 'Retrieve Data'
+         ACTION  RetrieveAndDisplayData( nConn )
+         ENABLED .F.
+      END BUTTON
+
+      DEFINE GRID Grid_Data
+         ROW    50
+         COL    10
+         WIDTH  620
+         HEIGHT 400
+         VALUE  {}
+         HEADERS {}
+         WIDTHS {}
+         READONLY .T.
+      END GRID
+
+   END WINDOW
+
+   CENTER WINDOW Form_1
+   ACTIVATE WINDOW Form_1
+
+RETURN
+
+PROCEDURE ConnectToDatabase( nConn, cServer, cUser, cPassword, cDatabase, nPort, nFlags )
+
+   nConn := MYSQL_CONNECT( cServer, cUser, cPassword, cDatabase, nPort, nFlags )
+
+   IF nConn > 0
+      MsgInfo( "Connection to MySQL successful!" )
+      Form_1.Button_Retrieve.Enabled := .T.
+   ELSE
+      MsgStop( "Connection to MySQL failed: " + MYSQL_ERROR() )
+   ENDIF
+
+RETURN
+
+PROCEDURE RetrieveAndDisplayData( nConn )
+
+   LOCAL cSQL      := "SELECT * FROM Customers"
+   LOCAL nResult   := 0
+   LOCAL aRow      := {}
+   LOCAL nFields   := 0
+   LOCAL i         := 0
+   LOCAL aData     := {}
+   LOCAL aHeaders  := {}
+   LOCAL aWidths   := {}
+
+   ExecuteQuery( nConn, cSQL )
+
+   nResult := MYSQL_USE_RESULT( nConn )
+
+   IF nResult > 0
+      nFields := MYSQL_NUM_FIELDS( nResult )
+
+      // Get Headers
+      FOR i := 1 TO nFields
+         AADD( aHeaders, MYSQL_FETCH_FIELD( nResult)[i][MYSQL_FS_NAME] )
+         AADD( aWidths, 100 ) // Adjust width as needed
+      NEXT
+
+      WHILE .T.
+         aRow := MYSQL_FETCH_ROW( nResult )
+
+         IF aRow[1] == NIL
+            EXIT
+         ENDIF
+
+         AADD( aData, aRow )
+      ENDDO
+
+      MYSQL_FREE_RESULT( nResult )
+
+      Form_1.Grid_Data.Headers := aHeaders
+      Form_1.Grid_Data.Widths  := aWidths
+      Form_1.Grid_Data.SetArray( aData )
+      Form_1.Grid_Data.Refresh()
+
+   ELSE
+      MsgStop( "No results found." )
+   ENDIF
+
+RETURN
+
+PROCEDURE ExecuteQuery( nConn, cSQL )
+
+   LOCAL lSuccess := MYSQL_QUERY( nConn, cSQL )
+
+   IF ! lSuccess
+      MsgStop( "Query failed: " + MYSQL_ERROR() )
+   ENDIF
+
+RETURN
+
+Important Considerations:
+
+*   Security:  Never hardcode sensitive information like passwords directly in your code.  Use configuration files or environment variables to store credentials securely.
+*   SQL Injection:  Always sanitize user input before using it in SQL queries to prevent SQL injection attacks.  Use parameterized queries or escaping functions provided by the MySQL driver.
+*   Error Handling: Implement robust error handling to gracefully handle database connection errors, query failures, and other potential issues.
+*   Performance: Optimize your SQL queries for performance.  Use indexes, avoid unnecessary data retrieval, and consider using stored procedures for complex operations.
+*   Transactions:  Use transactions to ensure data consistency when performing multiple related database operations.
+
+This manual provides a solid foundation for integrating MySQL with HMG Extended.  Remember to consult the official Harbour and MySQL documentation for more detailed information and advanced features.

@@ -1,0 +1,21 @@
+//
+// Resource    Resource         Resource
+// Name         Type             FileName
+//
+1MG              ICON           res\1MG.ico
+2MG_64           ICON           res\2MG64.ico
+i_Exit32         ICON           res\i_Exit32.ico
+i_About32        ICON           res\i_About32.ico
+// ------------------ demo.prg --------------------------
+iSanta1          ICON           res\iSanta72x1.ico
+iSanta2          ICON           res\iSanta72x2.ico
+iFolder1         ICON           res\iFolder72x1.ico
+iFolder2         ICON           res\iFolder72x2.ico
+iHP1             ICON           res\iHP72x1.ico
+iHP2             ICON           res\iHP72x2.ico
+iHmg1            ICON           res\iHMG72x1.ico
+iHmg2            ICON           res\iHMG72x2.ico
+iExit1           ICON           res\iExit72x1.ico
+iExit2           ICON           res\iExit72x2.ico
+iClock1          ICON           res\iClock72x1.ico
+iClock2          ICON           res\iClock72x2.ico

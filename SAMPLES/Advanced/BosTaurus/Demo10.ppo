@@ -1,0 +1,261 @@
+
+
+
+
+
+
+
+
+
+
+MEMVAR hBitmap_Source
+MEMVAR hBitmap
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 14 "S:\Mega\Dev\32\BCC\Minigui\include\miniprint.ch"
+  MEMVAR _HMG_MINIPRINT
+#line 57 "Demo10.prg"
+Function BT_aFILTER_BLUR (index, value, weight, add, bias)
+   LOCAL aFILTER, v
+
+   v := iif( v == NIL, 1, v )
+   weight := iif( weight == NIL, 1, weight )
+   add := iif( add == NIL, 0, add )
+   bias := iif( bias == NIL, 0, bias )
+   v := value
+
+
+
+
+
+   aFILTER :=  {{  0,  v,  0,  0,  weight,  0,  0,  v,  0,  weight + add + v * 2,  bias}, {  0,  0,  0,  v,  weight,  v,  0,  0,  0,  weight + add + v * 2,  bias}, {  0,  0,  v,  0,  weight,  0,  v,  0,  0,  weight + add + v * 2,  bias}, {  v,  0,  0,  0,  weight,  0,  0,  0,  v,  weight + add + v * 2,  bias}, {  v,  v,  v,  v,  weight,  v,  v,  v,  v,  weight + add + v * 8,  bias}}
+Return aFILTER [index]
+
+
+
+Function BT_aFILTER_SHARPEN (index, value, weight, add, bias)
+   LOCAL aFILTER, v
+
+   v := iif( v == NIL, 1, v )
+   weight := iif( weight == NIL, 1, weight )
+   add := iif( add == NIL, 0, add )
+   bias := iif( bias == NIL, 0, bias )
+   v := value
+
+
+
+
+
+   aFILTER :=  {{  0, -v,  0,  0,  weight,  0,  0, -v,  0,  weight + add - v * 2,  bias}, {  0,  0,  0, -v,  weight, -v,  0,  0,  0,  weight + add - v * 2,  bias}, {  0,  0, -v,  0,  weight,  0, -v,  0,  0,  weight + add - v * 2,  bias}, { -v,  0,  0,  0,  weight,  0,  0,  0, -v,  weight + add - v * 2,  bias}, { -v, -v, -v, -v,  weight, -v, -v, -v, -v,  weight + add - v * 8,  bias}}
+Return aFILTER [index]
+
+
+
+Function BT_aFILTER_EDGE (index, value, weight, add, bias)
+   LOCAL aFILTER, v
+
+   v := iif( v == NIL, 1, v )
+   weight := iif( weight == NIL, 1, weight )
+   add := iif( add == NIL, 0, add )
+   bias := iif( bias == NIL, 0, bias )
+   v := value
+
+
+
+
+
+   aFILTER :=  {{  0,  v,  0,  0,  -weight,  0,  0,  v,  0,  -weight + add + v * 2,  bias}, {  0,  0,  0,  v,  -weight,  v,  0,  0,  0,  -weight + add + v * 2,  bias}, {  0,  0,  v,  0,  -weight,  0,  v,  0,  0,  -weight + add + v * 2,  bias}, {  v,  0,  0,  0,  -weight,  0,  0,  0,  v,  -weight + add + v * 2,  bias}, {  v,  v,  v,  v,  -weight,  v,  v,  v,  v,  -weight + add + v * 8,  bias}}
+Return aFILTER [index]
+
+
+
+Function BT_aFILTER_EMBOSS (index, value, weight, add, bias)
+   LOCAL aFILTER, v
+
+
+
+   v := iif( v == NIL, 1, v )
+   weight := iif( weight == NIL, 0, weight )
+   add := iif( add == NIL, 0, add )
+   bias := iif( bias == NIL, 128, bias )
+   v := value
+
+
+
+
+
+
+
+
+   aFILTER :=  {{ -v,  0,  v, -v,  weight,  v, -v,  0,  v,  weight + add,  bias }, {  v,  v,  v,  0,  weight,  0, -v, -v, -v,  weight + add,  bias }, {  0,  v,  v, -v,  weight,  v, -v, -v,  0,  weight + add,  bias }, {  v,  v,  0,  v,  weight, -v,  0, -v, -v,  weight + add,  bias }, { -v, -v, -v,  0,  weight,  0,  v,  v,  v,  weight + add,  bias }, { -v, -v,  0, -v,  weight,  v,  0,  v,  v,  weight + add,  bias }, {  0, -v, -v,  v,  weight, -v,  v,  v,  0,  weight + add,  bias }, {  v,  0, -v,  v,  weight, -v,  v,  0, -v,  weight + add,  bias }}
+Return aFILTER [index]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FUNCTION MAIN
+
+PRIVATE hBitmap_Source := 0
+PRIVATE hBitmap := 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win1", "Demo10: Digital Image Processing", 0, 0, 700, 600, .F., .F., .F., .F., .F., {,}, {,}, {||      Proc_ON_INIT ()}, {||   Proc_ON_RELEASE ()} ,, {||      BT_ClientAreaInvalidateAll ("Win1")} , ,, , {||     Proc_ON_PAINT ()} , .F. , .F. , .T. , , .F. , ,, , , ,, , 1000 , 1000 , , , , , , , .F. , {||  BT_ClientAreaInvalidateAll ("Win1")} , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+            _DefineMainMenu( )
+               _DefineMenuPopup( "EFFECTS" , , , )
+                  _DefineMenuItem ( "Invert" , {|| Proc_EFFECT (1)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "Grayness" , {|| Proc_EFFECT (2)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "Brightness" , {|| Proc_EFFECT (3)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "Contrast" , {|| Proc_EFFECT (4)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "Modify Color" , {|| Proc_EFFECT (5)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "Gamma Correct" , {|| Proc_EFFECT (6)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _EndMenuPopup()
+
+               _DefineMenuPopup( "BLUR" , , , )
+                  _DefineMenuItem ( "VERTICAL" , {|| Proc_EFFECT (7,1)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "HORIZONTAL" , {|| Proc_EFFECT (7,2)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "ANGLE45" , {|| Proc_EFFECT (7,3)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "ANGLE135" , {|| Proc_EFFECT (7,4)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "ALLDIRECTIONS" , {|| Proc_EFFECT (7,5)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _EndMenuPopup()
+
+               _DefineMenuPopup( "SHARPEN" , , , )
+                  _DefineMenuItem ( "VERTICAL" , {|| Proc_EFFECT (8,1)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "HORIZONTAL" , {|| Proc_EFFECT (8,2)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "ANGLE45" , {|| Proc_EFFECT (8,3)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "ANGLE135" , {|| Proc_EFFECT (8,4)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "ALLDIRECTIONS" , {|| Proc_EFFECT (8,5)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _EndMenuPopup()
+
+               _DefineMenuPopup( "EDGE" , , , )
+                  _DefineMenuItem ( "ALLDIRECTIONS" , {|| Proc_EFFECT (9,5)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "SOBEL Method" , {|| Proc_EFFECT (9,6)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "PREWITT Method" , {|| Proc_EFFECT (9,7)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "KIRSH Method" , {|| Proc_EFFECT (9,8)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _EndMenuPopup()
+
+               _DefineMenuPopup( "EMBOSS1" , , , )
+                  _DefineMenuItem ( "EAST" , {|| Proc_EFFECT (10,1)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "NORTH" , {|| Proc_EFFECT (10,2)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "NORTH_EAST" , {|| Proc_EFFECT (10,3)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "NORTH_WEST" , {|| Proc_EFFECT (10,4)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "SOUTH" , {|| Proc_EFFECT (10,5)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "SOUTH_EAST" , {|| Proc_EFFECT (10,6)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "SOUTH_WEST" , {|| Proc_EFFECT (10,7)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "WEST" , {|| Proc_EFFECT (10,8)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _EndMenuPopup()
+
+               _DefineMenuPopup( "EMBOSS2" , , , )
+                  _DefineMenuItem ( "EAST" , {|| Proc_EFFECT (11,1)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "NORTH" , {|| Proc_EFFECT (11,2)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "NORTH_EAST" , {|| Proc_EFFECT (11,3)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "NORTH_WEST" , {|| Proc_EFFECT (11,4)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "SOUTH" , {|| Proc_EFFECT (11,5)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "SOUTH_EAST" , {|| Proc_EFFECT (11,6)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "SOUTH_WEST" , {|| Proc_EFFECT (11,7)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "WEST" , {|| Proc_EFFECT (11,8)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _EndMenuPopup()
+
+            _EndMenu()
+
+            _DefineButton ( "Button_1", , 280, 450, "Restore Image", {|| Proc_EFFECT (0)},,,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+    _EndWindow ()
+
+    DoMethod ( "Win1" , "Maximize" )
+    _ActivateWindow ( {"Win1"}, .F., , )
+
+RETURN Nil
+
+
+PROCEDURE Proc_ON_INIT
+   hBitmap_Source := BT_BitmapLoadFile ("SAMI.JPG")
+   hBitmap := BT_BitmapClone (hBitmap_Source)
+RETURN
+
+
+PROCEDURE Proc_ON_RELEASE
+   BT_BitmapRelease (hBitmap)
+RETURN
+
+
+PROCEDURE Proc_ON_PAINT
+LOCAL Col    := -GetProperty ( "Win1", "HscrollBar" , "value" )
+LOCAL Row    := -GetProperty ( "Win1", "VscrollBar" , "value" )
+LOCAL hDC, BTstruct
+   hDC := BT_CreateDC ("Win1", 4, @BTstruct)
+      BT_DrawGradientFillVertical (hDC, 0, 0, BT_ClientAreaWidth  ("Win1"), BT_ClientAreaHeight ("Win1"), {100,0,33}, {   0 ,   0 ,   0 })
+      BT_DrawBitmap (hDC, Row+10,  Col+10, BT_BitmapWidth (hBitmap), BT_BitmapHeight (hBitmap), 3, hBitmap)
+   BT_DeleteDC (BTstruct)
+RETURN
+
+
+PROCEDURE Proc_EFFECT (nEffect, nIndex)
+   BT_BitmapRelease (hBitmap)
+   hBitmap := BT_BitmapClone (hBitmap_Source)
+
+   DO CASE
+      CASE nEffect == 1
+           BT_BitmapInvert       (hBitmap)
+      CASE nEffect == 2
+           BT_BitmapGrayness     (hBitmap, 100)
+      CASE nEffect == 3
+           BT_BitmapBrightness   (hBitmap, 70)
+      CASE nEffect == 4
+           BT_BitmapContrast     (hBitmap, 65)
+      CASE nEffect == 5
+           BT_BitmapModifyColor  (hBitmap, -15, 20, 30)
+      CASE nEffect == 6
+           BT_BitmapGammaCorrect (hBitmap, 0.2, 0.8, 1.4)
+      CASE nEffect == 7
+           BT_BitmapConvolutionFilter3x3 (hBitmap, BT_aFILTER_BLUR (nIndex, 5, 1, 0, 0))
+      CASE nEffect == 8
+           BT_BitmapConvolutionFilter3x3 (hBitmap, BT_aFILTER_SHARPEN (nIndex, 1, 3, 0, 0))
+      CASE nEffect == 9
+           IF nIndex == 5
+              BT_BitmapConvolutionFilter3x3 (hBitmap, BT_aFILTER_EDGE (nIndex, 1, 8, 0, 0))
+           ELSEIF nIndex == 6
+
+                 BT_BitmapConvolutionFilter3x3 (hBitmap, {1, 0, -1, 2, 0, -2, 1, 0, -1, 0, 0})
+                 BT_BitmapConvolutionFilter3x3 (hBitmap, {1, 2, 1, 0, 0, 0, -1, -2, -1, 0, 0})
+           ELSEIF nIndex == 7
+
+                 BT_BitmapConvolutionFilter3x3 (hBitmap, {1, 0, -1, 1, 0, -1, 1, 0, -1, 0, 0})
+                 BT_BitmapConvolutionFilter3x3 (hBitmap, {1, 1, 1, 0, 0, 0, -1, -1, -1, 0, 0})
+           ELSEIF nIndex == 8
+
+                 BT_BitmapConvolutionFilter3x3 (hBitmap, {5, -3, -3, 5, 0, -3, 5, -3, -3, 0, 0})
+                 BT_BitmapConvolutionFilter3x3 (hBitmap, {5, 5, 5, -3, 0, -3, -3, -3, -3, 0, 0})
+           ENDIF
+      CASE nEffect == 10
+           BT_BitmapConvolutionFilter3x3 (hBitmap, BT_aFILTER_EMBOSS (nIndex, 1, 0, 0, 128))
+      CASE nEffect == 11
+           BT_BitmapConvolutionFilter3x3 (hBitmap, BT_aFILTER_EMBOSS (nIndex, 3, 1, 0, 0))
+   ENDCASE
+
+   BT_ClientAreaInvalidateAll ("Win1")
+RETURN

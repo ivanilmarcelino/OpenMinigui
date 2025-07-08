@@ -1,0 +1,14 @@
+-prgflag=-w2 -es2
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-onextnumber
+
+# to list all * .prg
+demo.prg
+nextnumber.prg

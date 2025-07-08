@@ -1,0 +1,35 @@
+MAIN    ICON      Res\main.ico
+MAIL    BITMAP    Res\mail.bmp
+M_EXIT  BITMAP    Res\exit.bmp
+M_CLEAN BITMAP    RES\edit_delete.bmp
+M_INFO  BITMAP    RES\info.bmp
+STARTUP PNG       RES\Restart25.png
+
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+	BLOCK "040904b0"
+	{
+		VALUE "FileDescription", "HMG Spooler\000"
+		VALUE "FileVersion", "1.0.0.0"
+		VALUE "InternalName", "Watcher\000"
+		VALUE "LegalCopyright", "Freeware 2025\000"
+		VALUE "LegalTrademarks", "Harbour"
+		VALUE "OriginalFilename", "HmgSpooler.exe"
+		VALUE "CompanyName", "Pierpaolo Martinello"
+		VALUE "ProductName", "MiniGui Spooler Utility"
+		VALUE "ProductVersion", "1.0.0.0"
+		VALUE "Comments", "Based upon a contribution of Petr Chornyj <myorg63@mail.ru>\000"
+	}
+}
+
+BLOCK "VarFileInfo"
+{
+	VALUE "Translation", 0x0409 0x04B0
+}
+}

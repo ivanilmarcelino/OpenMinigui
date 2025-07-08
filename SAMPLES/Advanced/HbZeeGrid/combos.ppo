@@ -1,0 +1,153 @@
+
+
+
+
+
+
+MEMVAR hG
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 16 "combos.prg"
+PROCEDURE Main()
+
+   LOCAL hMod := zg_LoadDll()
+
+   if Empty( hMod )
+      ReleaseAllWindows ()
+   endif
+
+   PUBLIC hG
+
+   SetGlobalListener( "App_OnEvents" )
+
+
+
+
+ _DefineWindow ( "Win_1", "ZeeGrid demo",,,,, .F., .F., .F., .F., .F., {,}, {,},, {|| FreeLibrary( hMod )} ,, , ,, , , .F. , .F. , .T. , "MAIN.ICO" , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , 600 , 600 )
+
+      _DefineMainMenu( )
+         _DefineMenuPopup( "Info" , , , )
+            _DefineMenuItem ( "About .." , {|| MsgInfo( ( MiniGuiVersion() + hb_eol() + "ZeeGrid build " + hb_NtoS( zgm_QueryBuild( hG, .F. ) ) + " by David Hillard" ) )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+
+            _DefineSeparator()
+
+            _DefineMenuItem ( "Exit" , {|| DoMethod ( "Win_1", "Release" )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+         _EndMenuPopup()
+      _EndMenu()
+
+   _EndWindow ()
+
+   DoMethod ( "Win_1", "Center" )
+   _ActivateWindow ( {"Win_1"}, .F., , )
+
+   RETURN
+
+
+FUNCTION App_OnEvents( hWnd, nMsg, wParam, lParam )
+
+   LOCAL result := 0
+   LOCAL aRect := { 0, 0, 0, 0 }
+   LOCAL nCol, i
+
+   switch nMsg
+   case 1
+
+      GetClientRect( hWnd, @aRect )
+      aRect[4] *= 0.75
+      zg_InitGrid( hWnd, @hG, 700, "ZeeGrid Combo", 0, 0, aRect[3], aRect[4], {|h| Grid_OnInit( h ) }  )
+      exit
+
+   case 273
+
+      switch HIWORD( wParam )
+
+      case 6
+         if LOWORD( wParam ) == 700
+
+            zgm_ComboClear( hG, .F. )
+            nCol := zgm_GetColOfIndex( hG, zgm_GetEditedCell( hG ) )
+            if nCol == 2
+               for i := 0 TO 99
+                  zgm_ComboAddString( hG, "Clipper #" + hb_NtoS( i ) )
+               next
+            else
+               for i := 0 TO 99
+                  zgm_ComboAddString( hG, "Harbour #" + hb_NtoS( i ) )
+               next
+            end
+         endif
+         exit
+
+      case 25
+         if LOWORD( wParam ) == 700
+
+            i := zgm_GetCursorIndex( hG )
+            if i > 0
+               zgm_gotoCell( hG, i )
+            else
+               zgm_gotoCell( hG, zgm_GetCellIndex( hG, 1, 1 ) )
+            endif
+         endif
+         exit
+
+      otherwise
+         result := Events( hWnd, nMsg, wParam, lParam )
+      end
+      exit
+
+   case 5
+
+      GetClientRect( hWnd, @aRect )
+      aRect[4] *= 0.75
+      zg_Resize( hWnd, hG, aRect )
+      exit
+
+   otherwise
+
+      result := Events( hWnd, nMsg, wParam, lParam )
+   end
+
+   RETURN result
+
+
+
+
+PROCEDURE Grid_OnInit( h )
+
+   LOCAL i
+
+   for i := 1 to 10
+      zgm_AppendRow( h )
+   next
+
+
+   _DefineFont ( "hTitleFont", "MS Sans Serif", 28, .T., .F., .F., .F.,, .F., )
+
+
+   zgm_SetFont( h, 20, GetFontHandle( "hTitleFont" ) )
+
+   zgm_SetCellFont( h, 0, 20 )
+
+
+   zgm_SetRowBColor( h, 2, 6 )
+   zgm_SetRowFColor( h, 2, 5 )
+
+
+   zgm_SetCellText( h, zgm_GetCellIndex( h, 2, 2 ), "Clipper #1" )
+   zgm_SetCellType( h, zgm_GetCellIndex( h, 2, 2 ), 2 )
+   zgm_SetCellEdit( h, zgm_GetCellIndex( h, 2, 2 ), 2 )
+
+   zgm_SetCellText( h, zgm_GetCellIndex( h, 2, 4 ), "Harbour #1" )
+   zgm_SetCellType( h, zgm_GetCellIndex( h, 2, 4 ), 2 )
+   zgm_SetCellEdit( h, zgm_GetCellIndex( h, 2, 4 ), 2 )
+
+
+   for i := 1 to zgm_GetCols( h )
+      zgm_SetColWidth( h, i, 100 )
+   next
+
+
+   zgm_EnableColResizing( h, .F. )
+   zgm_EnableColMove( h, .F. )
+
+   RETURN

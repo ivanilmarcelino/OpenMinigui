@@ -1,0 +1,214 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 11 "cpanel_2.prg"
+Procedure Main
+
+
+
+
+
+    Local aCaptions := { "Display Properties",  "Install/Uninstall",  "System Properties",  "Mouse Properties",  "About program",  "Exit" }, i, cObject, nPos := 18
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win_1", "Control Panel", 0, 0, 198 + iif(ISVISTAORLATER(), 1, 2) * GetBorderWidth(), GetTitleHeight() + 322 + GetBorderHeight(), .T., .T., .T., .F., .F., {,}, {,},, ,, , ,, iif(ISVISTAORLATER(), {233, 236, 216}, Nil) , , .F. , .F. , .T. , "MAIN" , .F. , "MS Sans Serif" , 9, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+        _DefineImage ( "Dummy",, 0, 0, "LOGO",,,,,, .T., .F.,, .F., .F.,,,,,, , )
+
+        For i := 1 To Len(aCaptions)
+
+            cObject := "Button_" + Str(i, 1)
+            _HMG_SYSDATA[316] := cObject ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[358] := NIL ; _HMG_SYSDATA[359] := NIL ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[280] := .F. ; _HMG_SYSDATA[281] := .F. ; _HMG_SYSDATA[283] := .F. ; _HMG_SYSDATA[352] := .F. ; _HMG_SYSDATA[287] := .F. ; _HMG_SYSDATA[339] := -1 ; _HMG_SYSDATA[372] := Nil ; _HMG_SYSDATA[279] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[282] := -1
+                _HMG_SYSDATA[331] := nPos
+                _HMG_SYSDATA[332] := 15
+                _HMG_SYSDATA[320] := 168
+                _HMG_SYSDATA[321] := 40
+                _HMG_SYSDATA[333] := "IMAGE" + Str(i, 1)
+                _HMG_SYSDATA[318] := aCaptions [i]
+                _HMG_SYSDATA[319] := {|| DoAction( Val(Right(iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "name" ) , GetProperty ( _HMG_SYSDATA[254] , "name" ) ), 1)) )}
+                _HMG_SYSDATA[325] := .T.
+                _HMG_SYSDATA[287] := .T.
+                _HMG_SYSDATA[326] := {|| SetProperty( "Win_1", iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "name" ) , GetProperty ( _HMG_SYSDATA[254] , "name" ) ), "FontBold", .T. )}
+                _HMG_SYSDATA[327] := {|| SetProperty( "Win_1", iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "name" ) , GetProperty ( _HMG_SYSDATA[254] , "name" ) ), "FontBold", .F. )}
+            _DefineOwnerButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[318], _HMG_SYSDATA[319], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[333], _HMG_SYSDATA[324], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[325], ! _HMG_SYSDATA[364], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[328], _HMG_SYSDATA[278], _HMG_SYSDATA[286], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312] , _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[368], _HMG_SYSDATA[280], _HMG_SYSDATA[281], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[283], _HMG_SYSDATA[284], _HMG_SYSDATA[352], _HMG_SYSDATA[287], _HMG_SYSDATA[339], _HMG_SYSDATA[282], _HMG_SYSDATA[372], _HMG_SYSDATA[279], _HMG_SYSDATA[399], _HMG_SYSDATA[403] )
+
+            nPos += 50
+
+        Next
+
+    _EndWindow ()
+
+    Domethod ( "Win_1", "Dummy" , "Setfocus" )
+
+    DoMethod ( "Win_1", "Center" )
+
+    _ActivateWindow ( {"Win_1"}, .F., , )
+
+Return
+
+
+function DoAction( nMode )
+      local cExeFullPath
+      local cWinDir := GetWindowsFolder() + "\"
+      local cSysDir := GetSystemFolder() + "\"
+      local cParam := cSysDir
+
+    if nMode < 5
+        if file(cWinDir + "control.exe")
+            cExeFullPath := cWinDir + "control.exe"
+        elseif file(cSysDir + "control.exe")
+            cExeFullPath := cSysDir + "control.exe"
+        endif
+    endif
+
+    switch nMode
+
+    case 1
+        cParam += "desk.cpl"
+        exit
+
+    case 2
+        cParam += "appwiz.cpl"
+        exit
+
+    case 3
+        cParam += "sysdm.cpl"
+        exit
+
+    case 4
+        cParam += "main.cpl"
+        exit
+
+    case 5
+        showabout()
+        exit
+
+    case 6
+        DoMethod ( _HMG_SYSDATA[254] , "release" )
+
+    end
+
+    Domethod ( "Win_1", "Dummy" , "Setfocus" )
+
+    if nMode < 5
+        _Execute ( , , ( cExeFullPath ) , ( cParam ) , , 5 )
+    endif
+
+return nil
+
+
+function showabout()
+
+
+
+
+
+
+
+      local cAbout := xpadc( "Control Panel v.1.0.2", 400 ) + hb_eol() +     xpadc( "Copyright " + Chr(169) + " 2011-2014 Grigory Filatov", 400 ) + hb_eol() + hb_eol() +     xpadr( "C compiler", 148, "." ) + " : " + hb_compiler() + hb_eol() +     xpadr( "xBase compiler", 151, "." ) + " : " + version() + hb_eol() +     xpadr( "GUI library", 150, "." ) + " : " + Left(MiniGuiVersion(), 38) + hb_eol() + hb_eol() +     xpadr( "Operating System", 150, "." ) + " : " + OS() + hb_eol() +     xpadr( "Amount of RAM (MB)", 144, "." ) + " : " + hb_ntos( MemoryStatus(1) + 1 ) + hb_eol() +     xpadr( "Swap-file size (MB)", 150, "." ) + " : " + hb_ntos( MemoryStatus(3) )
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win_2", "About program", 0, 0, 345 + iif(ISVISTAORLATER(), 1, 2) * GetBorderWidth(), GetTitleHeight() + 269 + GetBorderHeight(), .F., .F., .T., .F., .F., {,}, {,},, ,, , ,, iif(ISVISTAORLATER(), {233, 236, 216}, Nil) , , .F. , .F. , .F. , "MAIN" , .F. , "MS Sans Serif" , 9, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .T. , , , .F. , , , )
+
+
+
+
+    _DefineImage ( "Image_1",, 0, 0, "LOGO", 345, 73,,,, .F., .F.,, .F., .F.,,,,,, , )
+
+
+
+
+
+    _DefineEditBox ( "readText",, 6, 80, 334, 140, cAbout,,,,,,,, .F., .F.,, .F., .F., .F., .F., .F., .F.,,,, .F., .T., .F.,, )
+
+    _ExtDisableControl ( "readText", "Win_2" )
+
+    CreateLine()
+
+
+
+
+
+
+
+
+    _DefineOwnerButton ( "Button_1",, 266, GetProperty ( "Win_2", "Height" ) - 55, "Close", {|| DoMethod ( _HMG_SYSDATA[254] , "release" )}, 74, 24,,, {|| SetProperty( "Win_2", "Button_1", "FontBold", .T. )}, {|| SetProperty( "Win_2", "Button_1", "FontBold", .F. )}, .T., .F.,, .F., .F., .F.,,,, .F., .F., .F., .F., .F., .F., .F.,,, .F., .F., .F., .T.,,,, .F.,, )
+
+    _DefineHotKey ( , 0 , 27 , {|| DoMethod ( _HMG_SYSDATA[254] , "release" )} )
+
+    _EndWindow ()
+
+    Domethod ( "Win_2", "Image_1" , "Setfocus" )
+
+    DoMethod ( "Win_2", "Center" )
+
+    _ActivateWindow ( {"Win_2"}, .F., , )
+
+return nil
+
+
+function CreateLine()
+
+
+
+    drawline("Win_2",GetProperty ( "Win_2", "Height" ) - 64,6,GetProperty ( "Win_2", "Height" ) - 64,340,iif(IsWinXPorLater(), {172, 168, 153}, { 128 , 128 , 128 }),)
+
+
+
+    drawline("Win_2",GetProperty ( "Win_2", "Height" ) - 63,6,GetProperty ( "Win_2", "Height" ) - 63,340,{ 255 , 255 , 255 },)
+
+return nil
+
+
+function xPadR( cText, nPixels, cChar )
+
+   cChar := iif( cChar == NIL, Chr(32), cChar )
+
+   while GetTextWidth( , cText ) < nPixels
+      cText += cChar
+   end
+
+return cText
+
+
+function xPadL( cText, nPixels, cChar )
+
+   cChar := iif( cChar == NIL, Chr(32), cChar )
+
+   while GetTextWidth( , cText ) < nPixels
+      cText := cChar + cText
+   end
+
+return cText
+
+
+function xPadC( cText, nPixels, cChar )
+
+   local cRet    := If( hb_IsString( cText ), AllTrim( cText ), "" )
+   local nLen    := Len( cText )
+   local nPixLen
+   local nPad
+
+   cChar := iif( cChar == NIL, Chr(32), cChar )
+
+   nPixLen := GetTextWidth( , cText )
+   nPad    := GetTextWidth( , cChar )
+
+   if nPixels > nPixLen
+      cRet := PadC( cRet, Int( nLen + ( nPixels - nPixLen ) / nPad ), cChar )
+   endif
+
+return cRet

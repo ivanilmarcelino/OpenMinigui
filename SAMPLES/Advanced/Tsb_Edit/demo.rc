@@ -1,0 +1,39 @@
+//
+// Resource     Resource         Resource
+// Name          Type             FileName
+//            
+1MAIN_ICO        ICON            res\default.ico
+iOk32            ICON            res\iOk32.ico
+iCancel32        ICON            res\iCancel32.ico
+
+
+1 VERSIONINFO
+FILEVERSION 1,0
+PRODUCTVERSION 1,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+  BLOCK "040904b0"
+  {
+    VALUE "FileDescription", "Demo MiniGui\000"
+    VALUE "FileVersion", "1.0."
+    VALUE "InternalName", "demo.exe\000"
+    VALUE "LegalCopyright", "(c) Copyright 2024 Verchenko Andrey (Dmitrov)\000"
+    VALUE "LegalTrademarks", "Harbour + MiniGui\000"
+    VALUE "OriginalFilename", "demo.exe\000"
+    VALUE "CompanyName", "V-Soft Dmitrov, Moscow region\000"
+    VALUE "ProductName", "Demo MiniGui Harbour\000"
+    VALUE "ProductVersion", "1.0."
+    VALUE "Comments", "Created by Verchenko Andrey <verchenkoag@gmail.com>\000"
+  }
+}
+
+BLOCK "VarFileInfo"
+{
+  VALUE "Translation", 0x0409 0x04B0
+}
+}
+
+

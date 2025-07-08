@@ -1,0 +1,40 @@
+What is HMG Extended Edition ?
+""""""""""""""""""""""""""""""
+MiniGUI is a lightweight, open-source GUI (Graphical User Interface) library for 
+Harbour and xBase languages. It provides a simple, easy-to-use API for creating 
+graphical user interfaces for Windows.
+
+MiniGUI is designed to be a compact, efficient, and flexible GUI library that 
+can be used to build a wide range of applications, from simple tools to complex 
+business systems. It is particularly well-suited for building database-driven 
+applications, as it integrates well with Harbour's database capabilities.
+
+Some of the key features of MiniGUI include:
+
+* Native Windows GUI: MiniGUI applications have a native Windows look and feel,
+  making them indistinguishable from applications built with other Windows
+  development tools.
+
+* Lightweight: MiniGUI is a relatively small library, making it easy to distribute
+  and deploy.
+
+* Easy to use: MiniGUI provides a simple, intuitive API that makes it easy 
+  to create GUI components and layouts.
+
+* Customizable: MiniGUI allows developers to customize the appearance and behavior
+  of GUI components to suit their needs.
+
+* Extensive widget set: MiniGUI includes a wide range of GUI widgets, including
+  buttons, labels, edit controls, grids, and more.
+
+Where is the HMG EE site ?
+""""""""""""""""""""""""""
+http://hmgextended.com
+
+Where can I download a recent build of HMG EE ?
+"""""""""""""""""""""""""""""""""""""""""""""""
+http://hmgextended.com/download.html
+
+Where is the HMG EE forum ?
+"""""""""""""""""""""""""""
+- English at https://groups.google.com/g/minigui-forum

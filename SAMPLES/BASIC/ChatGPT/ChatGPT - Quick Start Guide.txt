@@ -1,0 +1,227 @@
+### Harbour MiniGUI User Manual: Quick Start Guide
+
+---
+
+### Introduction
+
+Harbour MiniGUI is a graphical user interface (GUI) library designed to work with the Harbour programming language. It allows developers to create desktop applications for Windows using a simple, xBase-style syntax. This manual will guide you through installing Harbour MiniGUI, understanding its components, and creating your first application.
+
+---
+
+## 1. Installation and Setup
+
+### 1.1 Installing Harbour
+1. Download Harbour:
+   - Visit the official [Harbour Project website](https://harbour.github.io/) to download the latest version of the Harbour compiler.
+
+2. Install Harbour:
+   - Follow the instructions for your platform (Windows, Linux, macOS) to install the compiler.
+
+### 1.2 Installing Harbour MiniGUI
+1. Download MiniGUI:
+   - You can download Harbour MiniGUI from the official [HMG Extended website](http://hmgextended.com/)
+   
+2. Extract the Library:
+   - Extract the downloaded archive to a folder on your system.
+
+3. Add Harbour and MiniGUI to Path:
+   - Add the `bin` directories of both Harbour and MiniGUI to your system’s PATH to allow global access to the `hbmk2` build tool.
+
+4. Verify Installation:
+   - Open a terminal or command prompt and type `hbmk2` to ensure that Harbour and MiniGUI are properly installed.
+
+---
+
+## 2. Structure of a Harbour MiniGUI Program
+
+A typical MiniGUI program consists of the following components:
+1. Window Definitions: The main container of your application.
+2. Control Definitions: Interactive elements like buttons, text boxes, labels, etc.
+3. Event Handling: Logic that executes when users interact with the controls.
+4. Program Execution: Activation of the window, which starts the event loop.
+
+---
+
+## 3. Basic Harbour MiniGUI Concepts
+
+### 3.1 Windows
+The window is the main container for your application. You define it using the `DEFINE WINDOW` command.
+
+DEFINE WINDOW oWnd TITLE "My First Window" MAIN
+    // Controls go here
+END WINDOW
+ACTIVATE WINDOW oWnd
+
+### 3.2 Controls
+Controls are UI elements such as buttons, labels, text inputs, checkboxes, etc., defined within the window.
+
+#### Buttons
+Buttons are clickable controls that can trigger actions:
+
+@ 10, 10 BUTTON oBtn CAPTION "Click Me" ACTION MsgInfo("Button Clicked")
+
+#### Labels (SAY)
+Labels display static text:
+
+@ 20, 10 LABEL lblName VALUE "Hello, Harbour MiniGUI!"
+
+#### Text Input (GET)
+Allows users to enter text:
+
+LOCAL cInput := SPACE(30)
+@ 30, 10 GETBOX gtbName VALUE cInput WIDTH 200 HEIGHT 24
+
+#### Checkboxes
+Checkboxes represent binary options:
+
+LOCAL lChecked := .F.
+@ 40, 10 CHECKBOX chkName VALUE lChecked CAPTION "Check me!"
+
+---
+
+## 4. Creating Your First Application
+
+### 4.1 The Program Structure
+
+Here’s a simple “Hello World” application using Harbour MiniGUI:
+
+#include "minigui.ch"
+
+FUNCTION Main()
+    LOCAL oWnd, oBtn
+
+    // Define the main window
+    DEFINE WINDOW oWnd ;
+        TITLE "Hello Harbour MiniGUI" ;
+        AT 100, 100 WIDTH 400 HEIGHT 300 ;
+        MAIN
+
+    // Add a button to the window
+    @ 50, 50 BUTTON oBtn ;
+        CAPTION "Click Me" ;
+        ACTION MsgInfo("Hello, World!")
+
+    END WINDOW
+
+    // Activate the window to display the UI
+    ACTIVATE WINDOW oWnd
+
+RETURN NIL
+
+### 4.2 Running the Application
+
+1. Save the program as `hello.prg`.
+2. Compile and build the program using the Harbour build tool (`hbmk2`):
+
+   hbmk2 hello.prg -run
+   3. The program will compile and run, showing a window with a button. Clicking the button will display the message "Hello, World!".
+
+---
+
+## 5. Key Controls Overview
+
+### 5.1 Button
+A clickable button that triggers actions.
+
+@ 10, 10 BUTTON oBtn CAPTION "Click Me" ACTION MsgInfo("Button Clicked")
+
+### 5.2 Label (SAY)
+A control for displaying static text.
+
+@ 20, 10 LABEL lblName VALUE "Static Text" 
+
+### 5.3 Input Field (GET)
+For capturing user input.
+
+LOCAL cName := ""
+@ 30, 10 GETBOX gtbName VALUE cName WIDTH 200 HEIGHT 24
+
+### 5.4 CheckBox
+A binary option for the user.
+
+LOCAL lOption := .F.
+@ 40, 10 CHECKBOX chkName VALUE lOption CAPTION "Enable Feature"
+
+### 5.5 ComboBox
+A drop-down list of options.
+
+LOCAL aItems := {"Option 1", "Option 2", "Option 3"}
+@ 50, 10 COMBOBOX cbxName ITEMS aItems VALUE 1
+
+### 5.6 Grid (TSBrowse)
+For displaying tabular data.
+
+@ 60, 10 TBROWSE oBrowse ARRAY aData SIZE 400, 200
+
+---
+
+## 6. Menu, Toolbars, and Status Bars
+
+### 6.1 Menu
+Menus are defined within the window and allow users to access commands.
+
+DEFINE MAIN MENU OF oWnd
+    POPUP "File"
+        MENUITEM "Open" ACTION MsgInfo("Opening file...")
+        MENUITEM "Exit" ACTION oWnd.Release()
+    END POPUP
+END MENU
+
+### 6.2 Toolbar
+A toolbar is a set of buttons for quick access to frequently used commands.
+
+DEFINE TOOLBAR oToolbar OF oWnd BUTTONSIZE 32, 32
+    BUTTON ACTION MsgInfo("New File") PICTURE "new.bmp"
+    BUTTON ACTION MsgInfo("Open File") PICTURE "open.bmp"
+END TOOLBAR
+
+### 6.3 Status Bar
+Displays status information at the bottom of the window.
+
+DEFINE STATUSBAR oStatus OF oWnd
+ STATUSITEM "Ready"
+END STATUSBAR
+
+---
+
+## 7. Advanced Topics
+
+### 7.1 Handling Events
+Event handling is the core of user interaction in MiniGUI. You can define actions like button clicks or window resizing.
+
+
+@ 10, 10 BUTTON oBtn CAPTION "Click Me" ACTION MyFunction()
+
+### 7.2 Database Integration
+Harbour MiniGUI allows you to integrate databases like MySQL. Using the `hb_mysql` library, you can connect to MySQL databases and display data in grid controls.
+
+Example of connecting to MySQL:
+
+oCon := HB_MYSQLCONNECT( "localhost", "root", "password", "mydb" )
+
+### 7.3 Real-Time Data Sync
+For applications needing real-time data sync, you can use timers or events to fetch and update data dynamically.
+
+---
+
+## 8. Common Errors and Debugging
+
+- Missing Libraries: Ensure that all necessary Harbour and MiniGUI libraries are linked during compilation.
+- Incorrect Path: Verify that the Harbour and MiniGUI installation paths are correctly added to the system environment variables.
+- Syntax Errors: Double-check for missing parentheses, commas, or incorrect case in commands.
+
+---
+
+## 9. Additional Resources
+
+- Harbour Project Website: [https://harbour.github.io/](https://harbour.github.io/)
+- Harbour MiniGUI Extended: [http://hmgextended.com/](http://hmgextended.com/)
+- MiniGUI Documentation: Included with the MiniGUI installation package (check the `doc` folder).
+
+---
+
+## 10. Conclusion
+
+Harbour MiniGUI provides a simple yet powerful way to create GUI desktop applications using Harbour. With an intuitive syntax, wide range of controls, and support for modern features like database integration and real-time interaction, it’s an excellent choice for developers familiar with xBase languages. Whether you’re migrating legacy applications or developing new software, Harbour MiniGUI offers the flexibility and efficiency to get the job done.
+
+By following this guide, you should now have a solid foundation to start building your own Harbour MiniGUI applications quickly and effectively.

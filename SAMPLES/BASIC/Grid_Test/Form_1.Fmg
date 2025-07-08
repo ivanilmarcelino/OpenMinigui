@@ -1,0 +1,116 @@
+* HMG-IDE ANSI Form Designer Generated Code
+* (c) Roberto Lopez - http://sites.google.com/site/hmgweb
+
+DEFINE WINDOW TEMPLATE AT 0 , 0 WIDTH 820 HEIGHT 472 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "GRID Dynamic Color Test" ICON NIL MAIN CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+
+    DEFINE GRID Grid_1
+        ROW    60
+        COL    50
+        WIDTH  700
+        HEIGHT 170
+        ITEMS  aRows
+        VALUE  {1, 1}
+        WIDTHS {140, 140, 140, 140, 100}
+        HEADERS {'Last Name', 'First Name', 'Phone', 'Row', 'Time'}
+        FONTNAME "Arial"
+        FONTSIZE 9
+        DYNAMICBACKCOLOR {bColor, bColor, bColor, bColor, bColor}
+        DYNAMICFORECOLOR {fColor, fColor, fColor, fColor, fColor}
+        SHOWHEADERS .T.
+        CELLNAVIGATION .T.
+        ALLOWAPPEND .F.
+        ALLOWDELETE .F.
+        AUTOSIZEHEIGHT 10
+    END GRID
+
+    DEFINE BUTTON Button_1
+        ROW    310
+        COL    80
+        WIDTH  120
+        HEIGHT 28
+        ACTION cor()
+        CAPTION 'RED/BLUE "Zebra"'
+    END BUTTON
+
+
+    DEFINE BUTTON Button_u1
+        ROW    350
+        COL    80
+        WIDTH  120
+        HEIGHT 28
+        ACTION un_cor()
+        CAPTION 'Un-RED/BLUE Zebra'
+    END BUTTON
+
+
+    DEFINE BUTTON Button_2
+        ROW    310
+        COL    210
+        WIDTH  120
+        HEIGHT 28
+        ACTION Colour_grid( 2, YELLOW )
+        CAPTION 'YELLOW ROW'
+    END BUTTON
+
+
+    DEFINE BUTTON Button_u2
+        ROW    350
+        COL    210
+        WIDTH  120
+        HEIGHT 28
+        ACTION Colour_grid( 2, NIL )
+        CAPTION 'Un-YELLOW ROW'
+    END BUTTON
+
+
+    DEFINE BUTTON Button_3
+        ROW    310
+        COL    340
+        WIDTH  120
+        HEIGHT 28
+        ACTION Colour_grid( 1, GREEN )
+        CAPTION 'GREEN COL'
+    END BUTTON
+
+
+    DEFINE BUTTON Button_u3
+        ROW    350
+        COL    340
+        WIDTH  120
+        HEIGHT 28
+        ACTION Colour_grid( 1, NIL )
+        CAPTION 'Un-GREEN COL'
+    END BUTTON
+
+
+    DEFINE BUTTON Button_4
+        ROW    310
+        COL    470
+        WIDTH  120
+        HEIGHT 28
+        ACTION Colour_grid( 0, BROWN )
+        CAPTION 'BROWN CELL'
+    END BUTTON
+
+    DEFINE BUTTON Button_u4
+        ROW    350
+        COL    470
+        WIDTH  120
+        HEIGHT 28
+        ACTION Colour_grid( 0, NIL )
+        CAPTION 'Un-Colour CELL'
+    END BUTTON
+
+
+    DEFINE BUTTON Button_5
+        ROW    310
+        COL    600
+        WIDTH  120
+        HEIGHT 28
+        ACTION Colour_grid( 0, PINK )
+        CAPTION 'PINK CELL'
+    END BUTTON
+
+
+END WINDOW
+

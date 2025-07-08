@@ -1,0 +1,1972 @@
+
+
+
+
+
+
+
+
+
+ANNOUNCE RDDSYS
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 28 "FileMan.prg"
+Static aDrives, aDirectory, aSubDirectory, aOldPos
+
+Static aNivel := { 1, 1 }, aBack := { .T., .T. },     aGridWidth, nGridFocus := 2, bBlock, lBlock := .F.
+Static cRunCommand := "", aWinVer, aSortCol := { 1, 1 }
+
+
+Function Main()
+
+
+LOCAL nScrWidth := GetDesktopWidth(), nScrHeight := GetDesktopHeight(),     nWidth, nHeight, nGridHeight, nGridWidth
+LOCAL lfirst := .T., i, cButton, cDrive, nWnd := 1
+LOCAL aDriveBmps := { "FLOPPY", "REMOVE", "HARD", "REMOTE", "CDROM", "RAMDISK" }
+
+   WHILE IsExeRunning( cFileNoPath( HB_ArgV( 0 ) ) + "_" + Ltrim(Str(nWnd)) )
+    nWnd++
+   END
+
+   aWinVer := WindowsVersion()
+
+   __SetCentury( "ON" )
+   Set( 4, iif( __SetCentury(), "dd.mm.yyyy", "dd.mm.yy" ) )
+
+   _HMG_SYSDATA[415] := ( Upper("OFF") == "ON" )
+
+   aDrives := GetDrives()
+   aDirectory := ARRAY( 2 )
+   aSubDirectory := ARRAY( 2, 64 )
+   aOldPos := ARRAY( 2, 64 )
+
+   aSubDirectory[1][1] := "C:"
+   aSubDirectory[2][1] := "C:"
+
+   nWidth := IF(nScrWidth >= 1024, 800, IF(nScrWidth >= 800, 700, 600))
+   nHeight := IF(nScrHeight >= 768, 600, IF(nScrHeight >= 600, 540, 480))
+   nGridHeight := IF(nHeight = 600, 360, IF(nHeight = 540, 299, 240))
+   nGridWidth := IF(nWidth = 800, 380, IF(nWidth = 700, 330, 280))
+
+   aGridWidth := IF(nHeight = 600, { 145, 80, 74, 60 },     IF(nHeight = 540, { 115, 80, 60, 54 }, { 85, 70, 60, 45 }))
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Form_Main", IF(nWnd > 1, "[" + Ltrim(Str(nWnd)) + "] ", "") + "File Manager" + " v." + Ltrim(" 0.52"), 0, 0, nWidth + IF(IsXPThemeActive(), 8, 0), nHeight + IF(Len(aDrives) > 10, 28, 0) + IF(IsXPThemeActive(), 8, 0), .F., .F., .F., .F., .F., {,}, {,}, {|| ( GetDirectory(aSubDirectory[1][1] + "\*.*", 1),     GetDirectory(aSubDirectory[2][1] + "\*.*", 2), lfirst := .F. )}, ,, , ,, , , .F. , .F. , .T. , "MAIN" , .F. , "MS Sans Serif" , 8, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+    _DefineMainMenu( )
+
+        _DefineMenuPopup( "&File" , , , )
+            _DefineMenuItem ( "&Change Attributes..." , {|| ChangeFAttr()} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+            _DefineMenuItem ( "&Properties..."+Chr(9)+"   Alt+Enter" , {|| ShowProperties()} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+            _DefineSeparator()
+            _DefineMenuItem ( "E&xit"+Chr(9)+"   Alt+F4" , {|| ReleaseAllWindows()} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+        _EndMenuPopup()
+
+        _DefineMenuPopup( "&Commands" , , , )
+            _DefineMenuItem ( "&Search..."+Chr(9)+"   Alt+F7" , {|| _dummy()} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+            _DefineMenuItem ( "System &Information..." , {|| SysInfo()} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+        _EndMenuPopup()
+
+        _DefineMenuPopup( "&Show" , , , )
+
+            _DefineMenuItem ( "&Reread Folder"+Chr(9)+"   Ctrl+R" , {|| ReReadFolder()} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+        _EndMenuPopup()
+
+        _DefineMenuPopup( "&Help" , , , )
+            _DefineMenuItem ( "&Index"+Chr(9)+"   F1" , {|| _Execute( _HMG_SYSDATA[30], "open", "FileMan.chm" )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+            _DefineSeparator()
+            _DefineMenuItem ( "&About FileMan..." , {|| MsgAbout()} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+        _EndMenuPopup()
+    _EndMenu()
+
+    _DefineSplitBox ( , .F. , .F. )
+
+           _BeginToolBar ( "ToolBar_1",, , , 32, 24,, ,,,, .T., .F., .T., .F., .F., .F., .F., .F., .F., .F., .F. )
+
+
+
+
+            _DefineToolButton ( "TB1_Button_0", _HMG_SYSDATA[27], , , "Reread Folder" , {|| ReReadFolder()} , , , "REREAD" , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+            _DefineToolButton ( "TB1_Button_1", _HMG_SYSDATA[27], , , "NotePad" , {|| _Execute ( 0, , "Notepad", , , 5 )} , , , "NOTES" , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+            _DefineToolButton ( "TB1_Button_2", _HMG_SYSDATA[27], , , "WordPad" , {|| _Execute ( 0, , "Write", , , 5 )} , , , "WRITE" , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+            _DefineToolButton ( "TB1_Button_3", _HMG_SYSDATA[27], , , "Paint" , {|| _Execute ( 0, , "Pbrush", , , 5 )} , , , "PAINT" , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+            _DefineToolButton ( "TB1_Button_4", _HMG_SYSDATA[27], , , "Calculator" , {|| _Execute ( 0, , "Calc", , , 5 )} , , , "CALC" , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+            _DefineToolButton ( "TB1_Button_5", _HMG_SYSDATA[27], , , "Control Panel" , {|| _Execute ( 0, , "rundll32.exe", "shell32.dll,Control_RunDLL", , 3 )} , , , "CPANEL" , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+            _DefineToolButton ( "TB1_Button_6", _HMG_SYSDATA[27], , , "System Properties" , {|| _Execute ( 0, , "rundll32.exe", "shell32.dll,Control_RunDLL sysdm.cpl"+IF(IsVista().OR.IsSeven(), "", ",,0"), , 5 )} , , , "SYSTEM" , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+            _DefineToolButton ( "TB1_Button_7", _HMG_SYSDATA[27], , , IF(IsWinNT(), "Task Manager", "System Configuration") , {|| _Execute ( 0, , IF(IsWinNT(), "TaskMgr", "MSConfig"), , , 5 )} , , , "TOOLS" , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+
+            _DefineToolButton ( "TB1_Button_8", _HMG_SYSDATA[27], , , "Screen Saver" , {|| SendMessage( GetFormHandle("Form_Main"), 274, 61760, 0 )} , , , "SAVER" , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+              _EndToolBar ()
+
+        IF nHeight > 480
+
+
+
+
+
+            _BeginToolBar ( "ToolBar_2",, , , if(len(aDrives) = 10, IF(nWidth = 800, 36, 30),     if(len(aDrives) = 9, IF(nWidth = 800, 40, 38), if(len(aDrives) = 8, IF(nWidth = 800, 47, 38),     if(len(aDrives) = 7, IF(nWidth = 800, 54, 47), if(len(aDrives) = 6, IF(nWidth = 800, 63, 54),     if(len(aDrives) = 5, IF(nWidth = 800, 75, 63), 80)))))), 16,, ,,,, .T., .F., .T., .T., .T., .F., .F., .F., .F., .F., .F. )
+        ELSE
+
+
+
+            _BeginToolBar ( "ToolBar_2",, , , if(len(aDrives) = 10, 24, if(len(aDrives) = 9, 30, if(len(aDrives) = 8, 32,     if(len(aDrives) = 7, 40, if(len(aDrives) = 6, 47, if(len(aDrives) = 5, 54, 61)))))), 16,, ,,,, .T., .F., .T., .T., .T., .F., .F., .F., .F., .F., .F. )
+        ENDIF
+
+            for i := 1 to len(aDrives)
+                cButton := "TB2_Button_"+ltrim(str(i))
+
+
+
+
+
+                _DefineToolButton ( cButton, _HMG_SYSDATA[27], , , Lower(aDrives[i][2]) , {|| SelectDrive(1)} , , , aDriveBmps[ aDrives[i][1] ] , aDrives[i][3] , , , .F. , .F. , .T. , .T. , .T. , .F. , .F. , .F., -1, .F. )
+                if aDrives[i][2] $ aSubDirectory[1][1]
+                    SetProperty ( "Form_Main", (cButton) , "Value" , .T. )
+                endif
+            next
+
+              _EndToolBar ()
+
+        IF nHeight > 480
+
+
+
+
+
+            _BeginToolBar ( "ToolBar_3",, , , if(len(aDrives) = 10, IF(nWidth = 800, 36, 30),     if(len(aDrives) = 9, IF(nWidth = 800, 40, 38), if(len(aDrives) = 8, IF(nWidth = 800, 47, 38),     if(len(aDrives) = 7, IF(nWidth = 800, 54, 47), if(len(aDrives) = 6, IF(nWidth = 800, 63, 54),     if(len(aDrives) = 5, IF(nWidth = 800, 75, 63), 80)))))), 16,, ,,,, .T., .F., .T., .F., .T., .F., .F., .F., .F., .F., .F. )
+        ELSE
+
+
+
+            _BeginToolBar ( "ToolBar_3",, , , if(len(aDrives) = 10, 24, if(len(aDrives) = 9, 30, if(len(aDrives) = 8, 32,     if(len(aDrives) = 7, 40, if(len(aDrives) = 6, 47, if(len(aDrives) = 5, 54, 61)))))), 16,, ,,,, .T., .F., .T., .F., .T., .F., .F., .F., .F., .F., .F. )
+        ENDIF
+
+            for i := 1 to len(aDrives)
+                cButton := "TB3_Button_"+ltrim(str(i))
+
+
+
+
+
+                _DefineToolButton ( cButton, _HMG_SYSDATA[27], , , Lower(aDrives[i][2]) , {|| SelectDrive(2)} , , , aDriveBmps[ aDrives[i][1] ] , aDrives[i][3] , , , .F. , .F. , .T. , .T. , .T. , .F. , .F. , .F., -1, .F. )
+                if aDrives[i][2] $ aSubDirectory[2][1]
+                    SetProperty ( "Form_Main", (cButton) , "Value" , .T. )
+                endif
+            next
+
+              _EndToolBar ()
+
+
+
+
+ _DefineSplitChildWindow ( "SplitChild_0", nWidth - 2, 18 , .F. , , .T. , , , ,, , , , .F. , , , , , , , )
+
+            _HMG_SYSDATA[316] := "Label_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+                _HMG_SYSDATA[331] := 0
+                _HMG_SYSDATA[332] := 0
+                _HMG_SYSDATA[334] := ""
+                _HMG_SYSDATA[320] := nWidth / 2 - 10
+                _HMG_SYSDATA[321] := 16
+            _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+            _HMG_SYSDATA[316] := "Label_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+                _HMG_SYSDATA[331] := 0
+                _HMG_SYSDATA[332] := nWidth / 2 - 2
+                _HMG_SYSDATA[334] := ""
+                _HMG_SYSDATA[320] := nWidth / 2 - 10
+                _HMG_SYSDATA[321] := 16
+            _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+        _EndWindow ()
+
+        for i := 1 to len(aDrives)
+            cButton := "TB2_Button_"+ltrim(str(i))
+            if GetProperty( "Form_Main", cButton, "Value" )
+                cDrive := aDrives[i][2] + ":"
+
+
+                SetProperty ( "SplitChild_0", "Label_1" , "Value" , "[" + Lower(aDrives[i][3]) + "]  " +     Ltrim(Str(Int(HB_DISKSPACE(cDrive, 1) / 1024))) + " kB of " +     Ltrim(Str(Int(HB_DISKSPACE(cDrive, 3) / 1024))) + " kB free" )
+            endif
+
+            cButton := "TB3_Button_"+ltrim(str(i))
+            if GetProperty( "Form_Main", cButton, "Value" )
+                cDrive := aDrives[i][2] + ":"
+
+
+                SetProperty ( "SplitChild_0", "Label_2" , "Value" , "[" + Lower(aDrives[i][3]) + "]  " +     Ltrim(Str(Int(HB_DISKSPACE(cDrive, 1) / 1024))) + " KB of " +     Ltrim(Str(Int(HB_DISKSPACE(cDrive, 3) / 1024))) + " KB free" )
+            endif
+        next
+
+
+
+
+
+
+ _DefineSplitChildWindow ( "SplitChild_1", nWidth / 2 - IF(IsXPThemeActive(), 2, 4), nGridHeight + 20 , .T. , , .F. , aSubDirectory[1][1] , , , {|| nGridFocus := 1}, , , , .T. , , , , , , , )
+
+
+
+
+
+
+
+
+
+
+
+            _DefineGrid ( "Grid_1" , , 00 , 00 , nGridWidth , nGridHeight , {"[Name]","Size","Date","Time"} , aGridWidth , {{"","","",""}} , 1 , , , , { || if(lfirst, , CurrentDirectory()) } , {|| Verify()} , {  {|| Head_Click(1)},  {|| Head_Click(2)},  {|| Head_Click(3)},  {|| Head_Click(4)} } , { || CurrentDirectory() } ,, .F.,, { 0,1,2,2 } , .F. , , .F., .F., .F., .F. , .F. , , , .F. , , , .F. , , , , 0, , , , !.F. , , .F. , .F. , .F. , , , .F. , .F. , , , , , , .F. , , )
+
+            SetHotKey()
+
+            _DefineHotKey ( , 0 , 9 , {|| Domethod( "SplitChild_2", "Grid_2", "SetFocus" )} )
+
+            _DefineHotKey ( , 0 , 46 , {|| Delete_File()} )
+
+        _EndWindow ()
+
+
+
+
+
+
+ _DefineSplitChildWindow ( "SplitChild_2", nWidth / 2, nGridHeight + 20 , .F. , , .F. , aSubDirectory[2][1] , , , {|| nGridFocus := 2}, , , , .F. , , , , , , , )
+
+
+
+
+
+
+
+
+
+
+
+            _DefineGrid ( "Grid_2" , , 00 , 00 , nGridWidth , nGridHeight , {"[Name]","Size","Date","Time"} , aGridWidth , {{"","","",""}} , 1 , , , , { || if(lfirst, , CurrentDirectory()) } , {|| Verify()} , {  {|| Head_Click(1)},  {|| Head_Click(2)},  {|| Head_Click(3)},  {|| Head_Click(4)} } , { || CurrentDirectory() } ,, .F.,, { 0,1,2,2 } , .F. , , .F., .F., .F., .F. , .F. , , , .F. , , , .F. , , , , 0, , , , !.F. , , .F. , .F. , .F. , , , .F. , .F. , , , , , , .F. , , )
+
+            SetHotKey()
+
+            _DefineHotKey ( , 0 , 9 , {|| Domethod ( "SplitChild_1", "Grid_1" , "SetFocus" )} )
+
+            _DefineHotKey ( , 0 , 46 , {|| Delete_File()} )
+
+        _EndWindow ()
+
+
+
+
+ _DefineSplitChildWindow ( "SplitChild_3", nWidth - 2, 18 , .T. , , .T. , , , ,, , , , .F. , , , , , , , )
+
+            _HMG_SYSDATA[316] := "Label_3" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+                _HMG_SYSDATA[331] := 0
+                _HMG_SYSDATA[332] := 0
+                _HMG_SYSDATA[334] := aSubDirectory[1][1]
+                _HMG_SYSDATA[320] := nWidth / 2 - 10
+                _HMG_SYSDATA[321] := 16
+            _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+            _HMG_SYSDATA[316] := "Label_4" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+                _HMG_SYSDATA[331] := 0
+                _HMG_SYSDATA[332] := nWidth / 2 - 2
+                _HMG_SYSDATA[334] := aSubDirectory[2][1]
+                _HMG_SYSDATA[320] := nWidth / 2 - 10
+                _HMG_SYSDATA[321] := 16
+            _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+        _EndWindow ()
+
+
+
+
+
+
+
+
+
+
+
+        _DefineCombo ( "Combo_1",, , , nWidth / 2, {} , 1,,,, {|| cRunCommand := GetProperty ( "Form_Main", "Combo_1" , "Item" , GetProperty ( "Form_Main", "Combo_1" , "Value" ) )}, 60,,,,, .F., .F., .F., .T., .F., .F., .F. , , "cRunCommand" , .T. , {|| cRunCommand := GetProperty ( "Form_Main", "Combo_1" , "DisplayValue" )} , .T. , "Run Command: " ,, 0, , , , , .F. , .F. , , , .F. , ,, )
+
+    _EndSplitBox()
+
+    _BeginToolBar ( "ToolBar_4",, , , if(nWidth = 800, 106 + IF(IsXPThemeActive(), 1, 0), if(nWidth = 700, 90, 74)), 11,, ,,,, .T., .T., .F., .F., .T., .F., .F., .F., .F., .F., .F. )
+
+
+
+
+        _DefineToolButton ( "TB4_Button_1", _HMG_SYSDATA[27], , , "F&3 View" , {|| IF(EMPTY( IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ),     GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) ) ), , TextEdit(,,.T.) )} , , , , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+        _DefineToolButton ( "TB4_Button_2", _HMG_SYSDATA[27], , , "F&4 Edit" , {|| IF(EMPTY( IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ),     GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) ) ), , TextEdit() )} , , , , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+        _DefineToolButton ( "TB4_Button_3", _HMG_SYSDATA[27], , , "F&5 Copy" , {|| CopyOrMoveFile(.T.)} , , , , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+        _DefineToolButton ( "TB4_Button_4", _HMG_SYSDATA[27], , , "F&6 Move" , {|| CopyOrMoveFile()} , , , , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+        _DefineToolButton ( "TB4_Button_5", _HMG_SYSDATA[27], , , "F&7 NewFolder" , {|| NewFolder()} , , , , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+        _DefineToolButton ( "TB4_Button_6", _HMG_SYSDATA[27], , , "F&8 Delete" , {|| Delete_File()} , , , , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+        _DefineToolButton ( "TB4_Button_7", _HMG_SYSDATA[27], , , "Alt+F4 E&xit" , {|| DoMethod ( "Form_Main", "Release" )} , , , , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+    _EndToolBar ()
+
+    SetHotKey()
+
+    _DefineHotKey ( , 0 , 9 , {|| IF( nGridFocus = 1, Domethod ( "SplitChild_1", "Grid_1" , "SetFocus" ), Domethod ( "SplitChild_2", "Grid_2" , "SetFocus" ) )} )
+
+
+
+
+
+    _DefineHotKey ( , 0 , 13 , {|| IF( Empty( cRunCommand ), ,     ( _Execute ( 0, , Token( cRunCommand, " " ),     Token( cRunCommand, " ", 2 ), GetFull(), 5 ),     AddRunCommand( cRunCommand ), cRunCommand := "",     SetProperty ( "Form_Main", "Combo_1" , "DisplayValue" , cRunCommand ) ) )} )
+
+   _EndWindow ()
+
+   DoMethod ( "Form_Main", "Center" )
+
+   _ActivateWindow ( {"Form_Main"}, .F., , )
+
+Return Nil
+
+
+Static Function SetHotKey()
+
+
+
+
+
+    _DefineHotKey ( , 0x0002 , 13 , {|| ( SetProperty ( "Form_Main", "Combo_1" , "DisplayValue" , Ltrim(Alltrim(GetProperty ( "Form_Main", "Combo_1" , "DisplayValue" )) + " " + GetName()) ),     cRunCommand := GetProperty ( "Form_Main", "Combo_1" , "DisplayValue" ),     Domethod ( "Form_Main", "Combo_1" , "SetFocus" ) )} )
+
+    _DefineHotKey ( , 0 , 27 , {|| ( cRunCommand := "", SetProperty ( "Form_Main", "Combo_1" , "DisplayValue" , cRunCommand ) )} )
+
+    _DefineHotKey ( , 0x0001 , 112 , {|| IF( lBlock, , HotKeySelectDrive( 1 ) )} )
+
+    _DefineHotKey ( , 0x0001 , 113 , {|| IF( lBlock, , HotKeySelectDrive( 2 ) )} )
+
+
+    _DefineHotKey ( , 0x0001 , 119 , {|| ( Domethod ( "Form_Main", "Combo_1" , "SetFocus" ),     ComboboxShowList( _HMG_SYSDATA[137][ GetControlIndex( "Combo_1", "Form_Main" ) ] ) )} )
+
+    _DefineHotKey ( , 0x0001 , 13 , {|| ShowProperties()} )
+
+
+
+
+    _DefineHotKey ( , 0x0002 , 40 , {|| ( IF( GetProperty ( "Form_Main", "Combo_1" , "ItemCount" ) > 0,     ( cRunCommand := GetProperty ( "Form_Main", "Combo_1" , "Item" , GetProperty ( "Form_Main", "Combo_1" , "ItemCount" ) ),     SetProperty ( "Form_Main", "Combo_1" , "DisplayValue" , cRunCommand ) ), ), Domethod ( "Form_Main", "Combo_1" , "SetFocus" ),     ComboboxShowList( _HMG_SYSDATA[137][ GetControlIndex( "Combo_1", "Form_Main" ) ] ) )} )
+
+    _DefineHotKey ( , 0x0002 , 82 , {|| ReReadFolder()} )
+
+    _DefineHotKey ( , 0x0002 , 89 , {|| ( cRunCommand := "", SetProperty ( "Form_Main", "Combo_1" , "DisplayValue" , cRunCommand ) )} )
+
+    _DefineHotKey ( , 0x0004 , 27 , {|| DoMethod ( "Form_Main", "Minimize" )} )
+
+    _DefineHotKey ( , 0 , 112 , {|| _Execute( _HMG_SYSDATA[30], "open", "FileMan.chm" )} )
+
+    _DefineHotKey ( , 0 , 113 , {|| ReReadFolder()} )
+
+
+    _DefineHotKey ( , 0 , 114 , {|| IF(EMPTY( IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ),     GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) ) ), , TextEdit(,,.T.) )} )
+
+
+    _DefineHotKey ( , 0 , 115 , {|| IF(EMPTY( IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ),     GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) ) ), , TextEdit() )} )
+
+    _DefineHotKey ( , 0x0004 , 115 , {|| TextCreate()} )
+
+    _DefineHotKey ( , 0 , 116 , {|| CopyOrMoveFile(.T.)} )
+
+    _DefineHotKey ( , 0 , 117 , {|| CopyOrMoveFile()} )
+
+    _DefineHotKey ( , 0 , 118 , {|| NewFolder()} )
+
+    _DefineHotKey ( , 0 , 119 , {|| Delete_File()} )
+
+    _DefineHotKey ( , 0 , 8 , {|| StepBack()} )
+
+Return Nil
+
+
+procedure Head_click( nCol )
+
+
+LOCAL nPos := IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ), GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) ),     nOldCol := aSortCol[nGridFocus]
+
+    IF nCol = 1
+
+
+        Asort(aDirectory[nGridFocus], , , {|a,b| if(valtype(a[2]) # "N" .AND. valtype(b[2]) # "N",     SUBSTR(a[1],2) < SUBSTR(b[1],2), if(valtype(a[2]) # "N", SUBSTR(a[1],2) < CHR(254)+b[1],     if(valtype(b[2]) # "N", CHR(254)+a[1] < SUBSTR(b[1],2), a[1] < b[1])))})
+    ELSEIF nCol = 2
+
+
+        Asort(aDirectory[nGridFocus], , , {|a,b| if(valtype(a[2]) # "N" .AND. valtype(b[2]) # "N",     SUBSTR(a[1],2) < SUBSTR(b[1],2), if(valtype(a[2]) # "N", SUBSTR(a[1],2) < CHR(254)+b[1],     if(valtype(b[2]) # "N", CHR(254)+a[1] < SUBSTR(b[1],2), a[2] < b[2])))})
+    ELSEIF nCol = 3
+
+
+        Asort(aDirectory[nGridFocus], , , {|a,b| if(valtype(a[2]) # "N" .AND. valtype(b[2]) # "N",     SUBSTR(a[1],2) < SUBSTR(b[1],2), if(valtype(a[2]) # "N", SUBSTR(a[1],2) < CHR(254)+b[1],     if(valtype(b[2]) # "N", CHR(254)+a[1] < SUBSTR(b[1],2), a[3] < b[3])))})
+    ELSE
+
+
+        Asort(aDirectory[nGridFocus], , , {|a,b| if(valtype(a[2]) # "N" .AND. valtype(b[2]) # "N",     SUBSTR(a[1],2) < SUBSTR(b[1],2), if(valtype(a[2]) # "N", SUBSTR(a[1],2) < CHR(254)+b[1],     if(valtype(b[2]) # "N", CHR(254)+a[1] < SUBSTR(b[1],2), a[4] < b[4])))})
+    ENDIF
+
+    IF nGridFocus = 1
+
+
+        _SetGridCaption( "Grid_1", "SplitChild_1", nOldCol,     Substr( GetProperty ( "SplitChild_1", "Grid_1" , "Header" , nOldCol ), 2, Len(GetProperty ( "SplitChild_1", "Grid_1" , "Header" , nOldCol )) - 2 ),     if(nOldCol=1, 0, if(nOldCol=2, 1, 2 )))
+    ELSE
+
+
+        _SetGridCaption( "Grid_2", "SplitChild_2", nOldCol,     Substr( GetProperty ( "SplitChild_2", "Grid_2" , "Header" , nOldCol ), 2, Len(GetProperty ( "SplitChild_2", "Grid_2" , "Header" , nOldCol )) - 2 ),     if(nOldCol=1, 0, if(nOldCol=2, 1, 2 )))
+    ENDIF
+
+    aSortCol[nGridFocus] := nCol
+
+    IF nGridFocus = 1
+        Domethod ( "SplitChild_1", "Grid_1" , "DisableUpdate" )
+        Domethod ( "SplitChild_1", "Grid_1" , "DeleteAllItems" )
+
+        Aeval(aDirectory[nGridFocus], {|e| Domethod ( "SplitChild_1", "Grid_1" , "AddItem" , { e[1],     if(valtype(e[2])="N", STR(e[2]), e[2]), DTOC(e[3]), e[4] } )})
+
+        _SetGridCaption( "Grid_1", "SplitChild_1", nCol, "[" + GetProperty ( "SplitChild_1", "Grid_1" , "Header" , nCol ) + "]",     if(nCol=1, 0, if(nCol=2, 1, 2 )))
+        SetProperty ( "SplitChild_1", "Grid_1" , "Value" , if(Empty(nPos), 1, nPos) )
+        Domethod ( "SplitChild_1", "Grid_1" , "EnableUpdate" )
+    ELSE
+        Domethod ( "SplitChild_2", "Grid_2" , "DisableUpdate" )
+        Domethod ( "SplitChild_2", "Grid_2" , "DeleteAllItems" )
+
+        Aeval(aDirectory[nGridFocus], {|e| Domethod ( "SplitChild_2", "Grid_2" , "AddItem" , { e[1],     if(valtype(e[2])="N", STR(e[2]), e[2]), DTOC(e[3]), e[4] } )})
+
+        _SetGridCaption( "Grid_2", "SplitChild_2", nCol, "[" + GetProperty ( "SplitChild_2", "Grid_2" , "Header" , nCol ) + "]",     if(nCol=1, 0, if(nCol=2, 1, 2 )))
+        SetProperty ( "SplitChild_2", "Grid_2" , "Value" , if(Empty(nPos), 1, nPos) )
+        Domethod ( "SplitChild_2", "Grid_2" , "EnableUpdate" )
+    ENDIF
+
+Return
+
+
+Function ShowProperties()
+
+LOCAL cPath := GetFull(), cName := GetName()
+LOCAL cFile := cPath +"\"+ cName
+LOCAL nPos := IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ), GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) )
+
+    IF Empty( nPos ) .OR. cName = ".."
+        MsgInfo ( "No files selected!", "File Manager", , .F. )
+    ELSE
+        ShowFileProperties( cFile )
+    ENDIF
+
+Return Nil
+
+
+Function ChangeFAttr()
+
+LOCAL cPath := GetFull(), cName := GetName()
+LOCAL cFile := cPath +"\"+ cName, cType, aDir, lChange := .F.
+LOCAL lArchive, lRead, lHidden, lSystem, cDate, cTime
+LOCAL nPos := IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ), GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) )
+
+    IF Empty( nPos ) .OR. cName = ".."
+        MsgInfo ( "No files selected!", "File Manager", , .F. )
+    ELSE
+
+        cType := Valtype( aDirectory[nGridFocus][ nPos ][ 2 ] )
+
+        IF cType = "N"
+
+            aDir := Directory(cFile)
+            cDate := DTOC(aDir[1][3])
+            cTime := aDir[1][4]
+            lArchive := "A" $ aDir[1][5]
+            lRead := "R" $ aDir[1][5]
+            lHidden := "H" $ aDir[1][5]
+            lSystem := "S" $ aDir[1][5]
+
+
+
+
+
+
+
+
+
+
+ _DefineModalWindow ( "wFileAttr", "File attributes for " +  cName, 0, 0, 300, 260, "" , .T., .F., .F., {,}, {,},, , , , ,, , , "MAIN" , "MS Sans Serif" , 9 ,, , , , , , , , , , .F. , , .F. , .F. , , , , , , .F. )
+
+            _BeginFrame ( "FA_Frame_1",, 4, 5, 284, 118 , "Change attributes" , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+
+
+
+
+
+            _DefineCheckBox ( "FA_Check_1",, 14, 26, "&Archive", lArchive , , , , {|| lArchive := GetProperty ( "wFileAttr", "FA_Check_1" , "Value" )} , 200 , 16 ,, ,, .F., .F. ,.F., .F., .F., .F. , , , , .F. , .F. , .F. , , .F. , .F. , , )
+
+
+
+
+
+
+            _DefineCheckBox ( "FA_Check_2",, 14, 48, "&Read only", lRead , , , , {|| lRead := GetProperty ( "wFileAttr", "FA_Check_2" , "Value" )} , 200 , 16 ,, ,, .F., .F. ,.F., .F., .F., .F. , , , , .F. , .F. , .F. , , .F. , .F. , , )
+
+
+
+
+
+
+            _DefineCheckBox ( "FA_Check_3",, 14, 70, "&Hidden", lHidden , , , , {|| lHidden := GetProperty ( "wFileAttr", "FA_Check_3" , "Value" )} , 200 , 16 ,, ,, .F., .F. ,.F., .F., .F., .F. , , , , .F. , .F. , .F. , , .F. , .F. , , )
+
+
+
+
+
+
+            _DefineCheckBox ( "FA_Check_4",, 14, 92, "&System", lSystem , , , , {|| lSystem := GetProperty ( "wFileAttr", "FA_Check_4" , "Value" )} , 200 , 16 ,, ,, .F., .F. ,.F., .F., .F., .F. , , , , .F. , .F. , .F. , , .F. , .F. , , )
+
+            _BeginFrame ( "Frame_2",, 130, 5, 284, 64 , , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+
+
+
+
+
+            _DefineCheckBox ( "FA_Check_5",, 14, 140, "&Change date/time", lChange , , , , {|| lChange := GetProperty ( "wFileAttr", "FA_Check_5" , "Value" )} , 120 , 16 ,, ,, .F., .F. ,.F., .F., .F., .F. , , , , .F. , .F. , .F. , , .F. , .F. , , )
+
+
+
+
+
+
+            _DefineButton ( "FA_Button_3", , 206, 138, "C&urrent", {|| ( SetProperty ( "wFileAttr", "FA_Text_1" , "Value" , DTOC(Date()) ),     SetProperty ( "wFileAttr", "FA_Text_2" , "Value" , Time() ),     SetProperty ( "wFileAttr", "FA_Check_5" , "Value" , .T. ) )}, 74, 23,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+            _DefineLabel ( "FA_Label_1",, 14, 166, "Date:",,, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .T. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+            _DefineLabel ( "FA_Label_2",, 162, 166, "Time:",,, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .T. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+
+
+
+
+            _DefineTextBox( "FA_Text_1",, 56, 164, 74, 20, cDate,,,,, .F., .F., .F., .F.,,, {|| ( cDate := GetProperty ( "wFileAttr", "FA_Text_1" , "Value" ), SetProperty ( "wFileAttr", "FA_Check_5" , "Value" , .T. ) )},, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+
+
+
+
+            _DefineTextBox( "FA_Text_2",, 206, 164, 74, 20, cTime,,,,, .F., .F., .F., .F.,,, {|| ( cTime := GetProperty ( "wFileAttr", "FA_Text_2" , "Value" ), SetProperty ( "wFileAttr", "FA_Check_5" , "Value" , .T. ) )},, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+
+
+
+            _DefineButton ( "FA_Button_1", , 122, 204, "Ok", {|| ( SetAttr(cFile, lArchive, lRead, lHidden, lSystem, lChange, cDate, cTime), DoMethod ( "wFileAttr", "Release" ) )}, 80, 23,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+            _DefineButton ( "FA_Button_2", , 208, 204, "Cancel", {|| DoMethod ( "wFileAttr", "Release" )}, 80, 23,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+            _EndWindow ()
+
+            DoMethod ( "wFileAttr", "Center" )
+
+            _ActivateWindow ( {"wFileAttr"}, .F., , )
+
+        ENDIF
+    ENDIF
+
+Return Nil
+
+
+
+
+
+
+
+Static Function SetAttr( cFileName, lArchive, lReadOnly, lHidden, lSystem, lChangeDT, cDate, cTime )
+
+Local nAttribute := 0, nError, dDate := CTOD(cDate)
+
+    if lArchive
+        nAttribute += 32
+    elseif lReadOnly
+        nAttribute += 1
+    elseif lHidden
+        nAttribute += 2
+    elseif lSystem
+        nAttribute += 4
+    endif
+
+    if lChangeDT
+        if !hb_FSetDateTime( cFileName, dDate, cTime )
+            MsgExclamation( "Invalid date/time for " + cFileName, "File Manager", , .F. )
+        endif
+
+        ReReadFolder()
+    endif
+
+    nError := SetFAttr( cFileName, nAttribute )
+    if nError = -5
+        MsgExclamation( "Access denied to file " + cFileName, "File Manager", , .F. )
+    endif
+
+Return Nil
+
+
+Function SysInfo()
+
+
+Local aLabel := {}, cLabel, aText := {}, cText,     aLabel2 := {}, aText2 := {}, n
+
+
+
+
+
+
+
+
+
+
+
+ _DefineModalWindow ( "wSysInfo", "System Information", 0, 0, 320, 350 + IF(IsXPThemeActive(), 8, 0), "" , .T., .F., .F., {,}, {,}, {|| Domethod ( "wSysInfo", "SI_Button_1" , "SetFocus" )}, , , , ,, , , "MAIN" , "MS Sans Serif" , 9 ,, , , , , , , , , , .F. , , .F. , .F. , , , , , , .F. )
+
+
+
+
+        _DefineButton ( "SI_Button_1", , 114, 298, "Ok", {|| DoMethod ( "wSysInfo", "Release" )}, 94, 23,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+
+        _BeginTab( "Tab_1" , , 0 , 0 , 314 , 292 , 1 , , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F., .F., .F., .F., .F., {,,},,, .F. )
+
+        _BeginTabPage ( "Hardware" , , )
+
+            Aadd(aLabel, "CPU type:")
+            Aadd(aLabel, "BIOS version:")
+            Aadd(aLabel, "Math coprocessor:")
+            Aadd(aLabel, "Video card:")
+            Aadd(aLabel, "Display resolution:")
+            Aadd(aLabel, "Current printer:")
+            Aadd(aLabel, "COM ports:")
+            Aadd(aLabel, "Installed RAM:")
+
+            Aadd(aText, CPUName())
+            Aadd(aText, BiosName())
+            Aadd(aText, "present")
+            Aadd(aText, VideoName())
+            Aadd(aText, ltrim(str(GetDesktopWidth())) + "x" + ltrim(str(GetDesktopHeight())) + "x" + ltrim(str(GetDisplayColors())) + "bit")
+
+            cText := IF(IsWinNT(), GetDefaultPrinter(),     GetRegVar( 2147483653, "System\CurrentControlSet\Control\Print\Printers", "Default" ))
+            Aadd(aText, IF(Empty(cText), "none", cText))
+            Aadd(aText, ltrim(str(ComPortCount())))
+            Aadd(aText, ltrim(transform(MemoryStatus(1),"999 999 999")) + " MB (" + ltrim(transform(MemoryStatus(1)/1024,"999 999")) + " GB)")
+
+            _BeginFrame ( "SI_Frame_1",, 40, 14, 286, 234 , , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+            FOR n := 1 TO Len(aLabel)
+                cLabel := "SI_Label_" + ltrim(str(n))
+
+
+                _DefineLabel ( cLabel,, 24, (n-1)*28 + 52, aLabel[n], 100, 21, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+                cText := "SI_Text_" + ltrim(str(n))
+
+
+                _DefineLabel ( cText,, 134, (n-1)*28 + 52, aText[n], 150, 26, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+            NEXT
+
+        _EndTabPage()
+
+        _BeginTabPage ( "Software" , , )
+
+            Aadd(aLabel2, "DOS version:")
+            Aadd(aLabel2, "Windows version:")
+            Aadd(aLabel2, "Windows mode:")
+            Aadd(aLabel2, "Swap file:")
+            Aadd(aLabel2, "Free memory:")
+            Aadd(aLabel2, "Free swap file:")
+            Aadd(aLabel2, "Windows uptime:")
+            Aadd(aLabel2, "Temporary folder:")
+
+            Aadd(aText2, IF("95" $ aWinVer[1], "7.0", IF("98" $ aWinVer[1], "7.1", "-")))
+            Aadd(aText2, alltrim(aWinVer[2]) + " (" +  aWinVer[3] + ")")
+            Aadd(aText2, alltrim(aWinVer[1]))
+            Aadd(aText2, "temp., " + ltrim(transform(MemoryStatus(3),"999 999 999")) + " MB max")
+
+            Aadd(aText2, ltrim(transform(MemoryStatus(2),"999 999 999")) + " MB (" +     ltrim(str( MemoryStatus(2)/MemoryStatus(1) * 100, 2, 0 )) + " %)")
+            Aadd(aText2, ltrim(transform(MemoryStatus(4),"999 999 999")) + " MB")
+            Aadd(aText2, WinUpTime())
+            Aadd(aText2, lower(GetTempFolder()))
+
+            _BeginFrame ( "SI_Frame_2",, 40, 14, 286, 234 , , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+            FOR n := 1 TO Len(aLabel)
+                cLabel := "S2_Label_" + ltrim(str(n))
+
+
+                _DefineLabel ( cLabel,, 24, (n-1)*28 + 52, aLabel2[n], 100, 21, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+                cText := "S2_Text_" + ltrim(str(n))
+
+
+                _DefineLabel ( cText,, 134, (n-1)*28 + 52, aText2[n], 150, 26, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+            NEXT
+
+        _EndTabPage()
+
+        _EndTab()
+
+    _EndWindow ()
+
+    DoMethod ( "wSysInfo", "Center" )
+
+    _ActivateWindow ( {"wSysInfo"}, .F., , )
+
+Return Nil
+
+
+Function SelectDrive( nFocus )
+
+Local i, cButton, cDrive := "C:", cVolume := ""
+
+    nGridFocus := nFocus
+
+    IF nFocus = 1
+        for i := 1 to len(aDrives)
+            cButton := "TB2_Button_"+ltrim(str(i))
+            if GetProperty( "Form_Main", cButton, "Value" )
+                cDrive := aDrives[i][2] + ":"
+                cVolume := aDrives[i][3]
+                exit
+            endif
+        next
+        while !lDriveReady(cDrive)
+            if !MsgRetryCancel( "Drive "+cDrive+" is not ready!", "Error", , .F. )
+                for i := 1 to len(aDrives)
+                    cButton := "TB2_Button_"+ltrim(str(i))
+                    if aDrives[i][2] $ aSubDirectory[1][1]
+                        SetProperty ( "Form_Main", (cButton) , "Value" , .T. )
+                        cDrive := aDrives[i][2] + ":"
+                        cVolume := aDrives[i][3]
+                        exit
+                    endif
+                next
+                exit
+            endif
+        enddo
+        aNivel[1] := 1
+        aBack[1] := .T.
+
+
+        SetProperty ( "SplitChild_0", "Label_1" , "Value" , "[" + Lower(cVolume) + "]  " +     Ltrim(Str(Int(HB_DISKSPACE(cDrive, 1) / 1024))) + " KB of " +     Ltrim(Str(Int(HB_DISKSPACE(cDrive, 3) / 1024))) + " KB free" )
+        SetProperty ( "SplitChild_1", "Title" , cDrive + "\*.*" )
+        aSubDirectory[1][1] := cDrive
+        GetDirectory(aSubDirectory[1][1] + "\*.*", 1)
+        SetProperty ( "SplitChild_1", "Grid_1" , "Value" , 1 )
+        Domethod ( "SplitChild_1", "Grid_1" , "SetFocus" )
+    ELSE
+        for i := 1 to len(aDrives)
+            cButton := "TB3_Button_"+ltrim(str(i))
+            if GetProperty( "Form_Main", cButton, "Value" )
+                cDrive := aDrives[i][2] + ":"
+                cVolume := aDrives[i][3]
+                exit
+            endif
+        next
+        while !lDriveReady(cDrive)
+            if !MsgRetryCancel( "Drive "+cDrive+" is not ready!", "Error", , .F. )
+                for i := 1 to len(aDrives)
+                    cButton := "TB3_Button_"+ltrim(str(i))
+                    if aDrives[i][2] $ aSubDirectory[2][1]
+                        SetProperty ( "Form_Main", (cButton) , "Value" , .T. )
+                        cDrive := aDrives[i][2] + ":"
+                        cVolume := aDrives[i][3]
+                        exit
+                    endif
+                next
+                exit
+            endif
+        enddo
+        aNivel[2] := 1
+        aBack[2] := .T.
+
+
+        SetProperty ( "SplitChild_0", "Label_2" , "Value" , "[" + Lower(cVolume) + "]  " +     Ltrim(Str(Int(HB_DISKSPACE(cDrive, 1) / 1024))) + " KB of " +     Ltrim(Str(Int(HB_DISKSPACE(cDrive, 3) / 1024))) + " KB free" )
+        SetProperty ( "SplitChild_2", "Title" , cDrive + "\*.*" )
+        aSubDirectory[2][1] := cDrive
+        GetDirectory(aSubDirectory[2][1] + "\*.*", 2)
+        SetProperty ( "SplitChild_2", "Grid_2" , "Value" , 1 )
+        Domethod ( "SplitChild_2", "Grid_2" , "SetFocus" )
+    ENDIF
+
+Return Nil
+
+
+Function MsgAbout()
+
+
+
+
+
+return MsgInfo ( "File Manager" + " version" + " 0.52" + " - FREEWARE" + hb_eol() +     "Copyright " + Chr(169) + " 2003-2012 Grigory Filatov" + hb_eol() + hb_eol() +     padc("eMail: gfilatov@gmail.com", 40) + hb_eol() + hb_eol() +     padc("This program is Freeware!", 40) + hb_eol() +     padc("Copying is allowed!", 44), "About " + "File Manager", , .F. )
+
+
+Function ReReadFolder()
+
+local nBackValue := IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ), GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) )
+
+    GetDirectory( GetFull() + "\*.*", nGridFocus )
+
+    IF nGridFocus = 1
+        SetProperty ( "SplitChild_1", "Grid_1" , "Value" , nBackValue )
+        Domethod ( "SplitChild_1", "Grid_1" , "SetFocus" )
+    ELSE
+        SetProperty ( "SplitChild_2", "Grid_2" , "Value" , nBackValue )
+        Domethod ( "SplitChild_2", "Grid_2" , "SetFocus" )
+    ENDIF
+
+Return Nil
+
+
+Function HotKeySelectDrive( nFocus )
+
+LOCAL aDisks := {}, nDisk, nCurDisk, i, cButton
+
+    Aeval(aDrives, {|e| Aadd(aDisks, " [-" + Lower( e[2] ) + "-]")})
+
+    IF nFocus = 1
+        for i := 1 to len(aDrives)
+            cButton := "TB2_Button_"+ltrim(str(i))
+            if GetProperty( "Form_Main", cButton, "Value" )
+                nDisk := i
+                exit
+            endif
+        next
+
+        nCurDisk := nDisk
+
+        bBlock := _GetHotKeyBlock ( "SplitChild_1" , 0 , 27 )
+        _ReleaseHotKey ( "SplitChild_1" , 0 , 27 )
+
+        _DefineHotKey ( "SplitChild_1" , 0 , 27 , {|| ReleaseDriveCombo("1")} )
+
+
+
+
+
+
+
+
+
+
+
+        _DefineCombo ( "Combo_1", "SplitChild_1", 0, 0, 52, aDisks , nDisk,,,,, 250, {|| ComboboxShowList( _HMG_SYSDATA[137][ GetControlIndex( "Combo_1", "SplitChild_1" ) ] )},,,, .F., .F., .F. ,.T., .F., .F., .F. , , , .F. , , .F. , "" ,,, {|| (lBlock := .T.)} , {|| ( IF( nCurDisk <> ( nDisk := GetProperty ( "SplitChild_1", "Combo_1" , "Value" ) ),     ( cButton := "TB2_Button_"+ltrim(str(nDisk)),     SetProperty( "Form_Main", cButton, "Value", .T. ),     SelectDrive( nFocus ) ), ), ReleaseDriveCombo("1") )} , , , .F. , .F. , , , .F. , , , )
+
+        Domethod ( "SplitChild_1", "Combo_1" , "SetFocus" )
+    ELSE
+        for i := 1 to len(aDrives)
+            cButton := "TB3_Button_"+ltrim(str(i))
+            if GetProperty( "Form_Main", cButton, "Value" )
+                nDisk := i
+                exit
+            endif
+        next
+
+        nCurDisk := nDisk
+
+        bBlock := _GetHotKeyBlock ( "SplitChild_2" , 0 , 27 )
+        _ReleaseHotKey ( "SplitChild_2" , 0 , 27 )
+
+        _DefineHotKey ( "SplitChild_2" , 0 , 27 , {|| ReleaseDriveCombo("2")} )
+
+
+
+
+
+
+
+
+
+
+
+        _DefineCombo ( "Combo_2", "SplitChild_2", 0, 0, 52, aDisks , nDisk,,,,, 250, {|| ComboboxShowList( _HMG_SYSDATA[137][ GetControlIndex( "Combo_2", "SplitChild_2" ) ] )},,,, .F., .F., .F. ,.T., .F., .F., .F. , , , .F. , , .F. , "" ,,, {|| (lBlock := .T.)} , {|| ( IF( nCurDisk <> ( nDisk := GetProperty ( "SplitChild_2", "Combo_2" , "Value" ) ),     ( cButton := "TB3_Button_"+ltrim(str(nDisk)),     SetProperty( "Form_Main", cButton, "Value", .T. ),     SelectDrive( nFocus ) ), ), ReleaseDriveCombo("2") )} , , , .F. , .F. , , , .F. , , , )
+
+        Domethod ( "SplitChild_2", "Combo_2" , "SetFocus" )
+    ENDIF
+
+Return Nil
+
+
+Function ReleaseDriveCombo( cFocus )
+
+
+    Domethod( "SplitChild_"+cFocus, "Combo_"+cFocus, "Release" )
+
+    _ReleaseHotKey( "SplitChild_"+cFocus, 0, 27 )
+
+    _DefineHotKey ( "SplitChild_"+cFocus, 0, 27, bBlock )
+
+    Domethod( "SplitChild_"+cFocus, "Grid_"+cFocus, "SetFocus" )
+
+    Domethod( "SplitChild_"+cFocus, "Grid_"+cFocus, "Refresh" )
+
+    lBlock := .F.
+
+Return Nil
+
+
+FUNCTION CopyOrMoveFile( lCopy )
+
+LOCAL cPath := GetFull(), cName := GetName()
+LOCAL cOldName := cPath +"\"+ cName, cType, cMsg, cFileName, cNewPath
+LOCAL nPos := IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ), GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) )
+
+    nGridFocus := IF( nGridFocus = 1, 2, 1 )
+    cNewPath := GetFull() + "\"
+    nGridFocus := IF( nGridFocus = 1, 2, 1 )
+
+    lCopy := iif( lCopy == NIL, .F., lCopy )
+
+    IF Empty( nPos ) .OR. cName = ".."
+        MsgInfo ( "No files selected!", "File Manager", , .F. )
+    ELSE
+        cType := Valtype( aDirectory[nGridFocus][ nPos ][ 2 ] )
+        IF cType = "N"
+            cMsg := IF( lCopy, 'Copy "' + cName + '" to', 'Rename/Move "' + cName + '" to' )
+            cFileName := Alltrim( InputBox2 ( cMsg, "File Manager", cNewPath + cName, 120000, "" ) )
+            IF !EMPTY(cFileName)
+                IF EMPTY(cFilePath(cFileName))
+                    cFileName := cPath + "\" + cFileName
+                ENDIF
+                IF lCopy
+                    IF !FILE( cFileName )
+                        CopyFile( cOldName, cFileName)
+                        nGridFocus := IF( nGridFocus = 1, 2, 1 )
+                        ReReadFolder()
+                        nGridFocus := IF( nGridFocus = 1, 2, 1 )
+                        ReReadFolder()
+                    ELSEIF UPPER(cOldName) = UPPER(cFileName)
+                        MsgInfo ( "You cannot copy a file to itself!", "File Manager", , .F. )
+                    ELSE
+                        IF MsgYesNo("Overwrite: " + cFileName + hb_eol() + hb_eol() + "with file: "+ cOldName + "?", "File Manager", , , .F.)
+                            CopyFile( cOldName, cFileName)
+                            nGridFocus := IF( nGridFocus = 1, 2, 1 )
+                            ReReadFolder()
+                            nGridFocus := IF( nGridFocus = 1, 2, 1 )
+                            ReReadFolder()
+                        ENDIF
+                    ENDIF
+                ELSE
+                    IF !FILE( cFileName )
+                        CopyFile( cOldName, cFileName)
+                        IF FILE( cFileName )
+                            FERASE( cOldName )
+                        ENDIF
+                        nGridFocus := IF( nGridFocus = 1, 2, 1 )
+                        ReReadFolder()
+                        nGridFocus := IF( nGridFocus = 1, 2, 1 )
+                        ReReadFolder()
+                    ELSEIF UPPER(cOldName) = UPPER(cFileName)
+                        MsgInfo ( "You cannot move a file to itself!", "File Manager", , .F. )
+                    ELSE
+                        IF MsgYesNo("Overwrite: " + cFileName + hb_eol() + hb_eol() + "with file: "+ cOldName + "?", "File Manager", , , .F.)
+                            CopyFile( cOldName, cFileName)
+                            IF FILE( cFileName )
+                                FERASE( cOldName )
+                            ENDIF
+                            nGridFocus := IF( nGridFocus = 1, 2, 1 )
+                            ReReadFolder()
+                            nGridFocus := IF( nGridFocus = 1, 2, 1 )
+                            ReReadFolder()
+                        ENDIF
+                    ENDIF
+                ENDIF
+            ENDIF
+        ENDIF
+    ENDIF
+
+RETURN NIL
+
+
+FUNCTION NewFolder()
+
+LOCAL cPath := GetFull(), cName := ""
+
+    cName := Alltrim( InputBox2 ( "New directory", "File Manager", cName, 120000, "" ) )
+
+    IF !EMPTY(cName)
+        CreateFolder( cPath +"\"+ cName )
+        ReReadFolder()
+    ENDIF
+
+RETURN NIL
+
+
+FUNCTION Delete_File()
+
+LOCAL cPath := GetFull(), cName := GetName()
+LOCAL cDelete := cPath +"\"+ cName, cType, cMsgConfirm, aDir, i
+LOCAL nPos := IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ), GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) )
+
+    IF Empty( nPos ) .OR. cName = ".."
+        MsgInfo ( "No files selected!", "File Manager", , .F. )
+    ELSE
+        cType := Valtype( aDirectory[nGridFocus][ nPos ][ 2 ] )
+
+
+        cMsgConfirm := IF( cType = "N",     "Do you really want to delete the selected file " + cName + "?",     "Do you really want to delete the selected directory " + cName + "?" )
+
+        IF cName <> ".." .AND. MsgOkCancel( cMsgConfirm, "File Manager", , .F. )
+
+            IF cType = "N"
+                FERASE( cDelete )
+                IF File( cDelete )
+
+                    MsgExclamation( "Error: " + cDelete + " cannot be deleted!" + hb_eol() + hb_eol() +     "Please remove the write protection!", "File Manager", , .F. )
+                ENDIF
+            ELSE
+                aDir := Directory( cDelete + "\*.*", "D" )
+                IF ( i := Ascan( aDir, {|e| Alltrim( e[1] ) = "."} ) ) > 0
+                    Adel( aDir, i )
+                    Asize( aDir, Len( aDir ) - 1 )
+                    IF ( i := Ascan( aDir, {|e| Alltrim( e[1] ) = ".."} ) ) > 0
+                        Adel( aDir, i )
+                        Asize( aDir, Len( aDir ) - 1 )
+                    ENDIF
+                ENDIF
+                IF Len( aDir ) > 0
+
+                    IF MsgOkCancel( padc("The directory " + cDelete + " is not empty!", 60) + hb_eol() +     "Do you want to delete it with all its files and subdirectories?", "File Manager", , .F. )
+                        ZapDirectory( cDelete + Chr(0) )
+                    ENDIF
+                ELSE
+                    ZapDirectory( cDelete + Chr(0) )
+                ENDIF
+            ENDIF
+            ReReadFolder()
+            IF nGridFocus = 1
+                SetProperty ( "SplitChild_1", "Grid_1" , "Value" , IF(nPos > 1, nPos - 1, nPos) )
+            ELSE
+                SetProperty ( "SplitChild_2", "Grid_2" , "Value" , IF(nPos > 1, nPos - 1, nPos) )
+            ENDIF
+
+        ENDIF
+    ENDIF
+
+RETURN NIL
+
+
+FUNCTION GetDirectory( cVar, nFocus )
+
+LOCAL aDir, aAux, nSortCol
+LOCAL cDir, i, j
+
+    cDir := Alltrim( cVar )
+    aDir := Directory( cDir, "D" )
+
+    IF ( i := Ascan( aDir, {|e| Alltrim( e[1] ) = "."} ) ) > 0
+        Adel( aDir, i )
+        Asize( aDir, Len( aDir ) - 1 )
+    ENDIF
+    IF Len( aDir ) = 0
+        AADD( aDir,  { "..", 0, Date(), Time() }  )
+    ENDIF
+
+    aDirectory[nFocus] := aDir
+
+    FOR i = 1 to Len( aDirectory[nFocus] )
+
+        FOR j = 1 TO Len( aDirectory[nFocus] )
+
+            IF Lower( aDirectory[nFocus][i][1] ) <= Lower( aDirectory[nFocus][j][1] )
+
+                IF SubStr( aDirectory[nFocus][i][1], 2, 1) <> "." .AND. SubStr( aDirectory[nFocus][j][1], 2, 1) <> "."
+
+                    aAux            := aDirectory[nFocus][i]
+                    aDirectory[nFocus][i]    := aDirectory[nFocus][j]
+                    aDirectory[nFocus][j]    := aAux
+
+                ENDIF
+            ENDIF
+
+        NEXT
+    NEXT
+
+
+    Aeval(aDirectory[nFocus], {|e| if(e[2] = 0 .AND. AT(".SWP", e[1]) = 0,     (e[1] := "[" + UPPER(e[1]) + "]", e[2] := "<DIR>"), e[1] := LOWER(e[1]))})
+
+    nSortCol := aSortCol[nFocus]
+    IF nSortCol = 1
+
+
+        Asort(aDirectory[nFocus], , , {|a,b| if(valtype(a[2]) # "N" .AND. valtype(b[2]) # "N",     SUBSTR(a[1],2) < SUBSTR(b[1],2), if(valtype(a[2]) # "N", SUBSTR(a[1],2) < CHR(254)+b[1],     if(valtype(b[2]) # "N", CHR(254)+a[1] < SUBSTR(b[1],2), a[1] < b[1])))})
+    ELSEIF nSortCol = 2
+
+
+        Asort(aDirectory[nFocus], , , {|a,b| if(valtype(a[2]) # "N" .AND. valtype(b[2]) # "N",     SUBSTR(a[1],2) < SUBSTR(b[1],2), if(valtype(a[2]) # "N", SUBSTR(a[1],2) < CHR(254)+b[1],     if(valtype(b[2]) # "N", CHR(254)+a[1] < SUBSTR(b[1],2), a[2] < b[2])))})
+    ELSEIF nSortCol = 3
+
+
+        Asort(aDirectory[nFocus], , , {|a,b| if(valtype(a[2]) # "N" .AND. valtype(b[2]) # "N",     SUBSTR(a[1],2) < SUBSTR(b[1],2), if(valtype(a[2]) # "N", SUBSTR(a[1],2) < CHR(254)+b[1],     if(valtype(b[2]) # "N", CHR(254)+a[1] < SUBSTR(b[1],2), a[3] < b[3])))})
+    ELSE
+
+
+        Asort(aDirectory[nFocus], , , {|a,b| if(valtype(a[2]) # "N" .AND. valtype(b[2]) # "N",     SUBSTR(a[1],2) < SUBSTR(b[1],2), if(valtype(a[2]) # "N", SUBSTR(a[1],2) < CHR(254)+b[1],     if(valtype(b[2]) # "N", CHR(254)+a[1] < SUBSTR(b[1],2), a[4] < b[4])))})
+    ENDIF
+
+    IF nFocus = 1
+        Domethod ( "SplitChild_1", "Grid_1" , "DisableUpdate" )
+        Domethod ( "SplitChild_1", "Grid_1" , "DeleteAllItems" )
+
+        Aeval(aDirectory[nFocus], {|e| Domethod ( "SplitChild_1", "Grid_1" , "AddItem" , { e[1],     if(valtype(e[2])="N", STR(e[2]), e[2]), DTOC(e[3]), e[4] } )})
+        SetProperty ( "SplitChild_1", "Grid_1" , "Value" , if(aBack[nFocus], aOldPos[nFocus][aNivel[nFocus]], 1) )
+        Domethod ( "SplitChild_1", "Grid_1" , "EnableUpdate" )
+    ELSE
+        Domethod ( "SplitChild_2", "Grid_2" , "DisableUpdate" )
+        Domethod ( "SplitChild_2", "Grid_2" , "DeleteAllItems" )
+
+        Aeval(aDirectory[nFocus], {|e| Domethod ( "SplitChild_2", "Grid_2" , "AddItem" , { e[1],     if(valtype(e[2])="N", STR(e[2]), e[2]), DTOC(e[3]), e[4] } )})
+        SetProperty ( "SplitChild_2", "Grid_2" , "Value" , if(aBack[nFocus], aOldPos[nFocus][aNivel[nFocus]], 1) )
+        Domethod ( "SplitChild_2", "Grid_2" , "EnableUpdate" )
+    ENDIF
+
+RETURN NIL
+
+
+FUNCTION StepBack()
+
+LOCAL cDirectory := aSubDirectory[nGridFocus][1], i
+
+IF Len( aDirectory[nGridFocus] ) > 0 .AND. ALLTRIM(aDirectory[nGridFocus][ 1, 1 ] ) = "[..]"
+    aSubDirectory[nGridFocus][ aNivel[nGridFocus] ] := ""
+    IF aNivel[nGridFocus] > 1
+        aNivel[nGridFocus] --
+    ENDIF
+    FOR i = 2 TO aNivel[nGridFocus]
+        cDirectory += Substr(aSubDirectory[nGridFocus][ i ], 1, Len(aSubDirectory[nGridFocus][ i ]) - 1)
+    NEXT
+    aBack[nGridFocus] := .T.
+    GetDirectory( cDirectory + "\*.*", nGridFocus )
+ENDIF
+
+RETURN NIL
+
+
+FUNCTION Verify()
+
+LOCAL nPos := IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ), GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) )
+LOCAL cDirectory := aSubDirectory[nGridFocus][1], i, cPath, cFile, cExt, cExe
+
+IF !Empty( nPos )
+    IF Len( aDirectory[nGridFocus] ) > 0
+        IF Alltrim(aDirectory[nGridFocus][ nPos, 1 ] ) <> "[..]" .AND. Valtype(aDirectory[nGridFocus][ nPos, 2 ]) # "N"
+            aOldPos[nGridFocus][aNivel[nGridFocus]] := nPos
+            aNivel[nGridFocus] ++
+            aSubDirectory[nGridFocus][ aNivel[nGridFocus] ] := "\" + Substr(aDirectory[nGridFocus][ nPos, 1 ], 2, Len(aDirectory[nGridFocus][ nPos, 1 ]) - 1)
+
+            FOR i = 2 TO aNivel[nGridFocus]
+                cDirectory += Substr(aSubDirectory[nGridFocus][ i ], 1, Len(aSubDirectory[nGridFocus][ i ]) - 1)
+            NEXT
+            aBack[nGridFocus] := .F.
+            GetDirectory( cDirectory + "\*.*", nGridFocus )
+
+        ELSEIF ALLTRIM(aDirectory[nGridFocus][ nPos, 1 ] ) = "[..]"
+            aSubDirectory[nGridFocus][ aNivel[nGridFocus] ] := ""
+            IF aNivel[nGridFocus] > 1
+                aNivel[nGridFocus] --
+            ENDIF
+            FOR i = 2 TO aNivel[nGridFocus]
+                cDirectory += Substr(aSubDirectory[nGridFocus][ i ], 1, Len(aSubDirectory[nGridFocus][ i ]) - 1)
+            NEXT
+            aBack[nGridFocus] := .T.
+            GetDirectory( cDirectory + "\*.*", nGridFocus )
+        ELSE
+            cPath := GetFull()
+            cFile := GetName()
+            cExt := GetExt()
+            IF cExt = "EXE" .OR. cExt = "BAT" .OR. cExt = "COM"
+                _Execute ( 0, , cFile, , cPath, 5 )
+            ELSE
+                cExe := GetOpenCommand(cExt)
+                IF !Empty(cExe)
+                    cFile := cPath+"\"+cFile
+                    _Execute ( 0, , cExe, IF(At(" ", cFile) > 0, '"'+cFile+'"', cFile), cPath, 5 )
+                ELSE
+                    IF cExt="JPG" .OR. cExt="JPEG" .OR. cExt="BMP" .OR. cExt="GIF" .OR. cExt="ICO"
+                        ShowImage()
+                    ELSEIF cExt="AVI" .OR. cExt = "MPG" .OR. cExt = "MPEG"
+                        PlayVideo()
+                    ELSEIF cExt = "WAV" .OR. cExt = "MP3"
+                        PlayMusic()
+                    ELSEIF cExt = "TXT" .OR. cExt = "INI" .OR. cExt = "DIZ" .OR. cExt = "PRG" .OR. cExt = "CH" .OR. empty(cExt)
+                        TextEdit()
+                    ELSE
+                        MsgExclamation( "Error executing program!", "File Manager", , .F. )
+                    ENDIF
+                ENDIF
+            ENDIF
+        ENDIF
+    ENDIF
+ENDIF
+
+RETURN NIL
+
+
+FUNCTION CurrentDirectory()
+
+LOCAL cPath := GetFull(), cName := GetName()
+LOCAL cText := cPath + "\" + cName
+
+    IF nGridFocus = 1
+        SetProperty ( "SplitChild_1", "Title" , cPath + "\*.*" )
+        SetProperty ( "SplitChild_3", "Label_3" , "Value" , cText )
+    ELSE
+        SetProperty ( "SplitChild_2", "Title" , cPath + "\*.*" )
+        SetProperty ( "SplitChild_3", "Label_4" , "Value" , cText )
+    ENDIF
+
+RETURN NIL
+
+
+FUNCTION GetExt()
+
+LOCAL cExtension := "", cFile := GetName()
+LOCAL nPosition  := Rat( ".", Alltrim(cFile) )
+
+    IF nPosition > 0
+        cExtension := SubStr( cFile, nPosition + 1, Len( Alltrim(cFile) ) )
+    ENDIF
+
+RETURN Upper(cExtension)
+
+
+FUNCTION GetName()
+
+LOCAL cText := "", nPos
+
+    IF ( nPos := IF( nGridFocus = 1, GetProperty ( "SplitChild_1", "Grid_1" , "Value" ), GetProperty ( "SplitChild_2", "Grid_2" , "Value" ) ) ) > 0
+
+
+        cText:= IF( valtype(aDirectory[nGridFocus][ nPos, 2 ]) # "N",     Substr(aDirectory[nGridFocus][ nPos, 1], 2, Len(aDirectory[nGridFocus][ nPos, 1 ]) - 2),     aDirectory[nGridFocus][ nPos, 1] )
+    ENDIF
+
+RETURN ALLTRIM( cText )
+
+
+FUNCTION GetFull()
+
+LOCAL cText := aSubDirectory[nGridFocus][1], i
+
+    FOR i = 2 TO aNivel[nGridFocus]
+        cText += SubStr(aSubDirectory[nGridFocus][ i ], 1, Len(aSubDirectory[nGridFocus][ i ]) - 1)
+    NEXT
+
+RETURN cText
+
+
+FUNCTION TextCreate()
+
+LOCAL cPath := GetFull(), cName := GetName(), cFile
+
+    cName := IF(cName # UPPER(cName), cName, "" )
+
+    cFile := Alltrim( InputBox2 ( "Enter file name to edit:", "File Manager", cName, 120000, "" ) )
+    IF !EMPTY(cFile)
+        cFile := cPath +"\"+ cFile
+        If ! File( cFile )
+            FClose( FCreate( cFile ) )
+        EndIf
+        TextEdit( cFile, Substr(cFile, Rat(".", cFile) + 1) )
+        IF ( Directory(cFile)[1][2] = 0 )
+            Ferase(cFile)
+        ELSE
+            ReReadFolder()
+        ENDIF
+    ENDIF
+
+RETURN NIL
+
+
+FUNCTION TextEdit( cFile, cExt, lReadOnly )
+
+LOCAL cText
+
+    cFile := iif( cFile == NIL, GetFull()+"\"+GetName(), cFile ) ; lReadOnly := iif( lReadOnly == NIL, .F., lReadOnly ) ; cExt := iif( cExt == NIL, GetExt(), cExt )
+
+    IF cExt="JPG" .OR. cExt="JPEG" .OR. cExt="BMP" .OR. cExt="GIF" .OR. cExt="ICO"
+        ShowImage()
+    ELSEIF cExt="AVI" .OR. cExt = "MPG" .OR. cExt = "MPEG"
+        PlayVideo()
+    ELSEIF cExt = "WAV" .OR. cExt = "MP3"
+        PlayMusic()
+    ELSE
+        cText := MEMOREAD( cFile )
+        IF HB_ISOEM(cText)
+            cText := HB_OEMTOANSI(cText)
+        ENDIF
+
+
+
+
+
+
+
+
+ _DefineModalWindow ( "wTextEdit", cFile, 0, 0, GetProperty ( "Form_Main", "Width" ) - 20, GetProperty ( "Form_Main", "Height" ) - 44, "" , .F., .F., .F., {,}, {,}, {|| IF(lReadOnly, Domethod ( "wTextEdit", "Btn_1" , "SetFocus" ), Domethod ( "wTextEdit", "Edit1" , "SetFocus" ))}, {|| IF( nGridFocus = 1, Domethod ( "SplitChild_1", "Grid_1" , "SetFocus" ), Domethod ( "SplitChild_2", "Grid_2" , "SetFocus" ) )} , , , ,, , {|| ResizeText()} , "MAIN" , , ,, , , , , , , , , , .F. , , .F. , .F. , , , , , , .F. )
+
+            _BeginMessageBar( "StatusBar",, .F.,,, .F., .F., .F., .F., )
+                _DefineItemMessage( "STATUSITEM", , 0, 0, cFile,, GetProperty ( "wTextEdit", "width" ), 0,,,, .F.,,, iif( .F. == .T., 2, iif( .F. == .T., 1, 0 ) ) )
+            _EndMessageBar ()
+
+
+
+
+            _DefineButton ( "Btn_1", , 0, 0, "&Cancel", {|| DoMethod ( "wTextEdit", "Release" )}, 80, 20,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+            IF lReadOnly
+
+
+
+
+
+                _DefineEditBox ( "Edit1",, 0, 21, 0, 0, cText, "Arial", 9,, 65535,,,, .T., .F.,, .F., .T., .F., .F., .F., .F.,,,, .F., .F., .F.,, )
+            ELSE
+
+
+
+                _DefineButton ( "Btn_2", , 82, 0, "&Save", { || Memowrit( cFile, GetProperty ( "wTextEdit", "Edit1" , "Value" ) ) }, 80, 20,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+
+                _DefineEditBox ( "Edit1",, 0, 21, 0, 0, cText, "Arial", 9,, 65535,,,, .F., .F.,, .F., .F., .F., .F., .F., .F.,,,, .F., .F., .F.,, )
+            ENDIF
+
+            _DefineHotKey ( , 0 , 27 , {|| DoMethod ( "wTextEdit", "Release" )} )
+
+        _EndWindow ()
+
+        DoMethod ( "wTextEdit", "center" )
+        DoMethod ( "wTextEdit", "activate" )
+    ENDIF
+
+RETURN NIL
+
+
+FUNCTION ResizeText()
+
+
+    SetProperty ( "wTextEdit", "Edit1" , "width" , GetProperty ( "wTextEdit", "width" ) - 6 )
+    SetProperty ( "wTextEdit", "Edit1" , "height" , GetProperty ( "wTextEdit", "height" ) - 72 )
+
+RETURN NIL
+
+
+FUNCTION ShowImage()
+
+LOCAL cFile := GetFull()+"\"+GetName(), cExt := GetExt()
+
+
+
+
+
+
+ _DefineWindow ( "wImage", cFile, 0, 0, IF(cExt = "ICO", 200, 400), IF(cExt = "ICO", 200, 400), .T., .T., .T., .F., .F., {,}, {,},, {|| IF( nGridFocus = 1, Domethod ( "SplitChild_1", "Grid_1" , "SetFocus" ), Domethod ( "SplitChild_2", "Grid_2" , "SetFocus" ) )} ,, , ,, , , .F. , .F. , .F. , "MAIN" , .T. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+        _DefineImage ( "Image_1",, 0, 0, cFile, 390, 360,,,, .F., .F.,, .F., .F.,,,,,, , )
+
+        _DefineHotKey ( , 0 , 27 , {|| DoMethod ( "wImage", "Release" )} )
+
+    _EndWindow ()
+
+    SetProperty ( "wImage", "Image_1" , "Width" , IF(cExt = "ICO", 32, GetProperty ( "wImage", "Width" ) - 6) )
+    SetProperty ( "wImage", "Image_1" , "Height" , IF(cExt = "ICO", 32, GetProperty ( "wImage", "Height" )- 28) )
+
+    DoMethod ( "wImage", "Center" )
+    DoMethod ( "wImage", "Activate" )
+
+RETURN NIL
+
+
+FUNCTION PlayVideo()
+
+LOCAL cFile := GetFull()+"\"+GetName()
+
+
+
+
+
+
+
+ _DefineWindow ( "wVideo", cFile, 0, 0, 400, 400, .T., .T., .T., .F., .F., {,}, {,}, {|| Domethod ( "wVideo", "Ani_1" , "Play" )}, {|| IF( nGridFocus = 1, Domethod ( "SplitChild_1", "Grid_1" , "SetFocus" ), Domethod ( "SplitChild_2", "Grid_2" , "SetFocus" ) )} ,, , ,, , , .F. , .F. , .F. , "MAIN" , .T. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+        _DefineButton ( "Btn1", , 0, 00, "&Play", {|| Domethod ( "wVideo", "Ani_1" , "Play" )}, 80, 20,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+        _DefineButton ( "Btn2", , 82, 00, "&Cancel", {|| DoMethod ( "wVideo", "Release" )}, 80, 20,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+        _DefineAnimateBox( "Ani_1",, 0, 21, 390, 360, .F., .F., .F., cFile,, !.F.,, .F., )
+
+        _DefineHotKey ( , 0 , 27 , {|| DoMethod ( "wVideo", "Release" )} )
+
+    _EndWindow ()
+
+    SetProperty ( "wVideo", "Ani_1" , "Width" , GetProperty ( "wVideo", "Width" ) - 6 )
+    SetProperty ( "wVideo", "Ani_1" , "Height" , GetProperty ( "wVideo", "Height" )- 46 )
+
+    DoMethod ( "wVideo", "Center" )
+    DoMethod ( "wVideo", "Activate" )
+
+RETURN NIL
+
+
+FUNCTION PlayMusic()
+
+LOCAL cFile := GetFull()+"\"+GetName()
+
+
+
+
+
+
+
+ _DefineWindow ( "wMusic", cFile, 0, 0, 400, 54, .T., .T., .T., .F., .F., {,}, {,}, {|| Domethod ( "wMusic", "Play_1" , "Play" )}, {|| IF( nGridFocus = 1, Domethod ( "SplitChild_1", "Grid_1" , "SetFocus" ), Domethod ( "SplitChild_2", "Grid_2" , "SetFocus" ) )} ,, , ,, , , .F. , .F. , .F. , "MAIN" , .T. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+        _DefinePlayer( "Play_1",, cFile, 0, 0, 394, 28, .F., .F., .F.,.F.,.T.,.F.,.F.,.F.,.F.,.F., )
+
+    _EndWindow ()
+
+    DoMethod ( "wMusic", "center" )
+    DoMethod ( "wMusic", "Activate" )
+
+RETURN NIL
+
+
+Static Function AddRunCommand( cCommand )
+
+local aItems := {}, i
+
+    for i := 1 to GetProperty ( "Form_Main", "Combo_1" , "ItemCount" )
+        Aadd( aItems, Alltrim( GetProperty ( "Form_Main", "Combo_1" , "Item" , i ) ) )
+    next
+
+    if Ascan(aItems, {|e| Lower(e)=Lower(Alltrim(cCommand))}) = 0
+        Domethod ( "Form_Main", "Combo_1" , "AddItem" , cCommand )
+    endif
+
+Return Nil
+
+
+Static Function GetDrives()
+
+local n, cDrv, nDrv, cVolume := "", aDrive := {}
+
+for n := 1 To 26
+
+    cDrv := Chr( 64 + n )
+
+    nDrv := GetDriveType( cDrv + ":\" + Chr(0) )
+
+    if nDrv > 1
+
+        if nDrv == 2 .AND. Upper(cDrv) == "A"
+            cVolume := '3 1/2"'
+        else
+            cVolume := ""
+            GetVolumeInformation( cDrv + ":\", @cVolume )
+        endif
+
+        Aadd( aDrive, { if(n = 1, 1, nDrv), cDrv, IF(Empty(cVolume), "none", cVolume) } )
+
+    endif
+
+next
+
+Return aDrive
+
+
+Static Function GetOpenCommand( cExt )
+
+Local oReg, cVar1, cVar2 := "", nPos
+
+    If ! ValType( cExt ) == "C"
+        Return ""
+    Endif
+
+    If ! Left( cExt, 1 ) == "."
+        cExt := "." + cExt
+    Endif
+
+    oReg := TReg32():New( 2147483648, cExt, .F. )
+    cVar1 := RTrim( StrTran( oReg:Get( Nil, "" ), Chr(0), " " ) )
+    oReg:close()
+
+    If ! Empty( cVar1 )
+        oReg := TReg32():New( 2147483648, cVar1 + "\shell\open\command", .F. )
+        cVar2 := RTrim( StrTran( oReg:Get( Nil, "" ), Chr(0), " " ) )
+        oReg:close()
+
+        If ( nPos := RAt( " %1", cVar2 ) ) > 0
+            cVar2 := SubStr( cVar2, 1, nPos )
+        Elseif ( nPos := RAt( '"%', cVar2 ) ) > 0
+            cVar2 := SubStr( cVar2, 1, nPos - 1 )
+        Elseif ( nPos := RAt( "%", cVar2 ) ) > 0
+            cVar2 := SubStr( cVar2, 1, nPos - 1 )
+        Elseif ( nPos := RAt( " /", cVar2 ) ) > 0
+            cVar2 := SubStr( cVar2, 1, nPos - 1 )
+        Endif
+    Endif
+
+Return RTrim( cVar2 )
+
+
+Static Function lDriveReady( cDrv )
+
+   LOCAL cCurDir := hb_CurDrive() + ":\" + CurDir()
+   Local lcheck := .F., n
+
+   FOR n := 1 TO 3
+       lcheck := ( DirChange(cDrv) == 0 )
+       INKEY(.02)
+   NEXT
+
+   IF lcheck
+      DirChange( cCurDir )
+   ENDIF
+
+Return lcheck
+
+
+Static Function CPUName()
+
+Local cName := "", n
+
+IF IsWinNT()
+    cName := GetRegVar( 2147483650, "HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString" )
+    cName := IF(( n := At("processor", cName) ) > 0, Left(cName, n-1), cName)
+    cName := IF(( n := At("CPU", cName) ) > 0, Left(cName, n-1), cName)
+ENDIF
+
+return lTrim(cName)
+
+
+Static Function BiosName()
+
+Local cName
+
+IF IsWinNT()
+
+    cName := Token( GetRegVar( 2147483650, "HARDWARE\DESCRIPTION\System", "SystemBiosVersion" ), " " ) + ", " +     GetRegVar( 2147483650, "HARDWARE\DESCRIPTION\System", "SystemBiosDate" )
+ELSE
+
+    cName := Token( GetRegVar( 2147483650, "Enum\Root\*PNP0C01\0000", "BIOSVersion" ), " " ) + ", " +     GetRegVar( 2147483650, "Enum\Root\*PNP0C01\0000", "BIOSDate" )
+ENDIF
+
+return cName
+
+
+Static Function VideoName()
+
+Local cName := "", oReg, cReg := "", oKey, nId := 0
+
+IF IsWinNT()
+    WHILE EMPTY(cName) .AND. nId < 10
+        cName := GetRegVar( 2147483650, "SYSTEM\CurrentControlSet\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\" + StrZero( nId++, 4 ), "DriverDesc" )
+    ENDDO
+ELSE
+    oReg := TReg32():New( 2147483650, "System\CurrentControlSet\Services\Class\Display" )
+
+    While RegEnumKey( oReg:nHandle, nId++, @cReg ) == 0
+
+        oKey := TReg32():New( 2147483650, "System\CurrentControlSet\Services\Class\Display\" + cReg )
+
+        cName := oKey:Get( "DriverDesc" )
+
+        oKey:Close()
+
+    ENDDO
+
+    oReg:Close()
+ENDIF
+
+return cName
+
+
+Static Function GetRegVar(nKey, cRegKey, cSubKey, uValue)
+
+Local oReg, cValue
+
+   nKey := IF(nKey == NIL, 2147483649, nKey)
+   uValue := IF(uValue == NIL, "", uValue)
+   oReg := TReg32():Create(nKey, cRegKey)
+   cValue := oReg:Get(cSubKey, uValue)
+   oReg:Close()
+
+RETURN cValue
+
+
+Static Function ComPortCount()
+
+Local nCount := 0, i
+
+   for i := 0 to 8
+      win_comOpen( i )
+      if ! win_comError( i ) == 2
+         nCount++
+
+      endif
+   next
+
+Return nCount
+
+
+Static Function WinUpTime()
+
+   local t := Int( GetTickCount() / 10 )
+   local nDAYS, nHRS, nMINS, nSECS
+
+   nDAYS := Int( t / ( 360000 * 24 ) )
+   nHRS  := int( ( t - nDAYS * 360000 * 24 ) / 360000 )
+   nMINS := int( ( t - nDAYS * 360000 * 24 - nHRS * 360000 ) / 6000 )
+   nSECS := int( ( t - nDAYS * 360000 * 24 - nHRS * 360000 - nMINS * 6000 ) / 100 )
+
+
+Return IF(Empty(nDAYS), "", ltrim( str( nDAYS, 2 ) ) + "d ") + ltrim( str( nHRS, 2 ) ) + "h " +     strzero( nMINS, 2 ) + "m " + strzero( nSECS, 2 ) + "s"
+
+
+Static Function cFilePath( cPathMask )
+
+LOCAL n := RAt( "\", cPathMask )
+
+
+
+Return If( n > 0, Upper( Left( cPathMask, n - 1) ),     If( At( ":", cPathMask ) == 2,  Upper( Left( cPathMask, 2 ) ), "" ) )
+
+
+Function _SetGridCaption ( ControlName, ParentForm , Column , Value , nJustify )
+
+Local i , h , t
+
+    i := GetControlIndex ( ControlName, ParentForm )
+
+    h := _HMG_SYSDATA[137] [i]
+
+    t := GetControlType ( ControlName, ParentForm )
+
+    _HMG_SYSDATA[165] [i] [Column] := Value
+
+    If t == "GRID"
+        SETGRIDCOLUMNHEADER ( h , Column , Value , nJustify )
+    EndIf
+
+Return Nil
+
+
+Static Function Token( cStr, cDelim, nToken )
+
+   LOCAL nPos, cToken, nCounter := 1
+
+   nToken := iif( nToken == NIL, 1, nToken )
+
+   WHILE .T.
+
+      IF ( nPos := At( cDelim, cStr ) ) == 0
+
+         IF nCounter == nToken
+            cToken := cStr
+         ENDIF
+
+         EXIT
+
+      ENDIF
+
+      IF ++ nCounter > nToken
+         cToken := LEFT( cStr, nPos - 1 )
+         EXIT
+      ENDIF
+
+      cStr := Substr( cStr, nPos + 1 )
+
+   ENDDO
+
+RETURN cToken
+
+
+Function InputBox2 ( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeoutValue )
+
+Local RetVal := ""
+
+    cInputPrompt := iif( cInputPrompt == NIL, "", cInputPrompt ) ; cDialogCaption := iif( cDialogCaption == NIL, "", cDialogCaption ) ; cDefaultValue := iif( cDefaultValue == NIL, "", cDefaultValue )
+
+
+
+
+
+
+
+
+
+
+ _DefineModalWindow ( "_InputBox", cDialogCaption, 0, 0, 350, 124, "" , .T., .F., .F., {,}, {,},, , , , ,, , , "MAIN" , "MS Sans Serif" , 9 ,, , , , , , , , , , .F. , , .F. , .F. , , , , , , .F. )
+
+        _DefineHotKey ( , 0 , 27 , {|| ( _HMG_SYSDATA[237] := .T., DoMethod ( "_InputBox", "Release" ) )} )
+
+
+
+        _DefineLabel ( "_Label",, 14, 07, cInputPrompt,,, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .T. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+
+
+
+
+        _DefineTextBox( "_TextBox",, 14, 34, 314, 21, cDefaultValue,,,,, .F., .F., .F., .F.,,,, {|| ( _HMG_SYSDATA[237] := .F., RetVal := GetProperty ( "_InputBox", "_TextBox" , "Value" ), DoMethod ( "_InputBox", "Release" ) )}, .F.,, .F., .F., .F., .F., .F.,, , , .F. , .F. , .F. , , , )
+
+
+
+
+
+        _DefineButton ( "_Ok", , 138, 67, "OK", {|| ( _HMG_SYSDATA[237] := .F., RetVal := GetProperty ( "_InputBox", "_TextBox" , "Value" ), DoMethod ( "_InputBox", "Release" ) )}, 92, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+
+
+
+        _DefineButton ( "_Cancel", , 236, 67, "Cancel", {|| ( _HMG_SYSDATA[237] := .T., DoMethod ( "_InputBox", "Release" ) )}, 92, 24,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+            If ValType (nTimeout) <> "U"
+                If ValType (cTimeoutValue) <> "U"
+
+
+                    _DefineTimer ( "_InputBox",, nTimeout, {||  ( RetVal := cTimeoutValue , DoMethod ( "_InputBox", "Release" ) )}, .F., )
+                Else
+
+
+                    _DefineTimer ( "_InputBox",, nTimeout, {|| DoMethod ( "_InputBox", "Release" )}, .F., )
+                EndIf
+            EndIf
+
+    _EndWindow ()
+
+    Domethod ( "_InputBox", "_TextBox" , "SetFocus" )
+
+    DoMethod ( "_InputBox", "Center" )
+
+    _ActivateWindow ( {"_InputBox"}, .F., , )
+
+Return ( RetVal )
+
+
+#pragma BEGINDUMP
+
+#define NO_LEAN_AND_MEAN
+
+#include <mgdefs.h>
+#include "commctrl.h"
+#include "hbapiitm.h"
+#include "commctrl.h"
+
+
+
+
+
+
+
+
+/* Returns one of these:
+#define DRIVE_UNKNOWN     0
+#define DRIVE_NO_ROOT_DIR 1
+#define DRIVE_REMOVABLE   2
+#define DRIVE_FIXED       3
+#define DRIVE_REMOTE      4
+#define DRIVE_CDROM       5
+#define DRIVE_RAMDISK     6
+*/
+
+HB_FUNC( GETDRIVETYPE )
+{
+   hb_retni( GetDriveType( (LPCSTR) hb_parc( 1 ) ) ) ;
+}
+
+#ifndef __XHARBOUR__
+   #define ISBYREF( n )          HB_ISBYREF( n )
+   #define ISNIL( n )            HB_ISNIL( n )
+#endif
+
+HB_FUNC(GETVOLUMEINFORMATION)
+{
+   char *VolumeNameBuffer     = (char *) hb_xgrab( MAX_PATH ) ;
+   DWORD VolumeSerialNumber                                   ;
+   DWORD MaximumComponentLength                               ;
+   DWORD FileSystemFlags                                      ;
+   char *FileSystemNameBuffer = (char *) hb_xgrab( MAX_PATH ) ;
+   BOOL bRet;
+
+   bRet = GetVolumeInformation( ISNIL(1) ? NULL : (LPCTSTR) hb_parc(1) ,
+                                (LPTSTR) VolumeNameBuffer              ,
+                                MAX_PATH                               ,
+                                &VolumeSerialNumber                    ,
+                                &MaximumComponentLength                ,
+                                &FileSystemFlags                       ,
+                                (LPTSTR)FileSystemNameBuffer           ,
+                                  MAX_PATH ) ;
+   if ( bRet  )
+   {
+      if ( ISBYREF( 2 ) )  hb_storc ((char *) VolumeNameBuffer, 2 ) ;
+      if ( ISBYREF( 3 ) )  hb_stornl( (LONG)  VolumeSerialNumber, 3 ) ;
+      if ( ISBYREF( 4 ) )  hb_stornl( (LONG)  MaximumComponentLength, 4 ) ;
+      if ( ISBYREF( 5 ) )  hb_stornl( (LONG)  FileSystemFlags, 5 );
+      if ( ISBYREF( 6 ) )  hb_storc ((char *) FileSystemNameBuffer, 6 );
+   }
+
+   hb_retl(bRet);
+   hb_xfree( VolumeNameBuffer );
+   hb_xfree( FileSystemNameBuffer );
+}
+
+HB_FUNC ( REGENUMKEY )
+{
+   char buffer[ 128 ];
+
+   HB_RETNL( RegEnumKey( ( HKEY ) HB_PARNL( 1 ), hb_parnl( 2 ), buffer, 128 ) );
+   hb_storc( buffer, 3 );
+}
+
+HB_FUNC( COPYFILE )
+{
+   HB_RETNL( (LONG_PTR) CopyFile( (LPCSTR) hb_parc(1), (LPCSTR) hb_parc(2), ISNIL(3) ? FALSE : (BOOL) hb_parl(3) ) );
+}
+
+HB_FUNC ( COMBOBOXSHOWLIST )
+{
+   SendMessage( (HWND) HB_PARNL( 1 ), CB_SHOWDROPDOWN, 1, 0 );
+}
+
+HB_FUNC( HB_ISOEM )
+{
+   LPBYTE pString = ( LPBYTE ) hb_parc( 1 );
+   WORD  w = 0, wLen = hb_parclen( 1 );
+   BOOL  bOem = FALSE;
+
+   while( w < wLen && ! bOem )
+   {
+      bOem = pString[ w ] >= 128 && pString[ w ] <= 168;
+      w++;
+   }
+
+   hb_retl( bOem );
+}
+
+HB_FUNC( CREATEDC )
+{
+   HB_RETNL( ( LONG_PTR ) CreateDC( hb_parc( 1 ), hb_parc( 2 ), hb_parc( 3 ), 0 ) );
+}
+
+HB_FUNC( DELETEDC )
+{
+   hb_retl( DeleteDC( ( HDC ) HB_PARNL( 1 ) ) );
+}
+
+HB_FUNC( GETDISPLAYCOLORS )
+{
+   DEVMODE  lpDevMode;
+
+   if ( EnumDisplaySettings( NULL, ENUM_CURRENT_SETTINGS, &lpDevMode ) )
+   {
+	hb_retnl( lpDevMode.dmBitsPerPel );
+   }
+   else
+   {
+	hb_retnl( 0 );
+   }
+}
+
+HB_FUNC( GETTICKCOUNT )
+{
+   hb_retnl( (LONG) GetTickCount() ) ;
+}
+
+HB_FUNC ( ZAPDIRECTORY )
+{
+	SHFILEOPSTRUCT sh;
+
+	sh.hwnd              = GetActiveWindow();
+	sh.wFunc             = FO_DELETE;
+	sh.pFrom             = hb_parc(1);
+	sh.pTo               = NULL;
+	sh.fFlags            = FOF_NOCONFIRMATION | FOF_SILENT;
+	sh.hNameMappings     = 0;
+	sh.lpszProgressTitle = NULL;
+
+	SHFileOperation (&sh);
+}
+
+HB_FUNC ( SHOWFILEPROPERTIES )
+{
+	SHELLEXECUTEINFO ShExecInfo = {0};
+
+	ShExecInfo.cbSize       = sizeof(SHELLEXECUTEINFO);
+	ShExecInfo.fMask        = SEE_MASK_INVOKEIDLIST;
+	ShExecInfo.hwnd         = GetActiveWindow();
+	ShExecInfo.lpVerb       = "properties";
+	ShExecInfo.lpFile       = hb_parc(1);
+	ShExecInfo.lpParameters = ""; 
+	ShExecInfo.lpDirectory  = NULL;
+	ShExecInfo.nShow        = SW_SHOW;
+	ShExecInfo.hInstApp     = NULL; 
+
+	ShellExecuteEx(&ShExecInfo);
+}
+
+#pragma ENDDUMP

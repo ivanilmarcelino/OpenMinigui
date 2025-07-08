@@ -1,0 +1,138 @@
+*HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
+*OPEN SOURCE PROJECT 2005-2016 Walter Formigoni http://sourceforge.net/projects/hmgs-minigui/
+
+DEFINE WINDOW TEMPLATE AT 218 , 227 WIDTH 450 HEIGHT 320 TITLE "FTP Server Properties" TOPMOST NOSYSMENU
+
+     DEFINE FRAME Frame_1
+            ROW    19
+            COL    10
+            WIDTH  410
+            HEIGHT 205
+            OPAQUE .T.
+     END FRAME  
+
+     DEFINE LABEL Label_1
+            ROW    40
+            COL    20
+            WIDTH  60
+            HEIGHT 24
+            VALUE "Site name"
+            VCENTERALIGN .T.
+     END LABEL  
+
+     DEFINE LABEL Label_2
+            ROW    70
+            COL    20
+            WIDTH  80
+            HEIGHT 24
+            VALUE "FTP Server"
+            VCENTERALIGN .T.
+     END LABEL  
+
+     DEFINE LABEL Label_3
+            ROW    120
+            COL    20
+            WIDTH  60
+            HEIGHT 24
+            VALUE "User id"
+            VCENTERALIGN .T.
+     END LABEL  
+
+     DEFINE LABEL Label_4
+            ROW    150
+            COL    20
+            WIDTH  60
+            HEIGHT 24
+            VALUE "Password"
+            VCENTERALIGN .T.
+     END LABEL
+
+     DEFINE LABEL Label_5
+            ROW    180
+            COL    20
+            WIDTH  65
+            HEIGHT 24
+            VALUE "Initial Path"
+            VCENTERALIGN .T.
+     END LABEL
+
+     DEFINE TEXTBOX Text_1
+            ROW    40
+            COL    110
+            WIDTH  300
+            HEIGHT 24
+     END TEXTBOX 
+
+     DEFINE TEXTBOX Text_2
+            ROW    70
+            COL    110
+            WIDTH  300
+            HEIGHT 24
+     END TEXTBOX 
+
+     DEFINE TEXTBOX Text_3
+            ROW    120
+            COL    110
+            WIDTH  300
+            HEIGHT 24
+     END TEXTBOX 
+
+     DEFINE TEXTBOX Text_4
+            ROW    150
+            COL    110
+            WIDTH  180
+            HEIGHT 24
+            PASSWORD .T.
+     END TEXTBOX 
+
+     DEFINE CHECKBOX Check_1
+            ROW    147
+            COL    310
+            WIDTH  100
+            HEIGHT 28
+            CAPTION "Mask Password"
+            VALUE .T.
+            ONCHANGE ShowPassword()
+     END CHECKBOX  
+
+     DEFINE TEXTBOX Text_5
+            ROW    180
+            COL    110
+            WIDTH  241
+            HEIGHT 24
+            FONTNAME 'Arial'
+            VALUE "/"
+     END TEXTBOX
+
+     DEFINE CHECKBOX Check_2
+            ROW    177
+            COL    370
+            WIDTH  49
+            HEIGHT 28
+            CAPTION "Log"
+            FONTNAME 'Arial'
+            TOOLTIP ''
+     END CHECKBOX
+
+
+     DEFINE BUTTON Button_1
+            ROW    235
+            COL    200
+            WIDTH  100
+            HEIGHT 30
+            ACTION ftppropsave()
+            CAPTION "Save"
+     END BUTTON  
+
+     DEFINE BUTTON Button_2
+            ROW    235
+            COL    320
+            WIDTH  100
+            HEIGHT 30
+            ACTION ftppropcancel()
+            CAPTION "Cancel"
+     END BUTTON  
+
+END WINDOW
+
+

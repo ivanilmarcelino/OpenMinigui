@@ -1,0 +1,219 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 11 "cpanel.prg"
+Procedure Main
+
+
+
+
+
+    Local aCaptions := { "Display Properties",  "Install/Uninstall",  "System Properties",  "Mouse Properties",  "About program",  "Exit" }, i, cImage, cLabel, nPos := 22
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win_1", "Control Panel", 0, 0, 198 + iif(ISVISTAORLATER(), 1, 2) * GetBorderWidth(), GetTitleHeight() + 322 + GetBorderHeight(), .T., .T., .T., .F., .F., {,}, {,},, ,, , ,, iif(ISVISTAORLATER(), {233, 236, 216}, Nil) , , .F. , .F. , .T. , "MAIN" , .F. , "MS Sans Serif" , 9, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+        For i := 1 To Len(aCaptions)
+
+            cImage := "Image_" + Str(i, 1)
+
+
+
+
+            _DefineImage ( cImage,, 24, nPos, "IMAGE" + Str(i, 1), 32, 32,,,, .F., .T.,, .T., .F.,,,,,, , )
+
+            cLabel := "Button_" + Str(i, 1)
+
+
+
+
+
+
+            _DefineLabel ( cLabel,, 15, nPos + 8, aCaptions[i], 160, 20, , , .F., .F. , .F. , .F. , .F. , .T. ,,, {|| DoAction( Val(Right(iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "name" ) , GetProperty ( _HMG_SYSDATA[254] , "name" ) ), 1)) )},,, .F., .F., .F., .F. , .F. , .T. , .F. , .F. , {|| createbtnborder("Win_1",iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "row" ) , GetProperty ( _HMG_SYSDATA[254] , "row" ) )-12,iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "col" ) , GetProperty ( _HMG_SYSDATA[254] , "col" ) )-5,iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "row" ) , GetProperty ( _HMG_SYSDATA[254] , "row" ) )+iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "height" ) , GetProperty ( _HMG_SYSDATA[254] , "height" ) )+8,iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "col" ) , GetProperty ( _HMG_SYSDATA[254] , "col" ) )+iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "width" ) , GetProperty ( _HMG_SYSDATA[254] , "width" ) )+14)}, {|| erasewindow("Win_1")}, .F., .F., , , , )
+
+            nPos += 50
+
+        Next
+
+    _EndWindow ()
+
+    DoMethod ( "Win_1", "Center" )
+
+    _ActivateWindow ( {"Win_1"}, .F., , )
+
+Return
+
+
+function CreateBtnBorder( cWin,t,l,b,r )
+
+    Rc_Cursor( "MINIGUI_FINGER" )
+
+
+
+
+    DrawWindowBoxRaised( cWin, t, l, b, r )
+
+return nil
+
+
+function DoAction( nMode )
+      local cExeFullPath
+      local cWinDir := GetWindowsFolder() + "\"
+      local cSysDir := GetSystemFolder() + "\"
+      local cParam := cSysDir
+
+    if nMode < 5
+        if file(cWinDir + "control.exe")
+            cExeFullPath := cWinDir + "control.exe"
+        elseif file(cSysDir + "control.exe")
+            cExeFullPath := cSysDir + "control.exe"
+        endif
+    endif
+
+    switch nMode
+
+    case 1
+        cParam += "desk.cpl"
+        exit
+
+    case 2
+        cParam += "appwiz.cpl"
+        exit
+
+    case 3
+        cParam += "sysdm.cpl"
+        exit
+
+    case 4
+        cParam += "main.cpl"
+        exit
+
+    case 5
+        showabout()
+        exit
+
+    case 6
+        DoMethod ( _HMG_SYSDATA[254] , "release" )
+
+    end
+
+    if nMode < 5
+        _Execute ( , , ( cExeFullPath ) , ( cParam ) , , 5 )
+    endif
+
+return nil
+
+
+function showabout()
+
+
+
+
+
+
+
+      local cAbout := xpadc( "Control Panel v.1.0.1", 400 ) + hb_eol() +     xpadc( "Copyright " + Chr(169) + " 2011 Grigory Filatov", 400 ) + hb_eol() + hb_eol() +     xpadr( "C compiler", 148, "." ) + " : " + hb_compiler() + hb_eol() +     xpadr( "xBase compiler", 151, "." ) + " : " + version() + hb_eol() +     xpadr( "GUI library", 150, "." ) + " : " + Left(MiniGuiVersion(), 38) + hb_eol() + hb_eol() +     xpadr( "Operating System", 150, "." ) + " : " + OS() + hb_eol() +     xpadr( "Amount of RAM (MB)", 144, "." ) + " : " + hb_ntos( MemoryStatus(1) + 1 ) + hb_eol() +     xpadr( "Swap-file size (MB)", 150, "." ) + " : " + hb_ntos( MemoryStatus(3) )
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win_2", "About program", 0, 0, 345 + iif(ISVISTAORLATER(), 1, 2) * GetBorderWidth(), GetTitleHeight() + 269 + GetBorderHeight(), .F., .F., .T., .F., .F., {,}, {,},, ,, , ,, iif(ISVISTAORLATER(), {233, 236, 216}, Nil) , , .F. , .F. , .F. , "MAIN" , .F. , "MS Sans Serif" , 9, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .T. , , , .F. , , , )
+
+
+
+
+    _DefineImage ( "Image_1",, 0, 0, "LOGO", 345, 73,,,, .F., .F.,, .F., .F.,,,,,, , )
+
+
+
+
+
+    _DefineEditBox ( "readText",, 6, 80, 334, 140, cAbout,,,,,,,, .F., .F.,, .F., .F., .F., .F., .F., .F.,,,, .F., .T., .F.,, )
+
+    _ExtDisableControl ( "readText", "Win_2" )
+
+    CreateLine()
+
+
+
+
+
+
+
+    _DefineLabel ( "Label_1",, 265, GetProperty ( "Win_2", "Height" ) - 50, "Close", 74, 14, , , .F., .F. , .F. , .F. , .F. , .T. ,,, {|| DoMethod ( _HMG_SYSDATA[254] , "release" )},,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , {|| createbtnborder("Win_2",iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "row" ) , GetProperty ( _HMG_SYSDATA[254] , "row" ) )-6,iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "col" ) , GetProperty ( _HMG_SYSDATA[254] , "col" ) ),iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "row" ) , GetProperty ( _HMG_SYSDATA[254] , "row" ) )+iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "height" ) , GetProperty ( _HMG_SYSDATA[254] , "height" ) )+4,iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "col" ) , GetProperty ( _HMG_SYSDATA[254] , "col" ) )+iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "width" ) , GetProperty ( _HMG_SYSDATA[254] , "width" ) ))}, {|| ( erasewindow("Win_2"), CreateLine() )}, .F., .F., , , , )
+
+    _DefineHotKey ( , 0 , 27 , {|| DoMethod ( _HMG_SYSDATA[254] , "release" )} )
+
+    _EndWindow ()
+
+    DoMethod ( "Win_2", "Center" )
+
+    _ActivateWindow ( {"Win_2"}, .F., , )
+
+return nil
+
+
+function CreateLine()
+
+
+
+    drawline("Win_2",GetProperty ( "Win_2", "Height" ) - 64,6,GetProperty ( "Win_2", "Height" ) - 64,340,iif(IsWinXPorLater(), {172, 168, 153}, { 128 , 128 , 128 }),)
+
+
+
+    drawline("Win_2",GetProperty ( "Win_2", "Height" ) - 63,6,GetProperty ( "Win_2", "Height" ) - 63,340,{ 255 , 255 , 255 },)
+
+return nil
+
+
+function xPadR( cText, nPixels, cChar )
+
+   cChar := iif( cChar == NIL, Chr(32), cChar )
+
+   while GetTextWidth( , cText ) < nPixels
+      cText += cChar
+   end
+
+return cText
+
+
+function xPadL( cText, nPixels, cChar )
+
+   cChar := iif( cChar == NIL, Chr(32), cChar )
+
+   while GetTextWidth( , cText ) < nPixels
+      cText := cChar + cText
+   end
+
+return cText
+
+
+function xPadC( cText, nPixels, cChar )
+
+   local cRet    := If( hb_IsString( cText ), AllTrim( cText ), "" )
+   local nLen    := Len( cText )
+   local nPixLen
+   local nPad
+
+   cChar := iif( cChar == NIL, Chr(32), cChar )
+
+   nPixLen := GetTextWidth( , cText )
+   nPad    := GetTextWidth( , cChar )
+
+   if nPixels > nPixLen
+      cRet := PadC( cRet, Int( nLen + ( nPixels - nPixLen ) / nPad ), cChar )
+   endif
+
+return cRet

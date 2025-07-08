@@ -1,0 +1,12 @@
+
+-hblib
+-inc
+-o../../harbour/lib/${hb_name}
+
+-I../../include
+
+-hbx=../../include/${hb_name}.hbx
+
+hbcomm.c
+comm.cpp 
+hblcomm.cpp

@@ -1,0 +1,29 @@
+PeTest  icon  Petest.ico
+
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+    BLOCK "040904B0"
+    {
+        VALUE "CompanyName", "MiniGui Team\000"
+        VALUE "FileDescription", "Discoverer of file architecture. \000"
+        VALUE "LegalCopyright", "Copyright (c) 2019, Pierpaolo Martinello Minigui Team"
+        VALUE "LegalTrademarks", "All rights reserved Minigui Team \000"
+        VALUE "OriginalFilename", "PeTest.exe\000"
+        VALUE "InternalName", "PeTest\000"
+        VALUE "ProductName", "PeTest\000"
+        VALUE "FileVersion", "1.0.0.0"
+        VALUE "ProductVersion", "1.0.0.0"
+    }
+}
+
+BLOCK "VarFileInfo"
+{
+    VALUE "Translation", 0x0409 0x04B0
+}
+}

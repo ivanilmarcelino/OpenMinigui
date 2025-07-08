@@ -1,0 +1,225 @@
+TVlc Class Manual
+
+Overview
+The TVlc class serves as an interface to the VLC ActiveX control, enabling control over video playback, audio management, and user interactions. It provides methods and properties for file playback, volume control, marquee text, logo display, and more.
+
+---
+
+Properties
+
+Hidden Properties
+- oControl : Reference to the VLC ActiveX control object.
+- oPlayList : Manages the playlist of media files.
+- oInput : Manages the input for playback control.
+- oVideo : Controls video-specific features like fullscreen, marquee, and logo.
+- oAudio : Manages audio-specific settings like mute and volume.
+- nStepVolume : Step value for volume increase/decrease (default: 5).
+- nVolume : Current volume level (default: 50).
+
+Exported Properties
+- cFileName : Path to the currently loaded media file.
+- bOnSetFile : Code block executed when a file is set.
+- bOnPlay, bOnPause, bOnStop, bOnEnd : Code blocks executed during playback events.
+- bOnVolumePlus, bOnVolumeMinus, bOnVolumeChange : Code blocks for volume events.
+- bOnMuted, bOnUnMuted : Code blocks for mute/unmute events.
+- bOnFullScreen : Code block executed on toggling fullscreen mode.
+
+---
+
+Constructor
+
+METHOD New( oControl )
+Description: Initializes the TVlc class instance and sets up the VLC control, default properties, and event handlers.
+
+Parameters:
+- oControl : A reference to the VLC ActiveX control object.
+
+Example:
+
+oVlc := TVlc():New( oControl )
+
+---
+
+Methods
+
+Playback Controls
+
+1. SetFile
+   
+   METHOD SetFile( cFileName )
+   Sets the file to be played and clears the existing playlist.
+
+   Parameters:
+   - cFileName: Full path to the media file.
+
+   Returns:
+   - TRUE if the file was successfully set, FALSE otherwise.
+
+2. Play
+   
+   METHOD Play()
+   Starts playback of the loaded file.
+
+3. Pause
+   
+   METHOD Pause() INLINE
+   Pauses playback if currently playing.
+
+4. Stop
+   
+   METHOD Stop() INLINE
+   Stops playback and resets the position.
+
+Volume Controls
+
+1. Volume
+   
+   METHOD Volume( nVolume )
+   Gets or sets the current volume level.
+
+   Parameters:
+   - nVolume (optional): Volume level (0–100).
+
+2. VolumenPlus
+   
+   METHOD VolumenPlus()
+   Increases the volume by nStepVolume.
+
+3. VolumenMinus
+   
+   METHOD VolumenMinus()
+   Decreases the volume by nStepVolume.
+
+4. Mute
+   
+   METHOD Mute( lSet ) INLINE
+   Toggles mute state or sets it explicitly.
+
+   Parameters:
+   - lSet (logical): .T. to mute, .F. to unmute.
+
+Video Controls
+
+1. FullScreen
+   
+   METHOD FullScreen() INLINE
+   Toggles fullscreen mode.
+
+2. Marquee
+   
+   METHOD Marquee( cText, cPos, nTimeout, nSize, nColor )
+   Displays a marquee text on the video.
+
+   Parameters:
+   - cText: The text to display.
+   - cPos: Position of the text (e.g., "top-left").
+   - nTimeout: Duration of the marquee in milliseconds.
+   - nSize: Font size of the marquee text.
+   - nColor: Color of the text in RGB.
+
+3. MarqueeOff
+   
+   METHOD MarqueeOff() INLINE
+   Disables the marquee text.
+
+4. Logo
+   
+   METHOD Logo( cPng, cPos )
+   Displays a logo image on the video.
+
+   Parameters:
+   - cPng: Path to the PNG image file.
+   - cPos: Position of the logo (e.g., "bottom-right").
+
+5. LogoOff
+   
+   METHOD LogoOff() INLINE
+   Disables the logo.
+
+Position Controls
+
+1. Position
+   
+   METHOD Position( nPosition )
+   Gets or sets the playback position.
+
+   Parameters:
+   - nPosition (optional): Position as a value between 0 and 1.
+
+Utility Methods
+
+1. Time2MiliSec
+   
+   METHOD Time2MiliSec( cTime )
+   Converts a time string (hh:mm:ss) to milliseconds.
+
+   Parameters:
+   - cTime: Time string.
+
+   Returns:
+   - Time in milliseconds.
+
+2. MiliSec2Time
+   
+   METHOD MiliSec2Time( nMiliSec )
+   Converts milliseconds to a time string (hh:mm:ss).
+
+   Parameters:
+   - nMiliSec: Time in milliseconds.
+
+   Returns:
+   - Time string.
+
+3. GetVersion
+   
+   METHOD GetVersion() INLINE
+   Retrieves the version information of the VLC ActiveX control.
+
+4. IsPlaying
+   
+   METHOD IsPlaying() INLINE
+   Checks if a file is currently playing.
+
+5. State
+   
+   METHOD State() INLINE
+   Returns the current playback state.
+
+6. HasVout
+   
+   METHOD HasVout() INLINE
+   Checks if video output is available.
+
+7. GetLength
+   
+   METHOD GetLength() INLINE
+   Returns the total length of the media in milliseconds.
+
+8. GetTime
+   
+   METHOD GetTime() INLINE
+   Returns the current playback time in milliseconds.
+
+9. GetLengthStr
+   
+   METHOD GetLengthStr() INLINE
+   Returns the total media length as a time string.
+
+10. GetTimeStr
+    
+    METHOD GetTimeStr() INLINE
+    Returns the current playback time as a time string.
+
+---
+
+Usage Example
+
+oControl := CreateObject("VLCPlugin2")
+oVlc := TVlc():New(oControl)
+
+oVlc:SetFile("C:\Videos\example.mp4")
+oVlc:Play()
+oVlc:Volume(80)
+oVlc:Marquee("Hello, World!", "top", 5000, 24, 0xFFFFFF)
+
+This manual provides an organized and comprehensive reference for the TVlc class, covering its properties, methods, and usage examples.

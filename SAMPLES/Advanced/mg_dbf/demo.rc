@@ -1,0 +1,107 @@
+//
+// Resource      Resource        Resource
+// Name           Type            FileName
+//              
+1MG               ICON         res\1MgDbf.ico
+2MG_64            ICON         res\2MG64.ico
+iMG48             ICON         res\MiniGuiLogo48.ico       // 0main.prg  
+i1Exit48          ICON         res\i1Exit48.ico            // 0main.prg  
+i1File48          ICON         res\i1File48.ico            // 3dbase.prg 
+i1Config48        ICON         res\i1Config48x3.ico        // 0main.prg  
+iDbfFile32        ICON         res\iDbfFile32.ico          // 0main.prg  
+iFont32           ICON         res\iFont32.ico             // 5Config.prg   
+iAddFile32        ICON         res\iAddFile32.ico          // 5Config.prg   
+iAddFile32x2      ICON         res\iAddFile32x2.ico        // 5Config.prg   
+iColor32          ICON         res\iColor32.ico            // 5Config.prg   
+iGear32           ICON         res\iGear32.ico             // 5Config.prg   
+iDbfInfo48        ICON         res\iDbfInfo48.ico          // 0main.prg  
+iCsv32            ICON         res\iCsv32.ico              // 4export.prg   
+iXls32            ICON         res\iXls32.ico              // 4export.prg   
+iDbf32            ICON         res\iDbf32.ico              // 4export.prg 
+iDir48x2          ICON         res\iDir48x2.ico            // 2file.prg  
+iDir48x3          ICON         res\iDir48x3.ico            // 2file.prg  
+iDbf48            ICON         res\iDbf48.ico              // util_dbf.prg  
+iDbfExp48         ICON         res\iDbfExp48.ico           // 0main.prg  
+iDbfPass48        ICON         res\iDbfPass48.ico          // util_dbf.prg  
+iDbase32x1        ICON         res\iDbase32x3.ico          // 2file.prg  
+iDbase32x2        ICON         res\iDbase32x2.ico          // 2file.prg  
+iDbase32x3        ICON         res\iDbase32x1.ico          // 2file.prg  
+iDbC64x1          ICON         res\iDbC64x1.ico            // util_dbf.prg  
+iDbC64x2          ICON         res\iDbC64x2.ico            // 3dbase.prg 
+iReturn64x1       ICON         res\iReturn64x1.ico         // 3dbase.prg 
+iReturn64x2       ICON         res\iReturn64x2.ico         // 3dbase.prg 
+iQuestion64       ICON         res\iQuestion64.ico         // 2file.prg  
+iQuestion64x2     ICON         res\iQuestion64x2.ico       // 2file.prg  
+iGoto64x1         ICON         res\iGoto64x1.ico
+iGoto64x2         ICON         res\iGoto64x2.ico
+HmgClipper        PNG          res\Hmg_clipper.png         // 1about.prg 
+bRecDel16         BITMAP       res\bRecDel.bmp             // tsb_ViewDbf.prg  
+bAddFile32        BITMAP       res\bAddFile32.bmp          // 5Config.prg   
+bAddFile32x2      BITMAP       res\bAddFile32x2.bmp        // 5Config.prg   
+CheckF32          BITMAP       res\check_box_yellow_false32.bmp
+CheckT32          BITMAP       res\check_box_yellow_true32.bmp
+bDbfFile32        BITMAP       res\bDbfFile32.bmp
+iFFile32x1        ICON         res\iFindFile32x1.ico
+iFFile32x2        ICON         res\iFindFile32x2.ico
+iDBase64          ICON         res\iDBase64.ico
+iDBase64x2        ICON         res\iDBase64x2.ico
+iArrow64          ICON         res\iArrow64.ico
+iFlag_Bel32       ICON         res\iFlag_Bel32.ico
+iFlag_En32        ICON         res\iFlag_En32.ico
+iFlag_Kaz32       ICON         res\iFlag_Kaz32.ico
+iFlag_Ru32        ICON         res\iFlag_Ru32.ico
+iFlag_Uk32        ICON         res\iFlag_Uk32.ico
+iLang32           ICON         res\iLang32.ico
+iUtf32            ICON         res\iUtf32.ico
+LogoMG            PNG          res\MiniGuiLogo.png
+iFilter48         ICON         res\iFilterx48.ico
+iFilterDel48      ICON         res\iFilterDelYell48.ico
+iOOCalc32         ICON         res\iOOCalc32.ico
+iSqlite32         ICON         res\iSqlite32.ico
+iFiltr64x1        ICON         res\iFilter64x1.ico
+iFiltr64x2        ICON         res\iFilter64x2.ico
+iDelete32         ICON         res\iDelete32.ico
+iOk32             ICON         res\iOk32.ico
+iCancel32         ICON         res\iCancel32.ico
+
+// ------ WaitThreadIco.prg
+zmk01          ICON          res\zmk01.ico
+zmk02          ICON          res\zmk02.ico
+zmk03          ICON          res\zmk03.ico
+zmk04          ICON          res\zmk04.ico
+zmk05          ICON          res\zmk05.ico
+zmk06          ICON          res\zmk06.ico
+zmk07          ICON          res\zmk07.ico
+zmk08          ICON          res\zmk08.ico
+
+
+1 VERSIONINFO
+FILEVERSION 1,0
+PRODUCTVERSION 1,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+  BLOCK "040904b0"
+  {
+    VALUE "FileDescription", "Dbf-view MiniGui\000"
+    VALUE "FileVersion", "1.0."
+    VALUE "InternalName", "demo.exe\000"
+    VALUE "LegalCopyright", "(c) Copyright 2024 Verchenko Andrey (Dmitrov)\000"
+    VALUE "LegalTrademarks", "Harbour + MiniGui\000"
+    VALUE "OriginalFilename", "demo.exe\000"
+    VALUE "CompanyName", "V-Soft Dmitrov, Moscow region\000"
+    VALUE "ProductName", "Demo MiniGui Harbour\000"
+    VALUE "ProductVersion", "1.0."
+    VALUE "Comments", "Created by Verchenko Andrey <verchenkoag@gmail.com>\000"
+  }
+}
+
+BLOCK "VarFileInfo"
+{
+  VALUE "Translation", 0x0409 0x04B0
+}
+}
+
+

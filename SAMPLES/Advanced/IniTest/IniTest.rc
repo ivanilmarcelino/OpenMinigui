@@ -1,0 +1,12 @@
+
+EXIT_48             BITMAP      "exit_48.bmp"
+ADD_20              BITMAP      "add_20.bmp"
+GOTO_48             BITMAP      "goto_48.bmp"
+DEL_20              BITMAP      "del_20.bmp"
+INFO_48             BITMAP      "info_48.bmp"
+CANCEL_24           BITMAP      "cancel_24.bmp"
+EDT_20              BITMAP      "edt_20.bmp"
+OPEN_48             BITMAP      "open_48.bmp"
+SORT_48             BITMAP      "sort_48.bmp"
+ACCEPT_24           BITMAP      "accept_24.bmp"
+NEW_48              BITMAP      "new_48.bmp"

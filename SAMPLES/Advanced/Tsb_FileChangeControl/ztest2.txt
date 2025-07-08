@@ -1,0 +1,63 @@
+------------------------------------------------------------------------------
+Variable names for clear perception for Tsbrowse:
+
+    nLine - number of lines
+    nHcell - height of ONE cell
+    nWcell - cell width
+    nHhead - header height
+    nHfoot - footer height
+    nHrow := nLine * nHcell - line height
+    nHbrw := nHhead+nHrow+nHfoot + <possibly nLine (one pixel per line between lines)>
+
+nWrow := nCol * nWcell + nCol (one pixel per line between columns)
+nWbrw := nWrow + 2 (I add to prevent scroll on the last column)
+nWbrw += iif( oBrw:nLen > oBrw:nRowCount(), GetVScrollWidth(), 0 )
+
+nWwnd := oBrw:GetAllColsWidth() + GetBorderWidth() // width of all table columns
+
+got the height and width of tsb and this is the height and width of the CLIENT (inner) area of the window,
+not the height, the width of the window (OUTSIDE area). We build the window from the size of the client area
+DEFINE WINDOW ...
+...
+CLIENTAREA nWbrw, nHBrw
+...
+
+oBrw:nTop
+oBrw:nLeft
+oBrw:nBottom
+oBrw:nRight
+
+This.Row
+This.Col
+This.Width
+This.Height
+ThisWindow.Row
+ThisWindow.Col
+ThisWindow.Width
+ThisWindow.Height
+Form_1.Row
+Form_1.Col
+Form_1.Width
+Form_1.Height
+GetWindowRow(oBrw:hWndParent)
+GetWindowCol(oBrw:hWndParent)
+GetWindowWidth(oBrw:hWndParent)
+GetWindowHeight(oBrw:hWndParent)
+SET OOP ON
+oWnd := Do_Obj(oBrw:hWndParent)
+oWnd:Row
+oWnd:Col
+oWnd:Width
+oWnd:Height
+oTsb := Do_Obj(oBrw:hWnd)
+oTsb:Window:Row
+oTsb:Window:Col
+oTsb:Window:Width
+oTsb:Window:Height
+
+------------------------------------------------------------------------------
+Eval(oBrw:aColumns[ nI ]:bData) - to get the value
+Eval(oBrw:aColumns[ nI ]:bData, xNewVal) - to write a value,
+if :bData was created by FieldWBlock(), FieldBlock(), ArrayWBlock(), i.e.
+:SetArrayTo supports reading, writing to the field via Eval(..., xNewVal)
+------------------------------------------------------------------------------

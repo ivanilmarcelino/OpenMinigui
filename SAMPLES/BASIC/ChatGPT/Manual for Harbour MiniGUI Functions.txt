@@ -1,0 +1,198 @@
+Manual for Harbour MiniGUI Functions
+
+---
+
+1. HMG_DbfToArray( cFieldList, bFor, bWhile, nNext, nRec, lRest )
+
+This function exports data from the currently selected DBF table into an array.
+
+- Parameters:
+  - cFieldList (String): Comma-separated list of field names to export. If empty, all fields will be included.
+  - bFor (Block): Optional condition to filter records (like a FOR clause).
+  - bWhile (Block): Optional block to control the export while a condition is true.
+  - nNext (Numeric): Number of records to export.
+  - nRec (Numeric): Record number to start the export from.
+  - lRest (Boolean): If true, the export will continue from the current record to the end of the file.
+  
+- Return Value:  
+  An array containing the exported DBF records. Each element of the array is another array of field values.
+
+- Example Usage:
+
+  LOCAL aData := HMG_DbfToArray( "NAME,AGE", {|| AGE > 18}, NIL, NIL, NIL, .F. )
+
+---
+
+2. HMG_ArrayToDbf( aData, cFieldList, bProgress )
+
+This function imports data from an array into a DBF file.
+
+- Parameters:
+  - aData (Array): Array containing the data to be imported into the DBF.
+  - cFieldList (Array or String): List of field names to update. Can be an array or a comma-separated string.
+  - bProgress (Block): Optional progress block to track the import process.
+
+- Return Value:  
+  Returns .T. (True) on successful completion.
+
+- Example Usage:
+
+  LOCAL aData := { { "John", 30 }, { "Alice", 25 } }
+  HMG_ArrayToDbf( aData, "NAME,AGE", NIL )
+
+---
+
+3. HMG_DbfToExcel( cFieldList, aHeader, bFor, bWhile, nNext, nRec, lRest )
+
+This function exports records from a DBF file to an Excel spreadsheet.
+
+- Parameters:
+  - cFieldList (String): Comma-separated list of fields to export.
+  - aHeader (Array): Optional array of headers for the columns in the Excel sheet.
+  - bFor (Block): Condition to filter which records to export.
+  - bWhile (Block): Condition that will stop exporting when false.
+  - nNext (Numeric): Number of records to export.
+  - nRec (Numeric): Record number to start the export from.
+  - lRest (Boolean): If true, export starts from the current record to the end.
+
+- Return Value:  
+  Returns .T. (True) if successful, or .F. (False) if there’s an issue (e.g., Excel not installed).
+
+- Example Usage:
+
+  HMG_DbfToExcel( "NAME,AGE", {"Name", "Age"}, NIL, NIL, NIL, .F. )
+
+---
+
+4. HMG_DbfStruct( cFileName )
+
+This function retrieves the structure of a DBF file.
+
+- Parameters:
+  - cFileName (String): Name of the DBF file, with or without the .dbf extension.
+
+- Return Value:  
+  Returns an array where each element represents a field in the DBF. Each field is described by a sub-array containing:
+  1. Field Name
+  2. Field Type (C, N, etc.)
+  3. Field Length
+  4. Field Decimal places (if numeric)
+
+- Example Usage:
+
+  LOCAL aStruct := HMG_DbfStruct( "customer.dbf" )
+
+---
+
+5. HMG_RecToHash( cFieldList, cNames )
+
+This function converts the current DBF record into a hash.
+
+- Parameters:
+  - cFieldList (String): Comma-separated list of fields to include in the hash.
+  - cNames (String): Optional, the names for the hash keys. If not provided, the field names are used.
+
+- Return Value:  
+  Returns a hash where the keys are field names (or provided names) and the values are the corresponding field values from the current DBF record.
+
+- Example Usage:
+
+  LOCAL hRec := HMG_RecToHash( "NAME,AGE" )
+
+---
+
+6. HMG_HashToRec( hRec, cFieldList )
+
+This function updates the current DBF record using values from a hash.
+
+- Parameters:
+  - hRec (Hash): Hash containing field-value pairs to update the current record.
+  - cFieldList (String): Comma-separated list of fields to update. If omitted, all fields in the hash are updated.
+
+- Return Value:  
+  Returns .T. (True) if the record was successfully updated, or .F. (False) otherwise.
+
+- Example Usage:
+
+  LOCAL hRec := { "NAME" => "John", "AGE" => 30 }
+  HMG_HashToRec( hRec, "NAME,AGE" )
+
+---
+
+7. ConvertType( uVal, cTypeDst )
+
+This helper function converts a value (uVal) from its current data type to the specified destination type (cTypeDst).
+
+- Parameters:
+  - uVal (Any): The value to be converted.
+  - cTypeDst (Character): The target data type (e.g., C for character, N for numeric, D for date).
+
+- Return Value:  
+  The converted value, or NIL if conversion is not possible.
+
+- Example Usage:
+
+  LOCAL uVal := ConvertType( "123", "N" )
+
+---
+
+8. DbfCopyRec( cnTargetArea, lAppend )
+
+This procedure copies the current record from the selected work area to another DBF file (target area).
+
+- Parameters:
+  - cnTargetArea (Numeric): Work area number of the target DBF.
+  - lAppend (Logical): If .T., a new record will be appended to the target DBF before copying.
+
+- Return Value:  
+  None. The procedure updates the target DBF with the copied record.
+
+- Example Usage:
+
+  DbfCopyRec( 2, .T. )
+
+---
+
+9. DbfModStru( cDbfName, aModStru )
+
+This function modifies the structure of a DBF file by updating the field names and types based on the input array aModStru.
+
+- Parameters:
+  - cDbfName (String): The name of the DBF file to be modified. Must be provided with a full file path if necessary.
+  - aModStru (Array): A 2-dimensional array where each element is a sub-array with the following structure:
+    1. Field Name (String)
+    2. Field Type (Character)
+  
+    For example, aModStru := { {"NAME", "C"}, {"AGE", "N"} } would update the field names and types for the DBF.
+
+- Return Value:  
+  Returns 0 if the operation is successful. Returns a non-zero error code if there is an issue during file opening, reading, or writing.
+
+- Error Handling:  
+  The function uses Harbour's file-handling functions (FOpen, FRead, FWrite, FSeek, and FClose). If an error occurs, it assigns the corresponding error code from FError() to nErrorCode.
+
+- File Access:  
+  The function attempts to open the DBF file with exclusive read/write access (FO_EXCLUSIVE + FO_READWRITE). If another process has the file open or access is denied, the function will return an error code.
+
+- Modifying the Structure:
+  - The function calculates the size of the buffer required to hold the new field structure information.
+  - It uses the Stuff() function to insert the modified field name and type into the DBF structure in the correct positions.
+  - The DBF header and structure information are written back into the file starting at BUFFER_SIZE bytes from the beginning.
+
+- Example Usage:
+
+  LOCAL aModStru := { {"FIRSTNAME", "C"}, {"AGE", "N"}, {"SALARY", "N"} }
+  LOCAL nError := DbfModStru( "employees.dbf", aModStru )
+  
+  IF nError == 0
+     ? "DBF structure modified successfully"
+  ELSE
+     ? "Error modifying DBF structure. Error Code:", nError
+  ENDIF
+
+- Notes:
+  - This function is low-level and directly modifies the binary structure of the DBF file.
+  - Make sure you have a backup of your DBF file before using this function, as improper usage can corrupt the file.
+  - The function is designed to work with DBF files that follow the typical DBF structure, including a header followed by field entries.
+
+---

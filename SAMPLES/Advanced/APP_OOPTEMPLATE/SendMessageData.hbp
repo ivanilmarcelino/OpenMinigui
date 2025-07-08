@@ -1,0 +1,17 @@
+# Compilation keys
+-prgflag=-w2 -es1
+
+# Enable multi/single-thread Harbour VM
+-mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all the (*.obj) this project
+-workdir=OBJ
+
+# Name of output EXE-file
+-oSendMessageData
+
+# List all (*.prg) this project
+SendMessageData.prg

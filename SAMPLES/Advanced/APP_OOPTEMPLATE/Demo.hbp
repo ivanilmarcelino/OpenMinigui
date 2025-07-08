@@ -1,0 +1,59 @@
+# Compilation keys
+-prgflag=-w2 -es1
+
+# Enable multi/single-thread Harbour VM
+-mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all the (*.obj) this project
+-workdir=OBJ\BCC
+
+# Name of output EXE-file
+-oDemo_timer
+
+# pass single flag to output executable when -run option is used
+# передать одиночный флаг на выходной исполняемый файл, если используется опция -run
+#-runflag=1
+
+# List all (*.prg) this project
+main.prg
+main_before.prg
+main_splash.prg
+main_check.prg
+main_misc.prg
+main_other.prg
+main_timer.prg
+MainMenu_form.prg
+# кнопки главного меню - таблицы
+table12.prg
+table3.prg
+table4.prg
+table4menu.prg
+table4_card.prg
+# вспомогательные модули
+menu_context.prg
+form_Password.prg
+form_CopyData.prg
+form_TimerShow.prg
+util_c_code.prg
+util_button.prg
+util_misc.prg
+util_font3.prg
+Users.prg
+ErrorSys3.prg
+IniLoad.prg
+IniConfig.prg
+other2fun.prg
+WaitThreadAvi.prg
+WaitThreadGif.prg
+WaitWinGif.prg
+# ACHOICE() меню на объекте ButtonEx
+test_achoice.prg
+util_achoice.prg
+
+
+#Path to the main and the auxiliary libraries (*.lib) for BCC
+-lTsbViewer
+-lhbmemio

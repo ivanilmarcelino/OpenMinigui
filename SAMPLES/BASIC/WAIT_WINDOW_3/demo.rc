@@ -1,0 +1,9 @@
+//
+// Resource    Resource         Resource
+// Name         Type             FileName
+//
+1MAIN_ICO      ICON             res\1MG.ico
+iDbg48x1       ICON             res\iDbg48x1.ico
+iDbg48x2       ICON             res\iDbg48x2.ico
+iExit48x1      ICON             res\iExit48x1.ico
+Ani3dMan128    GIF              res\man3d128.gif

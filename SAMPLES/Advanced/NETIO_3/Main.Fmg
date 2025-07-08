@@ -1,0 +1,277 @@
+*HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
+*OPEN SOURCE PROJECT 2005-2010 Walter Formigoni http://sourceforge.net/projects/hmgs-minigui/
+
+DEFINE WINDOW TEMPLATE AT 173 , 359 WIDTH 678 HEIGHT 474 ICON "NetIO" MAIN NOSIZE ON INIT {|| Main.Text_Pass.Enabled := .F.} ON MINIMIZE NotifyIconClick() NOTIFYICON "NetIO" NOTIFYTOOLTIP "Click to activate NetIO applet" ON NOTIFYCLICK NotifyIconClick()
+
+     DEFINE MAIN MENU
+          DEFINE POPUP "Server"
+               MENUITEM "Start Server" ACTION StartServer() NAME M_STARTS
+               SEPARATOR 
+               MENUITEM "Stop Server" ACTION StopServer() NAME M_STOPS
+               SEPARATOR 
+               MENUITEM "Exit" ACTION QuitApp()
+          END POPUP 
+          DEFINE POPUP "Client"
+               MENUITEM "Establish a connection" ACTION ClientConnect(.T.) NAME M_CONN
+               SEPARATOR 
+               MENUITEM "Clear connection" ACTION ClientConnect(.F.) NAME M_DISCONN
+               SEPARATOR 
+               MENUITEM "Check PROC existence" ACTION msgInfo( "Given PROC " + IF( NETIO_PROCEXISTS( InputBox( "Enter a PROCEDURE name" ) ), "exists", "not exists") + " on server side" )
+               MENUITEM "Execute a PROCEDURE on server. (CAREFULL...)" ACTION ExecPROC() NAME M_EXECPROC
+          END POPUP 
+          DEFINE POPUP "Info"
+               MENUITEM "Server Info" ACTION ServerSpecs()
+               SEPARATOR 
+               MENUITEM "About.." ACTION About()
+               MENUITEM "NetIO Documentation" ACTION Usage()
+          END POPUP 
+     END MENU
+
+  DEFINE TAB Tab_1 AT 70,20 WIDTH 630 HEIGHT 340 VALUE 1 FONT "Times new roman" SIZE 12 BOLD  TOOLTIP "" ON CHANGE Nil
+
+    PAGE " Server Settings "
+
+        DEFINE LABEL Label_Port
+               ROW    50
+               COL    40
+               WIDTH  80
+               HEIGHT 20
+               VALUE "Port"
+        END LABEL  
+
+        DEFINE TEXTBOX Text_Port
+               ROW    50
+               COL    150
+               WIDTH  80
+               HEIGHT 24
+               TOOLTIP "Listening port number (usualy: 2941)"
+               INPUTMASK "9999"
+               NUMERIC  .T.
+               VALUE  2941
+        END TEXTBOX 
+
+        DEFINE LABEL Label_IP
+               ROW    90
+               COL    40
+               WIDTH  80
+               HEIGHT 20
+               VALUE "IP Address"
+        END LABEL  
+
+        DEFINE TEXTBOX Text_IP
+               ROW    90
+               COL    150
+               WIDTH  120
+               HEIGHT 24
+               INPUTMASK "999.999.999.999"
+               VALUE  GetHostIP()
+        END TEXTBOX 
+
+        DEFINE LABEL Label_DIR
+               ROW    130
+               COL    40
+               WIDTH  80
+               HEIGHT 20
+               VALUE "Root Directory"
+        END LABEL  
+
+        DEFINE TEXTBOX Text_DIR
+               ROW    130
+               COL    150
+               WIDTH  250
+               HEIGHT 24
+               TOOLTIP "Directory where located the files being served. Note: "
+               TABSTOP .F.
+               READONLY .T.
+               VALUE  hb_dirBase()
+        END TEXTBOX 
+
+        DEFINE LABEL Label_RPC
+               ROW    170
+               COL    40
+               WIDTH  80
+               HEIGHT 20
+               VALUE "RPC support"
+        END LABEL  
+
+       DEFINE CHECKBOX Check_RPC
+              ROW    170
+              COL    150
+              WIDTH  30
+              HEIGHT 20
+              CAPTION ""
+              VALUE .T.
+              FONTSIZE 10
+        END CHECKBOX  
+
+        DEFINE LABEL Label_ENC
+               ROW    210
+               COL    40
+               WIDTH  60
+               HEIGHT 20
+               VALUE "Encryption"
+        END LABEL  
+
+       DEFINE CHECKBOX Check_ENC
+              ROW    210
+              COL    150
+              WIDTH  30
+              HEIGHT 20
+              CAPTION ""
+              ONCHANGE ManagePass()
+        END CHECKBOX  
+
+        DEFINE LABEL Label_Pass
+               ROW    250
+               COL    40
+               WIDTH  60
+               HEIGHT 20
+               VALUE "Password"
+        END LABEL  
+
+        DEFINE TEXTBOX Text_Pass
+               ROW    250
+               COL    150
+               WIDTH  120
+               HEIGHT 24
+               PASSWORD  .T.
+        END TEXTBOX 
+
+       DEFINE BUTTON Button_StartServer
+              ROW    180
+              COL    470
+              WIDTH  120
+              HEIGHT 28
+              ACTION StartServer()
+              CAPTION "Start Server"
+        END BUTTON  
+
+       DEFINE BUTTON Button_StopServer
+              ROW    210
+              COL    470
+              WIDTH  120
+              HEIGHT 28
+              ACTION StopServer()
+              CAPTION "Stop Server"
+        END BUTTON  
+
+       DEFINE BUTTON Button_Quit
+              ROW    270
+              COL    470
+              WIDTH  120
+              HEIGHT 28
+              ACTION QuitApp()
+              CAPTION "Quit"
+        END BUTTON  
+
+        DEFINE FRAME Frame_2
+               ROW    40
+               COL    460
+               WIDTH  140
+               HEIGHT 270
+               OPAQUE .T.
+        END FRAME  
+
+       DEFINE BUTTON Button_Dir
+              ROW    130
+              COL    402
+              WIDTH  31
+              HEIGHT 24
+              ACTION /*{|| Main.Text_DIR.Value := GetFolder()+"\"}*/ Nil
+              CAPTION "···"
+              FONTSIZE 14
+              FONTBOLD .T.
+              TABSTOP .F.
+              VISIBLE .F.
+        END BUTTON  
+
+        DEFINE IMAGE Image_ServerStatus
+               ROW    50
+               COL    470
+               WIDTH  120
+               HEIGHT 120
+               PICTURE ""
+       END IMAGE  
+
+    END PAGE 
+
+    PAGE " Client Connect "
+
+        DEFINE GRID Grid_DBF
+               ROW    50
+               COL    40
+               WIDTH  400
+               HEIGHT 270
+               ITEMS {}
+               WIDTHS { 100,100,100,90 }
+               HEADERS {'Database File', 'Size', 'Date', 'Time'}
+               ONDBLCLICK BrowseThisDBF()
+        END GRID  
+
+       DEFINE BUTTON Button_Connect
+              ROW    230
+              COL    470
+              WIDTH  120
+              HEIGHT 28
+              ACTION ClientConnect()
+              CAPTION "Connect to Server"
+        END BUTTON  
+
+       DEFINE BUTTON Button_Browse
+              ROW    280
+              COL    470
+              WIDTH  120
+              HEIGHT 28
+              ACTION BrowseThisDBF()
+              CAPTION "Browse selected"
+        END BUTTON  
+
+        DEFINE FRAME Frame_1
+               ROW    45
+               COL    460
+               WIDTH  140
+               HEIGHT 270
+               OPAQUE .T.
+        END FRAME  
+
+        DEFINE IMAGE Image_ConnectionStatus
+               ROW    60
+               COL    470
+               WIDTH  120
+               HEIGHT 120
+               PICTURE ""
+       END IMAGE  
+
+    END PAGE 
+
+  END TAB 
+
+     DEFINE LABEL Label_Title
+            ROW    15
+            COL    25
+            WIDTH  617
+            HEIGHT 30
+            VALUE "NetIO Lib sample"
+            FONTNAME "ARIAL"
+            FONTSIZE 20
+            FONTBOLD .T.
+            TRANSPARENT .T.
+            ACTION About()
+            BACKCOLOR {214,214,214}
+            FONTCOLOR {0,128,192}
+            CENTERALIGN .T.
+     END LABEL  
+
+     DEFINE FRAME Frame_3
+            ROW    10
+            COL    22
+            WIDTH  623
+            HEIGHT 40
+            BACKCOLOR {0,64,128}
+            FONTCOLOR {0,64,128}
+            OPAQUE .T.
+     END FRAME  
+
+END WINDOW
+
+

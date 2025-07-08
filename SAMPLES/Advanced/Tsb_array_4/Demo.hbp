@@ -1,0 +1,11 @@
+-prgflag=-w2 -es1
+
+-inc
+
+-workdir=OBJ
+
+-oDemo
+
+demo.prg
+mySundry.prg
+overlay.cpp

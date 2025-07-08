@@ -1,0 +1,116 @@
+T7ZIP Class Manual
+
+The T7ZIP class provides an interface to create, open, list, test, and extract files from compressed archives using the 7-Zip library. This class wraps the functionality of the 7-Zip DLL in an easy-to-use format and offers several configurable options for compression, archive formats, and more.
+
+Class Declaration
+
+Data Members
+
+- hWndOwner (INTEGER): Handle of the parent window (default: 0).
+- nError (INTEGER): Error message identifier (default: 0).
+- handle (INTEGER): Internal handle for the 7-Zip archive (default: 0).
+- lShowProcessDlg (LOGICAL): Flag to show the progress dialog when processing (.F. by default).
+- lAlwaysOverWrite (LOGICAL): Whether to overwrite files when extracting (.T. by default).
+- cArcName (STRING): The output archive filename.
+- cBuffer (STRING): A buffer to hold the output from the DLL (default: empty string).
+- nBuffer (INTEGER): The size of the buffer for DLL output (default: 0).
+- cCompressionMethod (STRING): The compression method (default: "PPMd"). Supported methods:
+  - "LZMA"
+  - "LZMA2"
+  - "PPMd"
+  - "BZip2"
+  - "Deflate"
+  - "Copy"
+- nCompressionMethod (INTEGER): Numeric value representing the compression method (default: 3, which corresponds to "PPMd").
+- nZipCompressionLevel (INTEGER): Compression level for ZIP files (default: 5). Ranges from 0 (no compression) to 9 (maximum compression).
+- cCommand (STRING): Command-line string to pass to the 7-Zip utility (default: empty).
+- nArctype (INTEGER): Numeric identifier for the archive format (default: 1).
+- cArcType (STRING): Archive format, either "7z" or "zip" (default: "7z").
+- aFiles (ARRAY): Array of files to include in the archive. If empty, all files in the current directory are archived.
+- cPassword (STRING): Password for securing the archive (default: empty string).
+- lRecursive (LOGICAL): Include subdirectories when creating archives (.F. by default).
+- aExcludeFiles (ARRAY): Array of filenames to exclude from the archive.
+- aVolumes (ARRAY): Used to create multi-volume archives (optional).
+- lSolid (LOGICAL): Whether to create a solid archive (.T. by default). Solid archives cannot be updated, but offer better compression.
+- lMultiCPU (LOGICAL): Enable multi-core CPU support for faster compression (.F. by default).
+- lConvertANSIToOEM (LOGICAL): Converts ANSI filenames to OEM if necessary (.T. by default).
+
+Methods
+
+New()
+Constructor for the class, initializes a new instance of T7ZIP.
+
+Create()
+Creates a new archive based on the current settings, including the compression method, archive type, and file list.
+
+Open()
+Opens an existing archive file for further operations like listing or extraction.
+
+List()
+Lists the contents of the archive and stores the output in cBuffer.
+
+Test()
+Tests the integrity of the archive to ensure it is not corrupted. Stores the results in cBuffer.
+
+Extract(lWithPath)
+Extracts files from the archive. If lWithPath is .T., files are extracted with their paths; otherwise, they are extracted without paths. It uses the lAlwaysOverWrite and lShowProcessDlg flags to determine whether to overwrite files and display a progress dialog.
+
+ErrorDescription()
+Provides a human-readable description of the last error encountered, based on the value of nError.
+
+Close()
+Closes the currently opened archive and releases associated resources.
+
+Archive Information Methods
+These methods provide detailed information about the archive:
+- GetArcFileSize(): Returns the size of the archive file.
+- GetArcOriginalSize(): Returns the original size of the uncompressed files in the archive.
+- GetArcCompressedSize(): Returns the total size of the compressed files in the archive.
+- GetArcRatio(): Returns the compression ratio of the entire archive.
+- GetOriginalSize(): Returns the size of a specific original file.
+- GetCompressedSize(): Returns the compressed size of a specific file.
+- GetRatio(): Returns the compression ratio for a specific file.
+
+Usage Examples
+
+Example 1: Creating a New Archive
+
+LOCAL o7Zip := T7ZIP():New()
+o7Zip:cArcName := "backup.7z"
+o7Zip:aFiles := { "file1.txt", "file2.txt" }
+o7Zip:lRecursive := .T. // Include subdirectories
+o7Zip:Create() // Create archive
+
+Example 2: Extracting an Archive
+
+LOCAL o7Zip := T7ZIP():New()
+o7Zip:cArcName := "backup.7z"
+o7Zip:Open() // Open archive
+o7Zip:Extract(.T.) // Extract with paths
+o7Zip:Close() // Close archive
+
+Example 3: Listing Contents of an Archive
+
+LOCAL o7Zip := T7ZIP():New()
+o7Zip:cArcName := "backup.7z"
+o7Zip:List() // List contents of the archive
+? o7Zip:cBuffer // Display the output
+
+Example 4: Testing Archive Integrity
+
+LOCAL o7Zip := T7ZIP():New()
+o7Zip:cArcName := "backup.7z"
+o7Zip:Test() // Test archive for integrity
+IF o7Zip:nError == 0
+   ? "Archive is valid."
+ELSE
+   ? o7Zip:ErrorDescription() // Display error message
+ENDIF
+
+Notes
+- The T7ZIP class interacts with the 7-Zip library using external DLL functions.
+- Be sure to configure the paths and filenames correctly to avoid unexpected behavior.
+- When handling large archives, it is advisable to set lShowProcessDlg to .T. to monitor the progress.
+
+Conclusion
+The T7ZIP class is a flexible and powerful interface for compressing and extracting files using the 7-Zip library. It offers a variety of options to customize the compression process, including support for multiple archive formats, recursive directory inclusion, multi-core compression, and more.

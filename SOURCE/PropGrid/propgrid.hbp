@@ -1,0 +1,19 @@
+#
+# propgrid.hbp
+#
+
+-hblib
+-inc
+-o../../lib/propgrid
+
+-I../../include
+
+-warn=max
+
+-w2 -es2 -ko -q0
+
+-hbx=../../include/propgrid.hbx
+
+h_propgrid.prg
+h_pglang.prg
+c_propgrid.c

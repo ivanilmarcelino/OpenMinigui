@@ -1,0 +1,170 @@
+
+
+
+
+
+
+
+
+
+
+MEMVAR hBitmap
+MEMVAR Alpha
+MEMVAR Flag_AlphaBlend_Effect
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 14 "S:\Mega\Dev\32\BCC\Minigui\include\miniprint.ch"
+  MEMVAR _HMG_MINIPRINT
+#line 18 "Demo5.prg"
+FUNCTION MAIN
+
+PRIVATE hBitmap := 0
+PRIVATE Alpha := 150
+
+PRIVATE Flag_AlphaBlend_Effect := .T.
+
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win1", "Demo5: CaptureDesktop, AlphaBlend, Grayness and Brightness", 0, 0, 800, 600, .F., .F., .F., .F., .F., {,}, {,},, {|| Proc_ON_RELEASE ()} ,, {||      BT_ClientAreaInvalidateAll ("Win1")} , ,, , {||   Proc_ON_PAINT   ()} , .F. , .F. , .T. , , .F. , ,, , , ,, , BT_DesktopHeight () + 150 , BT_DesktopWidth  () + 100 , , , , , , , .F. , {||  BT_ClientAreaInvalidateAll ("Win1")} , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+       _DefineMainMenu( )
+           _DefineMenuPopup( "Alpha Blend" , , , )
+                  _DefineMenuItem ( "Alpha   0 (min)" , {|| AlphaChange (0)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "Alpha  50      " , {|| AlphaChange (50)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "Alpha 150      " , {|| AlphaChange (150)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "Alpha 200      " , {|| AlphaChange (200)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+                  _DefineMenuItem ( "Alpha 255 (max)" , {|| AlphaChange (255)} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+           _EndMenuPopup()
+       _EndMenu()
+
+       _DefineButton ( "Button_1", , 250, 350, "Capture Desktop", {|| CaptureDesktop ()}, 120,,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+       _DefineButton ( "Button_2", , 400, 350, "Erase Capture", {|| EraseCapture ()}, 120,,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+       _DefineButton ( "Button_3", , 320, 435, "Save Capture", {|| SaveDeskTop ()}, 120,,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+   _EndWindow ()
+
+   DoMethod ( "Win1", "Center" )
+   _ActivateWindow ( {"Win1"}, .F., , )
+
+RETURN NIL
+
+
+
+PROCEDURE Proc_ON_RELEASE
+   BT_BitmapRelease (hBitmap)
+RETURN
+
+
+
+PROCEDURE Proc_ON_PAINT
+LOCAL Width  := BT_ClientAreaWidth  ("Win1")
+LOCAL Height := BT_ClientAreaHeight ("Win1")
+LOCAL Col := -GetProperty ( "Win1", "HscrollBar" , "value" )
+LOCAL Row := -GetProperty ( "Win1", "VscrollBar" , "value" )
+LOCAL hDC, BTstruct
+LOCAL nTypeText
+LOCAL nAlingText
+
+  hDC = BT_CreateDC ("Win1", 4, @BTstruct)
+
+    IF Flag_AlphaBlend_Effect = .T.
+       BT_DrawGradientFillVertical (hDC,  0,  0,  Width,  Height, { 255 ,   0 ,   0 }, {   0 ,   0 ,   0 })
+
+
+       BT_DrawBitmapAlphaBlend (hDC, Row+10,  Col+10, NIL, NIL, Alpha, 3, hBitmap)
+
+       nTypeText  := 1 + 2 + 4 + 8
+       nAlingText := 6 + 24
+       BT_DrawText (hDC, Height/2, Width/2, "The Power of HMG", "Comic Sans MS", 42, { 255 , 255 ,   0 }, {   0 ,   0 ,   0 }, nTypeText, nAlingText)
+    ELSE
+       BT_DrawBitmap (hDC, 0,  0, Width,  Height, 3, hBitmap)
+    ENDIF
+
+  BT_DeleteDC (BTstruct)
+
+RETURN
+
+
+
+PROCEDURE AlphaChange (new_value)
+   IF hBitmap = 0
+      BT_DELAY_EXECUTION (100)
+      Grayness_effect_start ()
+         MsgInfo ("Error: No desktop capture")
+      Grayness_effect_end ()
+   ELSE
+      Alpha :=  new_value
+      BT_ClientAreaInvalidateAll ("Win1")
+   ENDIF
+RETURN
+
+
+
+PROCEDURE CaptureDesktop
+   DoMethod ( "Win1", "Hide" )
+   BT_DELAY_EXECUTION (300)
+   BT_BitmapRelease (hBitmap)
+   hBitmap := BT_BitmapCaptureDesktop ()
+   DoMethod ( "Win1", "Show" )
+   BT_ClientAreaInvalidateAll ("Win1")
+RETURN
+
+
+
+PROCEDURE SaveDesktop
+   IF hBitmap = 0
+      Grayness_effect_start ()
+         MsgInfo ("Error: No desktop capture")
+      Grayness_effect_end ()
+   ELSE
+      BT_BitmapSaveFile (hBitmap, "DESKTOP.bmp")
+      MsgInfo ("Capture save as file DESKTOP.bmp")
+      Alpha := 255
+      BT_ClientAreaInvalidateAll ("Win1")
+   ENDIF
+RETURN
+
+
+
+PROCEDURE EraseCapture
+   IF hBitmap = 0
+      Grayness_effect_start ()
+         MsgInfo ("Error: No desktop capture")
+      Grayness_effect_end ()
+   ELSE
+      BT_BitmapRelease (hBitmap)
+      hBitmap:= 0
+      Alpha := 150
+      BT_ClientAreaInvalidateAll ("Win1")
+   ENDIF
+RETURN
+
+
+
+PROCEDURE Grayness_effect_start
+   BT_BitmapRelease (hBitmap)
+   hBitmap := BT_BitmapCaptureClientArea ("Win1")
+   BT_BitmapGrayness (hBitmap, 100)
+   BT_BitmapBrightness (hBitmap, 50)
+   Flag_AlphaBlend_Effect := .F.
+   BT_ClientAreaInvalidateAll ("Win1")
+RETURN
+
+
+PROCEDURE Grayness_effect_end
+   BT_BitmapRelease (hBitmap)
+   hBitmap := 0
+   Flag_AlphaBlend_Effect := .T.
+   BT_ClientAreaInvalidateAll ("Win1")
+RETURN

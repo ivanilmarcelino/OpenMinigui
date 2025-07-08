@@ -1,0 +1,167 @@
+* HMG-IDE UNICODE Form Designer Generated Code
+* (c) Roberto Lopez - http://sites.google.com/site/hmgweb
+
+DEFINE WINDOW TEMPLATE AT 165 , 504 WIDTH 654 HEIGHT 431 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "SapiVoice Microsoft" ICON "AppIcon" MAIN NOSIZE CURSOR NIL ON INIT GetVoices() ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR {0,125,250} NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+
+    DEFINE GRID Grid_1
+        ROW    180
+        COL    20
+        WIDTH  600
+        HEIGHT 200
+        ITEMS {}
+        VALUE 0
+        WIDTHS { 20 , 250 , 60 , 50 , 80 , 120 }
+        HEADERS { '...' , " Name " , "Gender" , "Age" , "Language" , "Vendor" }
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONDBLCLICK Nil
+        ONHEADCLICK Nil
+        ONQUERYDATA Nil
+        MULTISELECT .F.
+        ALLOWEDIT .F.
+        VIRTUAL .F.
+        DYNAMICBACKCOLOR Nil
+        DYNAMICFORECOLOR Nil
+        COLUMNWHEN Nil
+        COLUMNVALID Nil
+        COLUMNCONTROLS Nil
+        SHOWHEADERS .T.
+        CELLNAVIGATION .F.
+        NOLINES .F.
+        HELPID Nil
+        IMAGE { 'Female.bmp' ,'Male.bmp'}
+        JUSTIFY Nil
+        ITEMCOUNT Nil
+        BACKCOLOR {128,255,255}
+        FONTCOLOR NIL
+        HEADERIMAGES Nil
+        ROWSOURCE Nil
+        COLUMNFIELDS Nil
+        ALLOWAPPEND .F.
+        ALLOWDELETE .F.
+        BUFFERED .F.
+        DYNAMICDISPLAY Nil
+        ONSAVE Nil
+        LOCKCOLUMNS 0
+    END GRID
+
+    DEFINE LISTBOX List_1
+        ROW    60
+        COL    20
+        WIDTH  340
+        HEIGHT 70
+        ITEMS {}
+        VALUE 0
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Double click selects a narrator"
+        ONCHANGE ChangeVoice()
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        BACKCOLOR {128,255,255}
+        FONTCOLOR NIL
+        ONDBLCLICK Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        SORT .F.
+        MULTISELECT .F.
+        DRAGITEMS .F.
+    END LISTBOX
+
+    DEFINE SLIDER Slider_1
+        ROW    60
+        COL    380
+        WIDTH  230
+        HEIGHT 30
+        RANGEMIN 1
+        RANGEMAX 100
+        VALUE 80
+        TOOLTIP ""
+        ONCHANGE SetVol()
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        BACKCOLOR {128,255,255}
+    END SLIDER
+
+    DEFINE LABEL Label_1
+        ROW    30
+        COL    20
+        WIDTH  330
+        HEIGHT 20
+        VALUE "Installed narrators / Select narrator"
+        FONTNAME "Arial"
+        FONTSIZE 18
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .T.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR NIL
+        FONTCOLOR {255,255,255}
+    END LABEL
+
+    DEFINE LABEL Label_2
+        ROW    150
+        COL    20
+        WIDTH  120
+        HEIGHT 24
+        VALUE "Description"
+        FONTNAME "Arial"
+        FONTSIZE 18
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .T.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR NIL
+        FONTCOLOR {255,255,255}
+    END LABEL
+
+    DEFINE LABEL Label_3
+        ROW    30
+        COL    380
+        WIDTH  80
+        HEIGHT 24
+        VALUE "Volume"
+        FONTNAME "Arial"
+        FONTSIZE 18
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .T.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR NIL
+        FONTCOLOR {255,255,255}
+    END LABEL
+
+END WINDOW
+

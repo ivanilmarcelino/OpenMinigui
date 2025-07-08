@@ -1,0 +1,13 @@
+
+// The first ICON in alphabetical order is used for the app icon
+APPICON   ICON      DEMO.ICO
+
+// Images to display in IMAGE controls
+DEMO1     BITMAP    DEMO.BMP
+DEMO2     GIF       DEMO.GIF
+DEMO3     JPG       DEMO.JPG
+DEMO4     PNG       DEMO.PNG
+DEMO5     TIF       DEMO.TIF
+DEMO6     ICO       DEMO.ICO
+
+// Keywords (ICON, BITMAP, etc.) must be in uppercase.

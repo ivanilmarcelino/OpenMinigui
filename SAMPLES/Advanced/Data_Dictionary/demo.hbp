@@ -1,0 +1,16 @@
+-prgflag=-w2 -es2
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-odic_structure
+
+# to list all * .prg
+dic_structure.prg
+ide_modifica_dic.prg
+data.prg
+update.prg

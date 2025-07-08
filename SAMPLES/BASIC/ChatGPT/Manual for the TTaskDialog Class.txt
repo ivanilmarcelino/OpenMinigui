@@ -1,0 +1,257 @@
+Manual for the TTaskDialog Class
+
+The TTaskDialog class provides a flexible and configurable interface for creating and managing task dialogs in a Harbour MiniGUI environment. These dialogs allow users to display complex information and choices through a graphical interface, including text, buttons, icons, and verification checkboxes.
+
+---
+
+Class Overview
+
+Class Name: TTaskDialog
+
+Purpose: To create, configure, and display task dialogs with various options such as title, content, buttons, radio buttons, icons, and footers. This class allows for full control over the dialog’s appearance and behavior, including the ability to retrieve user input from buttons and checkboxes.
+
+---
+
+Variables (Attributes)
+
+Exported Variables
+
+These variables are accessible externally.
+
+1. Cargo
+   - General-purpose variable for storing user-defined data.
+
+2. lActive (READONLY, INIT .F.)
+   - Indicates whether the task dialog is currently active.
+
+3. lError (READONLY, INIT .T.)
+   - Set to .T. if there was an error in creating the dialog.
+
+4. nButtonResult (READONLY, INIT NIL)
+   - Stores the result of the button clicked by the user.
+
+5. nRadioButtonResult (READONLY, INIT NIL)
+   - Stores the result of the radio button selected by the user.
+
+6. nResult (READONLY, INIT E_FAIL)
+   - Stores the result of the task dialog’s execution.
+
+7. lVerifyResult (READONLY, INIT .F.)
+   - Stores the state of the verification checkbox (checked or unchecked).
+
+Protected Variables
+
+These variables are internal to the class.
+
+1. aConfig (INIT Array( TDC_CONFIG ))
+   - Stores the configuration array for the dialog.
+
+2. HWND (READONLY, INIT NIL)
+   - Handle of the task dialog window.
+
+3. lTimeOut (READONLY, INIT .F.)
+   - Indicates whether the dialog has timed out.
+
+4. nTimeOutMS (READONLY, INIT 0)
+   - Stores the timeout value in milliseconds.
+
+---
+
+Methods
+
+1. New( cTitle, cInstruction, cContent, cFooter, nCommonButtons, nMainIcon )
+   - Purpose: Constructor method for creating a new task dialog instance.
+   - Parameters:
+     - cTitle: Title of the dialog window.
+     - cInstruction: Main instruction for the dialog.
+     - cContent: Additional content or message.
+     - cFooter: Footer text (optional).
+     - nCommonButtons: Common buttons (like OK, Cancel) to include.
+     - nMainIcon: Main icon to display (such as an error, warning, or information icon).
+   
+2. Execute() (Inline: ::ShowDialog())
+   - Purpose: Execute and display the task dialog.
+   
+3. ShowDialog()
+   - Purpose: Show the dialog to the user.
+   
+4. DialogHandle()
+   - Purpose: Retrieve the handle of the task dialog window.
+   
+5. Showing( lState )
+   - Purpose: Set or get the active state of the task dialog.
+   - Parameters: lState (boolean, .T. to show, .F. to hide).
+
+6. OnCreated( hWnd, nNotify, nWParam, nLParam )
+   - Purpose: Event handler called when the dialog is created.
+   - Parameters: Handles and parameters associated with the window event.
+
+7. OnDestroyed( hWnd, nNotify, nWParam, nLParam )
+   - Purpose: Event handler called when the dialog is destroyed.
+   - Parameters: Handles and parameters associated with the window event.
+
+8. Listener( hWnd, nNotify, nWParam, nLParam )
+   - Purpose: Generic event listener for dialog events.
+   - Parameters: Event-specific handles and parameters.
+
+9. CommonButtons( nCBs ) (SETGET)
+   - Purpose: Set or get the common buttons for the dialog (e.g., OK, Cancel).
+   - Parameters: nCBs (bitmask of common buttons).
+
+10. WindowTitle( cTitle ) (SETGET)
+   - Purpose: Set or get the title of the task dialog.
+   - Parameters: cTitle (string).
+
+11. Title( cTitle ) (SETGET)
+   - Purpose: Set or get the title of the task dialog.
+   - Parameters: cTitle (string).
+
+12. MainIcon( nIcon ) (SETGET)
+   - Purpose: Set or get the main icon to display in the task dialog.
+   - Parameters: nIcon (icon identifier).
+
+13. MainInstruction( cInstruction ) (SETGET)
+   - Purpose: Set or get the main instruction text.
+   - Parameters: cInstruction (string).
+
+14. Instruction( cInstruction ) (SETGET)
+   - Purpose: Set or get the instruction text.
+   - Parameters: cInstruction (string).
+
+15. Content( cContent ) (SETGET)
+   - Purpose: Set or get the main content of the dialog.
+   - Parameters: cContent (string).
+
+16. CustomButtons( aCustButton ) (SETGET)
+   - Purpose: Set or get custom buttons for the dialog.
+   - Parameters: aCustButton (array of button labels).
+
+17. DefaultButton( nDefaultButton ) (SETGET)
+   - Purpose: Set or get the default button.
+   - Parameters: nDefaultButton (button ID).
+
+18. CustomRadioButtons( aCustButton ) (SETGET)
+   - Purpose: Set or get custom radio buttons.
+   - Parameters: aCustButton (array of radio button labels).
+
+19. DefaultRadioButton( nDefaultButton ) (SETGET)
+   - Purpose: Set or get the default radio button.
+   - Parameters: nDefaultButton (radio button ID).
+
+20. VerificationText( cText ) (SETGET)
+   - Purpose: Set or get the verification checkbox text.
+   - Parameters: cText (string).
+
+21. ExpandedInfo( cText ) (SETGET)
+   - Purpose: Set or get the expanded information text.
+   - Parameters: cText (string).
+
+22. ExpandedControlText( cText ) (SETGET)
+   - Purpose: Set or get the text to show in the expanded control area.
+   - Parameters: cText (string).
+
+23. CollapsedControlText( cText ) (SETGET)
+   - Purpose: Set or get the text to show in the collapsed control area.
+   - Parameters: cText (string).
+
+24. FooterIcon( nIcon ) (SETGET)
+   - Purpose: Set or get the footer icon.
+   - Parameters: nIcon (icon identifier).
+
+25. Footer( cFooter ) (SETGET)
+   - Purpose: Set or get the footer text.
+   - Parameters: cFooter (string).
+
+26. Width( nWidth ) (SETGET)
+   - Purpose: Set or get the width of the dialog.
+   - Parameters: nWidth (numeric value).
+
+27. Parent( cFormName ) (SETGET)
+   - Purpose: Set or get the parent form name.
+   - Parameters: cFormName (string).
+
+28. ParentHandle( nHandle ) (SETGET)
+   - Purpose: Set or get the parent handle for the dialog.
+   - Parameters: nHandle (numeric handle).
+
+29. CallBackBlock( bCode ) (SETGET)
+   - Purpose: Set or get the callback function/block for the dialog.
+   - Parameters: bCode (code block).
+
+30. Flags( nFlags ) (SETGET)
+   - Purpose: Set or get additional dialog flags.
+   - Parameters: nFlags (bitmask).
+
+31. AllowDialogCancellation( lNewVal ) (SETGET)
+   - Purpose: Set or get whether the dialog can be canceled.
+   - Parameters: lNewVal (boolean).
+
+32. CanBeMinimized( lNewVal ) (SETGET)
+   - Purpose: Set or get whether the dialog can be minimized.
+   - Parameters: lNewVal (boolean).
+
+33. EnableHyperlinks( lNewVal ) (SETGET)
+   - Purpose: Set or get whether hyperlinks are enabled in the dialog.
+   - Parameters: lNewVal (boolean).
+
+34. ExpandedByDefault( lNewVal ) (SETGET)
+   - Purpose: Set or get whether the dialog is expanded by default.
+   - Parameters: lNewVal (boolean).
+
+35. ExpandFooterArea( lNewVal ) (SETGET)
+   - Purpose: Set or get whether the footer area is expanded by default.
+   - Parameters: lNewVal (boolean).
+
+36. NoDefaultRadioButton( lNewVal ) (SETGET)
+   - Purpose: Set or get whether there is no default radio button selected.
+   - Parameters: lNewVal (boolean).
+
+37. PositionRelativeToWindow( lNewVal ) (SETGET)
+   - Purpose: Set or get whether the dialog is positioned relative to another window.
+   - Parameters: lNewVal (boolean).
+
+38. RightToLeftLayout( lNewVal ) (SETGET)
+   - Purpose: Set or get whether the dialog uses right-to-left layout.
+   - Parameters: lNewVal (boolean).
+
+39. VerificationEnabled( lNewVal ) (SETGET)
+   - Purpose: Set or get whether the verification checkbox is enabled.
+   - Parameters: lNewVal (boolean).
+
+40. timeoutMS( nMS ) (SETGET)
+   - Purpose: Set or get the timeout in milliseconds for the dialog.
+   - Parameters: nMS (timeout duration in milliseconds).
+
+41. TimedOut( lOut ) (SETGET)
+   - Purpose: Set or get whether the dialog has timed out.
+   - Parameters: lOut (boolean).
+
+42. SelectedButton() (Inline: ::nButtonResult)
+   - Purpose: Retrieve the ID of the button clicked by the user.
+
+43. SelectedRadioButton() (Inline: ::nRadioButtonResult)
+   - Purpose: Retrieve the ID of the radio button selected by the user.
+
+44. VerificationChecked() (Inline: ::lVerifyResult)
+   - Purpose: Check the state of the verification checkbox.
+
+---
+
+Usage Example
+
+LOCAL oDialog
+
+oDialog := TTaskDialog():New( "Confirmation", "Are you sure?", "Do you want to proceed?", ;
+                             "This action cannot be undone.", TDC_OKCANCEL, TDI_WARNING )
+oDialog:VerificationText( "Do not ask again" )
+oDialog:Execute()
+
+IF oDialog:SelectedButton() == TDC_OK
+   ? "User confirmed the action."
+ENDIF
+
+This example creates a task dialog with a warning icon and an OK/Cancel button, along with a verification checkbox.
+
+---
+
+This manual describes the primary functionality and usage of the TTaskDialog class, helping developers create interactive and customizable task dialogs in their Harbour MiniGUI applications.

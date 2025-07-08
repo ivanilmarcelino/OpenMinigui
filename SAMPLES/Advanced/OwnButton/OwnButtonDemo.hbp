@@ -1,0 +1,6 @@
+#harbour options:
+-w3
+
+#sources:
+OwnButtonDemo.prg
+OwnButton.prg

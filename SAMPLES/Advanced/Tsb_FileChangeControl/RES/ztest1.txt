@@ -1,0 +1,51 @@
+------------------------------------------------------------------------------
+ tRecno := ZAIVKA->TSZ
+ tDtm   := HB_DATETIME()
+ ? HB_TSTOSTR( tDtm )                    // 2021-07-19 00:28:52.946 "C" 
+ ? HB_TTOC( tDtm )                       // 19.07.2021 00:28:52.946 "C" 
+ ? HB_TTOD( tDtm )                       // 19.07.2021  "D"             
+ ? HB_TTON( tDtm )                       // 2459415.02  "N"             
+ ? HB_TTOS( tDtm )                       // 20210719002852946 "C"       
+ cDtm := HB_TSTOSTR( tDtm )
+ ? HB_STRTOTS( cDtm )                    // 2021-07-19 00:28:52.946 "T"   
+ ? HB_CToT(cDtm)                         // 00:28:52.946   "T"                 
+
+ cTm1 := cTm2 := ""
+ ? tDtm := HB_DATETIME()                 // 2021-07-19 00:28:52.949 "T"   
+ ? tUtc := hb_TSToUTC( tDtm )            // 2021-07-18 21:28:52.949 "T"   
+ HB_TTOD( tDtm, @cTm1, "hh:mm:ss.fff" )  
+ HB_TTOD( tUtc, @cTm2, "hh:mm:ss" )  
+ ? cTm1                                 // 00:28:52.949   "C"
+ ? cTm2                                 // 21:28:52 "C"      
+
+ hb_CToT("")  - empty tDateTime
+
+   * harbour/source/rtl/dateshb.c 
+     + added new .prg functions to mange date and timestamp values: 
+       HB_DATETIME() -> <tTimeStamp> 
+       HB_CTOD( <cDate> [, <cDateFormat> ] ) -> <dDate> 
+       HB_DTOC( <dDate> [, <cDateFormat> ] ) -> <cDate> 
+       HB_NTOT( <nValue> ) -> <tTimeStamp> 
+       HB_TTON( <tTimeStamp> ) -> <nValue> 
+       HB_TTOC( <tTimeStamp>, [ <cDateFormat> ] [, <cTimeFormat> ] ) -> 
+                                                             <cTimeStamp> 
+       HB_CTOT( <cTimeStamp>, [ <cDateFormat> ] [, <cTimeFormat> ] ) -> 
+                                                             <tTimeStamp> 
+       HB_TTOS( <tTimeStamp> ) -> <cYYYYMMDDHHMMSSFFF> 
+       HB_STOT( <cDateTime> ) -> <tTimeStamp> 
+          <cDateTime> should be in one of the above form: 
+             - "YYYYMMDDHHMMSSFFF" 
+             - "YYYYMMDDHHMMSSFF" 
+             - "YYYYMMDDHHMMSSF" 
+             - "YYYYMMDDHHMMSS" 
+             - "YYYYMMDDHHMM" 
+             - "YYYYMMDDHH" 
+             - "YYYYMMDD" 
+             - "HHMMSSFFF" 
+             - "HHMMSSF" 
+             - "HHMMSS" 
+             - "HHMM" 
+             - "HH" 
+          Important is number of digits. 
+
+https://github.com/Petewg/harbour-core/wiki/hb_T

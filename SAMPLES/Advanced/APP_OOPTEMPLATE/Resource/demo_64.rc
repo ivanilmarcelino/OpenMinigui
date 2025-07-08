@@ -1,0 +1,26 @@
+//                            
+// Resource     Resource       Resource
+// Name          Type           FileName
+//                            
+iExit64x1        ICON         Resource\res_64\iExit64x1.ico
+iExit64x2        ICON         Resource\res_64\iExit64x2.ico
+iPiople64x1      ICON         Resource\res_64\iPiople64x1.ico
+iPiople64x2      ICON         Resource\res_64\iPiople64x2.ico
+iMess64x1        ICON         Resource\res_64\iMessage64x1.ico
+iMess64x2        ICON         Resource\res_64\iMessage64x2.ico
+iMusic64x1       ICON         Resource\res_64\iMusic64x1.ico
+iMusic64x2       ICON         Resource\res_64\iMusic64x2.ico
+iAbout64x1       ICON         Resource\res_64\iAbout64x1.ico
+iAbout64x2       ICON         Resource\res_64\iAbout64x2.ico
+iExitDr64x1      ICON         Resource\res_64\iExitDoor64x1.ico
+iExitDr64x2      ICON         Resource\res_64\iExitDoor64x2.ico
+iDbInfo64x1      ICON         Resource\res_64\iDbInfo64x1.ico
+iDbInfo64x2      ICON         Resource\res_64\iDbInfo64x2.ico
+iOkey64x1        ICON         Resource\res_64\iOkey64x1.ico
+iOkey64x2        ICON         Resource\res_64\iOkey64x2.ico
+iFind64x1        ICON         Resource\res_64\iSmalFind64x1.ico
+iFind64x2        ICON         Resource\res_64\iSmalFind64x2.ico
+iHP64x1          ICON         Resource\res_64\iHP64x1.ico
+iHP64x2          ICON         Resource\res_64\iHP64x2.ico
+iSanta64x1       ICON         Resource\res_64\iSanta64x1.ico
+iSanta64x2       ICON         Resource\res_64\iSanta64x2.ico

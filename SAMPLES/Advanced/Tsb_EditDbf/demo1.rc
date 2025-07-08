@@ -1,0 +1,67 @@
+//               
+// Resource        Resource        Resource
+// Name             Type            FileName
+//                 
+1MG                 ICON           res\1MG.ico
+iMaster48           ICON           res\iMaster48.ico
+iVOTelefon48        ICON           res\iVOTelefon48.ico
+iUser32             ICON           res\iUser32.ico
+iExit32             ICON           res\iExit32.ico  
+iMg_Ok32            ICON           res\iMg_Ok32.ico
+iMg_Cancel32        ICON           res\iMg_Cancel32.ico
+iMg_Cancel48x1      ICON           res\iMg_Cancel48x1.ico
+iMg_Cancel48x2      ICON           res\iMg_Cancel48x2.ico
+iMg_Ok48x1          ICON           res\iMg_Ok48x1.ico
+iMg_Ok48x2          ICON           res\iMg_Ok48x2.ico
+iPrint32            ICON           res\iPrint32.ico
+bMgCheckF24         BITMAP         res\bMgCheck_F24.bmp
+bMgCheckT24         BITMAP         res\bMgCheck_T24.bmp
+bMgCheckF38         BITMAP         res\bMgCheck_F38.bmp
+bMgCheckT38         BITMAP         res\bMgCheck_T38.bmp
+CheckF28            BITMAP         res\check_circle_false28.bmp
+CheckT28            BITMAP         res\check_circle_true28.bmp
+bDelRed24           BITMAP         res\bDelRed24.bmp
+bTofix24            BITMAP         res\bTofix24.bmp 
+bAttach24           BITMAP         res\bAttach24.bmp
+bAttach24x2         BITMAP         res\bAttach24x2.bmp
+bAttach24x3         BITMAP         res\bAttach24x3.bmp
+bEye24              BITMAP         res\bEye24.bmp 
+bGear24             BITMAP         res\bGear24.bmp
+bGear20             BITMAP         res\bGear20.bmp
+bEye16              BITMAP         res\bEye16.bmp 
+bGear16             BITMAP         res\bGear16.bmp
+ArrowDown30         PNG            res\Arrow_down30.png
+ArrowDown20         PNG            res\Arrow_down20.png
+iCircle48x1         ICON           res\iCircle48x1.ico
+iCircle48x2         ICON           res\iCircle48x2.ico
+iRecAll48x1         ICON           res\iRecAll48x1.ico
+iRecAll48x2         ICON           res\iRecAll48x2.ico
+iRecDel48x1         ICON           res\iRecDel48x1.ico
+iRecDel48x2         ICON           res\iRecDel48x2.ico
+iRecIns48x1         ICON           res\iRecIns48x1.ico
+iRecIns48x2         ICON           res\iRecIns48x2.ico
+iExit48x1           ICON           res\iExit48x1.ico 
+iExit48x2           ICON           res\iExit48x2.ico 
+iReturn48x1         ICON           res\iReturn48x1.ico
+iReturn48x2         ICON           res\iReturn48x2.ico
+iFloppy48x1         ICON           res\iFloppy48x1.ico
+iFloppy48x2         ICON           res\iFloppy48x2.ico
+
+iCopy1_32           ICON           res\iCopy1_32.ico
+iCopy2_32           ICON           res\iCopy2_32.ico
+iView1_32           ICON           res\iView1_32.ico
+iView2_32           ICON           res\iView2_32.ico
+
+iMg96x1             ICON           res\iMg96x1.ico
+iMg96x2             ICON           res\iMg96x2.ico
+
+// -------------- demo3.prg -----------------------
+bMinus32        BITMAP          res\bMinus32.bmp
+bPlus32         BITMAP          res\bPlus32.bmp
+bZero32         BITMAP          res\bZero32.bmp
+bFCalc32        BITMAP          res\bFCalc32.bmp
+bFCSV32         BITMAP          res\bFCSV32.bmp
+bFExcel32       BITMAP          res\bFExcel32.bmp
+bFText32        BITMAP          res\bFText32.bmp
+bFWord32        BITMAP          res\bFWord32.bmp
+bFZero32        BITMAP          res\bFZero32.bmp

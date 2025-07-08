@@ -1,0 +1,134 @@
+TGif Class Manual
+
+Overview
+The TGif class is designed to handle the loading, displaying, and control of animated GIF images in a graphical user interface (GUI). This class provides functionality to play, pause, stop, and restart GIF animations. It is built for environments that support GUI-based applications, such as the Harbour MiniGUI framework.
+
+Class Structure
+
+Properties
+- hGif: A handle to the GIF control displayed on the form.
+- cFilename: The file path of the GIF to be displayed.
+- cParentName: The name of the parent container (e.g., a form) where the GIF will be displayed.
+- cControlName: The name of the control associated with the GIF.
+- aPictData: An array containing the data of the individual frames of the GIF.
+- aImageData: An array containing metadata for each frame of the GIF (e.g., dimensions, color depth).
+- nTotalFrames: The total number of frames in the GIF.
+- nCurrentFrame: The current frame being displayed.
+- nDelay: The default delay between frames (in milliseconds).
+- aDelay: An array specifying delays for each frame.
+- cTimer: A timer used to control the GIF animation.
+
+Methods
+
+New( cFileName, nTop, nLeft, nBottom, nRight, nDelay, aBKColor, cControlName, cParentName )
+Initializes a new instance of the TGif class, loads the GIF, and creates a control for displaying it.
+
+- Parameters:
+  - cFileName: Path to the GIF file.
+  - nTop: Top position of the GIF control.
+  - nLeft: Left position of the GIF control.
+  - nBottom: Bottom coordinate (height) of the GIF control.
+  - nRight: Right coordinate (width) of the GIF control.
+  - nDelay: Delay between frames in milliseconds (optional).
+  - aBKColor: Background color of the GIF control (optional).
+  - cControlName: Name of the control to be created for the GIF.
+  - cParentName: Parent container name (e.g., form).
+
+- Returns: A new TGif object.
+
+PlayGif()
+Handles the frame-by-frame animation of the GIF. It increments the frame index and updates the displayed frame accordingly.
+
+- Parameters: None.
+- Returns: NIL.
+
+Play()
+Starts or resumes the GIF animation by enabling the timer.
+
+- Inline Function: Calls the GifPlay() static function.
+- Returns: NIL.
+
+Update()
+Updates the position, size, or any properties of the GIF control when the parent form or control has changed.
+
+- Parameters: None.
+- Returns: NIL.
+
+Stop()
+Stops the GIF animation by disabling the timer.
+
+- Inline Function: Calls the GifStop() static function.
+- Returns: NIL.
+
+RestartGif()
+Restarts the GIF by reloading it from the original file and resetting the frame to the first one.
+
+- Parameters: None.
+- Returns: NIL.
+
+Restart()
+Restarts the GIF animation by calling RestartGif().
+
+- Inline Function: Calls the RestartGif() method.
+- Returns: NIL.
+
+IsRunning()
+Checks whether the GIF is currently being animated.
+
+- Inline Function: Calls the GifIsRunning() static function.
+- Returns: TRUE if the GIF is running, FALSE otherwise.
+
+End()
+Stops the GIF and releases all associated resources, including the timer and the GIF control.
+
+- Parameters: None.
+- Returns: NIL.
+
+Static Functions
+
+GifPlay( oGif )
+Enables the timer to play the GIF if it has more than one frame.
+
+- Parameters:
+  - oGif: The TGif object representing the GIF to be played.
+- Returns: NIL.
+
+GifStop( oGif )
+Disables the timer to stop the GIF animation.
+
+- Parameters:
+  - oGif: The TGif object representing the GIF to be stopped.
+- Returns: NIL.
+
+GifIsRunning( oGif )
+Checks if the GIF is currently running by checking if the timer is enabled.
+
+- Parameters:
+  - oGif: The TGif object representing the GIF.
+- Returns: TRUE if the GIF is running, FALSE otherwise.
+
+Usage Example
+
+// Create a new TGif object and display a GIF on a form
+oGif := TGif():New( "myGif.gif", 10, 10, 100, 100, 100, {255, 255, 255}, "gifControl", "myForm" )
+
+// Start the GIF animation
+oGif:Play()
+
+// Stop the GIF animation
+oGif:Stop()
+
+// Restart the GIF animation
+oGif:Restart()
+
+// Check if the GIF is running
+IF oGif:IsRunning()
+   ? "GIF is running"
+ENDIF
+
+// End the GIF and free resources
+oGif:End()
+
+Notes
+- The class relies on a timer to control the frame updates for the GIF. It is crucial to ensure the parent form (cParentName) and control names are correctly provided.
+- GIF files that do not load correctly will display an empty control and report no frames.

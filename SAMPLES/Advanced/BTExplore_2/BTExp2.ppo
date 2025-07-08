@@ -1,0 +1,288 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 14 "S:\Mega\Dev\32\BCC\Minigui\include\miniprint.ch"
+  MEMVAR _HMG_MINIPRINT
+#line 23 "BTExp2.prg"
+STATIC hImage, hImageDisplay, cImgFilName
+
+
+
+
+PROCEDURE Main()
+
+   __SetCentury( "ON" )
+   Set( 4, iif( __SetCentury(), "dd.mm.yyyy", "dd.mm.yy" ) )
+
+   hImage        := 0
+   hImageDisplay := 0
+   cImgFilName   := ""
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "frmBTExp_IC", "Exploring Bos Taurus for HMG  -- Image Converter", 0, 0, 700, 600, .F., .F., .F., .F., .F., {,}, {,}, {|| BTExp_OpenImgFile()}, {|| BT_BitmapRelease ( hImage )} ,, {|| BTExp_SetImageAdjust()} , ,, , , .F. , .F. , .T. , "BT_Icon" , .F. , ,, , , ,, , , , , , , , , , .F. , {|| BTExp_SetImageAdjust()} , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+      _DefineHotKey ( , 0 , 27 , {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )} )
+
+      _DefineMainMenu( )
+
+         _DefineMenuPopup( "&File" , , , )
+
+            _DefineMenuItem ( "&Open" , {|| BTExp_OpenImgFile()} , "mit_RFile" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+
+            _DefineMenuPopup( "&Save As ..." , "mitSaveAs" , , )
+               _DefineMenuItem ( "&BMP" , {|| SaveAs ( 0 )} , "mit_WFBMP_0" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _DefineMenuItem ( "&JPG" , {|| SaveAs ( 1 )} , "mit_WFJPG_1" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _DefineMenuItem ( "&GIF" , {|| SaveAs ( 2 )} , "mit_WFGIF_2" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _DefineMenuItem ( "&TIF" , {|| SaveAs ( 3 )} , "mit_WFTIF_3" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _DefineMenuItem ( "&PNG" , {|| SaveAs ( 4 )} , "mit_WFPNG_4" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+               _DefineMenuItem ( "&PDF" , {|| SaveAs ( 0xFF )} , "mit_WFPDF_5" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+            _EndMenuPopup()
+
+            _DefineMenuItem ( "&Print" , {|| Pict2Prn()} , "mit_Print" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+
+            _DefineMenuItem ( "&Close" , {|| BTExp_CloseImgFile()} , "mit_Close" , , .F. , .F. ,,,, .F., .F. ,, .F. )
+            _DefineSeparator()
+
+            _DefineMenuItem ( "E&xit" , {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+
+         _EndMenuPopup()
+
+         _DefineMenuPopup( "?" , , , )
+
+
+
+
+            _DefineMenuItem ( "About &BT" , {|| MsgInfo ( BT_InfoName() + Space(3) +  BT_InfoVersion() + CHR(13)+CHR(10) +  BT_InfoAuthor () + CHR(13)+CHR(10) +  "E-MAIL:   srvet@adinet.com.uy" + CHR(13)+CHR(10) +  "BLOG:     http://srvet.blogspot.com", "BT Info", , .F. )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+
+
+            _DefineMenuItem ( "&Author of sample" , {|| MsgInfo ( "AUTHOR:   B. Esgici "+ CHR(13)+CHR(10) +  "E-MAIL:   esgici@gmail.com" + CHR(13)+CHR(10) +  "BLOG:     http://vivaclipper.wordpress.com", "Author Info", , .F. )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+
+         _EndMenuPopup()
+
+         _DefineImage ( "imgTestImage",, 0, 0, NIL,,, {|| NIL},,, .F., .F.,, .F., .F.,,,,,, , )
+
+      _EndMenu()
+
+      _BeginMessageBar( "StatusBar",, .F., "Verdana", 8, .F., .F., .F., .F., )
+          _DefineItemMessage( "STATUSITEM", , 0, 0, "",,, 0,,,, .F.,,, iif( .F. == .T., 2, iif( .F. == .T., 1, 0 ) ) )
+          _DefineItemMessage( "STATUSITEM", , 0, 0, "",,, 0,,,, .F.,,, iif( .F. == .T., 2, iif( .F. == .T., 1, 0 ) ) )
+          _DefineItemMessage( "STATUSITEM", , 0, 0, Dtoc(Date()),, iif( .T. == .F., iif( lower( left( set( 4 ), 4 ) ) == "yyyy" .OR. lower( right( set( 4 ), 4 ) ) == "yyyy", 84, 70 ), 80 ), 0, "", ,, ,, )
+          _SetStatusClock( _HMG_SYSDATA[201] , _HMG_SYSDATA[33] , 90 , , , .F. , , )
+      _EndMessageBar ()
+
+   _EndWindow ()
+
+
+   SetProperty ( "frmBTExp_IC", "mitSaveAs" , "Enabled" , .F. )
+   SetProperty ( "frmBTExp_IC", "mit_Print" , "Enabled" , .F. )
+   SetProperty ( "frmBTExp_IC", "mit_Close" , "Enabled" , .F. )
+
+   DoMethod ( "frmBTExp_IC", "Center" )
+   _ActivateWindow ( {"frmBTExp_IC"}, .F., , )
+
+RETURN
+
+
+
+
+PROCEDURE BTExp_CloseImgFile()
+
+   IF hImage <> 0
+      SetProperty ( "frmBTExp_IC", "mitSaveAs" , "Enabled" , .F. )
+      SetProperty ( "frmBTExp_IC", "mit_Print" , "Enabled" , .F. )
+      SetProperty ( "frmBTExp_IC", "mit_Close" , "Enabled" , .F. )
+      SetProperty ( "frmBTExp_IC", "StatusBar" , "Item" , 1 , "" )
+      SetProperty ( "frmBTExp_IC", "StatusBar" , "Item" , 2 , "" )
+
+      BT_BitmapRelease ( hImage )
+
+      BT_HMGSetImage( "frmBTExp_IC", "imgTestImage", 0 )
+
+      hImage        := 0
+      hImageDisplay := 0
+      cImgFilName   := ""
+   ENDIF
+
+RETURN
+
+
+
+
+PROCEDURE BTExp_SetImageAdjust()
+LOCAL New_Width , New_Height
+
+   IF hImage <> 0
+      New_Width  := min ( BT_ClientAreaWidth  ( "frmBTExp_IC" ) , BT_BitmapWidth (hImage) )
+      New_Height := min ( BT_ClientAreaHeight ( "frmBTExp_IC" ) , BT_BitmapHeight(hImage) )
+
+      hImageDisplay := BT_BitmapCopyAndResize( hImage, New_Width, New_Height, 0 )
+
+      BT_HMGSetImage( "frmBTExp_IC", "imgTestImage", hImageDisplay )
+
+   ENDIF
+
+RETURN
+
+
+
+
+PROCEDURE BTExp_OpenImgFile()
+
+
+
+
+
+
+
+
+   cImgFilName := Getfile( { {"All images","*.png; *.jpg; *.bmp; *.tif; *.gif"}, {"PNG Files", "*.png"}, {"JPG Files", "*.jpg"}, {"BMP Files", "*.bmp"}, {"TIF Files", "*.tif"}, {"GIF Files", "*.gif"} }, "Open Image" )
+
+   IF ! EMPTY( cImgFilName ) .OR. FILE( cImgFilName )
+
+      hImage := BT_BitmapLoadFile( cImgFilName )
+
+      IF hImage <> 0
+
+         BTExp_SetImageAdjust()
+
+         SetProperty ( "frmBTExp_IC", "StatusBar" , "Item" , 1 , cImgFilName )
+         SetProperty ( "frmBTExp_IC", "StatusBar" , "Item" , 2 , HB_NTOS( BT_BitmapWidth(hImage) ) +" x "+ HB_NTOS( BT_BitmapHeight(hImage) ) +" pixels" )
+         SetProperty ( "frmBTExp_IC", "mitSaveAs" , "Enabled" , .T. )
+         SetProperty ( "frmBTExp_IC", "mit_Print" , "Enabled" , .T. )
+         SetProperty ( "frmBTExp_IC", "mit_Close" , "Enabled" , .T. )
+      ELSE
+
+         MsgStop ( "Couldn't open " + cImgFilName + " file as a image !"+CHR(13)+CHR(10)+CHR(13)+CHR(10)+ "Not Image File OR unsupported file format ! ", "OPEN ERROR !", , .F. )
+      ENDIF
+
+   endif
+
+RETURN
+
+
+
+
+PROCEDURE SaveAs ( nNewImageType )
+
+
+
+   LOCAL cNewImageType, cTargetFileNam, lContinue := .T.
+
+   IF ! EMPTY( cImgFilName ) .AND. hImage # 0
+
+      cNewImageType  := SUBSTR( iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Name" ) , GetProperty ( _HMG_SYSDATA[254] , "Name" ) ), 7, 3 )
+      cTargetFileNam := LEFT( cImgFilName, LEN( cImgFilName )- 3 ) + cNewImageType
+
+      IF FILE( cTargetFileNam )
+
+
+         lContinue := MsgYesNo(cTargetFileNam + " file exist;" + CHR(13)+CHR(10) + CHR(13)+CHR(10) + "OVERWRITE ?", "Confirm Overwrite", , , .F.)
+      ENDIF
+
+      IF lContinue
+
+         IF nNewImageType <> 0xFF
+
+            IF BT_BitmapSaveFile( hImage, cTargetFileNam, nNewImageType )
+               MsgInfo( "Image saved as " + cNewImageType + " in:" + CHR(13)+CHR(10) + cTargetFileNam )
+            ELSE
+               MsgInfo ( "Saving as " + cNewImageType + " is UNSUCCESSFUL !", "ERROR !", , .F. )
+            ENDIF
+
+         ELSE
+
+            Pict2PDF( cTargetFileNam )
+
+         ENDIF
+
+      endif
+
+   ENDIF
+
+RETURN
+
+
+
+
+
+PROCEDURE Pict2PDF(  cTargetFileNam )
+
+   LOCAL cTmpFName := TEMPFILE(, "png")
+
+
+
+
+
+   LOCAL nImgOrjWidth, nImgOrjHeight, nImgPDFWidth, nImgPDFHeight, lSelPDF
+
+   nImgOrjWidth  := BT_BitmapWidth( hImage )
+   nImgOrjHeight := BT_BitmapHeight( hImage )
+
+   nImgPDFWidth  := MIN( nImgOrjWidth / 2.54, 170 )
+
+   IF nImgPDFWidth # nImgOrjWidth
+      nImgPDFHeight := nImgOrjHeight / ( nImgOrjWidth / nImgPDFWidth )
+   ELSE
+      nImgPDFHeight :=  nImgOrjHeight
+   ENDIF
+
+   BT_BitmapSaveFile( hImage, cTmpFName, 4 )
+
+   lSelPDF := _HMG_HPDF_INIT ( ( cTargetFileNam ), if ( .F. , , 1 ) , if ( .F. , , 1 ) , if ( .F. , , -999 ) , if ( .F. , , -999 ) )
+
+   IF lSelPDF
+      _hmg_hpdf_startdoc()
+
+         _hmg_hpdf_startpage()
+            _HMG_HPDF_IMAGE ( cTmpFName , 20 , 20 , nImgPDFHeight , nImgPDFWidth , .F. )
+         _hmg_hpdf_endpage()
+
+      _hmg_hpdf_enddoc()
+
+      IF FILE( cTargetFileNam )
+         MsgInfo( "PDF Builded as " + cTargetFileNam )
+      ELSE
+
+
+         MsgStop ( "PDF Building Unsuccessful" + CHR(13)+CHR(10) + CHR(13)+CHR(10) +  "Please check your folder for file names.", "Unexpected ERROR !", , .F. )
+      endif
+
+   ELSE
+      MsgStop ( "SELECT PDFDOC is unsuccessful", "ERROR !", , .F. )
+   endif
+
+   FILEDELETE( cTmpFName )
+
+RETURN
+
+
+
+
+PROCEDURE Pict2Prn()
+
+   LOCAL lSelPrntr
+
+   _hmg_printer_InitUserMessages() ; _HMG_MINIPRINT[2] = _HMG_PRINTER_PrintDialog() ; _HMG_MINIPRINT[19] := _HMG_MINIPRINT[2] [1] ; _HMG_MINIPRINT[1] := _HMG_MINIPRINT[2] [2] ; _HMG_MINIPRINT[14] := _HMG_MINIPRINT[2] [3] ; _HMG_MINIPRINT[15] := _HMG_MINIPRINT[2] [4] ;lSelPrntr := iif ( _HMG_MINIPRINT[19] <> 0 , .T. , .F. ) ; _HMG_MINIPRINT[23] := .T. ; _HMG_MINIPRINT[17] := strzero( Seconds() * 100 , 8 )
+
+   IF lSelPrntr
+      _HMG_MINIPRINT[21] := _hmg_printer_setjobname( ) ; iif ( _HMG_MINIPRINT[23] , ( _HMG_MINIPRINT[18] := 0 , _HMG_MINIPRINT[20] := _HMG_MINIPRINT[19] ) , _HMG_MINIPRINT[26] := _HMG_PRINTER_StartDoc ( _HMG_MINIPRINT[19] , _HMG_MINIPRINT[21] ) ) ; _HMG_MINIPRINT[27] := ""
+         iif ( _HMG_MINIPRINT[23] , ( _HMG_MINIPRINT[19] := _HMG_PRINTER_STARTPAGE_PREVIEW ( _HMG_MINIPRINT[20] , GetTempFolder() + "\" + _HMG_MINIPRINT[17] + "_hmg_print_preview_" + strzero(++_HMG_MINIPRINT[18],4) + ".Emf" ) ) , _HMG_PRINTER_StartPage ( _HMG_MINIPRINT[19] ) )
+
+
+               _HMG_PRINTER_H_IMAGE ( _HMG_MINIPRINT[19] , cImgFilName , 20 , 20 , 170 , 170 , .F. , .F. )
+         iif ( _HMG_MINIPRINT[23] , _HMG_PRINTER_ENDPAGE_PREVIEW (_HMG_MINIPRINT[19]) , _HMG_PRINTER_EndPage ( _HMG_MINIPRINT[19] ) )
+      iif ( _HMG_MINIPRINT[23] , _HMG_PRINTER_SHOWPREVIEW() , _HMG_PRINTER_EndDoc ( _HMG_MINIPRINT[19] ) )
+      MsgInfo("Print Picture Finished")
+   ELSE
+      MsgBox( "Printing Picture is unsuccessful" )
+   endif
+
+RETURN

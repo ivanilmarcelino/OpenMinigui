@@ -1,0 +1,37 @@
+# Keys compile
+-prgflag=-w2 -es1 -dKEY_RUS
+
+# Enable multi/single-thread Harbour VM
+-mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-odemo1-ru
+
+# to list all * .prg
+demo1.prg
+demo1_array.prg
+GetSet_array_dbf.prg
+demo1_util.prg
+demo1_line64.prg
+tsb_Checkerboard.prg
+tsb_EditWindows.prg
+tsb_SprDefect.prg
+tsb_Tovar.prg
+tsb_tovar_outfit.prg
+tsb_memo_cell.prg
+tsb_util.prg
+util_button.prg
+#h_controlmisc2.prg
+#h_tbrowse.prg
+
+# project Resources
+demo1.rc
+
+# paths to the main and extension *.Lib
+-lminigui

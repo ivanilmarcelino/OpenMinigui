@@ -1,0 +1,31 @@
+
+ * Updated: Adaptation FiveWin Class TSBrowse 9.0 in HMG:
+           - added the new variables :cEditBoxSep, :nEditBoxWrap,
+             :lEditBoxROnly and :lEditBox in the TSColumn class.
+           Sample code:
+             :Cargo:nMaxMemoCnt := 0              // Max count field memo
+             :Cargo:nMaxCharCol := 50             // Max len char column
+             :Cargo:nMaxLineMem := 10             // Max line for memo edit
+             :Cargo:lEdit  := oMain:Cargo:lEdit
+           ...
+             ELSEIF o:cFieldTyp $ "CM"
+                IF o:cFieldTyp == "M" .or. o:nFieldLen > :Cargo:nMaxCharCol
+                   o:lEditBox := .T.
+                   IF o:cFieldTyp == "M"
+                      :nMemoHE := :Cargo:nMaxLineMem
+                      :Cargo:nMaxMemoCnt += 1
+                   ELSE
+                      o:nEditBoxWrap := :Cargo:nMaxCharCol
+                   ENDIF
+                   o:nWidth := o:ToWidth( :Cargo:nMaxCharCol )
+                   :Cargo:lToolTipCol := .T.
+                   IF ! :Cargo:lEdit
+                      o:lEditBoxROnly := .T.
+                      o:lEdit := .T.
+                   ENDIF
+                ELSE
+                   o:nWidth += GetFontWidth("Normal", 1)
+                ENDIF
+             ENDIF
+           Contributed by Sergej Kiselev
+           (see demo in folder \samples\Advanced\Tsb_DemoMDI)

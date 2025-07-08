@@ -1,0 +1,155 @@
+
+
+
+
+
+
+
+
+
+
+MEMVAR hBitmap
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 14 "S:\Mega\Dev\32\BCC\Minigui\include\miniprint.ch"
+  MEMVAR _HMG_MINIPRINT
+#line 16 "Demo8.prg"
+FUNCTION MAIN
+
+LOCAL aRows [18] [3]
+aRows  [1]:= {"Simpson",   "Homer",     "555-5555"}
+aRows  [2]:= {"Mulder",    "Fox",       "324-6432"}
+aRows  [3]:= {"Smart",     "Max",       "432-5892"}
+aRows  [4]:= {"Grillo",    "Pepe",      "894-2332"}
+aRows  [5]:= {"Kirk",      "James",     "346-9873"}
+aRows  [6]:= {"Barriga",   "Carlos",    "394-9654"}
+aRows  [7]:= {"Flanders",  "Ned",       "435-3211"}
+aRows  [8]:= {"Smith",     "John",      "123-1234"}
+aRows  [9]:= {"Pedemonti", "Flavio",    "000-0000"}
+aRows [10]:= {"Gomez",     "Juan",      "583-4832"}
+aRows [11]:= {"Fernandez", "Raul",      "321-4332"}
+aRows [12]:= {"Borges",    "Javier",    "326-9430"}
+aRows [13]:= {"Alvarez",   "Alberto",   "543-7898"}
+aRows [14]:= {"Gonzalez",  "Ambo",      "437-8473"}
+aRows [15]:= {"Vinazzi",   "Amigo",     "394-5983"}
+aRows [16]:= {"Pedemonti", "Flavio",    "534-7984"}
+aRows [17]:= {"Samarbide", "Armando",   "854-7873"}
+aRows [18]:= {"Pradon",    "Alejandra", "???-????"}
+
+
+PRIVATE hBitmap := 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win1", "Demo8: Draw in BITMAP", 0, 0, 700, 600, .F., .T., .T., .F., .F., {,}, {,}, {||     Proc_ON_INIT ()}, {||  Proc_ON_RELEASE ()} ,, {||      BT_ClientAreaInvalidateAll ("Win1")} , ,, , {||    Proc_ON_PAINT ()} , .F. , .F. , .T. , , .F. , ,, , , ,, , , , , , , , , , .F. , {||  BT_ClientAreaInvalidateAll ("Win1")} , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+
+
+
+
+            _BeginTab( "Tab_1" , , 100 , 50 , 400 , 300 , , , , , {|| SetProperty ( "Win1", "RadioGroup_1" , "Value" , GetProperty ( "Win1", "Tab_1" , "Value" ) )} , .F. , .F. , .F. , .F. , .F. , .F. , .F., .F., .F., .F., .F., {,,},,, .F. )
+
+               _BeginTabPage ( "Image" , , )
+                 _DefineImage ( "Image_1",, 80, 30, "COWBOOK.bmp", 256, 256,,,, .F., .F.,, .F., .F.,,,,,, , )
+               _EndTabPage()
+
+               _BeginTabPage ( "Grid" , , )
+
+
+
+
+
+
+
+
+
+                 _DefineGrid ( "Grid_1" , , 30 , 40 , 350 , 220 , {"Last Name","First Name","Phone"} , {140,140,140} , aRows , {1,1} , , , , , , , ,, .F.,, {2, 1, 1} , .F. , , .F., .F., .F., .F. , .F. , , , .T. , , , .F. , , , , 0, , , , !.F. , , .F. , .T. , .F. , , , .F. , .F. , , , , , , .F. , , )
+               _EndTabPage()
+
+               _BeginTabPage ( "EditBox" , , )
+                  _DefineEditBox ( "EditBox_1",, 50, 50, 300, 120, "Write your memories here."+CHR(13)+CHR(10)+CHR(13)+CHR(10),,,,,,,, .F., .F.,, .F., .F., .T., .F., .F., .F.,, { 255 , 128 ,  64 },, .F., .F., .F.,, )
+               _EndTabPage()
+
+               _BeginTabPage ( "ActiveX" , , )
+                  _HMG_SYSDATA[316] := "ActiveX_1" ; _HMG_SYSDATA[317] := "" ; _HMG_SYSDATA[331] := 0 ; _HMG_SYSDATA[332] := 0 ; _HMG_SYSDATA[320] := 0 ; _HMG_SYSDATA[321] := 0 ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[361]:= .F. ; _HMG_SYSDATA[360] := 0
+                      _HMG_SYSDATA[331] := 60
+                      _HMG_SYSDATA[332] := 40
+                      _HMG_SYSDATA[320] := 320
+                      _HMG_SYSDATA[321] := 200
+                      _HMG_SYSDATA[360] := "ShockwaveFlash.ShockwaveFlash.9"
+                   _DefineActivex( _HMG_SYSDATA[316] , _HMG_SYSDATA[317] , _HMG_SYSDATA[331] , _HMG_SYSDATA[332] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[360] , _HMG_SYSDATA[334] , _HMG_SYSDATA[361] )
+                   GetProperty ( "Win1", "ActiveX_1" , "XObject" ):Movie := "http://www.youtube.com/v/58CZcCvwND4&hl=en&fs=1"
+               _EndTabPage()
+
+            _EndTab()
+
+            _DefineButton ( "Button_1", , 200, 450, "On/Off", {|| SetProperty ( "Win1", "Tab_1" , "Visible" , !(GetProperty ( "Win1", "Tab_1" , "Visible" )) ), SetProperty ( "Win1", "RadioGroup_1" , "Visible" , GetProperty ( "Win1", "Tab_1" , "Visible" ) )},,,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+
+            _DefineRadioGroup ( "RadioGroup_1",, 500, 230, {"Image","Grid","EditBox","ActiveX"}, 1 , , , , {|| SetProperty ( "Win1", "Tab_1" , "Value" , GetProperty ( "Win1", "RadioGroup_1" , "Value" ) )} , , ,, .F., .F., .F., .F., .F., .F. , , , .F. , .F. , .F. , , .F. , , , , )
+
+    _EndWindow ()
+
+    DoMethod ( "Win1", "Center" )
+    _ActivateWindow ( {"Win1"}, .F., , )
+RETURN NIL
+
+
+PROCEDURE Proc_ON_INIT
+LOCAL hBitmap_aux
+LOCAL hDC, BTstruct
+LOCAL nTypeText
+LOCAL nAlingText
+LOCAL nOrientation
+
+   hBitmap := BT_BitmapCreateNew (800, 600)
+
+   hDC := BT_CreateDC (hBitmap, 5, @BTstruct)
+
+          BT_DrawGradientFillVertical (hDC, 0, 0, 800, 600, {245,245,245}, {   0 ,   0 ,   0 })
+
+          nTypeText    := 1 + 2
+          nAlingText   := 0 + 0
+          nOrientation := 0
+          BT_DrawText (hDC, 20, 50, "My Application - ver. 1.0", "Times New Roman", 24, { 255 , 128 ,  64 }, { 255 , 255 , 255 }, nTypeText, nAlingText, nOrientation)
+
+          nAlingText   := 6 + 0
+          BT_DrawText (hDC, 515, 350, "Copyright your programmer with the help of the Graphics Library Bos Taurus", "Book Antiqua", 12, { 255 , 128 ,  64 }, { 255 , 255 , 255 }, nTypeText, nAlingText, nOrientation)
+
+          nAlingText   := 0 + 0
+          nOrientation := 45
+          BT_DrawText (hDC, 450, 50, "The Power of HMG", "Book Antiqua", 50, {20,20,20}, { 255 , 255 , 255 }, nTypeText, nAlingText, nOrientation)
+
+          BT_DrawRectangle (hDC, 10, 5, 680, 550, { 128 , 128 , 128 }, 3)
+
+   BT_DeleteDC (BTstruct)
+
+   hBitmap_aux := BT_BitmapLoadFile ("BosTaurus_Logo.bmp")
+   BT_BitmapPaste (hBitmap, 20, 500, 132, 132, 0, hBitmap_aux)
+   BT_BitmapRelease (hBitmap_aux)
+
+RETURN
+
+
+PROCEDURE Proc_ON_RELEASE
+   BT_BitmapRelease (hBitmap)
+RETURN
+
+
+PROCEDURE Proc_ON_PAINT
+LOCAL hDC, BTstruct
+  hDC := BT_CreateDC ("Win1", 4, @BTstruct)
+         BT_DrawBitmap (hDC, 0, 0, 800, 600, 3,  hBitmap)
+  BT_DeleteDC (BTstruct)
+RETURN

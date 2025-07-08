@@ -1,0 +1,293 @@
+
+
+
+
+
+ANNOUNCE RDDSYS
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 49 "S:\Mega\Dev\32\BCC\Minigui\include\i_ScrSaver.ch"
+  MEMVAR _HMG_SCRSAVERDATA
+#line 19 "Lines.prg"
+Static hPen
+Static aX, aY
+Static aPX, aPY
+Static aMX, aMY
+Static aIX, aIY
+
+Static lInit := .T.
+
+Memvar cIniFile
+Memvar nWidth, nHeight
+Memvar nType, nPolig, nColor
+
+Procedure Main( cParameters )
+
+
+    PUBLIC cIniFile := GetWindowsFolder()+"\control.ini"
+
+    PRIVATE nWidth := GetDesktopWidth(), nHeight := GetDesktopHeight()
+    PRIVATE nType := 1, nPolig := 5, nColor := ( 255 + ( 255 * 256 ) + ( 0 * 65536 ) )
+
+    _BeginIni( cIniFile )
+
+        nType := _GetIni( "Screen Saver.Lines", "Type", nType, nType )
+        nPolig := _GetIni( "Screen Saver.Lines", "Number", nPolig, nPolig )
+        nColor := _GetIni( "Screen Saver.Lines", "Color", nColor, nColor )
+
+    _EndIni()
+
+
+
+    IF cParameters # NIL .AND. ( LOWER(cParameters) $ "-p/p" .OR.     LOWER(cParameters) = "/a" .OR. LOWER(cParameters) = "-a" .OR.     LOWER(cParameters) = "/c" .OR. LOWER(cParameters) = "-c" )
+
+
+
+
+ _BeginScrSaver( "Form_SSaver", .T.,,,,, )
+    ELSE
+
+
+
+
+
+
+
+ _BeginScrSaver( "Form_SSaver", .F.,, {|| (DeleteObject( hPen ), .T.)}, {|| DoLines(nType)}, .02, {   0 ,   0 ,   0 } )
+    ENDIF
+
+    _HMG_SCRSAVERDATA[2] := .T. ; _HMG_SCRSAVERDATA[3] := "Lines.scr" ; _HMG_SCRSAVERDATA[4] := .F.
+
+    _HMG_SCRSAVERDATA[5] := {|| ConfigureSaver()}
+
+
+
+    _ActivateScrSaver( {"Form_SSaver"}, cParameters )
+
+Return
+
+
+Procedure DoLines( nType )
+
+  local hDC, hOldPen
+  local n, nI
+
+  if lInit
+     hPen := CreatePen( 0, 1, nColor )
+     aX := Array( nPolig ); aY := Array( nPolig )
+     AFill( aX, 0 ) ; AFill( aY, 0 )
+     aPX := AClone( aX ); aPY := AClone( aY )
+     aMX := AClone( aX ); aMY := AClone( aY )
+     aIX := Array( nPolig ); aIY := Array( nPolig )
+     lInit := .F.
+  endif
+
+  for n := 1 to nPolig
+      if Abs( aX[ n ] - aPX[ n ] ) < 2 .OR. Abs( aY[ n ] - aPY[ n ] ) < 2
+         aPX[ n ] := Random( nWidth )
+         aPY[ n ] := Random( nHeight )
+         nI := Min( Abs( aX[ n ] - aPX[ n ] ), Abs( aY[ n ] - aPY[ n ] ) ) / 2
+         aIX[ n ] := ( aPX[ n ] - aX[ n ] ) / nI
+         aIY[ n ] := ( aPY[ n ] - aY[ n ] ) / nI
+      endif
+      aX[ n ] += aIX[ n ]
+      aX[ n ] := MinMax( aX[ n ], nWidth )
+      aY[ n ] += aIY[ n ]
+      aY[ n ] := MinMax( aY[ n ], nHeight )
+  next
+
+  hDC := GetDC( _HMG_SYSDATA[30] )
+  hOldPen := SelectObject( hDC, hPen )
+
+  IF nType = 1
+
+      MoveTo( hDC, aMX[ nPolig ], aMY[ nPolig ] )
+      for n := 1 to nPolig
+          LineTo( hDC, aMX[ n ], aMY[ n ] )
+          aMX[ n ] := aX[ n ]
+          aMY[ n ] := aY[ n ]
+      next
+
+      RedrawWindow( _HMG_SYSDATA[30] )
+
+      MoveTo( hDC, aX[ nPolig ], aY[ nPolig ] )
+      for n := 1 to nPolig
+          LineTo( hDC, aX[ n ], aY[ n ] )
+      next
+
+  ELSE
+
+      MoveTo( hDC, aMX[ nPolig - 1 ], aMY[ nPolig - 1] )
+      for n := 1 to nPolig - 1
+          LineTo( hDC, aMX[ n ], aMY[ n ] )
+      next
+      for n := 1 to nPolig
+          MoveTo( hDC, aMX[ nPolig ], aMY[ nPolig ] )
+          LineTo( hDC, aMX[ n ], aMY[ n ] )
+          aMX[ n ] := aX[ n ]
+          aMY[ n ] := aY[ n ]
+      next
+
+      RedrawWindow( _HMG_SYSDATA[30] )
+
+      MoveTo( hDC, aX[ nPolig - 1 ], aY[ nPolig - 1 ] )
+      for n := 1 to nPolig - 1
+          LineTo( hDC, aX[ n ], aY[ n ] )
+      next
+      for n := 1 to nPolig
+          MoveTo( hDC, aX[ nPolig ], aY[ nPolig ] )
+          LineTo( hDC, aX[ n ], aY[ n ] )
+      next
+
+  ENDIF
+
+  SelectObject( hDC, hOldPen )
+  ReleaseDC( _HMG_SYSDATA[30], hDC )
+
+Return
+
+
+Procedure ConfigureSaver()
+
+
+
+
+    LOCAL aColor, aCustColor := { ( 255 + ( 255 * 256 ) + ( 0 * 65536 ) ), ( 0 + ( 255 * 256 ) + ( 0 * 65536 ) ), ( 0 + ( 255 * 256 ) + ( 255 * 65536 ) ),     ( 0 + ( 128 * 256 ) + ( 255 * 65536 ) ), ( 255 + ( 128 * 256 ) + ( 255 * 65536 ) ), ( 240 + ( 240 * 256 ) + ( 240 * 65536 ) ), ( 192 + ( 192 * 256 ) + ( 192 * 65536 ) ), ( 255 + ( 128 * 256 ) + ( 0 * 65536 ) ),     ( 225 + ( 225 * 256 ) + ( 0 * 65536 ) ), ( 0 + ( 225 * 256 ) + ( 0 * 65536 ) ), ( 0 + ( 225 * 256 ) + ( 225 * 65536 ) ),     ( 0 + ( 128 * 256 ) + ( 225 * 65536 ) ), ( 225 + ( 128 * 256 ) + ( 225 * 65536 ) ), ( 140 + ( 140 * 256 ) + ( 140 * 65536 ) ), ( 216 + ( 216 * 256 ) + ( 216 * 65536 ) ), ( 225 + ( 128 * 256 ) + ( 0 * 65536 ) ) }
+
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Form_Config", "Lines Settings", 0, 0, 222, 152, .T., .T., .T., .F., .F., {,}, {,}, {|| ShowCursor(.T.)}, ,, , ,, , {|| DoMethod( "Form_Config", "Radio_1", "SetFocus" )} , .F. , .F. , .F. , "ICON_1" , .T. , "MS Sans Serif" , 9, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+
+
+        _BeginFrame ( "Frame_1",, 8, 8, 66, 72 , "Type" , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+
+
+
+
+        _DefineRadioGroup ( "Radio_1",, 20, 24, { "&One", "&Two" }, nType , , , , {|| nType := GetProperty ( "Form_Config", "Radio_1" , "Value" )} , 40 , ,, .F., .F., .F., .F., .F., .F. , , , .F. , .F. , .F. , , .F. , , , , )
+
+
+
+
+
+        _DefineLabel ( "Label_1",, 86, 18, "Number of lines:", 80, 23, , , .F., .F. , .F. , .F. , .F. , .F. ,,,,,, .F., .F., .F., .F. , .F. , .F. , .F. , .F. ,,, .F., .F., , , , )
+
+
+
+
+
+
+
+        _DefineSpinner ( "Spinner_1",, 168, 14, 40, nPolig, "MS Sans Serif", 10, 3, 30,, {|| nPolig := GetProperty ( "Form_Config", "Spinner_1" , "Value" )},,, 23,, .F., .F., .F., .F., .F., .F., .F., .F., .F., , , , , )
+
+
+
+
+
+
+
+        _DefineButton ( "Button_Clr", , 85, 50, "Select the &Color of lines", {|| ( aColor := GetColor({ GetRed( nColor ), GetGreen( nColor ), GetBlue( nColor ) }, aCustColor, .F.),  iif(aColor[1]==NIL, , nColor := ( aColor[1] + ( aColor[2] * 256 ) + ( aColor[3] * 65536 ) )) )}, 122, 28,,,,,, .T., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+        _BeginToolBar ( "ToolBar_1",, , , 66, 24,, ,,,, .T., .T., .T., .F., .F., .F., .F., .F., .F., .F., .F. )
+
+
+
+
+        _DefineToolButton ( "Button_1", _HMG_SYSDATA[27], , , "A&bout" , {|| MsgAbout()} , , , "About" , , , , .F. , .T. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+        _DefineToolButton ( "Button_2", _HMG_SYSDATA[27], , , "&Save" , {|| ( SaveConfig(), DoMethod ( "Form_Config", "Release" ), DoMethod ( "Form_SSaver", "Release" ) )} , , , "Save" , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+
+
+
+        _DefineToolButton ( "Button_3", _HMG_SYSDATA[27], , , "C&ancel" , {|| ( DoMethod ( "Form_Config", "Release" ), DoMethod ( "Form_SSaver", "Release" ) )} , , , "Cancel" , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F. , .F., -1, .F. )
+
+        _EndToolBar ()
+
+    _EndWindow ()
+
+    DoMethod ( "Form_Config", "Center" )
+
+    _ActivateWindow ( {"Form_Config", "Form_SSaver"}, .F., , )
+
+Return
+
+
+Static Procedure SaveConfig()
+
+
+  _BeginIni( cIniFile )
+
+    _SetIni( "Screen Saver.Lines", "Type", nType )
+    _SetIni( "Screen Saver.Lines", "Number", nPolig )
+    _SetIni( "Screen Saver.Lines", "Color", nColor )
+
+  _EndIni()
+
+Return
+
+
+Static Function MinMax( nvalue, nRegion )
+
+Return Min( nRegion, Max( nvalue, 0 ) )
+
+
+Static Function MsgAbout()
+
+
+
+
+
+return MsgInfo( "Lines Screen Saver" + " v.1.2" + hb_eol() +     "Copyright " + Chr(169) + " 2003-2008 Grigory Filatov" + hb_eol() + hb_eol() +     "eMail: gfilatov@inbox.ru" + hb_eol() + hb_eol() +     "This Screen Saver is Freeware!" + hb_eol() +     padc("Copying is allowed!", 36), "About", , .F. )
+
+
+#pragma BEGINDUMP
+
+#include <windows.h>
+#include "hbapi.h"
+#include "hbapiitm.h"
+
+HB_FUNC ( MOVETO )
+{
+
+   hb_retl( MoveToEx(
+                    (HDC) hb_parnl(1),   // device context handle
+                    hb_parni(2)      ,   // x-coordinate of line's ending point
+                    hb_parni(3)      ,   // y-coordinate of line's ending point
+                    NULL
+                 ) );
+}
+
+HB_FUNC( LINETO )
+{
+
+   hb_retl( LineTo( (HDC) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) ) ;
+
+}
+
+HB_FUNC ( CREATEPEN )
+{
+
+   hb_retnl( (LONG) CreatePen(
+               hb_parni( 1 ),	// pen style 
+               hb_parni( 2 ),	// pen width  
+               (COLORREF) hb_parnl( 3 ) 	// pen color 
+             ) );
+}
+
+#pragma ENDDUMP

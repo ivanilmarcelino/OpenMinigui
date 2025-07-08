@@ -1,0 +1,313 @@
+                       Documentation for Report class
+
+
+
+    Created by Jon Credit
+    All rights reserved
+
+    I created this class in search of a way to pay more attention to
+    the data that I am reporting on, vs how the data will be outputted on
+    paper.  This report class is the result of many long hours of design,
+    coding and testing to get it to its current state.
+
+    This class is distributed as is with no expressed or implied
+    warranties.  If you find the Report Class to be useful, a donation of
+    $30.00 U.S. Dollars would be appreciated.  Any registered users will
+    automatically be sent any bug fixes or upgrades to the class(es).
+
+    I am also currently working on a front end to the Report Class to allow
+    creation of reports from a txt file using a format similar to a windows
+    ini file.  This utility will support most if not all of the methods and
+    ivars in the class including goTop(), bWhile, bFind, cInitString,
+    cResetString, and will also allow data to be from multiple database files
+    with a bFind block evaled before printing the data.
+    This utility will be sent to the first 30 people who register the report
+    class at no charge, with complete source code.
+
+    I hope you find this class to be as useful as I have.
+
+    If you find any of the concepts dealt with in this report class to
+    be of benifit please contribute $30.00 to the author so that he can
+    justify all the long hours he puts in to his wife!!
+
+    Thanks and Enjoy....
+
+    Jon Credit
+    50 B. Paisley Lane
+    Columbia, S.C. 29210
+    CIS 71371.1675
+
+
+
+   var bInitPrinter  - Code block to be EVALed before report starts to
+                       initialize the printer.
+                       Default: {|| Nothing() }
+
+   var bResetPrinter - Code block to be EVALed after report is completed
+                       to reset the printer.
+                       Default: {|| Nothing() }
+
+   var bTitleFont    - Code block to be EVALed before printing titles
+                       to change the font for your titles.  Note: This
+                       does not work all that well with the grid option.
+                       Default: {|| Nothing() }
+
+   var bNormalFont   - Code block to be EVALed before printing the
+                       report to change the font for your report.
+                       Default: {|| Nothing() }
+
+   var bRepHeader    - Code block to be EVALed before the report starts.  This
+                       would be a header for the report that you would put
+                       only on the first page.
+                       Default: {|| Nothing() }
+
+   var bRepFooter    - Code block to be EVALed at the very end of the
+                       report.  This would be a footer for the report that you
+                       would put only on the last page.
+                       Default: {|| Nothing() }
+
+   VAR bHeader       - Code block to be EVALed at the top of every page
+                       before titles are displayed ( if lShowTitles is
+                       true).
+                       Default: {|| Nothing() }
+
+   VAR bFooter       - Code block to be EVALed at the bottom of every page,
+                       make sure that you set nLastRow to a value that will
+                       allow your footer to print on the page.
+                       Default: {|| Nothing() }
+
+   VAR bPageBreak    - Code block that gets EVALed to determine if a page
+                       break is necessary.
+                       Default: {|| nRow > nLastRow }
+
+   VAR bSkipBlock    - Code block that gets EVALed after all the columns
+                       get printed, to move to the next record in the data
+                       file.  This is equivalent to the skipBlock in
+                       tBrowse().
+                       Default: {|nToSkip|  Skip( nToSkip ) }
+                                Note: nToSkip is passed to Skip and the actual
+                                records skipped is returned.  Skip() skips
+                                nToSkip records in the report cWorkarea verify
+                                the while and for conditions that have been
+                                defined.
+
+   VAR bGoTopBlock   - Code block to tell the report object how to get to
+                       gotop.  This block is EVALed before the reporting
+                       process.
+                       Default: {|| DBGOTOP() }
+
+   VAR bGoBottomBlock- CODE block to tell the report object how to get to
+                       gobottom.  This is equivalent to the tBrowse goBottom()
+                       method.
+                       Default: {|| DBGOBOTTOM() }
+                                Note: This is supplied for future potential
+                                functionality.  Currently this is not used but
+                                the author felt it may prove to be useful at
+                                some time in the future.
+
+   VAR bFor          - Code block that establishes which records will be
+                       included in the report ( the FOR condition the that is
+                       used to 'filter' <ugh> records out (or in) )
+                       Default: {|| .T. }
+
+   VAR bWhile        - Code block that establishes a WHILE condition for the
+                       report to skip through the data.  This is the preferred
+                       method over the FOR condition.
+                       Default: {|| .T. }
+
+   var lGrid         - Logical to output the report in a grid format.
+                       Default: .F.
+
+   var lChild        - Logical to notify the report object that it is in child
+                       mode (displaying child columns).  This should really  be
+                       a protected ivar but the column object will
+                       automatically set this to true when a column object is
+                       put into child mode.
+                       Default: .F.
+
+   var lUndTitles    - Logical variable to underline column titles.
+                       Default: .F.
+
+   var lForm         - Logical variable to output a grid format report as a
+                       form.  A form report will print out a blank grid to the
+                       bottom of the page.
+                       Default: .F.
+
+   var lCenterReport - Logical variable to center the report on the page.
+                       lCenterReport uses nWidth to determine how to center
+                       the report.
+                       Default: .F.
+
+   var lChildOnBreak - Internal variable to track a child process when a page
+                       break occurs. DO NOT assign this variable.
+                       Default: .F.
+
+   var lWrapping     - Logical variable that tells the report object if ANY of
+                       the column objects are word wrapping.
+                       Default: .F.
+
+   VAR lShowTitles   - Logical to tell the report object to display the column
+                       titles.
+                       Default: .T.
+
+   VAR lShowingTitle - Logical variable to track whether the report object is
+                       in the process of showing titles for grid purposes.
+                       Default: .F.
+
+   var nStartCol     - Numeric variable that represents the starting column
+                       position for the report.  This is automatically
+                       configured if lCenterReport is TRUE.
+                       Default: .F.
+
+   var nMaxTitleLen  - Numeric variable to track the maximum number of rows
+                       that will be needed for the column titles to be
+                       displayed.  This is an internal variable, DO NOT assign
+                       this variable.
+                       Default: DOES NOT MATTER
+
+   var nLastRow      - Numeric variable to determine the last row the report
+                       should print on.  This variable is used for the default
+                       bPageBreak block.
+                       Default: 57
+
+   VAR nPageNo       - Numeric variable to keep track of the current page
+                       number.  Since the report object is passed to bHeader
+                       and bFooter the page number can easily be displayed any
+                       where in the report.
+
+   VAR nRow          - Numeric variable to track the current row the report
+                       object is on.  The header block can set this variable
+                       and it can be used by the footer to track the current
+                       row of the object.
+                       Default:  0
+
+   VAR nColSpace     - Numeric variable to determine the number of spaces to
+                       be place between columns.
+                       Default: 1
+
+   VAR nSpace        - Numeric for future use.  This variable will be used to
+                       allow multiple spacing between printing rows.
+                       Default: CURRENTLY NOT USED
+
+   var nWidth        - Numeric to represent the width of the report.  This
+                       variable is useful for centering data on the report.
+                       Default: 80
+
+   var cWorkArea     - Character variable representing the work area which
+                       should be selected while the report object is
+                       executing.  All database skips while the report
+                       object is executing will be processed in this work area
+                       Default: Current work area when report object is
+                       executed.
+
+   var cBoxString    - Character variable that contains the 8 line characters
+                       that will be used for a grid type report.
+                       Default: ÚÄÂ¿³ÙÁÀ
+
+   var cTitleUnd     - Character variable to be used for underlineing titles
+                       if lUndTitles is TRUE.
+                       Default: =
+
+   VAR cInitString   - Character string to be used for an initialization
+                       string for the printer.
+                       Default: EMPTY STRING
+
+   VAR cResetString  - Character string to be used for a reset string to reset
+                       the printer.
+                       Default: EMPTY STRING
+
+   var aToBlank      - Array of column numbers to be NOT displayed while
+                       processing a child process.  This is automatically set
+                       and reset by the column objects when they are set into
+                       child mode.
+                       Default: {}
+
+   var aBlank        - Temporary array used to hold the aToBlank array while
+                       processing column objects.  DO NOT ASSIGN this variable.
+                       Default: {}
+
+   VAR aColInfo      - Array that contains the column objects for the report.
+                       Default: {}
+
+   var oBar          - Object to be used for displaying progress of the report
+                       while it is printing.  oBar:exec() is called after
+                       every skip in the report object.
+
+   method Init       - Initialize the report class.  Variables accepted are:
+                       // method Init( bHeader, bFooter, bPageBreak )
+
+   method Exec       - Execute method for the report object.
+
+   method showTitles - Method to show the column object titles.
+
+   method showCols   - Method to process the column objects.
+
+   method printIt    - Method to print the column information
+
+   method setTitles  - Method to configure the titles of the column objects
+                       (with the delimitered lines)
+
+   method incRow     - Method to increment the row of the report object.
+
+   method gridTop    - Internal method to display the top grid line on a grid
+                       option report.
+
+   method gridBottom - Internal method to display the bottom grid on a grid
+                       option report.
+
+   method gridSide   - Internal method to display the side grid on a grid
+                       option report.  parameter passed to the method is the
+                       current column number.
+
+   method showRepHeader Method to eval the bRepHeader code block (The report
+                       header).
+
+   method showRepFooter Method to eval the bRepFooter code block (The
+                       report Footer).
+
+   METHOD addColumn  - Method to add a report column object to the report
+                       object.
+
+   METHOD delColumn  - Method to delete a report column object from the report
+                       object.  Parameter passed is the column number to
+                       remove from the report.
+
+   METHOD goTop      - Method to go to the top of the report object based on
+                       the gotop block.
+
+   METHOD goBottom   - Method to go to the bottom of the report object.  This
+                       method is currently not utilized but is included for
+                       future use.
+
+   METHOD skip       - Method to process skipping in the report object.
+
+
+PROTECTED:
+
+   VAR nColumns      - Numeric variable containing the number of column objects
+                       in the report.
+
+   VAR bGoNext       - Code block when EVALed will skip to the next record in
+                       the report object based on the active FOR and WHILE
+                       condition.
+
+   VAR bGoPrev       - Code block when EVALed will skip to the previous record
+                       in the report object based on the active FOR and WHILE
+                       condition.
+
+   METHOD showHeader - Method to EVAL the page header code block (bHeader) at
+                       the top of every page.
+
+   METHOD showFooter - Method to EVAL the page footer code block (bFooter) at
+                       the bottom of every page.
+
+   METHOD tbPrev     - Method to go to the next record based on the active FOR
+                       and WHILE condition.
+
+   METHOD tbNext     - Method to go to the previous record based on the active
+                       FOR and WHILE condition.
+
+   METHOD setCols    - Method to set the column widths and starting
+                       positions and also performs any configurations
+                       necessary for the report if it is a grid.
+

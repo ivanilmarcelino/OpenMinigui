@@ -1,0 +1,17 @@
+# Keys compile
+-prgflag=-w2 -es2
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-ozip2mem
+
+# to list all * .prg
+demo.prg
+
+# project Resources
+#demo.rc

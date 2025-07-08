@@ -1,0 +1,4 @@
+// demo.rc 
+ani1 GIF "ani1.gif"
+ani2 GIF "ani2.gif"
+ani3 GIF "ani3.gif"

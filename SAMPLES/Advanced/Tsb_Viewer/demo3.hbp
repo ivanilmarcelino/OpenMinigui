@@ -1,0 +1,23 @@
+# MiniGui for BCC
+# Project - showing TsbViewer database
+# 08.08.23
+
+# Keys compile
+-prgflag=-w2 -es1
+
+# Enable multi/single-thread Harbour VM
+#-mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj for BCC
+-workdir=OBJ
+
+# Name EXE-module
+-odemo3
+
+# to list all * .prg
+demo3.prg
+
+-lTsbViewer

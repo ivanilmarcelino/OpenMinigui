@@ -1,0 +1,21 @@
+# Keys compile
+-prgflag=-w1 -es1 
+
+# Enable multi/single-thread Harbour VM
+#-mt
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-odemo2
+
+# to list all * .prg
+demo2.prg
+demo_misc.prg
+
+# project Resources
+#demo.rc

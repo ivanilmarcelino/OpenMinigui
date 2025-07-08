@@ -1,0 +1,950 @@
+#line 31 "_ControlPos_.prg"
+FUNCTION ControlPosSTART
+
+PUBLIC _ControlPosFirst_ := 0
+
+ _DefineWindow ( "_ControlPos_", "Form's controls", 834, 25, 190, 570, .F., .F., .F., .F., .F., {,}, {,},, ,, , ,, , , .F. , .T. , .F. , , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+   _DefineHotKey ( , 0x0004 , 37 , {|| _ControlPosSet_ON_KEY_("L")} )
+   _DefineHotKey ( , 0x0004 , 39 , {|| _ControlPosSet_ON_KEY_("R")} )
+   _DefineHotKey ( , 0x0004 , 38 , {|| _ControlPosSet_ON_KEY_("U")} )
+   _DefineHotKey ( , 0x0004 , 40 , {|| _ControlPosSet_ON_KEY_("D")} )
+   _DefineHotKey ( , 0x0002 , 37 , {|| _ControlPosSet_ON_KEY_("W-")} )
+   _DefineHotKey ( , 0x0002 , 39 , {|| _ControlPosSet_ON_KEY_("W+")} )
+   _DefineHotKey ( , 0x0002 , 38 , {|| _ControlPosSet_ON_KEY_("H-")} )
+   _DefineHotKey ( , 0x0002 , 40 , {|| _ControlPosSet_ON_KEY_("H+")} )
+   _DefineHotKey ( , 0x0004 , 9 , {|| _ControlPosSet_ON_KEY_("TAB")} )
+   _DefineHotKey ( , 0x0002 , 9 , {|| _ControlPosSet_ON_KEY_("TAB-")} )
+
+    _HMG_SYSDATA[89] := .T. ; _HMG_SYSDATA[316] := "_ControlPosListForm_" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[337] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[356] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[344] := .F. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[365] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[303] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[331] := 24
+        _HMG_SYSDATA[332] := 10
+        _HMG_SYSDATA[320] := 165
+        _HMG_SYSDATA[321] := 56
+        _HMG_SYSDATA[337] := {}
+        _HMG_SYSDATA[334] := 0
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 9
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[335] := {|| _ControlPosListFormChange_()}
+        _HMG_SYSDATA[326] := {|| Nil}
+        _HMG_SYSDATA[327] := {|| Nil}
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+        _HMG_SYSDATA[348] := {|| Nil}
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[328] := ! .T.
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[365] := .F.
+        _HMG_SYSDATA[356] := .F.
+    _HMG_SYSDATA[89] := .F. ; _DefineListBox( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[337], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[335], _HMG_SYSDATA[348], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[344], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[328], _HMG_SYSDATA[365], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[356], _HMG_SYSDATA[304], _HMG_SYSDATA[303], _HMG_SYSDATA[360], _HMG_SYSDATA[403], _HMG_SYSDATA[406] )
+
+    _HMG_SYSDATA[316] := "_ControlPosLabelForm_" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 5
+        _HMG_SYSDATA[332] := 10
+        _HMG_SYSDATA[320] := 70
+        _HMG_SYSDATA[321] := 20
+        _HMG_SYSDATA[334] := "Forms"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 12
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "_ControlPosLabelControl_" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 90
+        _HMG_SYSDATA[332] := 10
+        _HMG_SYSDATA[320] := 71
+        _HMG_SYSDATA[321] := 20
+        _HMG_SYSDATA[334] := "Controls"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 12
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[89] := .T. ; _HMG_SYSDATA[316] := "_ControlPosListControl_" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[337] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[356] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[344] := .F. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[365] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[303] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[331] := 112
+        _HMG_SYSDATA[332] := 10
+        _HMG_SYSDATA[320] := 165
+        _HMG_SYSDATA[321] := 358
+        _HMG_SYSDATA[337] := {}
+        _HMG_SYSDATA[334] := 0
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 9
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[335] := {|| _ControlPosListControlChange_()}
+        _HMG_SYSDATA[326] := {|| Nil}
+        _HMG_SYSDATA[327] := {|| Nil}
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+        _HMG_SYSDATA[348] := {|| Nil}
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[328] := ! .T.
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[365] := .F.
+        _HMG_SYSDATA[356] := .T.
+    _HMG_SYSDATA[89] := .F. ; _DefineListBox( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[337], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[335], _HMG_SYSDATA[348], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[344], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[328], _HMG_SYSDATA[365], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[356], _HMG_SYSDATA[304], _HMG_SYSDATA[303], _HMG_SYSDATA[360], _HMG_SYSDATA[403], _HMG_SYSDATA[406] )
+
+    _HMG_SYSDATA[316] := "_ControlPosButtonGet_" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[278] := .F.
+        _HMG_SYSDATA[331] := 510
+        _HMG_SYSDATA[332] := 10
+        _HMG_SYSDATA[320] := 80
+        _HMG_SYSDATA[321] := 25
+        _HMG_SYSDATA[318] := "Get controls"
+        _HMG_SYSDATA[319] := {|| _ControlPosButtonGetClick_()}
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 9
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[326] := {|| Nil}
+        _HMG_SYSDATA[327] := {|| Nil}
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[325] := .F.
+        _HMG_SYSDATA[328] := ! .T.
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[333] := Nil
+    iif ( _HMG_SYSDATA[333] == Nil .AND. _HMG_SYSDATA[286] == Nil, _DefineButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317] , _HMG_SYSDATA[332] , _HMG_SYSDATA[331] , _HMG_SYSDATA[318] , _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , _HMG_SYSDATA[328] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[360] , _HMG_SYSDATA[278] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) , _DefineImageButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], "", _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[333] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , ! _HMG_SYSDATA[364] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[328] , _HMG_SYSDATA[278] , _HMG_SYSDATA[286] , (_HMG_SYSDATA[351] <> NIL) , _HMG_SYSDATA[351] , _HMG_SYSDATA[284] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) )
+
+    _HMG_SYSDATA[316] := "_ControlPosButtonSave_" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[278] := .F.
+        _HMG_SYSDATA[331] := 510
+        _HMG_SYSDATA[332] := 100
+        _HMG_SYSDATA[320] := 80
+        _HMG_SYSDATA[321] := 25
+        _HMG_SYSDATA[318] := "Save change"
+        _HMG_SYSDATA[319] := {|| _ControlPosButtonSaveClick_()}
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 9
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[326] := {|| Nil}
+        _HMG_SYSDATA[327] := {|| Nil}
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[325] := .F.
+        _HMG_SYSDATA[328] := ! .T.
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[333] := Nil
+    iif ( _HMG_SYSDATA[333] == Nil .AND. _HMG_SYSDATA[286] == Nil, _DefineButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317] , _HMG_SYSDATA[332] , _HMG_SYSDATA[331] , _HMG_SYSDATA[318] , _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , _HMG_SYSDATA[328] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[360] , _HMG_SYSDATA[278] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) , _DefineImageButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], "", _HMG_SYSDATA[319] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[333] , _HMG_SYSDATA[324] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327] , _HMG_SYSDATA[325] , ! _HMG_SYSDATA[364] , _HMG_SYSDATA[329] , _HMG_SYSDATA[330] , _HMG_SYSDATA[328] , _HMG_SYSDATA[278] , _HMG_SYSDATA[286] , (_HMG_SYSDATA[351] <> NIL) , _HMG_SYSDATA[351] , _HMG_SYSDATA[284] , _HMG_SYSDATA[403] , _HMG_SYSDATA[406] ) )
+
+    _HMG_SYSDATA[89] := .T. ; _HMG_SYSDATA[316] := "_ControlPosCombo_" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[337] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[365] := .F. ; _HMG_SYSDATA[378] := .F. ; _HMG_SYSDATA[379] := .F. ; _HMG_SYSDATA[372] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[338] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[301] := Nil ; _HMG_SYSDATA[302] := Nil ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[344] := .F. ; _HMG_SYSDATA[290] := "" ; _HMG_SYSDATA[291] := .F. ; _HMG_SYSDATA[292] := Nil ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[303] := .F. ; _HMG_SYSDATA[381] := .F. ; _HMG_SYSDATA[373] := Nil ; _HMG_SYSDATA[278] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[370] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[371] := Nil
+        _HMG_SYSDATA[331] := 480
+        _HMG_SYSDATA[332] := 10
+        _HMG_SYSDATA[320] := 170
+        _HMG_SYSDATA[321] := 500
+        _HMG_SYSDATA[337] := {"** CHOICE OPERATION **","Align LEFT","Align RIGHT","Align TOP","Align BOTTOM","Center HORIZONTAL","Center VERICAL","Stack HORIZONTAL","Stack VERTICAL","Spread HORIZONTAL","Spread VERTICAL","Make same HEIGHT","Make same WIDTH"}
+        _HMG_SYSDATA[334] := 1
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 9
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[335] := {|| _ControlPosComboChange_()}
+        _HMG_SYSDATA[326] := {|| Nil}
+        _HMG_SYSDATA[327] := {|| Nil}
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[328] := ! .T.
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[365] := .F.
+        _HMG_SYSDATA[338] := {|| Nil}
+        _HMG_SYSDATA[292] := {|| Nil}
+        _HMG_SYSDATA[291] := .F.
+    _HMG_SYSDATA[89] := .F. ; _DefineCombo ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[337], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[335], _HMG_SYSDATA[321], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[338], _HMG_SYSDATA[329], _HMG_SYSDATA[330] , _HMG_SYSDATA[328], _HMG_SYSDATA[365], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[301], _HMG_SYSDATA[302] , _HMG_SYSDATA[291] , _HMG_SYSDATA[292] , _HMG_SYSDATA[344] , _HMG_SYSDATA[290], _HMG_SYSDATA[373], _HMG_SYSDATA[406], _HMG_SYSDATA[370], _HMG_SYSDATA[371], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[378], _HMG_SYSDATA[379], _HMG_SYSDATA[372], _HMG_SYSDATA[278], _HMG_SYSDATA[303], _HMG_SYSDATA[381], _HMG_SYSDATA[403], _HMG_SYSDATA[399] )
+
+_EndWindow ()
+
+ SetProperty ( "_ControlPos_", "col" , GetDesktopWidth() - 190 )
+ DoMethod ( "_ControlPos_", "Show" )
+ _ControlPosButtonGetClick_()
+ _ControlPosListControlChange_()
+
+RETURN Nil
+
+
+
+FUNCTION _ControlPosButtonGetClick_
+LOCAL i
+
+
+Domethod ( "_ControlPos_", "_ControlPosListForm_" , "DeleteAllItems" )
+ FOR i:=1 TO Len(_HMG_SYSDATA[93])
+   IF _HMG_SYSDATA[93][i] <> "_ControlPos_"
+     IF _HMG_SYSDATA[114][i] == 0
+        Domethod ( "_ControlPos_", "_ControlPosListForm_" , "AddItem" , _HMG_SYSDATA[93][i] )
+     ELSE
+        Domethod ( "_ControlPos_", "_ControlPosListForm_" , "AddItem" , _HMG_SYSDATA[93][i]+" !SPLITED!" )
+     ENDIF
+   ENDIF
+NEXT
+SetProperty ( "_ControlPos_", "_ControlPosListForm_" , "Value" , 1 )
+_ControlPosListFormChange_()
+Domethod ( "_ControlPos_", "_ControlPosListControl_" , "SetFocus" )
+
+
+RETURN Nil
+
+
+
+FUNCTION _ControlPosListFormChange_
+LOCAL i , h
+LOCAL p,ak:={}
+STATIC cForm := ""
+
+IF !(cForm == "" .OR. " !SPLITED!" $ cForm)
+  EraseBarGraph(cForm) ; ErasePieGraph(cForm) ; EraseWindow(cForm)
+  _ReleaseHotKey ( cForm , 0x0004 , 37 )
+  _ReleaseHotKey ( cForm , 0x0004 , 39 )
+  _ReleaseHotKey ( cForm , 0x0004 , 38 )
+  _ReleaseHotKey ( cForm , 0x0004 , 40 )
+  _ReleaseHotKey ( cForm , 0x0002 , 37 )
+  _ReleaseHotKey ( cForm , 0x0002 , 39 )
+  _ReleaseHotKey ( cForm , 0x0002 , 38 )
+  _ReleaseHotKey ( cForm , 0x0002 , 40 )
+  _ReleaseHotKey ( cForm , 0x0004 , 9 )
+  _ReleaseHotKey ( cForm , 0x0002 , 9 )
+ENDIF
+
+h := GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "value" )
+cForm := GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "Item" , h )
+Domethod ( "_ControlPos_", "_ControlPosListControl_" , "DeleteAllItems" )
+
+IF " !SPLITED!" $ cForm
+  RETURN nil
+ENDIF
+
+h := GetFormHandle(cForm)
+
+FOR i:=1 TO Len(_HMG_SYSDATA[136])
+   IF _HMG_SYSDATA[138][i] == h
+
+      IF !("@"+Upper(_HMG_SYSDATA[135][i])+"@" $ "@HOTKEY@@MENU@@POPUP@@TOOLBAR@@TOOLBUTTON@@MESSAGEBAR@@ITEMMESSAGE@@TIMER@")
+
+
+
+
+
+
+         p := Str(_HMG_SYSDATA[156][i]+1,4,0)
+         p += Str(_HMG_SYSDATA[157][i]+1,4,0)
+
+         p += Str(Int(_HMG_SYSDATA[151][i]/20),4,0)
+
+         p += Str(_HMG_SYSDATA[152][i],4,0)
+         AAdd(ak,{_HMG_SYSDATA[136][i],p})
+      ENDIF
+   ENDIF
+NEXT
+ASort(ak,,,{|x,y|x[2]<y[2]})
+FOR i:= 1 TO Len(ak)
+  Domethod ( "_ControlPos_", "_ControlPosListControl_" , "AddItem" , ak[i,1] )
+NEXT
+
+
+_DefineHotKey ( cForm , 0x0004 , 37 , {|| _ControlPosSet_ON_KEY_("L")} )
+_DefineHotKey ( cForm , 0x0004 , 39 , {|| _ControlPosSet_ON_KEY_("R")} )
+_DefineHotKey ( cForm , 0x0004 , 38 , {|| _ControlPosSet_ON_KEY_("U")} )
+_DefineHotKey ( cForm , 0x0004 , 40 , {|| _ControlPosSet_ON_KEY_("D")} )
+_DefineHotKey ( cForm , 0x0002 , 37 , {|| _ControlPosSet_ON_KEY_("W-")} )
+_DefineHotKey ( cForm , 0x0002 , 39 , {|| _ControlPosSet_ON_KEY_("W+")} )
+_DefineHotKey ( cForm , 0x0002 , 38 , {|| _ControlPosSet_ON_KEY_("H-")} )
+_DefineHotKey ( cForm , 0x0002 , 40 , {|| _ControlPosSet_ON_KEY_("H+")} )
+_DefineHotKey ( cForm , 0x0004 , 9 , {|| _ControlPosSet_ON_KEY_("TAB")} )
+_DefineHotKey ( cForm , 0x0002 , 9 , {|| _ControlPosSet_ON_KEY_("TAB-")} )
+
+SetProperty ( "_ControlPos_", "_ControlPosListControl_" , "Value" , {1} )
+_ControlPosListControlChange_()
+RETURN NIL
+
+
+
+FUNCTION _ControlPosListControlChange_
+LOCAL cF ,cK ,r,c,w,h
+LOCAL x,cr,cc
+LOCAL i,p, is_f:=.F.
+
+cF := GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "item" , GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "value" ) )
+
+IF " !SPLITED!" $ cF
+  RETURN nil
+ENDIF
+
+EraseBarGraph(cF) ; ErasePieGraph(cF) ; EraseWindow(cF)
+IF Len(GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "value" )) == 1
+  _ControlPosFirst_ := GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "value" )[1]
+ENDIF
+FOR i:= 1 TO  Len(GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "value" ))
+
+   p := GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "value" )[i]
+   cK := GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "item" , p )
+   r :=  GetProperty(cF,cK,"ROW")
+   c :=  GetProperty(cF,cK,"COL")
+   w :=  GetProperty(cF,cK,"WIDTH")
+   h :=  GetProperty(cF,cK,"HEIGHT")
+   x := GetControlIndex (cK,cF)
+   cr := _HMG_SYSDATA[156] [x]
+   cc := _HMG_SYSDATA[157] [x]
+
+   IF  p == _ControlPosFirst_
+      SetProperty(cF,"Title"," r:"+Str(r,4)+"  c:"+Str(c,4)+"  w:"+Str(w,4)+"  h:"+Str(h,4) )
+      is_f := .T.
+   ENDIF
+
+
+   IF cr == -1
+     drawline(cF,r,c,r+h,c,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r,c,r,c+w,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r+h,c,r+h,c+w,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r,c+w,r+h,c+w,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+   ELSE
+     drawline(cF,r+cr,c+cc,r+h+cr,c+cc,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r+cr,c+cc,r+cr,c+w+cc,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r+h+cr,c+cc,r+h+cr,c+w+cc,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r+cr,c+w+cc,r+h+cr,c+w+cc,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+   ENDIF
+
+NEXT
+
+IF is_f .AND. Len(GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "value" )) > 1
+   SetProperty ( "_ControlPos_", "_ControlPosCombo_" , "enabled" , .T. )
+ELSE
+   SetProperty ( "_ControlPos_", "_ControlPosCombo_" , "enabled" , .F. )
+ENDIF
+
+RETURN( NIL )
+
+
+
+FUNCTION _ControlPosSet_ON_KEY_(cTyp)
+LOCAL cF ,cK ,r,c,w,h,fh,fw
+LOCAL x,cr,cc
+LOCAL i,p
+cF := GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "item" , GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "value" ) )
+IF " !SPLITED!" $ cF
+  RETURN nil
+ENDIF
+
+EraseBarGraph(cF) ; ErasePieGraph(cF) ; EraseWindow(cF)
+
+FOR i:= 1 TO Len(GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "value" ))
+   p := GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "value" )[i]
+   cK := GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "item" , p )
+   x := GetControlIndex (cK,cF)
+   r :=  GetProperty(cF,cK,"ROW")
+   c :=  GetProperty(cF,cK,"COL")
+   w :=  GetProperty(cF,cK,"WIDTH")
+   h :=  GetProperty(cF,cK,"HEIGHT")
+   fw :=  GetProperty(cF,"WIDTH")
+   fh :=  GetProperty(cF,"HEIGHT")
+   cr := _HMG_SYSDATA[156] [x]
+   cc := _HMG_SYSDATA[157] [x]
+
+   DO CASE
+     CASE cTyp == "U"
+        IF r>0
+           r--
+        ENDIF
+     CASE cTyp == "D"
+        IF r<fh-h
+           r++
+        ENDIF
+     CASE cTyp == "L"
+        IF c>0
+           c--
+        ENDIF
+     CASE cTyp == "R"
+        IF c<fw-w
+           c++
+        ENDIF
+     CASE cTyp == "H-"
+        IF h>0
+           h--
+        ENDIF
+     CASE cTyp == "H+"
+        IF h<fh-r
+           h++
+        ENDIF
+     CASE cTyp == "W-"
+        IF w>0
+           w--
+        ENDIF
+     CASE cTyp == "W+"
+        IF w<fw-c
+           w++
+        ENDIF
+
+     CASE cTyp == "TAB"
+        r := _ControlPosFirst_
+        IF r < GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "ItemCount" )
+           r++
+        ELSE
+           r:=1
+        ENDIF
+        SetProperty ( "_ControlPos_", "_ControlPosListControl_" , "Value" , {r} )
+        _ControlPosListControlchange_()
+        RETURN Nil
+     CASE cTyp == "TAB-"
+        r := _ControlPosFirst_
+        IF r > 1
+           r--
+        ELSE
+           r:= GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "ItemCount" )
+        ENDIF
+        SetProperty ( "_ControlPos_", "_ControlPosListControl_" , "Value" , {r} )
+        _ControlPosListControlchange_()
+        RETURN Nil
+
+   ENDCASE
+
+   IF p == _ControlPosFirst_
+      SetProperty(cF,"Title"," r:"+Str(r,4)+"  c:"+Str(c,4)+"  w:"+Str(w,4)+"  h:"+Str(h,4) )
+   ENDIF
+   _SetControlSizePos(cK, cF, r, c, w, h)
+
+   IF cr == -1
+     drawline(cF,r,c,r+h,c,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r,c,r,c+w,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r+h,c,r+h,c+w,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r,c+w,r+h,c+w,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+   ELSE
+     drawline(cF,r+cr,c+cc,r+h+cr,c+cc,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r+cr,c+cc,r+cr,c+w+cc,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r+h+cr,c+cc,r+h+cr,c+w+cc,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+     drawline(cF,r+cr,c+w+cc,r+h+cr,c+w+cc,IIf(_ControlPosFirst_== p,{0,0,255},{255,0,255}),1)
+   ENDIF
+
+NEXT
+
+
+RETURN( NIL )
+
+
+
+FUNCTION _ControlPosComboChange_
+LOCAL typ := GetProperty ( "_ControlPos_", "_ControlPosCombo_" , "value" )
+LOCAL cF,cK
+LOCAL fr,fc,fw,fh,ak:={},r,c,w,h
+LOCAL i,av
+IF typ == 1
+   RETURN NIL
+ENDIF
+
+cF := GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "item" , GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "value" ) )
+IF " !SPLITED!" $ cF
+  RETURN nil
+ENDIF
+
+av:=GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "value" )
+FOR i:=1 TO Len(av)
+   cK := GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "item" , av[i] )
+   IF av[i] == _ControlPosFirst_
+      fr :=  GetProperty(cF,cK,"ROW")
+      fc :=  GetProperty(cF,cK,"COL")
+      fw :=  GetProperty(cF,cK,"WIDTH")
+      fh :=  GetProperty(cF,cK,"HEIGHT")
+   ELSE
+      r :=  GetProperty(cF,cK,"ROW")
+      c :=  GetProperty(cF,cK,"COL")
+      w :=  GetProperty(cF,cK,"WIDTH")
+      h :=  GetProperty(cF,cK,"HEIGHT")
+      AAdd(ak,{cK,r,c,w,h})
+    ENDIF
+NEXT
+
+IF fr == NIL
+  SetProperty ( "_ControlPos_", "_ControlPosCombo_" , "value" , 1 )
+  RETURN nil
+ENDIF
+
+
+DO CASE
+  CASE typ == 2
+     FOR i:= 1 TO Len(ak)
+        ak[i,3] := fc
+     NEXT
+
+  CASE typ == 3
+     FOR i:= 1 TO Len(ak)
+        ak[i,3] := fc + fw - ak[i,4]
+     NEXT
+
+  CASE typ == 4
+     FOR i:= 1 TO Len(ak)
+        ak[i,2] := fr
+     NEXT
+
+  CASE typ == 5
+     FOR i:= 1 TO Len(ak)
+        ak[i,2] := fr + fh - ak[i,5]
+     NEXT
+
+  CASE typ == 6
+     FOR i:= 1 TO Len(ak)
+        ak[i,2] := Round(fr + (fh - ak[i,5])/2 , 0)
+     NEXT
+
+  CASE typ == 7
+     FOR i:= 1 TO Len(ak)
+        ak[i,3] := Round(fc + (fw - ak[i,4])/2 , 0)
+     NEXT
+
+  CASE typ == 8
+     ASort(ak,,,{|x,y|x[3] < y[3]})
+     fc := fc + fw
+     FOR i:= 1 TO Len(ak)
+        ak[i,3] := fc
+        fc := fc + ak[i,4]
+     NEXT
+
+  CASE typ == 9
+     ASort(ak,,,{|x,y|x[2] < y[2]})
+     fr := fr + fh
+     FOR i:= 1 TO Len(ak)
+        ak[i,2] := fr
+        fr := fr + ak[i,5]
+     NEXT
+
+  CASE typ == 10
+     ASort(ak,,,{|x,y|x[3] < y[3]})
+     fh := ak[Len(ak),3] - fc - fw
+     FOR i:= 1 TO Len(ak)-1
+        fh := fh - ak[i,4]
+     NEXT
+     fh := fh / Len(ak)
+     fr := fc + fw + fh
+     FOR i:= 1 TO Len(ak)-1
+        ak[i,3] := Round(fr , 0)
+        fr := fr + ak[i,4] + fh
+     NEXT
+
+  CASE typ == 11
+     ASort(ak,,,{|x,y|x[2] < y[2]})
+     fw := ak[Len(ak),2] - fr - fh
+     FOR i:= 1 TO Len(ak)-1
+        fw := fw - ak[i,5]
+     NEXT
+     fw := fw / Len(ak)
+     fc := fr + fh + fw
+     FOR i:= 1 TO Len(ak)-1
+        ak[i,2] := Round(fc , 0)
+        fc := fc + ak[i,5] + fw
+     NEXT
+
+  CASE typ == 12
+     FOR i:= 1 TO Len(ak)
+        ak[i,5] := fh
+     NEXT
+
+  CASE typ == 13
+     FOR i:= 1 TO Len(ak)
+        ak[i,4] := fw
+     NEXT
+
+end
+
+FOR i:= 1 TO Len(ak)
+  _SetControlSizePos(ak[i,1], cF, ak[i,2],ak[i,3],ak[i,4],ak[i,5])
+NEXT
+
+SetProperty ( "_ControlPos_", "_ControlPosCombo_" , "value" , 1 )
+
+_ControlPosListControlChange_()
+
+RETURN NIL
+
+
+
+
+FUNCTION _ControlPosButtonSaveClick_
+LOCAL cF
+cF := GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "item" , GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "value" ) )
+
+IF " !SPLITED!" $ cF
+  RETURN nil
+ENDIF
+
+
+
+
+  _ControlPosSaveToMyFile_()
+
+RETURN NIL
+
+
+
+FUNCTION _ControlPosSaveToMyFile_
+LOCAL i,j,ss,cr:=Chr(13)+Chr(10),crs :=" ;"+cr
+LOCAL nF,cFile
+LOCAL cF,cK,x
+LOCAL rr,cc,ww,hh,wws,ct
+
+
+
+
+
+
+
+
+
+
+
+
+LOCAL at := {{"EDIT","EDITBOX"}, {"TEXT","TEXTBOX"}, {"NUMTEXT","TEXTBOX"}, {"MASKEDTEXT","TEXTBOX"}, {"CHARMASKTEXT","TEXTBOX"}, {"LIST","LISTBOX"}, {"MULTILIST","LISTBOX"}, {"COMBO","COMBOBOX"}, {"DATEPICK","DATEPICKER"}, {"RICHEDIT","RICHEDITBOX"}, {"MULTIGRID","GRID"}, {"MONTHCAL","MONTHCALENDAR"} }
+
+
+cF := GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "item" , GetProperty ( "_ControlPos_", "_ControlPosListForm_" , "value" ) )
+
+cFile := C_PUTFILE2("ControlPos File (*.pos)"+Chr(0)+"*.pos"+Chr(0),"Save control positon to file",GetCurrentFolder(),nil,cF+".pos" )
+IF Empty(cFile)
+   RETURN nil
+ENDIF
+IF File(cFile)
+  IF !MsgYesNo("   File exist:"+cr+cFile+cr+cr+"    Overwrite ?", "File exist", , , .F.)
+     RETURN nil
+  ENDIF
+ENDIF
+ss:="// File generated by tools CONTROLPOS   (c)AL" +cr
+ss += "// Position form controls: " + cr + cr
+
+
+
+ss += "// DEFINE WINDOW " + cF + " AT " + ALLTRIM(Str(GetProperty(cF,"ROW")))+" , "+ ALLTRIM(Str(GetProperty(cF,"COL")))+ " WIDTH "+ALLTRIM(Str(GetProperty(cF,"WIDTH")))+ " HEIGHT "+ALLTRIM(Str(GetProperty(cF,"HEIGHT"))) +cr + cr
+FOR i:= 1 TO GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "ItemCount" )
+  cK := GetProperty ( "_ControlPos_", "_ControlPosListControl_" , "item" , i )
+  x := GetControlIndex (cK,cF)
+  rr := AllTrim(Str(GetProperty(cF,cK,"ROW")))
+  cc := AllTrim(Str(GetProperty(cF,cK,"COL")))
+  ww := AllTrim(Str(GetProperty(cF,cK,"WIDTH")))
+  hh := AllTrim(Str(GetProperty(cF,cK,"HEIGHT")))
+  ct := _HMG_SYSDATA[135][x]
+  j:=ASCAN(at,{|aa|aa[1]==ct})
+  IF j>0
+    ct := at[j,2]
+  ENDIF
+  IF ct == "CHECKBOX"
+     IF ValType( _HMG_SYSDATA[141][x] ) == "A"
+        ct := "CHECKBUTTON"
+     ENDIF
+  ENDIF
+
+  IF ct == "TAB"
+     ss += "   DEFINE " + ct + " " + cK + crs
+     ss += "      AT " + rr + ", " + cc + crs
+     ss += "      WIDTH " + ww + crs
+     ss += "      HEIGHT " + hh + crs
+  ELSE
+     ss += "   DEFINE " + ct + " " + cK + cr
+     ss += "      ROW " + rr + cr
+     ss += "      COL " + cc + cr
+     ss += "      WIDTH " + ww + cr
+     ss += "      HEIGHT " + hh + cr
+     IF "@"+ct+"@" $ "@BROWSE@GRID@"
+        wws := "{"
+        FOR j:= 1 TO   Len(_HMG_SYSDATA[141][x])
+            wws += AllTrim(Str(ListView_GetColumnWidth ( _HMG_SYSDATA[137] [x] , j-1 )))
+            IF j < Len(_HMG_SYSDATA[141][x])
+               wws += ","
+            ENDIF
+        NEXT
+        wws += "}"
+        ss += "      WIDTHS "+ wws +cr
+     ENDIF
+
+     ss += "*   @ " + rr + ", " + cc + " " + ct + " " + cK + crs
+     ss += "*      WIDTH " + ww + crs
+     ss += "*      HEIGHT " + hh + crs
+     IF "@"+ct+"@" $ "@BROWSE@GRID@"
+        ss += "*      WIDTHS " + wws + crs
+     ENDIF
+  ENDIF
+
+  ss += "//      " + cF+ "." + cK + ".row := " + rr + cr
+  ss += "//      " + cF+ "." + cK + ".col := " + cc + cr
+  ss += "//      " + cF+ "." + cK + ".width := " + ww + cr
+  ss += "//      " + cF+ "." + cK + ".height := " + hh + cr
+  IF "@"+ct+"@" $ "@BROWSE@GRID@"
+     ss += "//      " + cF+ "." + cK + ".widths := " + wws + cr
+  ENDIF
+  ss += cr
+NEXT
+ss += "//end file" + cr
+
+nF := FCreate(cFile,0)
+IF nF == -1
+   MsgStop ( "Can't create file"+cr+cFile, "Error", , .F. )
+   RETURN nil
+ENDIF
+FWrite(nF,ss)
+FClose(nf)
+
+RETURN( NIL )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma BEGINDUMP
+
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_USED
+#define _WIN32_WINNT   0x0400
+#include <shlobj.h>
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+#include "tchar.h"
+
+// Like C_PUTFILE(aType,cTitle,cDefDir,lChaneDir,!NEW!cDefaultFileName)
+HB_FUNC ( C_PUTFILE2 )
+{
+
+ OPENFILENAME ofn;
+ char buffer[512];
+
+ int flags = OFN_FILEMUSTEXIST | OFN_EXPLORER ;
+
+ if ( hb_parl(4) )
+ {
+  flags = flags | OFN_NOCHANGEDIR ;
+ }
+
+ strcpy( buffer, hb_parc(5) );   //here is change "cDefaultFileName"
+
+ memset( (void*) &ofn, 0, sizeof( OPENFILENAME ) );
+ ofn.lStructSize = sizeof(ofn);
+ ofn.hwndOwner = GetActiveWindow() ;
+ ofn.lpstrFilter = hb_parc(1) ;
+ ofn.lpstrFile = buffer;
+ ofn.nMaxFile = 512;
+ ofn.lpstrInitialDir = hb_parc(3);
+ ofn.lpstrTitle = hb_parc(2) ;
+ ofn.Flags = flags;
+
+ if( GetSaveFileName( &ofn ) )
+ {
+  hb_retc( ofn.lpstrFile );
+ }
+ else
+ {
+  hb_retc( "" );
+ }
+
+}
+
+#pragma ENDDUMP

@@ -1,0 +1,175 @@
+TReg32 Class Manual
+
+The TReg32 class provides an interface for working with the Windows Registry. It supports reading, writing, creating, and deleting registry keys and values for 32-bit and 64-bit Windows systems.
+
+Class Properties (Variables)
+
+1. cRegKey  
+   - Type: String  
+   - Description: The registry key path used for the current operation.
+   - Default: ""
+
+2. nHandle  
+   - Type: Numeric  
+   - Description: A handle to the opened or created registry key.
+   - Default: 0
+
+3. nError  
+   - Type: Numeric  
+   - Description: Stores the error code returned from the most recent registry operation.
+   - Default: ERROR_SUCCESS (0)
+
+4. lError  
+   - Type: Logical (Boolean)  
+   - Description: Indicates if an error occurred during the last operation. .T. for error, .F. for success.
+   - Default: .F. (no error)
+
+Class Methods
+
+1. New( nKey, cRegKey, lShowError )  
+   Opens an existing registry key for reading or writing.  
+   - Parameters:
+     - nKey: The root key (e.g., HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE).
+     - cRegKey: The subkey path under the root key (e.g., "Software\MyApp").
+     - lShowError: Logical flag indicating whether to show error messages (.T. to show, .F. to suppress).
+   - Returns: Self (the current object instance).
+   - Example:  
+
+     oReg := TReg32():New( HKEY_CURRENT_USER, "Software\MyApp", .T. )
+     
+2. Create( nKey, cRegKey, lShowError )  
+   Creates a new registry key.
+   - Parameters: Same as New.
+   - Returns: Self.
+   - Example:  
+
+     oReg := TReg32():Create( HKEY_CURRENT_USER, "Software\NewApp", .T. )
+    
+3. Get( cRegVar, uVar )  
+   Retrieves a value from the registry.
+   - Parameters:
+     - cRegVar: The name of the value to be retrieved.
+     - uVar: A variable to hold the retrieved data. Its type will be based on the registry value type.
+   - Returns: The value from the registry.
+   - Example:  
+
+     nValue := oReg:Get( "MyValue", 0 )
+     
+4. Set( cRegVar, uVar )  
+   Writes a value to the registry.
+   - Parameters:
+     - cRegVar: The name of the registry value to set.
+     - uVar: The value to be written, which can be a string (C), numeric (N), date (D), or logical (L).
+   - Returns: NIL.
+   - Example:  
+
+     oReg:Set( "MyValue", 123 )
+     
+5. Delete( cRegVar )  
+   Deletes a value from the registry.
+   - Parameters:
+     - cRegVar: The name of the registry value to delete.
+   - Returns: NIL.
+   - Example:  
+
+     oReg:Delete( "MyValue" )
+     
+6. Close()  
+   Closes the open registry key if no error has occurred.
+   - Returns: NIL.
+   - Example:  
+
+     oReg:Close()
+     
+---
+
+Supporting Functions
+
+1. IsRegistryKey( nKey, cRegKey )  
+   Checks whether a registry key exists.
+   - Parameters:
+     - nKey: The root key (e.g., HKEY_CURRENT_USER).
+     - cRegKey: The subkey path.
+   - Returns: Logical .T. if the key exists, .F. otherwise.
+   - Example:  
+
+     lExists := IsRegistryKey( HKEY_CURRENT_USER, "Software\MyApp" )
+     
+2. CreateRegistryKey( nKey, cRegKey )  
+   Creates a new registry key.
+   - Parameters: Same as IsRegistryKey.
+   - Returns: Logical .T. if successful, .F. otherwise.
+   - Example:  
+
+     lCreated := CreateRegistryKey( HKEY_CURRENT_USER, "Software\NewApp" )
+     
+3. GetRegistryValue( nKey, cRegKey, cRegVar, cType )  
+   Reads a value from the registry.
+   - Parameters:
+     - nKey: The root key.
+     - cRegKey: The subkey path.
+     - cRegVar: The name of the value to retrieve.
+     - cType: The expected value type ('C', 'N', 'D', 'L').
+   - Returns: The value from the registry or NIL if not found.
+   - Example:  
+
+     uVal := GetRegistryValue( HKEY_CURRENT_USER, "Software\MyApp", "MyValue", "N" )
+     
+4. SetRegistryValue( nKey, cRegKey, cRegVar, uVal )  
+   Sets a value in the registry.
+   - Parameters:
+     - nKey: The root key.
+     - cRegKey: The subkey path.
+     - cRegVar: The name of the registry value.
+     - uVal: The value to write.
+   - Returns: Logical .T. if successful, .F. otherwise.
+   - Example:  
+
+     lSuccess := SetRegistryValue( HKEY_CURRENT_USER, "Software\MyApp", "MyValue", 123 )
+     
+5. DeleteRegistryVar( nKey, cRegKey, cRegVar )  
+   Deletes a value from the registry.
+   - Parameters:
+     - nKey: The root key.
+     - cRegKey: The subkey path.
+     - cRegVar: The name of the value to delete.
+   - Returns: Logical .T. if successful, .F. otherwise.
+   - Example:  
+
+     lDeleted := DeleteRegistryVar( HKEY_CURRENT_USER, "Software\MyApp", "MyValue" )
+     
+6. DeleteRegistryKey( nKey, cRegKey )  
+   Deletes an entire registry key.
+   - Parameters:
+     - nKey: The root key.
+     - cRegKey: The subkey path.
+   - Returns: Logical .T. if successful, .F. otherwise.
+   - Example:  
+
+     lDeleted := DeleteRegistryKey( HKEY_CURRENT_USER, "Software\MyApp" )
+     
+---
+
+How to Use TReg32
+
+1. Open or Create a Registry Key:
+
+   oReg := TReg32():New( HKEY_CURRENT_USER, "Software\MyApp", .T. )
+   
+2. Read a Value:
+
+   nValue := oReg:Get( "MyValue", 0 )
+   
+3. Write a Value:
+
+   oReg:Set( "MyValue", 123 )
+   
+4. Delete a Value:
+
+   oReg:Delete( "MyValue" )
+   
+5. Close the Registry Key:
+
+   oReg:Close()
+   
+This manual provides comprehensive information for working with the TReg32 class, allowing you to perform various registry operations in a Harbour application.

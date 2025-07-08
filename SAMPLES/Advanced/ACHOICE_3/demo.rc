@@ -1,0 +1,21 @@
+//
+// Resource        Resource        Resource
+// Name             Type            FileName
+//
+1MG                 ICON           res\1MG.ico
+2MG_64              ICON           res\2MG64.ico
+i_Exit32            ICON           res\i_Exit32.ico
+i_About32           ICON           res\i_About32.ico
+iHP1                ICON           res\iHP128x1.ico
+iHP2                ICON           res\iHP128x1.ico
+iHP32x1             ICON           res\iHP32x1.ico
+iHP32x2             ICON           res\iHP32x2.ico
+
+// в МиниГуи показ AVI поддерживается кодеком Microsoft RLE Video, современные кодеки не поддерживаются 
+// in MiniGui, AVI display is supported by the Microsoft RLE Video codec, modern codecs are not supported
+a_cogs              AVI            resAvi\cogs.avi
+a_createdoc         AVI            resAvi\createdoc.avi
+a_findfolder        AVI            resAvi\findfolder.avi
+a_printer2          AVI            resAvi\printer2.avi
+a_exit              AVI            resAvi\exit.avi
+a_scanfiles         AVI            resAvi\scanfiles.avi

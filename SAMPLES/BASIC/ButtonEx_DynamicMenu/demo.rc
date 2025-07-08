@@ -1,0 +1,28 @@
+//
+// Resource    Resource         Resource
+// Name	       Type             FileName
+//
+1MAIN_ICO        ICON           res\1MG.ico
+// ------------------ demo.prg --------------------------
+iSantax1         ICON           res\Santa.ico
+iSantax2         ICON           res\Santa2.ico
+iFolder1         ICON           res\Folder.ico
+iFolder2         ICON           res\Folder2.ico
+iHPx1            ICON           res\HP.ico
+iHPx2            ICON           res\HP2.ico
+iHMGx1           ICON           res\HMG.ico
+iHMGx2           ICON           res\HMG2.ico
+iExitx1          ICON           res\Exit.ico
+iExitx2          ICON           res\Exit2.ico
+// ------------------ demo2.prg -------------------------
+Santa1           PNG            res\santa.png
+Santa2           PNG            res\santaX2.png
+HP1              PNG            res\HP1300.png
+HP2              PNG            res\HP1300X2.png
+HMG1             PNG            res\HMG.png
+HMG2             PNG            res\HMG2.png
+Exit1            PNG            res\Exit.png
+Exit2            PNG            res\ExitX2.png
+Folder1          PNG            res\Folder.png
+Folder2          PNG            res\FolderX2.png
+

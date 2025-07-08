@@ -1,0 +1,837 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 14 "S:\Mega\Dev\32\BCC\Minigui\include\miniprint.ch"
+  MEMVAR _HMG_MINIPRINT
+#line 17 "demo.prg"
+PROCEDURE Main( Line )
+   LOCAL oBrw, aDatos
+   LOCAL hFont, nFont
+   LOCAL cFontName1 := "Comic Sans MS"
+   LOCAL cFontName2 := _HMG_SYSDATA[212]
+   LOCAL cFontName3 := _HMG_SYSDATA[212]
+   LOCAL cFontName4 := _HMG_SYSDATA[212]
+   LOCAL cFontName5 := _HMG_SYSDATA[212]
+   LOCAL cFontName6 := "Times New Roman"
+   LOCAL cFontName7 := "Arial Black"
+   LOCAL cFontName8 := "Courier New"
+   LOCAL nFontSize  := 16
+   LOCAL nWwnd, nLine, nCol, nHcell, nHSpr, nHhead, nHfoot
+
+   If ! empty(Line) .AND. val(Line) > 4 .AND. val(Line) < 17
+      nLine := val(Line)
+   EndIf
+
+   Set( 3, 4 )
+   Set( 4, iif( __SetCentury(), "dd.mm.yyyy", "dd.mm.yy" ) )
+   Set( 5, 2000 )
+   __SetCentury( "ON" )
+   Set( 1, "ON" )
+   _HMG_SYSDATA[214] := ( Upper("OFF") == "ON" ) ; iif ( _HMG_SYSDATA[214] == .F. .AND. _HMG_SYSDATA[215] == .T. , ( iif ( .T. , MsgStop( _HMG_SYSDATA[262][4] ) , ) , ExitProcess() ) , )
+
+   _HMG_SYSDATA[212] := cFontName1 ; _HMG_SYSDATA[213] := nFontSize ; oDlu2Pixel( , , nFontSize )
+
+   _DefineFont ( "Font_1", cFontName1, nFontSize, .T., .F., .F., .F.,, .F., )
+   _DefineFont ( "Font_2", cFontName2, nFontSize, .T., .F., .F., .F.,, .F., )
+   _DefineFont ( "Font_3", cFontName3, nFontSize, .F., .F., .F., .F.,, .F., )
+   _DefineFont ( "Font_4", cFontName4, nFontSize, .F., .F., .F., .F.,, .F., )
+   _DefineFont ( "Font_5", cFontName5, nFontSize, .F., .F., .F., .F.,, .F., )
+   _DefineFont ( "Font_6", cFontName6, nFontSize, .F., .F., .F., .F.,, .F., )
+   _DefineFont ( "Font_7", cFontName7, nFontSize, .F., .F., .F., .F.,, .F., )
+   _DefineFont ( "Font_8", cFontName8, nFontSize, .F., .F., .F., .F.,, .F., )
+   _DefineFont ( "Font_9", cFontName1, 9, .F., .F., .F., .F.,, .F., )
+
+   TsbFont()
+
+   aDatos := CreateDatos(nLine)
+
+   AAdd( aDatos, GetFontHandle( "Font_7" ) )
+
+
+   hFont := InitFont( cFontName1, nFontSize )
+   nFont := GetTextHeight( 0, "B", hFont ) + 1
+   DeleteObject( hFont )
+
+
+   nHcell := nFont + 6
+
+   nHhead := nHfoot := nHSpr := nHcell
+
+
+
+   IF .F.
+      nHcell := nFont * 3
+      nHhead := nFont * 2
+      nHfoot := nFont * 2
+      nHSpr  := nFont * 2
+   ENDIF
+
+   IF ! .T.
+      nHSpr := 1
+   ENDIF
+
+
+
+   nWwnd  := 300
+
+
+
+
+
+
+
+ _DefineWindow ( "test", "SetArray Demo - Export XLS/XLM !", 0, 0, nWwnd, 720, .F., .T., .T., .F., .F., {,}, {,}, {|| SetProperty ( _HMG_SYSDATA[254] , "Topmost" , .F. )}, ,, , ,, { 93,114,148} , , .F. , .T. , .T. , "1MAIN_ICO" , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+
+
+
+
+
+
+
+      _DefineOwnerButton ( "BUTTON_Color",, 10, 5, "Color", {|| TableColor(oBrw)}, 150, 46,,, {|| ( iif ( _HMG_SYSDATA[218] == "C" , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Backcolor" , {   0 ,   0 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , "Backcolor" , {   0 ,   0 ,   0 } ) ) , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Fontcolor" , { 128 , 128 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Icon" , "iColor32x2" ) )}, {|| ( iif ( _HMG_SYSDATA[218] == "C" , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Backcolor" , { 255 , 128 ,  64 } ) , SetProperty ( _HMG_SYSDATA[254] , "Backcolor" , { 255 , 128 ,  64 } ) ), SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Fontcolor" , {   0 ,   0 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Icon" , "iColor32x1" ) )}, .T., .F.,, .F., .T., .F., "iColor32x1",, 16, .T., .F., .F., .F., .F., .F., .F., { { 0.5, 8421504, 32768 } , { 0.5, 32768, 8421504 } }, {   0 ,   0 ,   0 }, .F., .T., .F., .T.,,, { { 0.5, ( 255 + ( 128 * 256 ) + ( 64 * 65536 ) ), 16777215 }, { 0.5, 16777215, ( 255 + ( 128 * 256 ) + ( 64 * 65536 ) ) } }, .F.,, )
+
+
+
+
+
+
+
+
+
+      _DefineOwnerButton ( "BUTTON_Export",, 170, 5, "Export", {|| TableExport(oBrw)}, 150, 46,,, {|| ( iif ( _HMG_SYSDATA[218] == "C" , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Backcolor" , {   0 ,   0 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , "Backcolor" , {   0 ,   0 ,   0 } ) )  , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Fontcolor" , { 128 , 128 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Icon" , "iXls32x2" ) )}, {|| ( iif ( _HMG_SYSDATA[218] == "C" , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Backcolor" , {   0 , 128 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , "Backcolor" , {   0 , 128 ,   0 } ) ) , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Fontcolor" , {   0 ,   0 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Icon" , "iXls32x1" ) )}, .T., .F.,, .F., .T., .F., "iXls32x1",, 16, .T., .F., .F., .F., .F., .F., .F., { { 0.5, 0, 32768 } , { 0.5, 32768, 0 } }, {   0 ,   0 ,   0 }, .F., .T., .F., .T.,,, { { 0.5, 32768, 16777215 }, { 0.5, 16777215, 32768 } }, .F.,, )
+
+
+
+
+
+
+
+
+
+      _DefineOwnerButton ( "BUTTON_Exit",, 330, 5, "Exit", {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )}, 150, 46,,, {|| ( iif ( _HMG_SYSDATA[218] == "C" , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Backcolor" , {   0 ,   0 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , "Backcolor" , {   0 ,   0 ,   0 } ) )  , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Fontcolor" , { 128 , 128 ,   0 } ), SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Icon" , "iExit32x2" ) )}, {|| ( iif ( _HMG_SYSDATA[218] == "C" , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Backcolor" , { 255 ,   0 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , "Backcolor" , { 255 ,   0 ,   0 } ) )    , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Fontcolor" , {   0 ,   0 ,   0 } ) , SetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Icon" , "iExit32x1" ) )}, .T., .F.,, .F., .T., .F., "iExit32x1",, 16, .T., .F., .F., .F., .F., .F., .F., { { 0.5, 16761992, 32768 } , { 0.5, 32768, 16761992 } }, {   0 ,   0 ,   0 }, .F., .T., .F., .T.,,, { { 0.5, ( 255 + ( 0 * 256 ) + ( 0 * 65536 ) ), 16777215 }, { 0.5, 16777215, ( 255 + ( 0 * 256 ) + ( 0 * 65536 ) ) } }, .F.,, )
+
+      nCol := GetProperty ( "test", "Button_Exit" , "Col" ) + GetProperty ( "test", "Button_Exit" , "Width" ) + 20
+
+      _DefineProgressBar ( "PBar_1",, nCol, 10, 300, 36, 0, 100,, .F., .F.,, .F., 0,,, .F.,,, )
+
+
+
+
+
+      oBrw :=_DefineTBrowse ("oBrw" ,, 0, 46+10, _GetClientRect ( GetFormHandle ( _HMG_SYSDATA[254] ) ) [3], _GetClientRect ( GetFormHandle ( _HMG_SYSDATA[254] ) ) [4] - 46 -10, , ,,, cFontName1, nFontSize,,,,,,,,,,,, ,,,,, ,,,, .T.,,,,,,,,,,, .F.,,,,,,,,,,,,,,,,,,,,,,, ) ; with object oBrw
+
+
+         TsbCreate(oBrw, aDatos, nHSpr, nHcell, nHhead, nHfoot)
+
+      _EndTBrowse ( ); end
+
+      _DefineHotKey ( , 0 , 27 , {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )} )
+
+   _EndWindow ()
+
+   DoMethod ( "test", "Center" )
+   _ActivateWindow ( {"test"}, .F., , )
+
+RETURN
+
+
+STATIC FUNCTION TsbCreate( oBrw, aDatos, nHSpr, nHcell, nHhead, nHfoot )
+   LOCAL aArray, aFontHF, aHead, aSize, aFoot, aPict, aAlign, aName
+   LOCAL nI, nCol, oCol, nWwnd
+
+   aArray   := aDatos[ 1 ]
+   aHead    := aDatos[ 2 ]
+   aSize    := aDatos[ 3 ]
+   aFoot    := aDatos[ 4 ]
+   aPict    := aDatos[ 5 ]
+   aAlign   := aDatos[ 6 ]
+   aName    := aDatos[ 7 ]
+   aFontHF  := aDatos[ 8 ]
+
+   WITH OBJECT oBrw
+
+      :Cargo := 5
+
+
+      :SetArrayTo(aArray, aFontHF, aHead, aSize, aFoot, aPict, aAlign, aName)
+
+
+      If .T.
+
+         nCol := :nColumn("Name_5")
+
+
+         oBrw:AddSuperHead( 1, nCol, " SuperHider_1" +  IIF(.F., CHR(13)+CHR(10) + " line-2" , ""),, {16777215, 0}, .F.,,, .F., .F., .F., 0, )
+
+
+
+         oBrw:AddSuperHead( nCol + 1, :nColCount(), "SuperHider_2 " +  IIF(.F., CHR(13)+CHR(10) + "line-2 " , ""),, {16777215, 0}, .F.,,, .F., .F., .F., 2, )
+
+         :nHeightSuper := nHSpr
+
+      EndIf
+
+      :lNoHScroll   := .T.
+      :nWheelLines  := 1
+      :nClrLine     := GetSysColor( 28 )
+      :lNoChangeOrd := .T.
+      :nColOrder    := 0
+      :lNoGrayBar   := .F.
+
+
+      :nHeightCell  := nHcell
+      :nHeightHead  := nHhead
+      :nHeightFoot  := nHfoot
+      :lFooting     := .T.
+      :lDrawFooters := .T.
+
+      :nFreeze      := 1
+      :lLockFreeze  := .T.
+
+      :nLineStyle   := 1
+
+
+      For nI := 1 To :nColCount()
+         oCol            := :aColumns[ nI ]
+
+
+         If oCol:cName == "Name_1"
+            oCol:nAlign  := 1
+         EndIf
+
+         oCol:hFont      := {|nr,nc,ob| TsbFont(nr, nc, ob)}
+      Next
+
+      TsbColor( oBrw )
+
+
+      nWwnd := :GetAllColsWidth() + GetBorderWidth()
+
+      If :nLen > :nRowCount()
+         nWwnd += GetVScrollBarWidth()
+      EndIf
+
+      SetProperty ( _HMG_SYSDATA[254] , "Width" , nWwnd )
+      SetProperty ( _HMG_SYSDATA[254], "oBrw" , "Width" , _GetClientRect ( iif ( _HMG_SYSDATA[218] == "C" , GetControlHandle ( _HMG_SYSDATA[255] , _HMG_SYSDATA[254] ) , GetFormHandle ( _HMG_SYSDATA[254] ) ) ) [3] )
+
+   end
+
+   oBrw:SetNoHoles()
+   oBrw:GoPos( 5, oBrw:nFreeze + 2 )
+   oBrw:SetFocus()
+
+   RETURN Nil
+
+
+STATIC FUNCTION TsbColor( oBrw, aHColor, aBColor, nHClr1, nHClr2 )
+   LOCAL Khaki := 9234160
+   LOCAL Yellow := 6053069
+
+
+
+   aHColor := iif( aHColor == NIL, {255, 255, 255}, aHColor ) ; aBColor := iif( aBColor == NIL, {169, 169, 169}, aBColor ) ; nHClr1 := iif( nHClr1 == NIL, 16777215, nHClr1 ) ; nHClr2 := iif( nHClr2 == NIL, 5197615, nHClr2 )
+
+   WITH OBJECT oBrw
+
+     :SetColor( { 1}, { { || 0                         } } )
+     :SetColor( { 2}, { { || MyRGB(aBColor)                    } } )
+     :Setcolor( { 3}, { 0                                } )
+     :SetColor( { 4}, { { || { nHClr1, nHClr2                } } } )
+     :SetColor( { 5}, { { ||   0                       } } )
+     :SetColor( { 6}, { { || { 4915199, 255 }                  } } )
+     :SetColor( { 7}, { { ||   255                         } } )
+     :SetColor( { 8}, { { ||   6053069                      } } )
+     :SetColor( { 9}, { 0                                } )
+     :SetColor( {10}, { { || { nHClr1, nHClr2                } } } )
+     :SetColor( {11}, { { ||   8421504                        } } )
+     :SetColor( {12}, { { || { Khaki          , Yellow        }} } )
+     :SetColor( {13}, { { ||   ( 255 + ( 0 * 256 ) + ( 0 * 65536 ) )                        } } )
+     :SetColor( {14}, { { || { nHClr1, nHClr2                } } } )
+     :SetColor( {15}, { { ||   16777215                       } } )
+     :SetColor( {16}, { { || { 0, 8421504           } } } )
+     :SetColor( {17}, { { || 16777215                         } } )
+
+
+     AEval(:aColumns, {|oCol| oCol:nClrBack := { |nr,nc,ob| TsbColorBack(nr,nc,ob) } } )
+     AEval(:aColumns, {|oCol| oCol:nClrFore := { |nr,nc,ob| TsbColorFore(nr,nc,ob) } } )
+
+   end
+
+   RETURN Nil
+
+
+FUNCTION TsbGet( oBrw, xCol )
+RETURN Eval( oBrw:GetColumn(xCol):bData )
+
+
+FUNCTION TsbPut( oBrw, xCol, xVal )
+RETURN Eval( oBrw:GetColumn(xCol):bData, xVal )
+
+
+STATIC FUNCTION TsbColorBack( nAt, nCol, oBrw )
+   LOCAL nTsbColor := oBrw:Cargo
+
+   LOCAL nSumma := TsbGet(oBrw, "Name_9" )
+   LOCAL nClr3  := TsbGet(oBrw, "Name_3" )
+   LOCAL nColor
+
+
+   IF VALTYPE(nSumma) <> "N"
+      nColor := ( 255 + ( 0 * 256 ) + ( 0 * 65536 ) )
+      RETURN nColor
+   ENDIF
+
+   IF     nTsbColor == 1
+         nColor := 16777215
+   ELSEIF nTsbColor == 2
+      nColor := ( 192 + ( 192 * 256 ) + ( 192 * 65536 ) )
+   ELSEIF nTsbColor == 3
+      IF nAt % 2 == 0
+         nColor := ( 192 + ( 192 * 256 ) + ( 192 * 65536 ) )
+      ELSE
+         nColor := 16777215
+      ENDIF
+   ELSEIF nTsbColor == 4
+      IF nCol % 2 == 0
+         nColor := ( 192 + ( 192 * 256 ) + ( 192 * 65536 ) )
+      ELSE
+         nColor := 16777215
+      ENDIF
+   ELSEIF nTsbColor == 5
+      IF nAt % 2 == 0
+         If nCol % 2 == 0; nColor := ( 192 + ( 192 * 256 ) + ( 192 * 65536 ) )
+         Else            ; nColor := 16777215
+         EndIf
+      ELSE
+         If nCol % 2 == 0; nColor := 16777215
+         Else            ; nColor := ( 192 + ( 192 * 256 ) + ( 192 * 65536 ) )
+         EndIf
+      ENDIF
+   ELSEIF nTsbColor == 6
+      IF     nClr3 == 1
+         nColor := 15453831
+      ELSEIF nClr3 == 2
+         nColor := 15660543
+      ELSEIF nClr3 == 3
+         nColor := 14524637
+      ELSEIF nClr3 == 4
+         nColor := 11920639
+      ELSEIF nClr3 == 5
+         nColor := 15631086
+      ELSEIF nClr3 == 6
+         nColor := 15624315
+      ELSEIF nClr3 == 7
+         nColor := 14804223
+      ELSEIF nClr3 == 8
+         nColor := 14474460
+      ELSEIF nClr3 == 9
+         nColor := 16436871
+      ELSE
+         nColor := 16777215
+      ENDIF
+   ENDIF
+
+   IF nSumma == 1500
+      nColor :=  7504122
+   ENDIF
+
+   RETURN nColor
+
+
+STATIC FUNCTION TsbColorFore( nAt, nCol, oBrw )
+   LOCAL nColor, nTsbColor := TsbGet(oBrw, "Name_9")
+   nAt := iif( nAt == NIL, 0, nAt ) ; nCol := iif( nCol == NIL, 0, nCol )
+
+
+   IF VALTYPE(nTsbColor) <> "N"
+      nColor := ( 192 + ( 192 * 256 ) + ( 192 * 65536 ) )
+      RETURN nColor
+   ENDIF
+
+   IF nTsbColor <= -100
+      nColor :=  5197615
+   ELSEIF nTsbColor < 0
+      nColor := 255
+   ELSEIF nTsbColor < 300
+      nColor := 32768
+   ELSEIF nTsbColor < 900
+      nColor := 16711680
+   ELSEIF nTsbColor < 1300
+      nColor := ( 128 + ( 0 * 256 ) + ( 128 * 65536 ) )
+   ELSEIF nTsbColor < 1700
+      nColor := 2763429
+   ELSE
+      nColor := 0
+   ENDIF
+
+   RETURN nColor
+
+
+STATIC FUNCTION MyRGB( aDim )
+   RETURN ( aDim[1] + ( aDim[2] * 256 ) + ( aDim[3] * 65536 ) )
+
+
+STATIC FUNCTION TsbFont( nAt, nCol, oBrw )
+   LOCAL hFont
+   STATIC a_Font
+   nAt := iif( nAt == NIL, 0, nAt )
+
+   If a_Font == Nil .OR. pCount() == 0
+      a_Font := {}
+
+      AAdd( a_Font, GetFontHandle( "Font_1" ) )
+      AAdd( a_Font, GetFontHandle( "Font_2" ) )
+      AAdd( a_Font, GetFontHandle( "Font_3" ) )
+      AAdd( a_Font, GetFontHandle( "Font_4" ) )
+      AAdd( a_Font, GetFontHandle( "Font_5" ) )
+      AAdd( a_Font, GetFontHandle( "Font_6" ) )
+      AAdd( a_Font, GetFontHandle( "Font_7" ) )
+
+      RETURN a_Font
+   EndIf
+
+   If     nCol == 1
+       hFont := a_Font[7]
+   ElseIf TsbGet(oBrw, 2)
+       hFont := a_Font[1]
+   Else
+       hFont := a_Font[6]
+   EndIf
+
+RETURN hFont
+
+
+FUNCTION TableColor(oBrw)
+   LOCAL Font1, Font3, Font7, nY, nX
+   LOCAL nTsbColor := oBrw:Cargo
+   LOCAL cForm   := oBrw:cParentWnd
+
+   nY := GetProperty(GetProperty ( _HMG_SYSDATA[254] , "Name" ),iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Name" ) , GetProperty ( _HMG_SYSDATA[254] , "Name" ) ),"Row") + GetProperty(GetProperty ( _HMG_SYSDATA[254] , "Name" ),iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Name" ) , GetProperty ( _HMG_SYSDATA[254] , "Name" ) ),"Height")
+   nX := GetProperty(GetProperty ( _HMG_SYSDATA[254] , "Name" ),iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Name" ) , GetProperty ( _HMG_SYSDATA[254] , "Name" ) ),"Col")
+   nY += GetProperty(cForm, "Row") + GetTitleHeight() + 2
+   nX += GetProperty(cForm, "Col") + GetBorderWidth() - 4
+
+   Font1 := GetFontHandle( "Font_1" )
+   Font3 := GetFontHandle( "Font_3" )
+   Font7 := GetFontHandle( "Font_7" )
+
+   _NewMenuStyle ( .T. )
+   SetMenuBitmapHeight( 18 )
+
+   _DefineContextMenu( cForm )
+       _DefineMenuItem ( "color table white         " , {|| nTsbColor := 1} , , , .F. , .F. ,, Font1,, .F., .F. ,, .F. )
+       _DefineMenuItem ( "color table gray          " , {|| nTsbColor := 2} , , , .F. , .F. ,, Font1,, .F., .F. ,, .F. )
+       _DefineMenuItem ( 'color of the table "ruler"' , {|| nTsbColor := 3} , , , .F. , .F. ,, Font1,, .F., .F. ,, .F. )
+       _DefineMenuItem ( 'color of the table "columns"' , {|| nTsbColor := 4} , , , .F. , .F. ,, Font1,, .F., .F. ,, .F. )
+       _DefineMenuItem ( 'color of the table "chess"' , {|| nTsbColor := 5} , , , .F. , .F. ,, Font1,, .F., .F. ,, .F. )
+       _DefineMenuItem ( 'color of the table "multicolor"' , {|| nTsbColor := 6} , , , .F. , .F. ,, Font1,, .F., .F. ,, .F. )
+       _DefineSeparator()
+       _DefineMenuItem ( "Export Color to file" , {|| ToColorFile(oBrw)} , , , .F. , .F. ,, Font3,, .F., .F. ,, .F. )
+       _DefineSeparator()
+       _DefineMenuItem ( "Exit" , {|| Nil} , , , .F. , .F. ,, Font7,, .F., .F. ,, .F. )
+   _EndMenu()
+
+   _ShowContextMenu(cForm, nY, nX)
+
+   _DefineContextMenu( cForm )
+   _EndMenu()
+
+   _NewMenuStyle ( .F. )
+
+   IF nTsbColor # oBrw:Cargo
+      oBrw:Cargo := nTsbColor
+      oBrw:Display()
+      oBrw:Refresh(.T.)
+   ENDIF
+
+   oBrw:SetFocus()
+   DoEvents()
+
+   RETURN NIL
+
+
+FUNCTION TableExport(oBrw)
+   LOCAL Font3, Font7, nY, nX
+   LOCAL cForm := oBrw:cParentWnd
+
+   nY := GetProperty(GetProperty ( _HMG_SYSDATA[254] , "Name" ),iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Name" ) , GetProperty ( _HMG_SYSDATA[254] , "Name" ) ),"Row") + GetProperty(GetProperty ( _HMG_SYSDATA[254] , "Name" ),iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Name" ) , GetProperty ( _HMG_SYSDATA[254] , "Name" ) ),"Height")
+   nX := GetProperty(GetProperty ( _HMG_SYSDATA[254] , "Name" ),iif ( _HMG_SYSDATA[218] == "C" , GetProperty ( _HMG_SYSDATA[254] , _HMG_SYSDATA[255] , "Name" ) , GetProperty ( _HMG_SYSDATA[254] , "Name" ) ),"Col")
+   nY += GetProperty(cForm, "Row") + GetTitleHeight() + 2
+   nX += GetProperty(cForm, "Col") + GetBorderWidth() - 4
+
+   Font3 := GetFontHandle( "Font_3" )
+   Font7 := GetFontHandle( "Font_7" )
+
+   _NewMenuStyle ( .T. )
+   SetMenuBitmapHeight( 18 )
+
+   _DefineContextMenu( cForm )
+       _DefineMenuItem ( "Export to Excel (xls-files)" , {|| ToExcel1(oBrw)} , , , .F. , .F. ,, Font3,, .F., .F. ,, .F. )
+       _DefineSeparator()
+       _DefineMenuItem ( "Export to Ole-Excel (xls-files)" , {|| ToExcel2(oBrw)} , , , .F. , .F. ,, Font3,, .F., .F. ,, .F. )
+       _DefineSeparator()
+       _DefineMenuItem ( "Export to Excel (xml-files)" , {|| ToExcel3(oBrw)} , , , .F. , .F. ,, Font3,, .F., .F. ,, .F. )
+       _DefineSeparator()
+       _DefineMenuItem ( "Export to Excel (xml-files) 2" , {|| ToExcel4(oBrw)} , , , .F. , .F. ,, Font3,, .F., .F. ,, .F. )
+       _DefineSeparator()
+       _DefineMenuItem ( "Exit" , {|| Nil} , , , .F. , .F. ,, Font7,, .F., .F. ,, .F. )
+   _EndMenu()
+
+   _ShowContextMenu(cForm, nY, nX)
+
+   _DefineContextMenu( cForm )
+   _EndMenu()
+
+   _NewMenuStyle ( .F. )
+
+   oBrw:SetFocus()
+   DoEvents()
+
+   RETURN NIL
+
+
+STATIC FUNCTION ToExcel1(oBrw)
+   LOCAL hFont, aFont, cFontName, cTitle, aTitle, nCol
+   LOCAL aOld1 := array(oBrw:nColCount())
+   LOCAL aOld2 := array(oBrw:nColCount())
+   LOCAL aOld3 := array(oBrw:nColCount())
+   LOCAL nFSize, hFontTitle, cXlsFile, lActivate
+   LOCAL bPrintRow, cMaska, cPath, hProgress, lSave
+
+
+
+
+   oBrw:GoTop()
+   oBrw:GoPos( oBrw:nRowPos, oBrw:nFreeze+1 )
+   DoEvents()
+
+   If oBrw:nLen > 1000
+      WaitWindow( "Loading the report in EXCEL ...", .T. )
+   EndIf
+
+   oBrw:lEnabled := .F.
+
+
+   hFont := GetFontHandle( "Font_6" )
+   aFont := GetFontParam( hFont )
+   nFSize := 12
+   cFontName := "Font_" + hb_ntos( _GetId() )
+
+   _DefineFont( cFontName, aFont[1], nFSize, aFont[3], aFont[4] )
+
+   FOR nCol := 1 TO LEN( oBrw:aColumns )
+
+      aOld1[ nCol ] := oBrw:aColumns[ nCol ]:hFont
+      aOld2[ nCol ] := oBrw:aColumns[ nCol ]:hFontHead
+      aOld3[ nCol ] := oBrw:aColumns[ nCol ]:hFontFoot
+
+      oBrw:aColumns[ nCol ]:hFont     := GetFontHandle( cFontName )
+      oBrw:aColumns[ nCol ]:hFontHead := GetFontHandle( cFontName )
+      oBrw:aColumns[ nCol ]:hFontFoot := GetFontHandle( cFontName )
+   NEXT
+
+
+
+
+
+   cTitle     := "_" + Space(50) + "Example of exporting a table (TITLE OF THE TABLE)"
+   hFontTitle := GetFontHandle( "Font_7" )
+   aTitle     := { cTitle, hFontTitle }
+
+   cPath     := GetStartUpFolder() + "\"
+   cMaska    := "Test1_Excel"
+   cXlsFile  := cPath + cMaska + "_" + DTOC( DATE() ) + "_"
+   cXlsFile  += SUBSTR( CharRepl( ":", TIME(), "-" ), 1, 5 )
+   lActivate := .T.
+   hProgress := GetProperty ( "test", "PBar_1" , "Handle" )
+   lSave     := .T.
+   bPrintRow := nil
+
+   oBrw:Excel2( cXlsFile, lActivate, hProgress, aTitle, lSave, bPrintRow )
+
+   _ReleaseFont( cFontName )
+
+   AEval(oBrw:aColumns, {|oc,nn| oc:hFont     := aOld1[ nn ] })
+   AEval(oBrw:aColumns, {|oc,nn| oc:hFontHead := aOld2[ nn ] })
+   AEval(oBrw:aColumns, {|oc,nn| oc:hFontFoot := aOld3[ nn ] })
+
+   oBrw:lEnabled := .T.
+
+   If oBrw:nLen > 1000
+      WaitWindow()
+   EndIf
+
+   oBrw:SetFocus()
+   DoEvents()
+
+   RETURN Nil
+
+
+STATIC FUNCTION ToExcel2(oBrw)
+   LOCAL hFont, aFont, cFontName, hFontTitle, cTitle, aTitle
+   LOCAL nFSize, cXlsFile, lActivate, hProgress, lSave
+   LOCAL bExtern, aColSel, bPrintRow, cMaska, cPath
+
+
+
+
+   oBrw:GoTop()
+   oBrw:GoPos( oBrw:nRowPos, oBrw:nFreeze+1 )
+   DoEvents()
+
+   If oBrw:nLen > 1000
+      WaitWindow( "Loading the report in EXCEL ...", .T. )
+   EndIf
+
+   oBrw:lEnabled := .F.
+
+
+   hFont := GetFontHandle( "Font_6" )
+   aFont := GetFontParam( hFont )
+   nFSize := 14
+   cFontName := "Font_" + hb_ntos( _GetId() )
+   _DefineFont( cFontName, aFont[1], nFSize, aFont[3], aFont[4] )
+   hFont := GetFontHandle( cFontName )
+
+   cTitle     := "Example of exporting a table (TITLE OF THE TABLE)"
+   hFontTitle := GetFontHandle( "Font_7" )
+   aTitle     := { cTitle, hFontTitle }
+
+   cPath      := GetStartUpFolder() + "\"
+   cMaska     := "Test2_ExcelOle"
+   cXlsFile   := cPath + cMaska + "_" + CharRepl( ".", DTOC( DATE() ), "-" ) + "_"
+   cXlsFile   += SUBSTR( CharRepl( ":", TIME(), "-" ), 1, 5 )
+   lActivate  := .T.
+   hProgress  := GetProperty ( "test", "PBar_1" , "Handle" )
+   lSave      := .T.
+   bExtern    := nil
+
+
+
+
+   aColSel   := nil
+   bPrintRow := nil
+
+   oBrw:ExcelOle( cXlsFile, lActivate, hProgress, cTitle, hFont, lSave, bExtern, aColSel, bPrintRow )
+
+   _ReleaseFont( cFontName )
+
+   oBrw:lEnabled := .T.
+
+   If oBrw:nLen > 1000
+      WaitWindow()
+   EndIf
+
+   oBrw:Display()
+   oBrw:Refresh(.T.)
+   oBrw:SetFocus()
+   DoEvents()
+
+   RETURN Nil
+
+
+STATIC FUNCTION ToExcel4(oBrw)
+   LOCAL aTitle, aTit, oXml
+   LOCAL aAfter, aAft
+   LOCAL aBefor, aBef
+   LOCAL aCompany, aComp
+
+   If ! oBrw:lEnabled
+      RETURN Nil
+   EndIf
+
+   oBrw:lEnabled := .F.
+
+   aComp    := { "Company", '"Roga and kopita"' }
+   aCompany := { aComp, GetFontHandle("Font_9") }
+
+   aTit   := { "1. Example of exporting", "2. Example of testing" }
+   aTitle := { aTit, GetFontHandle("Font_7") }
+
+   aBef   := { "Example of exporting before", "Example of testing before" }
+   aBefor := { aBef, GetFontHandle("Font_8") }
+
+   aAft   := { "Example of exporting after", "Example of testing after" }
+   aAfter := { aAft, GetFontHandle("Font_8") }
+
+   oXml := oTsb2Xml2Xls( "TEST.XML", oBrw, aTitle, aBefor, aAfter, aCompany )
+
+   oBrw:lEnabled := .T.
+
+   oXml:WriteData()
+
+
+
+RETURN Nil
+
+
+STATIC FUNCTION ToExcel3(oBrw)
+   LOCAL hFont, cTitle, aTitle
+
+   oBrw:GoTop()
+   oBrw:GoPos( oBrw:nRowPos, oBrw:nFreeze+1 )
+   DoEvents()
+
+   If oBrw:nLen > 1000
+      WaitWindow( "Loading the report in EXCEL ...", .T. )
+   EndIf
+
+   oBrw:lEnabled := .F.
+
+   hFont := GetFontHandle( "Font_7" )
+
+   cTitle := "Example of exporting"
+   aTitle := { cTitle, hFont }
+
+   XmlSetDefault( oBrw )
+
+   oBrw:aColumns[6]:XML_Format := "00\:00\:00"
+   oBrw:aColumns[9]:XML_Format := "0.00_ ;[Red]\-0.00\ "
+
+   Brw2Xml(oBrw, "TEST.XML", .T.,, aTitle)
+   XmlReSetDefault( oBrw )
+
+   oBrw:lEnabled := .T.
+
+   If oBrw:nLen > 1000
+      WaitWindow()
+   EndIf
+
+   oBrw:SetFocus()
+   DoEvents()
+
+   RETURN Nil
+
+
+FUNCTION ToColorFile(oBrw)
+   LOCAL nLine, nCol, nBackColor, aBackCell, aClr
+   LOCAL cFile := hb_defaultValue( _SetGetLogFile(), GetStartUpFolder() + "\_MsgLog.txt" )
+
+   DELETEFILE(cFile)
+
+
+   aBackCell := {}
+
+   _LogFile( .T., "Cell background color for all columns and the entire table" )
+   For nLine := 1 TO oBrw:nLen
+       aClr := {}
+       _LogFile( .T., "nLine=", nLine, "{" )
+       For nCol := 1 TO Len( oBrw:aColumns )
+           nBackColor := oBrw:aColumns[ nCol ]:nClrBack
+           If Valtype( nBackColor ) == "B"
+              nBackColor := Eval( nBackColor, oBrw:nAt, nCol, oBrw )
+           EndIf
+           _LogFile( .F., nBackColor )
+           AADD( aClr, nBackColor )
+       Next
+       AADD( aBackCell, aClr )
+      _LogFile( .F., "}" )
+      oBrw:Skip(1)
+   Next
+   DoEvents()
+
+   ShellExecute( 0, "Open", cFile,,, 3 )
+
+   oBrw:GoTop()
+   oBrw:Reset()
+   DoEvents()
+   oBrw:Display()
+   oBrw:Refresh(.T.)
+   oBrw:SetFocus()
+   DoEvents()
+
+   RETURN NIL
+
+
+STATIC FUNCTION CreateDatos( nLine )
+   LOCAL i, k := 1001, aDatos, aHead, aSize := NIL, aFoot, aPict := NIL, aAlign := NIL, aName
+   LOCAL hFont, n7Pict := 0, n7Len := 0, c7Str, nI := 1
+
+   If HB_ISNUMERIC(nLine)
+      k := nLine
+   EndIf
+
+   If k > 1000
+      _HMG_SYSDATA[444] := ( Upper("OFF") == "ON" )
+      WaitWindow( "Create an array for work ...", .T. )
+   EndIf
+
+   aDatos := Array( k )
+   FOR i := 1 TO k
+
+
+
+
+
+
+
+
+
+      aDatos[ i ] := {  hb_ntos(i)+".",  i % 2 == 0,  i,  "Str"+ntoc( i ) + "_123",  Date() + i,  TIME(),  PadR( "Test line - " + ntoc( i ), 20 ),  Round( ( 10000 -i ) * i / 3, 3 ),  100.00 * i }
+
+      IF i % 10 == 0
+         aDatos[i,9] :=  -1.00
+      ELSEIF i % 11 == 0
+         aDatos[i,9] :=  -100.00
+      ELSEIF i % 15 == 0
+         aDatos[i,9] :=  1500.00
+      ENDIF
+
+      aDatos[i,3] := nI
+      IF i % 3 == 0
+         nI++
+         IF nI > 10
+            nI := 1
+         ENDIF
+      ENDIF
+
+      IF .F.
+         aDatos[i,7] := aDatos[i,7] + CHR(13)+CHR(10) + SPACE(5) + "string test - 2;0123456789" + CHR(13)+CHR(10) + SPACE(5) + "string test - 3;0123456789"
+      ENDIF
+   NEXT
+
+   IF .F.
+      n7Len  := LEN( CHR(13)+CHR(10) + SPACE(5) + "string test - 2;0123456789" )
+      n7Pict := REPL("x",n7Len * 3 )
+   ENDIF
+
+   aHead  := AClone( aDatos[ 1 ] )
+   AEval( aHead, {| x, n| x:=nil, aHead[ n ] := "Head_" + hb_ntos( n ) + IIF(.F., CHR(13)+CHR(10) + "line-2" , "") } )
+   aFoot  := Array( Len( aDatos[ 1 ] ) )
+   AEval( aFoot, {| x, n| x:=nil, aFoot[ n ] := "Foot_" + hb_ntos( n ) + IIF(.F., CHR(13)+CHR(10) + "line-2" , "") } )
+   aName     := Array( Len( aDatos[ 1 ] ) )
+   AEval( aName, {| x, n| x:=nil, aName[ n ] := "Name_" + hb_ntos( n ) } )
+
+
+   aPict := Array( Len( aDatos[ 1 ] ) )
+   aPict[ 6 ] := "@R 99:99:99"
+   aPict[ 3 ] := "9999999"
+   aPict[ 8 ] :=  "999999999999.999"
+   aPict[ 9 ] :=  "9999999999999.99"
+
+   aSize := Array( Len( aDatos[ 1 ] ) )
+   aFill( aSize,  NIL )
+
+   hFont := GetFontHandle( "Font_1" )
+   aSize[ 6 ] := GetTextWidth(0, "99099099", hFont)
+   aSize[ 8 ] := GetTextWidth(0, aPict[ 8 ], hFont)
+
+   IF .F.
+      hFont := GetFontHandle( "Font_2" )
+
+      aPict[ 7 ] := n7Pict
+
+      c7Str := REPL("a", n7Len)
+      aSize[ 7 ] := GetTextWidth(0, c7Str, hFont)
+   ENDIF
+
+   If k > 1000
+      WaitWindow()
+      _HMG_SYSDATA[444] := ( Upper("ON") == "ON" )
+   EndIf
+
+RETURN { aDatos, aHead, aSize, aFoot, aPict, aAlign, aName }
+
+FUNCTION mRGB( p1, p2, p3 )
+   RETURN  ( p1 + ( p2 * 256 ) + ( p3 * 65536 ) )

@@ -1,0 +1,208 @@
+*HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
+*OPEN SOURCE PROJECT 2005-2016 Walter Formigoni http://sourceforge.net/projects/hmgs-minigui/
+
+DEFINE WINDOW TEMPLATE AT 135 , 117 WIDTH 899 HEIGHT 609 TITLE "FTP Client -2007-18 - Walter Formigoni - OPEN SOURCE. Version 0.0.4" MAIN TOPMOST ON INIT initgrid()
+
+     DEFINE GRID Grid_1
+            ROW    95
+            COL    20
+            WIDTH  410
+            HEIGHT 445
+            HEADERS {'','[Name]','Size','Date','Time'}
+            WIDTHS aGridWidth
+            ITEMS {{"","","","",""}}
+            VALUE 1
+            ONGOTFOCUS { ||CurrentDirectory(1) }
+            ONCHANGE { || if(lfirst, , CurrentDirectory(1)) }
+            ONDBLCLICK Verify()
+            NOSORTHEADERS .F.
+            IMAGE {"FOLDER","FILE"}
+            JUSTIFY {0, BROWSE_JTFY_LEFT,BROWSE_JTFY_RIGHT,BROWSE_JTFY_CENTER,BROWSE_JTFY_CENTER }
+            HEADERIMAGE ""
+            COLUMNSORT {0, 1, 1, 1, 1 }
+     END GRID  
+
+     DEFINE GRID Grid_2
+            ROW    95
+            COL    450
+            WIDTH  410
+            HEIGHT 445
+            HEADERS {'','[Name]','Size','Date','Time','Atributes'}
+            WIDTHS {0,150,80,80,70,90}
+            ITEMS {}
+            ONDBLCLICK FTPCWD()
+            NOSORTHEADERS .F.
+            IMAGE {"FOLDER","FILE"}
+            JUSTIFY {0, BROWSE_JTFY_LEFT,BROWSE_JTFY_RIGHT,BROWSE_JTFY_CENTER,BROWSE_JTFY_LEFT, BROWSE_JTFY_LEFT }
+            HEADERIMAGE ""
+            COLUMNSORT {0, 1, 1, 1, 1 ,1}
+     END GRID  
+
+     DEFINE LABEL Label_4
+            ROW    545
+            COL    450
+            WIDTH  400
+            HEIGHT 24
+            VALUE ""
+     END LABEL
+
+     DEFINE BUTTON Button_1
+            ROW    290
+            COL    430
+            WIDTH  20
+            HEIGHT 22
+            ACTION FTPUP()
+            CAPTION "->"
+            TOOLTIP "Upload files to FTP - server"
+     END BUTTON  
+
+     DEFINE BUTTON Button_2
+            ROW    330
+            COL    430
+            WIDTH  20
+            HEIGHT 22
+            ACTION FTPDOWN()
+            CAPTION "<-"
+            TOOLTIP "Download files from FTP - server"
+     END BUTTON  
+
+     DEFINE BUTTON Button_3
+            ROW    5
+            COL    610
+            WIDTH  100
+            HEIGHT 28
+            ACTION ftpconn1()
+            CAPTION "Connect"
+     END BUTTON  
+
+     DEFINE BUTTON Button_4
+            ROW    5
+            COL    730
+            WIDTH  100
+            HEIGHT 28
+            ACTION ftpclose()
+            CAPTION "Disconnect"
+     END BUTTON  
+
+     DEFINE BUTTON Button_5
+            ROW    60
+            COL    490
+            WIDTH  100
+            HEIGHT 28
+            ACTION ftpmkdir()
+            CAPTION "Make Dir"
+     END BUTTON  
+
+     DEFINE BUTTON Button_6
+            ROW    60
+            COL    610
+            WIDTH  100
+            HEIGHT 28
+            ACTION ftpren()
+            CAPTION "Rename"
+     END BUTTON  
+
+     DEFINE BUTTON Button_7
+            ROW    60
+            COL    730
+            WIDTH  100
+            HEIGHT 28
+            ACTION ftpdel()
+            CAPTION "Delete"
+     END BUTTON  
+
+     DEFINE LABEL Label_3
+            ROW    545
+            COL    20
+            WIDTH  400
+            HEIGHT 24
+            VALUE aSubDirectory[1][1]
+     END LABEL  
+
+     DEFINE BUTTON Button_8
+            ROW    59
+            COL    30
+            WIDTH  70
+            HEIGHT 28
+            ACTION localmkdir()
+            CAPTION "Make Dir"
+     END BUTTON  
+
+     DEFINE BUTTON Button_9
+            ROW    60
+            COL    110
+            WIDTH  70
+            HEIGHT 28
+            ACTION localren()
+            CAPTION "Rename"
+     END BUTTON  
+
+     DEFINE BUTTON Button_10
+            ROW    60
+            COL    190
+            WIDTH  70
+            HEIGHT 28
+            ACTION LocalDel()
+            CAPTION "Delete"
+     END BUTTON  
+
+     DEFINE BUTTON Button_11
+            ROW    60
+            COL    270
+            WIDTH  70
+            HEIGHT 28
+            CAPTION "View"
+     END BUTTON  
+
+     DEFINE BUTTON Button_12
+            ROW    60
+            COL    350
+            WIDTH  70
+            HEIGHT 28
+            CAPTION "Run"
+     END BUTTON  
+
+     DEFINE LABEL Label_1
+            ROW    39
+            COL    20
+            WIDTH  410
+            HEIGHT 18
+            VALUE "Local Computer"
+            BACKCOLOR {0,0,255}
+            FONTCOLOR {255,255,255}
+            CENTERALIGN .T.
+     END LABEL  
+
+     DEFINE LABEL Label_2
+            ROW    40
+            COL    450
+            WIDTH  410
+            HEIGHT 17
+            VALUE "FTP - Server"
+            BACKCOLOR {0,0,255}
+            FONTCOLOR {255,255,255}
+            CENTERALIGN .T.
+     END LABEL  
+
+     DEFINE BUTTON Button_13
+            ROW    5
+            COL    490
+            WIDTH  100
+            HEIGHT 28
+            ACTION sitemanager()
+            CAPTION "Sites"
+     END BUTTON  
+
+     DEFINE COMBOBOX Combo_1
+            ROW    10
+            COL    30
+            WIDTH  390
+            HEIGHT 100
+            ITEMS {""}
+            VALUE 1
+            ITEMSOURCE sites->Name
+     END COMBOBOX  
+
+END WINDOW
+
+

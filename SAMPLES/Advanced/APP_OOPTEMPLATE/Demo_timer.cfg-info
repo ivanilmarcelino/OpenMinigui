@@ -1,0 +1,23 @@
+[ВНИМАНИЕ!]
+; // класс hb_IniRead сделан на функции чтения ini в hash hIni := hb_IniRead(...)
+; // особенность для "[", встреченный в любом месте файла, воспринимается как начало секции, 
+; // т.е. след. символы - имя секции [TEST]
+Пример 1 = { "test2.dbf" , "[TEST]"  , "[секция]", "test" , "!Deleted[]" }
+; // делаем замену "[]" на "<>" везде в ини-файле
+Пример 1 = { "test2.dbf" , "<TEST>"  , "[секция]", "test" , "!Deleted<>" }
+; // особенность-2 для функций, если нет функции, то массив превращается в строку
+; // не желательно так использовать - myFunColor(), т.к. не определён тип переменной
+Пример 2 = { "funct.dbf" , myFunColor() , "Func2"    , "Func"   , "SHARED" , 3 }
+ВАЖНО = ВНИМАНИЕ ! Знак ';' это значит комментарий, нужно менять например на '|' для ини-файла
+
+[ATTENTION!]
+; // the class hb_IniRead is made on the function of reading ini in hash hIni := hb_IniRead(...)
+; // feature for "[", encountered anywhere in the file, is treated as the beginning of a section,
+; // i.e. track. symbols - section name [TEST]
+Example 1 = { "test2.dbf" , "[TEST]" , "[section]", "test" , "!Deleted[]" }
+; // replace "[]" with "<>" everywhere in the ini file
+Example 1 = { "test2.dbf" , "<TEST>" , "[section]", "test" , "!Deleted<>" }
+; // feature-2 for functions, if there is no function, then the array turns into a string
+; // it is not advisable to use this - myFunColor(), because variable type is not defined
+Example 2 = { "funct.dbf" , myFunColor() , "Func2" , "Func" , "SHARED" , 3 }
+IMPORTANT = ATTENTION! Sign ';' this means a comment, you need to change it to '|' for example for ini file

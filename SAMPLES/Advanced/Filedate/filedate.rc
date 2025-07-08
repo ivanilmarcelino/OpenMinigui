@@ -1,0 +1,33 @@
+1 VERSIONINFO
+ FILEVERSION 0,0,0,1
+ FILEFLAGSMASK 0x0L
+
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041004E4"
+        BEGIN
+            VALUE "Comments", "Commento\0"
+            VALUE "CompanyName","Pierpaolo Martinello\0"
+            VALUE "FileDescription","File date Changer\0"
+            VALUE "InternalName","FileDate\0"
+            VALUE "LegalCopyright", "Copyright ® 2024\0"
+            VALUE "LegalTrademarks","Pierpaolo Martinello\0"
+            VALUE "OriginalFilename","FileDate.exe\0"
+            VALUE "PrivateBuild", "Privata\0"
+            VALUE "ProductName", "File date Changer\0"
+            VALUE "ProductVersion", "RELEASE GOLD \0"
+            VALUE "SpecialBuild","\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0410, 0x04E4
+    END
+END
+
+//Imagens do tipo ICON
+MAIN               ICON   Filedate.ico

@@ -1,0 +1,331 @@
+Manual for the HMG_Get Class
+
+The HMG_Get class is part of the Harbour MiniGUI framework, responsible for handling input fields (GET fields). These input fields allow users to interact with forms by entering and editing data in different formats (like numeric, text, date, etc.). This class is highly configurable, supporting custom display options, validation, key events, and more.
+
+---
+
+Class Overview
+
+Class Name: HMG_Get
+
+Purpose: The HMG_Get class facilitates the creation, handling, and management of input fields, also known as GET fields. It manages the data entered by the user, validates the input, and applies formatting (such as pictures or colors) to the display.
+
+---
+
+Variables (Attributes)
+
+Exported Variables
+
+These variables can be accessed and modified externally.
+
+1. BadDate (INIT .F.)
+   - Indicates whether the entered date is invalid.
+
+2. Buffer
+   - Stores the current content of the input buffer.
+
+3. Cargo
+   - A general-purpose variable for storing user-defined data.
+
+4. Changed (INIT .F.)
+   - Tracks whether the input value has been changed by the user.
+
+5. Clear (INIT .F.)
+   - Indicates whether the GET field should be cleared.
+
+6. Col
+   - Stores the column position of the input field.
+
+7. DecPos (INIT 0)
+   - Stores the position of the decimal point for numeric fields.
+
+8. ExitState
+   - Stores the state in which the GET field was exited.
+
+9. HasFocus (INIT .F.)
+   - Tracks whether the input field currently has focus.
+
+10. Minus (INIT .F.)
+   - Indicates whether the input value is negative (for numeric fields).
+
+11. Name
+   - Name of the input field.
+
+12. Initial
+   - Stores the initial value of the input field.
+
+13. Original
+   - Stores the original value of the input field before editing.
+
+14. Pos (INIT 0)
+   - Current position of the cursor within the input field.
+
+15. PostBlock
+   - Code block executed after input processing.
+
+16. PreBlock
+   - Code block executed before input processing.
+
+17. Reader
+   - Variable that stores the method used to read the input.
+
+18. Rejected (INIT .F.)
+   - Tracks whether the input was rejected.
+
+19. Row
+   - Row position of the input field.
+
+20. SubScript
+   - Variable for managing subscripts (typically for arrays).
+
+21. TypeOut (INIT .F.)
+   - Indicates whether type-out (overwriting) mode is active.
+
+22. aKeyEvent (INIT {})
+   - Array that stores key event mappings for the input field.
+
+Protected Variables
+
+These variables are internal and should not be modified directly.
+
+1. cColorSpec
+   - Stores the color specification for the input field.
+
+2. cPicture
+   - Stores the picture (format mask) applied to the input field.
+
+3. bBlock
+   - Stores a code block used for validation or other custom logic.
+
+4. cType
+   - Type of input (such as numeric, date, character).
+
+5. cPicMask (INIT "")
+   - The picture mask applied to the input value for formatting.
+
+6. cPicFunc (INIT "")
+   - Stores any custom function for formatting the input field.
+
+7. nMaxLen
+   - Maximum length of the input value.
+
+8. lEdit (INIT .F.)
+   - Indicates whether the input field is editable.
+
+9. lDecRev (INIT .F.)
+   - Specifies whether decimal positions are reversed for input.
+
+10. lPicComplex (INIT .F.)
+   - Indicates whether the picture mask is complex.
+
+11. nDispLen
+   - Length of the display area for the input field.
+
+12. nDispPos (INIT 1)
+   - Display position within the field (scrolling behavior).
+
+13. nOldPos (INIT 0)
+   - Previous cursor position within the input field.
+
+14. lCleanZero (INIT .F.)
+   - If TRUE, cleans leading zeroes in numeric fields.
+
+15. cDelimit
+   - Delimiter character used in the input field.
+
+16. nMaxEdit
+   - Maximum number of editable characters.
+
+17. lMinus (INIT .F.)
+   - Tracks if the negative sign is active.
+
+18. lMinusPrinted (INIT .F.)
+   - Tracks if the negative sign has been printed.
+
+19. xVarGet
+   - Holds the value of the variable bound to the input field.
+
+---
+
+Methods
+
+1. New( nRow, nCol, bVarBlock, cVarName, cPicture, cColorSpec )
+   - Purpose: Constructor method to create a new GET field.
+   - Parameters:
+     - nRow: Row position of the input field.
+     - nCol: Column position of the input field.
+     - bVarBlock: Code block or variable to bind the input field to.
+     - cVarName: Name of the variable.
+     - cPicture: Formatting picture mask (optional).
+     - cColorSpec: Color specification for the field (optional).
+
+2. Assign()
+   - Purpose: Assigns the value from the input field to the bound variable.
+
+3. Type()
+   - Purpose: Returns the data type of the input field (e.g., character, numeric).
+
+4. Block( bBlock ) (SETGET)
+   - Purpose: Set or get the code block for additional processing (e.g., validation).
+   - Parameters: bBlock (code block).
+
+5. ColorSpec( cColorSpec ) (SETGET)
+   - Purpose: Set or get the color specification for the input field.
+   - Parameters: cColorSpec (color string).
+
+6. Picture( cPicture ) (SETGET)
+   - Purpose: Set or get the picture mask for the input field.
+   - Parameters: cPicture (string representing the format).
+
+7. Display( lForced )
+   - Purpose: Display the input field. The lForced parameter forces the display to refresh.
+
+8. ColorDisp( cColorSpec )
+   - Purpose: Sets the color for the display portion of the GET field.
+   - Parameters: cColorSpec (string).
+
+9. KillFocus()
+   - Purpose: Removes focus from the input field.
+
+10. Reset()
+   - Purpose: Resets the input field to its initial state.
+
+11. SetFocus()
+   - Purpose: Sets the focus on the input field, allowing user interaction.
+
+12. Undo()
+   - Purpose: Restores the input field to its original value (before changes were made).
+
+13. UnTransform( cBuffer )
+   - Purpose: Removes formatting from the displayed input value.
+   - Parameters: cBuffer (input buffer).
+
+14. UpdateBuffer()
+   - Purpose: Updates the input buffer with the current field value.
+
+15. VarGet()
+   - Purpose: Retrieves the value bound to the input field.
+
+16. VarPut( xValue, lReFormat )
+   - Purpose: Assigns a value to the bound variable, with optional reformatting.
+   - Parameters:
+     - xValue: Value to assign.
+     - lReFormat: Optional reformatting flag (undocumented).
+
+17. End()
+   - Purpose: Finalizes the input and processes any final actions.
+
+18. Home()
+   - Purpose: Moves the cursor to the beginning of the input field.
+
+19. Left( lDisplay )
+   - Purpose: Moves the cursor to the left.
+   - Parameters: lDisplay (optional, undocumented).
+
+20. Right( lDisplay )
+   - Purpose: Moves the cursor to the right.
+   - Parameters: lDisplay (optional, undocumented).
+
+21. ToDecPos()
+   - Purpose: Moves the cursor to the decimal position for numeric fields.
+
+22. WordLeft()
+   - Purpose: Moves the cursor one word to the left.
+
+23. WordRight()
+   - Purpose: Moves the cursor one word to the right.
+
+24. BackSpace( lDisplay )
+   - Purpose: Deletes the character to the left of the cursor.
+   - Parameters: lDisplay (optional, undocumented).
+
+25. Delete( lDisplay )
+   - Purpose: Deletes the
+
+ character at the current cursor position.
+   - Parameters: lDisplay (optional, undocumented).
+
+26. DelEnd()
+   - Purpose: Deletes all characters from the cursor to the end of the input.
+
+27. DelLeft()
+   - Purpose: Deletes the character to the left of the cursor.
+
+28. DelRight()
+   - Purpose: Deletes the character to the right of the cursor.
+
+29. DelWordLeft()
+   - Purpose: Deletes the word to the left of the cursor.
+
+30. DelWordRight()
+   - Purpose: Deletes the word to the right of the cursor.
+
+31. Insert( cChar )
+   - Purpose: Inserts a character at the current cursor position.
+   - Parameters: cChar (character to insert).
+
+32. OverStrike( cChar )
+   - Purpose: Overwrites the character at the cursor with the given character.
+   - Parameters: cChar (character to overwrite with).
+
+33. SetKeyEvent( nKey, bKey, lCtrl, lShift, lAlt )
+   - Purpose: Sets a custom key event handler for the input field.
+   - Parameters:
+     - nKey: Key code.
+     - bKey: Code block to execute on the key event.
+     - lCtrl, lShift, lAlt: Modifier keys.
+
+34. DoKeyEvent( nKey )
+   - Purpose: Executes the key event handler for the specified key.
+
+35. Refresh()
+   - Purpose: Refreshes the display of the input field.
+
+---
+
+Protected Methods
+
+These methods are for internal use only and should not be called directly by application code.
+
+1. DeleteAll()
+   - Deletes all content in the input field.
+
+2. IsEditable( nPos )
+   - Determines if the character at the specified position is editable.
+
+3. Input( cChar )
+   - Processes a character input.
+
+4. PutMask( xValue, lEdit )
+   - Applies the picture mask to the given value.
+
+5. FirstEditable()
+   - Returns the position of the first editable character.
+
+6. LastEditable()
+   - Returns the position of the last editable character.
+
+---
+
+Example Usage
+
+LOCAL oGet
+
+// Create a new GET field at row 5, column 10 with numeric picture format
+oGet := HMG_Get():New( 5, 10, {|| nValue }, "nValue", "@E 99,999.99", "W+/B" )
+
+// Display the GET field
+oGet:Display()
+
+// Retrieve the value from the field
+nValue := oGet:VarGet()
+
+// Update the field value
+oGet:VarPut( 123.45 )
+
+// Set custom key event for Enter key
+oGet:SetKeyEvent( K_ENTER, {|| MsgInfo( "Enter key pressed!" ) } )
+
+---
+
+This manual provides an overview of the HMG_Get class, focusing on its variables and methods for handling input fields. It enables developers to create customizable and user-friendly input forms in Harbour MiniGUI.

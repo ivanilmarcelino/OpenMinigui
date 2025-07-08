@@ -1,0 +1,22 @@
+
+ Call from: MYDEBUGVAR(641) -> demo.prg	oWnd:Name =	wMain	'O'	5	Button_1	
+ Объект App.Cargo доступен всегда в любом месте программы	
+ The App.Cargo object is always available anywhere in the program	
+--------------------------------------------------------------------------------------------------------------	
+  App.Cargo:	1	Key =	NTIMERSEC	Val =	5	
+  App.Cargo:	2	Key =	TTIME	Val =	2025-06-14 16:18:41.065	
+  App.Cargo:	3	Key =	CFILEDBF	Val =	S:\Mega\Dev\32\BCC\Minigui\SAMPLES\Advanced\Tsb_FileChangeControl\test.dbf	
+  App.Cargo:	4	Key =	CALIAS	Val =	MyTest	
+  App.Cargo:	5	Key =	CLOG	Val =	S:\Mega\Dev\32\BCC\Minigui\SAMPLES\Advanced\Tsb_FileChangeControl\Demo.log	
+  App.Cargo:	6	Key =	CWINFORM	Val =	wMain	
+  App.Cargo:	7	Key =	CWINMEMO	Val =	Edit_Memo	
+  App.Cargo:	8	Key =	CFONT	Val =	DejaVu Sans Mono	
+  App.Cargo:	9	Key =	CFSIZE	Val =	12	
+  App.Cargo:	10	Key =	APROCESS	Val =	ARRAY[8] = { {},{},{},{},{},{},{},{} }	
+  App.Cargo:	11	Key =	LREFRESH	Val =	.F.	
+  App.Cargo:	12	Key =	ATEST	Val =	ARRAY[7] = {1, 2, 3, 4, 5, 6, 7}	
+  App.Cargo:	13	Key =	CWINDOW	Val =	wMain	
+  App.Cargo:	14	Key =	HWINDOW	Val =	4330032	
+  App.Cargo:	15	Key =	OWINDOW	Val =	'OBJECT' TWNDDATA wMain ARRAY[6] {"STATUSBAR", "STATUSITEM", "LABEL", "OBUTTON", "TBROWSE", "EDITBOX"} 794 619	
+  App.Cargo:	16	Key =	OBRW	Val =	'OBJECT' TSBROWSE wMain Tsb_File MYTEST 8	
+...	

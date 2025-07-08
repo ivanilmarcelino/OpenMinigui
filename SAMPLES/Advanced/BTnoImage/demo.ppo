@@ -1,0 +1,438 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 14 "S:\Mega\Dev\32\BCC\Minigui\include\miniprint.ch"
+  MEMVAR _HMG_MINIPRINT
+#line 3 "demo.prg"
+MEMVAR hBitmap
+
+FUNCTION Main()
+
+   PRIVATE hBitmap
+
+   _HMG_SYSDATA[210] := "Demo_2" ;#line 4 "Demo.fmg"
+_DefineWindow ( , "Displaying mode when image file not found with Bos Taurus library", 231, 51, 519, 565, .T., .T., .T., .F., .F., {,}, {,}, {|| Nil}, {|| Proc_ON_RELEASE()} , {|| Nil}, {|| Nil} , {|| Nil} , {|| Nil}, Nil , {|| Nil} , .F. , .F. , .T. , NIL , .F. , ,, NIL , NIL , {|| Nil} , {|| Nil} , {|| Nil} , Nil , Nil , {|| Nil} , {|| Nil} , {|| Nil} , {|| Nil} , {|| Nil} , {|| Nil} , .F. , {|| Nil} , {|| Nil} , NIL , .F. , {|| Nil} , , , , .F. , .F. , , , .F. , , , )
+
+    _HMG_SYSDATA[316] := "Image_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[311] := .F. ; _HMG_SYSDATA[310] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[352] := .F. ; _HMG_SYSDATA[360] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[330] := .F.
+        _HMG_SYSDATA[331] := 10
+        _HMG_SYSDATA[332] := 40
+        _HMG_SYSDATA[320] := 40
+        _HMG_SYSDATA[321] := 40
+        _HMG_SYSDATA[333] := "HMG"
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[311] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+    _DefineImage ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[333], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[311], _HMG_SYSDATA[310], _HMG_SYSDATA[364], _HMG_SYSDATA[352], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[360], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Label_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 8
+        _HMG_SYSDATA[332] := 120
+        _HMG_SYSDATA[320] := 360
+        _HMG_SYSDATA[321] := 36
+        _HMG_SYSDATA[334] := "Company Name"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 24
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .T.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := {0,128,128}
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Frame_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[345] := .F. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[331] := 70
+        _HMG_SYSDATA[332] := 20
+        _HMG_SYSDATA[320] := 472
+        _HMG_SYSDATA[321] := 140
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 11
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[318] := "Customer registration"
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := {0,0,255}
+        _HMG_SYSDATA[345] := .T.
+    _BeginFrame ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[331], _HMG_SYSDATA[332], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[318], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[345], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[364], _HMG_SYSDATA[330], _HMG_SYSDATA[406], _HMG_SYSDATA[399] )
+
+    _HMG_SYSDATA[316] := "Label_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 100
+        _HMG_SYSDATA[332] := 40
+        _HMG_SYSDATA[320] := 80
+        _HMG_SYSDATA[321] := 20
+        _HMG_SYSDATA[334] := "Full name:"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 10
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Label_3" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 100
+        _HMG_SYSDATA[332] := 120
+        _HMG_SYSDATA[320] := 220
+        _HMG_SYSDATA[321] := 18
+        _HMG_SYSDATA[334] := "Client name"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 9
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .T.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := {255,255,255}
+        _HMG_SYSDATA[359] := NIL
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Label_4" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 130
+        _HMG_SYSDATA[332] := 40
+        _HMG_SYSDATA[320] := 80
+        _HMG_SYSDATA[321] := 20
+        _HMG_SYSDATA[334] := "Address:"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 10
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Label_5" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 130
+        _HMG_SYSDATA[332] := 120
+        _HMG_SYSDATA[320] := 220
+        _HMG_SYSDATA[321] := 18
+        _HMG_SYSDATA[334] := "Client address"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 9
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .T.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := {255,255,255}
+        _HMG_SYSDATA[359] := NIL
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Label_6" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 160
+        _HMG_SYSDATA[332] := 40
+        _HMG_SYSDATA[320] := 80
+        _HMG_SYSDATA[321] := 20
+        _HMG_SYSDATA[334] := "City:"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 10
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Label_7" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 160
+        _HMG_SYSDATA[332] := 119
+        _HMG_SYSDATA[320] := 220
+        _HMG_SYSDATA[321] := 18
+        _HMG_SYSDATA[334] := "Client city"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 9
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .T.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := {255,255,255}
+        _HMG_SYSDATA[359] := NIL
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Frame_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[345] := .F. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[331] := 80
+        _HMG_SYSDATA[332] := 360
+        _HMG_SYSDATA[320] := 120
+        _HMG_SYSDATA[321] := 120
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 10
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[318] := "Client picture"
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+        _HMG_SYSDATA[345] := .T.
+    _BeginFrame ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[331], _HMG_SYSDATA[332], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[318], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[345], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[364], _HMG_SYSDATA[330], _HMG_SYSDATA[406], _HMG_SYSDATA[399] )
+
+    _HMG_SYSDATA[316] := "Image_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[311] := .F. ; _HMG_SYSDATA[310] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[352] := .F. ; _HMG_SYSDATA[360] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[330] := .F.
+        _HMG_SYSDATA[331] := 98
+        _HMG_SYSDATA[332] := 370
+        _HMG_SYSDATA[320] := 100
+        _HMG_SYSDATA[321] := 90
+        _HMG_SYSDATA[333] := "hmg2.bmp"
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[311] := .T.
+        _HMG_SYSDATA[319] := {|| Nil}
+    _DefineImage ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[333], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[311], _HMG_SYSDATA[310], _HMG_SYSDATA[364], _HMG_SYSDATA[352], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[360], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Frame_3" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[345] := .F. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[331] := 220
+        _HMG_SYSDATA[332] := 20
+        _HMG_SYSDATA[320] := 472
+        _HMG_SYSDATA[321] := 246
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 11
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[318] := "Product selling"
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := {0,0,255}
+        _HMG_SYSDATA[345] := .T.
+    _BeginFrame ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[331], _HMG_SYSDATA[332], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[318], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[345], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[364], _HMG_SYSDATA[330], _HMG_SYSDATA[406], _HMG_SYSDATA[399] )
+
+    _HMG_SYSDATA[316] := "Frame_4" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[345] := .F. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[331] := 250
+        _HMG_SYSDATA[332] := 40
+        _HMG_SYSDATA[320] := 250
+        _HMG_SYSDATA[321] := 120
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 10
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[318] := "Description"
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+        _HMG_SYSDATA[345] := .T.
+    _BeginFrame ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[331], _HMG_SYSDATA[332], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[318], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[345], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[364], _HMG_SYSDATA[330], _HMG_SYSDATA[406], _HMG_SYSDATA[399] )
+
+    _HMG_SYSDATA[316] := "Label_8" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+        _HMG_SYSDATA[331] := 270
+        _HMG_SYSDATA[332] := 50
+        _HMG_SYSDATA[320] := 230
+        _HMG_SYSDATA[321] := 90
+        _HMG_SYSDATA[334] := "Sometimes the scent of seasonal hand wash is all we need to rouse our holiday spirits. Available in an array of festive fragrances, our naturally derived gel hand wash will leave your hands soft, clean and ready to be tucked into a pair of fair isle mitte"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 9
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .F.
+        _HMG_SYSDATA[313] := .T.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[319] := {|| Nil}
+        _HMG_SYSDATA[308] := .F.
+        _HMG_SYSDATA[358] := {255,255,255}
+        _HMG_SYSDATA[359] := NIL
+    _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Frame_5" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[345] := .F. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[331] := 372
+        _HMG_SYSDATA[332] := 40
+        _HMG_SYSDATA[320] := 250
+        _HMG_SYSDATA[321] := 80
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 10
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[318] := "Available"
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+        _HMG_SYSDATA[345] := .T.
+    _BeginFrame ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[331], _HMG_SYSDATA[332], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[318], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[345], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[364], _HMG_SYSDATA[330], _HMG_SYSDATA[406], _HMG_SYSDATA[399] )
+
+    _HMG_SYSDATA[316] := "Image_3" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[311] := .F. ; _HMG_SYSDATA[310] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[352] := .F. ; _HMG_SYSDATA[360] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[330] := .F.
+        _HMG_SYSDATA[331] := 390
+        _HMG_SYSDATA[332] := 50
+        _HMG_SYSDATA[320] := 230
+        _HMG_SYSDATA[321] := 50
+        _HMG_SYSDATA[333] := "hmg3.bmp"
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[311] := .T.
+        _HMG_SYSDATA[319] := {|| Nil}
+    _DefineImage ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[333], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[311], _HMG_SYSDATA[310], _HMG_SYSDATA[364], _HMG_SYSDATA[352], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[360], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Frame_6" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[345] := .F. ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[331] := 250
+        _HMG_SYSDATA[332] := 310
+        _HMG_SYSDATA[320] := 170
+        _HMG_SYSDATA[321] := 202
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 10
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[318] := "Product image"
+        _HMG_SYSDATA[358] := NIL
+        _HMG_SYSDATA[359] := NIL
+        _HMG_SYSDATA[345] := .T.
+    _BeginFrame ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[331], _HMG_SYSDATA[332], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[318], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[345], _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[364], _HMG_SYSDATA[330], _HMG_SYSDATA[406], _HMG_SYSDATA[399] )
+
+    _HMG_SYSDATA[316] := "Image_4" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[311] := .F. ; _HMG_SYSDATA[310] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[352] := .F. ; _HMG_SYSDATA[360] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[330] := .F.
+        _HMG_SYSDATA[331] := 270
+        _HMG_SYSDATA[332] := 320
+        _HMG_SYSDATA[320] := 150
+        _HMG_SYSDATA[321] := 170
+        _HMG_SYSDATA[333] := "hmg4.bmp"
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[311] := .T.
+        _HMG_SYSDATA[319] := {|| Nil}
+    _DefineImage ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[333], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[311], _HMG_SYSDATA[310], _HMG_SYSDATA[364], _HMG_SYSDATA[352], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[360], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+    _HMG_SYSDATA[316] := "Button_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[318] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[325] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[286] := Nil ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[364] := .T. ; _HMG_SYSDATA[284] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[403] := Nil ; _HMG_SYSDATA[278] := .F.
+        _HMG_SYSDATA[331] := 490
+        _HMG_SYSDATA[332] := 210
+        _HMG_SYSDATA[320] := 100
+        _HMG_SYSDATA[321] := 28
+        _HMG_SYSDATA[319] := {|| Submit()}
+        _HMG_SYSDATA[318] := "Submit"
+        _HMG_SYSDATA[322] := "Arial"
+        _HMG_SYSDATA[323] := 12
+        _HMG_SYSDATA[324] := ""
+        _HMG_SYSDATA[312] := .T.
+        _HMG_SYSDATA[313] := .F.
+        _HMG_SYSDATA[315] := .F.
+        _HMG_SYSDATA[314] := .F.
+        _HMG_SYSDATA[326] := {|| Nil}
+        _HMG_SYSDATA[327] := {|| Nil}
+        _HMG_SYSDATA[329] := Nil
+        _HMG_SYSDATA[325] := .F.
+        _HMG_SYSDATA[328] := ! .T.
+        _HMG_SYSDATA[330] := ! .T.
+        _HMG_SYSDATA[364] := .F.
+        _HMG_SYSDATA[360] := .F.
+        _HMG_SYSDATA[333] := Nil
+        _HMG_SYSDATA[281] := .F. ; _HMG_SYSDATA[368] := .T.
+    _DefineOwnerButton ( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[318], _HMG_SYSDATA[319], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[333], _HMG_SYSDATA[324], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[325], ! _HMG_SYSDATA[364], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[328], _HMG_SYSDATA[278], _HMG_SYSDATA[286], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312] , _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[368], _HMG_SYSDATA[280], _HMG_SYSDATA[281], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[283], _HMG_SYSDATA[284], _HMG_SYSDATA[352], _HMG_SYSDATA[287], _HMG_SYSDATA[339], _HMG_SYSDATA[282], _HMG_SYSDATA[372], _HMG_SYSDATA[279], _HMG_SYSDATA[399], _HMG_SYSDATA[403] )
+
+_EndWindow ()
+#line 11 "demo.prg"
+   ChangeStyle( GetControlHandle ("Label_3", "Demo_2"), 512, NIL, .T. ); iif( .F., RedrawWindow ( GetControlHandle ("Label_3", "Demo_2") ), )
+   ChangeStyle( GetControlHandle ("Label_5", "Demo_2"), 512, NIL, .T. ); iif( .F., RedrawWindow ( GetControlHandle ("Label_5", "Demo_2") ), )
+   ChangeStyle( GetControlHandle ("Label_7", "Demo_2"), 512, NIL, .T. ); iif( .F., RedrawWindow ( GetControlHandle ("Label_7", "Demo_2") ), )
+   ChangeStyle( GetControlHandle ("Label_8", "Demo_2"), 512, NIL, .T. ); iif( .F., RedrawWindow ( GetControlHandle ("Label_8", "Demo_2") ), )
+   _DefineHotKey ( "Demo_2" , 0 , 27 , {|| DoMethod ( _HMG_SYSDATA[254] , "Release" )} )
+   DoMethod ( "Demo_2", "Center" )
+
+   IfNotFoundImg( "Demo_2", "Image_1", { 255, 153, 153 } )
+   IfNotFoundImg( "Demo_2", "Image_2", { 153 , 217 , 234 } )
+   IfNotFoundImg( "Demo_2", "Image_3", {   0 , 255 ,   0 } )
+   IfNotFoundImg( "Demo_2", "Image_4", { 255 , 255 ,   0 } )
+
+   DoMethod ( "Demo_2", "Activate" )
+
+RETURN NIL
+
+
+FUNCTION IfNotFoundImg( cFormName, cControlName, aRGBcolor_Fill_Bk )
+
+   LOCAL nWidth  := GetProperty( cFormName, cControlName, "Width" )
+   LOCAL nHeight := GetProperty( cFormName, cControlName, "Height" )
+   LOCAL cImgFile := GetProperty( cFormName, cControlName, "Picture" )
+   LOCAL hDC, BTstruct
+
+   hBitmap := BT_HMGGetImage ( cFormName, cControlName )
+   IF !File( cImgFile ) .AND. Empty( hBitmap )
+      hBitmap := BT_BitmapCreateNew ( nWidth, nHeight, aRGBcolor_Fill_Bk )
+      hDC := BT_CreateDC ( hBitmap, 5, @BTstruct )
+
+      BT_DrawRectangle ( hDC, 0, 0, nWidth - 1, nHeight - 1, {   0 ,   0 ,   0 }, 1 )
+      BT_DrawLine ( hDC, 0, 0, nHeight, nWidth, {   0 ,   0 ,   0 }, 1 )
+      BT_DrawLine ( hDC, nHeight, 0, 0, nWidth, {   0 ,   0 ,   0 }, 1 )
+      BT_DeleteDC ( BTstruct )
+      BT_HMGSetImage ( cFormName, cControlName, hBitmap, .T. )
+   ENDIF
+
+RETURN NIL
+
+
+FUNCTION Proc_ON_RELEASE
+
+   BT_BitmapRelease ( hBitmap )
+
+RETURN NIL
+
+
+FUNCTION Submit()
+
+   SetNewImage( "Image_1", "HMG" )
+   SetNewImage( "Image_2", "PAUL" )
+   SetNewImage( "Image_3", "AVAILABLE" )
+   SetNewImage( "Image_4", "PRODUCT" )
+
+RETURN NIL
+
+
+FUNCTION SetNewImage( cControl, cFileName )
+
+   LOCAL hBitmap_aux
+   LOCAL cForm := GetProperty ( _HMG_SYSDATA[254] , "Name" )
+   LOCAL w := GetProperty( cForm, cControl, "Width" )
+   LOCAL h := GetProperty( cForm, cControl, "Height" )
+
+   hBitmap_aux := BT_BitmapLoadFile ( cFileName )
+
+   hBitmap := BT_BitmapCopyAndResize ( hBitmap_aux, w, h, NIL, 1 )
+   BT_BitmapRelease ( hBitmap_aux )
+   BT_HMGSetImage ( cForm, cControl, hBitmap, .F. )
+
+RETURN NIL

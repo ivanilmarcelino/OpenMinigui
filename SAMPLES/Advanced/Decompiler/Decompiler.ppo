@@ -1,0 +1,1817 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 20 "Decompiler.prg"
+FUNCTION MAIN
+ _HMG_SYSDATA[210] := "DECOMPILER" ;#line 23 "DECOMPILER.fmg"
+_DefineWindow ( , "*.Exe to *.Prg Harbour Decompiler - Alpha 0.1  <arcangelo.molinaro@fastwebnet.it>", 60, 180, 940, 680, .F., .F., .F., .F., .F., {,}, {,},, ,, , ,, , , .F. , .F. , .T. , "demo.ico" , .F. , ,, , , , , , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+     _DefineMainMenu( )
+          _DefineMenuPopup( "Start" , , , )
+               _DefineMenuItem ( "GO" , {|| e2cHD()} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+          _EndMenuPopup()
+     _EndMenu()
+
+     _BeginMessageBar( "StatusBar",, .F., "Arial", 8, .T., .F., .F., .F., )
+            _DefineItemMessage( "STATUSITEM", , 0, 0, "[x] Harbour Power Ready!",,, 0,,,, .F.,,, iif( .F. == .T., 2, iif( .F. == .T., 1, 0 ) ) )
+            _SetStatusClock( _HMG_SYSDATA[201] , _HMG_SYSDATA[33] , , , , .F. , , )
+            _DefineItemMessage( "STATUSITEM", , 0, 0, Dtoc(Date()),, iif( .F. == .F., iif( lower( left( set( 4 ), 4 ) ) == "yyyy" .OR. lower( right( set( 4 ), 4 ) ) == "yyyy", 84, 70 ), ), 0, "", ,, ,, )
+     _EndMessageBar ()
+
+     _HMG_SYSDATA[316] := "Label_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+            _HMG_SYSDATA[331] := 8
+            _HMG_SYSDATA[332] := 150
+            _HMG_SYSDATA[320] := 200
+            _HMG_SYSDATA[321] := 20
+            _HMG_SYSDATA[334] := "*.Exe to *.C (PCODE) "
+            _HMG_SYSDATA[323] := 12
+     _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+     _HMG_SYSDATA[89] := .T. ; _HMG_SYSDATA[316] := "RichEdit_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[342] := .F. ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[343] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[336] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[344] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[390] := Nil ; _HMG_SYSDATA[404] := Nil ; _HMG_SYSDATA[294] := .F. ; _HMG_SYSDATA[293] := .F. ; _HMG_SYSDATA[289] := .F. ; _HMG_SYSDATA[319] := Nil
+            _HMG_SYSDATA[331] := 30
+            _HMG_SYSDATA[332] := 30
+            _HMG_SYSDATA[320] := 400
+            _HMG_SYSDATA[321] := 550
+            _HMG_SYSDATA[323] := 12
+            _HMG_SYSDATA[342] := .T.
+            _HMG_SYSDATA[294] := .T.
+     _HMG_SYSDATA[89] := .F. ; _DefineRichEditBox( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[343], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[327], _HMG_SYSDATA[342], _HMG_SYSDATA[344], _HMG_SYSDATA[329], _HMG_SYSDATA[330] , _HMG_SYSDATA[328] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[390], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[294], _HMG_SYSDATA[289], _HMG_SYSDATA[293], _HMG_SYSDATA[336] , _HMG_SYSDATA[319] )
+
+     _HMG_SYSDATA[316] := "Label_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[360] := .F. ; _HMG_SYSDATA[361] := .F. ; _HMG_SYSDATA[362] := .F. ; _HMG_SYSDATA[363] := .F. ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[319] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[341] := .F. ; _HMG_SYSDATA[308] := .F. ; _HMG_SYSDATA[304] := .F. ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[368] := .F. ; _HMG_SYSDATA[278] := .F. ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[288] := .F.
+            _HMG_SYSDATA[331] := 8
+            _HMG_SYSDATA[332] := 650
+            _HMG_SYSDATA[320] := 200
+            _HMG_SYSDATA[321] := 20
+            _HMG_SYSDATA[334] := "*.C (PCODE) to *.prg"
+            _HMG_SYSDATA[323] := 12
+     _DefineLabel( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[334], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[312], _HMG_SYSDATA[360], _HMG_SYSDATA[361], _HMG_SYSDATA[362], _HMG_SYSDATA[363], _HMG_SYSDATA[364], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[319], _HMG_SYSDATA[324], _HMG_SYSDATA[329], _HMG_SYSDATA[330], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314], _HMG_SYSDATA[308], _HMG_SYSDATA[341], _HMG_SYSDATA[288], _HMG_SYSDATA[304], _HMG_SYSDATA[326], _HMG_SYSDATA[327], _HMG_SYSDATA[368], _HMG_SYSDATA[278], _HMG_SYSDATA[406], _HMG_SYSDATA[399], _HMG_SYSDATA[348], _HMG_SYSDATA[303] )
+
+     _HMG_SYSDATA[89] := .T. ; _HMG_SYSDATA[316] := "RichEdit_2" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[342] := .F. ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[343] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[336] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[330] := .F. ; _HMG_SYSDATA[344] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[390] := Nil ; _HMG_SYSDATA[404] := Nil ; _HMG_SYSDATA[294] := .F. ; _HMG_SYSDATA[293] := .F. ; _HMG_SYSDATA[289] := .F. ; _HMG_SYSDATA[319] := Nil
+            _HMG_SYSDATA[331] := 30
+            _HMG_SYSDATA[332] := 500
+            _HMG_SYSDATA[320] := 400
+            _HMG_SYSDATA[321] := 550
+            _HMG_SYSDATA[323] := 12
+            _HMG_SYSDATA[342] := .T.
+            _HMG_SYSDATA[294] := .T.
+     _HMG_SYSDATA[89] := .F. ; _DefineRichEditBox( _HMG_SYSDATA[316], _HMG_SYSDATA[317], _HMG_SYSDATA[332], _HMG_SYSDATA[331], _HMG_SYSDATA[320], _HMG_SYSDATA[321], _HMG_SYSDATA[334], _HMG_SYSDATA[322], _HMG_SYSDATA[323], _HMG_SYSDATA[324], _HMG_SYSDATA[343], _HMG_SYSDATA[326], _HMG_SYSDATA[335], _HMG_SYSDATA[327], _HMG_SYSDATA[342], _HMG_SYSDATA[344], _HMG_SYSDATA[329], _HMG_SYSDATA[330] , _HMG_SYSDATA[328] , _HMG_SYSDATA[312] , _HMG_SYSDATA[313] , _HMG_SYSDATA[315] , _HMG_SYSDATA[314] , _HMG_SYSDATA[390], _HMG_SYSDATA[404], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[294], _HMG_SYSDATA[289], _HMG_SYSDATA[293], _HMG_SYSDATA[336] , _HMG_SYSDATA[319] )
+
+_EndWindow ()
+#line 22 "Decompiler.prg"
+ DoMethod ( "DECOMPILER", "Center" )
+ _ActivateWindow ( {"DECOMPILER"}, .F., , )
+RETURN NIL
+
+function E2CHD
+Local cFileName:="", aReturn:={},aPrgName:="",cPrgName:=""
+Local aStringa:={},cReturn:="",aLatest:={},cValue1:="",cValue2:=""
+Local cFuncName:="", cFuncScope:="" ,aFuncName:={},nFuncAdr:=0
+Local BaseMemory:=0, Offset:=0, aTrans:={},cTrans,nStartReadBufferAddress:=0
+Local RvaDataSection:=0,RvaCodeSection:=0, VaDataSection:=0,VaCodeSection:=0
+Local OffsetDataSection:=0,OffsetCodeSection:=0
+Local nLen:=0,nLen1:=0,I:=0
+Local aGlobalByteCode:={},aByteCodeFunc:={},aReturnByteCodeFunc:={}
+Local j:=0,nTime:=0,aComodo:={},OffsetImageBase:=0
+Local aSaddress:={},nSectionAlignement:=0,nFileAlignement:=0
+Local cEndReadFunc:="",DataEntryPoint:=0,OffsetOfEntryPoint:=0
+Local flag:=.T., q:=1,cNumero:="",nNumero:=0,cPcodeFile:=""
+Local aAddrName:={},aScopeFunc:={},aCodeFunc:={},aNullFunc:={},aNameFunc:={}
+
+
+Set( 3, 0 )
+Set( 4, iif( __SetCentury(), "dd/mm/yyyy", "dd/mm/yy" ) )
+ cFilename:=HBChoose_File()
+   if empty(cFilename)
+      return nil
+   endif
+ cReturn:=HBPeFileCheck(cFileName)
+ IF (cReturn<>"S_OK")
+     MsgInfo ( "Check Failed - Not a PE file", "EXIT PROGRAM", , .F. )
+     return nil
+ ENDIF
+ aSaddress         := HBLoadBasicAddresses(cFilename)
+ BaseMemory        := asAddress[1]
+ RVaCodeSection    := asAddress[2]
+ RVaDataSection    := asAddress[3]
+ nSectionAlignement:= asAddress[4]
+ nFileAlignement   := asAddress[5]
+ VaCodeSection     := asAddress[6]
+ VaDataSection     := asAddress[7]
+ DataEntryPoint    := asAddress[8]
+ OffsetImageBase   := asAddress[9]
+ OffsetCodeSection := asAddress[10]
+ OffsetDataSection := asAddress[11]
+ OffsetOfEntryPoint:= asAddress[12]
+
+
+
+
+
+ aadd(aComodo,"0x"+ IF(Empty( DecToHexa(asAddress[13]) ),"00",IF(LEN(DecToHexa(asAddress[13]))<2,"0"+DecToHexa(asAddress[13]),DecToHexa(asAddress[13])))+ IF(Empty( DecToHexa(asAddress[14]) ),"00",IF(LEN(DecToHexa(asAddress[14]))<2,"0"+DecToHexa(asAddress[14]),DecToHexa(asAddress[14])))+ IF(Empty( DecToHexa(asAddress[15]) ),"00",IF(LEN(DecToHexa(asAddress[15]))<2,"0"+DecToHexa(asAddress[15]),DecToHexa(asAddress[15])))+ IF(Empty( DecToHexa(asAddress[16]) ),"00",IF(LEN(DecToHexa(asAddress[16]))<2,"0"+DecToHexa(asAddress[16]),DecToHexa(asAddress[16]))))
+
+   nStartReadBufferAddress:=HBRvaToOffset(cFilename,(HexaToDec(aComodo[1])-BaseMemory))
+   nNumero:=HexaToDec(RIGHT(aComodo[1],4))+12
+   cNumero:=DecToHexa(nNumero)
+   cEndReadFunc:=SUBSTR(aComodo[1],3,4)+cNumero
+ q:=0
+ while (flag = .T.)
+   aReturn:=HBRead16Offset(cFileName,nStartReadBufferAddress+12)
+   for i:=1 to 16 step 4
+
+
+
+
+     aadd(aStringa, IF(Empty( DecToHexa(aReturn[i+3]) ),"00",IF(LEN(DecToHexa(aReturn[i+3]))<2,"0"+DecToHexa(aReturn[i+3]),DecToHexa(aReturn[i+3])))+ IF(Empty( DecToHexa(aReturn[i+2]) ),"00",IF(LEN(DecToHexa(aReturn[i+2]))<2,"0"+DecToHexa(aReturn[i+2]),DecToHexa(aReturn[i+2])))+ IF(Empty( DecToHexa(aReturn[i+1]) ),"00",IF(LEN(DecToHexa(aReturn[i+1]))<2,"0"+DecToHexa(aReturn[i+1]),DecToHexa(aReturn[i+1])))+ IF(Empty( DecToHexa(aReturn[i] )  ),"00",IF(LEN(DecToHexa(aReturn[i] ) )<2,"0"+DecToHexa(aReturn[i]  ),DecToHexa(aReturn[i]  ))))
+   next
+   IF (aStringa[4*q+1] == cEndReadFunc)
+     I:=0
+     for i=1 to 4
+       ASIZE(aStringa,len(aStringa)-1)
+     next
+     Flag:=.F.
+     EXIT
+   ELSE
+     q++
+     nStartReadBufferAddress:=nStartReadBufferAddress+16
+   ENDIF
+ enddo
+ nLen:=LEN(aStringa)
+ for i= 1 to nLen step 4
+   Offset:= HBRvaToOffset(cFilename,(HexaToDec(aStringa[i])-BaseMemory))
+   aFuncName:=HBReadFunctionName(cFileName,Offset)
+   for nTime =1 to len(aFuncName)
+        cFuncName:=cFuncName+CHR(aFuncName[nTime][1])
+   next
+   aadd(aStringa,cFuncName)
+   cFuncName:=""
+   aFuncName:={}
+ next
+ i:=0
+ nLen:=0
+ nLen:=len(aStringa)* 0.80
+ nLen1:=len(aStringa)* 0.20
+ aAddrName:={}
+ aScopeFunc:={}
+ aCodeFunc:={}
+ aNullFunc:={}
+ aNameFunc:={}
+ for i=1 to nLen  Step 4
+    aadd(aAddrName,aStringa[i])
+    aadd(aScopeFunc,aStringa[i+1])
+    aTrans:= HBRead04Offset (cFilename, HBRvaToOffset(cFilename,( HexaToDec("0x"+aStringa[i+2])-BaseMemory+7)))
+
+
+
+
+    cTrans:="0x"+ IF(Empty( DecToHexa(aTrans[4]) ),"00",IF(LEN(DecToHexa(aTrans[4]))<2,"0"+DecToHexa(aTrans[4]),DecToHexa(aTrans[4])))+ IF(Empty( DecToHexa(aTrans[3]) ),"00",IF(LEN(DecToHexa(aTrans[3]))<2,"0"+DecToHexa(aTrans[3]),DecToHexa(aTrans[3])))+ IF(Empty( DecToHexa(aTrans[2]) ),"00",IF(LEN(DecToHexa(aTrans[2]))<2,"0"+DecToHexa(aTrans[2]),DecToHexa(aTrans[2])))+ IF(Empty( DecToHexa(aTrans[1]) ),"00",IF(LEN(DecToHexa(aTrans[1]))<2,"0"+DecToHexa(aTrans[1]),DecToHexa(aTrans[1])))
+    aadd( aCodeFunc, { aStringa[i+2],cTrans } )
+    aadd(aNullFunc,aStringa[i+3])
+ next
+ i:=0
+ for i = nLen+1 to (nLen+nLen1)
+      aadd(aNameFunc,aStringa[i])
+ next
+ i:=0
+ nLen:=LEN(aCodeFunc)
+ aGlobalByteCode:={}
+ for i = 1 to nLen
+      aByteCodeFunc:={}
+      aReturnByteCodeFunc:={}
+      if aCodeFunc[i][1]<>"00000000"
+        nFuncAdr:= HBRvaToOffset(cFilename,(HexaToDec(aCodeFunc[i][2])-BaseMemory))
+        IF nFuncAdr<>0
+          aReturnByteCodeFunc:=HBReadByteCode(cFilename,nFuncAdr)
+        ENDIF
+      endif
+        aadd(aByteCodeFunc,aReturnByteCodeFunc)
+        aadd(aGlobalByteCode,aByteCodeFunc[1])
+ next
+  aLatest:=HBRead16Offset(cFileName,OffsetOfEntryPoint+336)
+  cVaLUE1:="0x"+IF(Empty( DecToHexa(aLatest[4]) ),"0",IF(LEN(DecToHexa(aLatest[4]))<2,"0"+DecToHexa(aLatest[4]),DecToHexa(aLatest[4])))
+  cValue2:="0x"+IF(Empty( DecToHexa(aLatest[2]) ),"0000",IF(LEN(DecToHexa(aLatest[2]))<2,"000"+DecToHexa(aLatest[2]),"0"+DecToHexa(aLatest[2])))
+
+
+
+
+  cTrans:="0x"+ IF(Empty( DecToHexa(aLatest[9]) ),"00",IF(LEN(DecToHexa(aLatest[9]))<2,"0"+DecToHexa(aLatest[9]),DecToHexa(aLatest[9])))+ IF(Empty( DecToHexa(aLatest[8]) ),"00",IF(LEN(DecToHexa(aLatest[8]))<2,"0"+DecToHexa(aLatest[8]),DecToHexa(aLatest[8])))+ IF(Empty( DecToHexa(aLatest[7]) ),"00",IF(LEN(DecToHexa(aLatest[7]))<2,"0"+DecToHexa(aLatest[7]),DecToHexa(aLatest[7])))+ IF(Empty( DecToHexa(aLatest[6]) ),"00",IF(LEN(DecToHexa(aLatest[6]))<2,"0"+DecToHexa(aLatest[6]),DecToHexa(aLatest[6])))
+  Offset:= HBRvaToOffset(cFilename,(HexaToDec(cTrans)-BaseMemory))
+  aPrgName:=HBReadFunctionName(cFileName,Offset)
+  nLen:=LEN(aPrgNamE)
+  FOR i= 1 TO nLen
+      cPrgName:=cPrgName+CHR(aPrgName[i][1])
+  next
+  wri_file(cPrgName,cValue1,cValue2,aNameFunc,aScopeFunc,aGlobalByteCode)
+  cPcodeFile:=substr(cPrgName,1,len(cPrgName)-4)+".c"
+  SetProperty ( "DECOMPILER", "RichEdit_1" , "value" , memoread(cPcodeFile) )
+  decode_c2prg(cPcodeFile)
+return nil
+
+Function HBChoose_File()
+Local cFileName
+ cFileName := Getfile ( { {"*.Exe Files","*.exe"} } , "Open a File" , , .F. , .T. )
+
+Return cFileName
+
+function HBReadFunctionScope(cScope)
+Local cStringScope:=""
+if cScope =="00000205"
+  cStringScope:="{HB_FS_PUBLIC | HB_FS_FIRST | HB_FS_LOCAL}"
+elseif cScope =="00000201"
+  cStringScope:="{HB_FS_PUBLIC | HB_FS_LOCAL}"
+elseif cScope =="00000202"
+  cStringScope:="{HB_FS_STATIC | HB_FS_LOCAL}"
+elseif cScope =="00000001"
+  cStringScope:="{HB_FS_PUBLIC}"
+elseif cScope =="00000081"
+  cStringScope:="{HB_FS_PUBLIC | HB_FS_MEMVAR}"
+elseif cScope =="00000218"
+  cStringScope:="{HB_FS_INITEXIT | HB_FS_LOCAL}"
+endif
+return cStringScope
+
+function wri_file(cPrgName,cValue1,cValue2,aFuncName,aFuncScope,aGlobalByteCode)
+Local cRecover:=substr(cPrgName,1,len(cPrgName)-4)+".c"
+Local nLenA:=LEN(aFuncName), i:=0,k:=0
+Local nLenB:=0,aFunctionNumber:=aGlobalByteCode[1],aAtomFunc:={}
+Local cString:="",cString1:="",cString2:="",cCompVer:=""
+Local cHarbVers:="",cHarbDecVers:="",cOs:="",cHarbBuildDate:="",cPcodeVer:=""
+cCompVer:=HB_COMPILER()
+cHarbVers:=VERSION()
+cOs:=OS()
+cHarbBuildDate:=HB_BUILDDATE()
+cHarbDecVers:="Harbour Decompiler Alpha 0.1"
+cPcodeVer:=HB_PCODEVER()
+
+
+
+
+
+
+
+
+
+
+cString:="/*"+hb_eol()+ " * "+cHarbDecVers+" "+hb_eol()+ " * "+cHarbVers+" "+hb_eol()+ " * Built on "+cHarbBuildDate+" "+hb_eol()+ " * "+cPcodeVer+" "+hb_eol()+ " * "+cCompVer+" "+hb_eol()+ " * "+cOs+" "+hb_eol()+ " * Recovered C source from "+'"'+cPrgName+'"'+hb_eol()+ "*/"+hb_eol()+hb_eol()+ "#include " + '"'+"hbvmpub.h"+'"'+hb_eol()+ "#include " + '"'+"hbinit.h"+'"'+hb_eol()+hb_eol()+hb_eol()
+
+      FOR I= 1 TO nLena
+        IF aFuncScope[i]=="00000205"
+          cString:=cString+"HB_FUNC( " + aFuncName[i] + " );" +hb_eol()
+        ENDIF
+      next
+
+      FOR I= 1 TO nLena
+        IF aFuncScope[i]=="00000201"
+          cString:=cString+"HB_FUNC( " + aFuncName[i] + " );" +hb_eol()
+        ENDIF
+      next
+
+      FOR I= 1 TO nLena
+        IF aFuncScope[i]=="00000202"
+          cString:=cString+"HB_FUNC_STATIC( " + aFuncName[i] + " );" +hb_eol()
+        ENDIF
+      next
+
+
+      FOR I= 1 TO nLena
+        IF aFuncScope[i]=="00000218"
+           cString:=cString+"HB_FUNC"+substr(aFuncName[i],2,LEN(aFuncName[i])-2) + "();" +hb_eol()
+        ENDIF
+      next
+
+
+      FOR I= 1 TO nLena
+        IF (aFuncScope[i]=="00000001" .OR. aFuncScope[i]=="00000081")
+          cString:=cString+"HB_FUNC_EXTERN( " + aFuncName[i] + " );" +hb_eol()
+        ENDIF
+      next
+
+cString1:="HB_INIT_SYMBOLS_BEGIN( hb_vm_SymbolInit_"+ UPPER(Substr(cPrgName,1,len(cPrgName)-4))+" )"+hb_eol()
+
+     cString:=cString+hb_eol()+hb_eol()+hb_eol()+cString1
+
+       FOR I = 1 TO nLenA
+
+        cString:=cString+ "{ "+'"'+aFuncName[I]+'"'+", "+HBReadFunctionScope(aFuncScope[i])+", "
+        if aFuncScope[i]=="00000081"
+           cString:=cString+"{NULL}, NULL },"+hb_eol()
+
+        elseif aFuncScope[i]=="00000218"
+           cString:=cString+ "{hb"+SUBSTR(aFuncName[I],2,LEN(aFuncName[I])-2)+ "}, NULL },"+hb_eol()
+        else
+           cString:=cString+"{HB_FUNCNAME( "+aFuncName[I]+ " )}, NULL },"+hb_eol()
+        endif
+       next
+
+cString:=substr(cString,1,LEN(cString)-3)+hb_eol()
+cString2:="HB_INIT_SYMBOLS_EX_END( hb_vm_SymbolInit_" +UPPER(Substr(cPrgName,1,len(cPrgName)-4))+", "+'"'+ cPrgName+'", ' + cValue1 +", "+ cValue2 + ")"+hb_eol()+hb_eol()
+cString:=cString+cString2
+
+
+
+
+
+
+
+
+
+
+cString1:="#if defined( HB_PRAGMA_STARTUP )"+hb_eol()+ "   #pragma startup hb_vm_SymbolInit_"+UPPER(Substr(cPrgName,1,len(cPrgName)-4))+hb_eol()+ "#elif defined( HB_MSC_STARTUP )"+hb_eol()+ "   #if defined( HB_OS_WIN_64 )" +hb_eol()+ "      #pragma section( HB_MSC_START_SEGMENT, long, read )"+hb_eol()+ "   #endif"+hb_eol()+ "   #pragma data_seg( HB_MSC_START_SEGMENT )"+hb_eol()+ "   static HB_$INITSYM hb_vm_auto_SymbolInit_"+UPPER(Substr(cPrgName,1,len(cPrgName)-4))+ " = hb_vm_SymbolInit_"+ UPPER(Substr(cPrgName,1,len(cPrgName)-4))+";"+hb_eol()+ "   #pragma data_seg()"+hb_eol()+ "#endif"+hb_eol()+hb_eol()
+       cString:=cString+cString1
+       I:=0
+       K:=0
+       FOR I=1 TO nLena
+         nLenB:=LEN(aGlobalByteCode[i])
+         IF (aFuncScope[i]<>"00000001" .AND. aFuncScope[i]<>"00000081")
+           IF aFuncScope[i]=="00000218"
+               cString1:="HB_FUNC"+SUBSTR(aFuncName[i],2,len(aFuncName[i])-2)+"()"+hb_eol()
+           ELSEIF aFuncScope[i]=="00000202"
+               cString1:="HB_FUNC_STATIC( "+aFuncName[i]+" )"+hb_eol()
+           ELSE
+               cString1:="HB_FUNC( "+SUBSTR(aFuncName[i],1,len(aFuncName[i]))+" )"+hb_eol()
+           ENDIF
+
+
+
+             cString1:=cString1+"{"+hb_eol()+ "      static const BYTE pcode[] ="+hb_eol()+ "      {"+hb_eol()+ "            "
+                     for k= 1 to nLenB
+                       cString1:=cString1+ALLTRIM(STR(aGlobalByteCode[i][k][1]))+","
+                       IF ( (K/14=INT(K/14)) .AND. (K<>nLenB) )
+                         cString1:=cString1+hb_eol()+"            "
+                       ENDIF
+                     next
+                IF (RIGHT(alltrim(cString1),1)==",")
+                   cString1:=substr(ALLTRIM(cString1),1,len(cstring1)-1)
+                endif
+                cString:=cString+cString1
+                cString:=cString+hb_eol()+"       };"+hb_eol()+hb_eol()
+                cString:=cString+"       hb_vmExecute( pcode, symbols );"+hb_eol()+"}"+hb_eol()+hb_eol()
+                cString1:=""
+         ENDIF
+       next
+       memowrit(cRecover,cString)
+return nil
+
+
+#pragma BEGINDUMP
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_USED
+#define _WIN32_WINNT   0x0400
+#define WINVER   0x0400
+
+#include <windows.h>
+#include <stdio.h>
+#include <conio.h>
+#include <tchar.h>
+#include <commctrl.h>
+#include <hbapi.h>
+#include <hbvm.h>
+#include <hbstack.h>
+#include <imagehlp.h>
+#include <hbapiitm.h>
+#include <imagehlp.h>
+
+DWORD RvaToOffset( IMAGE_NT_HEADERS *NtHeaders, DWORD Rva);
+
+HB_FUNC( HBPEFILECHECK )
+{
+
+   HANDLE                hFile;   
+   HANDLE                hMapFile;
+   LPTSTR                pBuf;
+   const char            *filename = hb_parc(1);
+   DWORD                 FileSize;
+   BYTE                  *BaseAddress;
+   IMAGE_NT_HEADERS      *ImageNtHeaders;
+   IMAGE_DOS_HEADER      *ImageDosHeader;
+   IMAGE_SECTION_HEADER  *ImageSectionHeader;
+   IMAGE_OPTIONAL_HEADER *ImageOptionalHeader; 
+   DWORD                 BR;
+
+   hFile = CreateFile( filename, GENERIC_READ,FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+   if( hFile == INVALID_HANDLE_VALUE )
+         {
+            MessageBox(NULL,"Could not open file","ABORT PROGRAM",MB_ICONWARNING);
+            hb_retc("Could not open file");
+            return;
+         }
+
+    /* Allocate Memory Buffer */
+
+    FileSize = GetFileSize(hFile,NULL);
+    BaseAddress = (BYTE *) malloc(FileSize);
+    if (!ReadFile(hFile,BaseAddress, FileSize, &BR, NULL))
+       {
+         free(BaseAddress);
+         CloseHandle(hFile);
+         MessageBox(NULL,"Could not allocate memory buffer","ABORT PROGRAM",MB_ICONWARNING);         
+         hb_retc("Could not allocate buffer memory");
+         return;
+       }
+
+    /* Check Dos Header */
+    ImageDosHeader = (IMAGE_DOS_HEADER *) BaseAddress;
+    if (ImageDosHeader->e_magic != IMAGE_DOS_SIGNATURE)
+      {
+         free(BaseAddress);
+         CloseHandle(hFile);
+         MessageBox(NULL,"Invalid DOS Header","ABORT PROGRAM",MB_ICONWARNING);
+         hb_retc("Invalid Dos Header");
+         return;
+      }
+
+    /* Check PE Header */
+    ImageNtHeaders = (IMAGE_NT_HEADERS *) (ImageDosHeader->e_lfanew+(DWORD) ImageDosHeader);
+    if (ImageNtHeaders->Signature != IMAGE_NT_SIGNATURE)
+      {
+         free(BaseAddress);
+         CloseHandle(hFile);
+         MessageBox(NULL,"Invalid PE Header","ABORT PROGRAM",MB_ICONWARNING);
+         hb_retc("Invalid PE Header");
+         return;
+      }
+
+    hMapFile = CreateFileMapping( hFile , 0, PAGE_READONLY , 0, 0,0); 
+    if (hMapFile == NULL) 
+      {  
+        MessageBox(NULL,"Could not create file mapping object","ABORT PROGRAM",MB_ICONWARNING);
+        free(BaseAddress);
+        CloseHandle( hFile );
+        hb_retc("Could not create file mapping object");
+      }
+
+      pBuf =   MapViewOfFile(hMapFile,FILE_MAP_READ,0,0,0);
+
+   if (pBuf == NULL)
+     { 
+        MessageBox(NULL,"Could not map view of file","ABORT PROGRAM",MB_ICONWARNING);
+        CloseHandle(hMapFile);
+        CloseHandle( hFile );
+        free(BaseAddress);
+        UnmapViewOfFile(pBuf);
+        hb_retc( "Could not map view of file" );
+        return;
+     }
+
+   UnmapViewOfFile(pBuf);
+   CloseHandle(hMapFile);
+   CloseHandle( hFile );
+   free(BaseAddress);
+   hb_retc("S_OK");
+   return;
+   
+}
+
+HB_FUNC(HBREADFUNCTIONNAME)
+{
+
+   HINSTANCE              hLib = LoadLibrary( "ImageHlp.Dll" );
+   const char             *ImageName = hb_parc(1);
+   PSTR                   DllPath = NULL;
+   BOOL                   DotDll= 0;
+   BOOL                   ReadOnly = 1 ; 
+   LOADED_IMAGE           LoadedImage;
+   PUCHAR                 pBuf;
+   DWORD                  NewOffset = hb_parnl(2);
+   PHB_ITEM               pReturn;
+   PHB_ITEM               pData;
+   int                    scroll=1;
+   int                    j;
+
+   pReturn = hb_itemNew(NULL);
+   pData = hb_itemNew(NULL);
+   hb_arrayNew(pReturn,0);
+   hb_arrayNew(pData,1);
+
+   MapAndLoad( (char*) ImageName,DllPath, &LoadedImage, DotDll, ReadOnly );
+   pBuf = LoadedImage.MappedAddress;
+
+   if (pBuf == NULL)
+     { 
+        printf("Could not map view of file - error (%d).\n",GetLastError()); 
+        UnMapAndLoad(&LoadedImage);
+        FreeLibrary( hLib );
+        hb_itemRelease(pData);
+        hb_itemRelease(pReturn);
+        hb_retc( "Map view of file failed !" );
+        return;
+     }
+
+      j=NewOffset;     
+      while (*(pBuf+j+scroll-1) !=0)
+      {       
+       hb_arraySetNL(pData,1,*(pBuf+j+scroll-1));
+       hb_arrayAdd(pReturn,pData);
+       ++scroll;
+       hb_arrayNew(pData,1);
+      }
+
+   UnMapAndLoad(&LoadedImage);
+   FreeLibrary( hLib );
+   hb_itemRelease(pData);
+   hb_itemRelease(hb_itemReturn(pReturn));
+   return;   
+}
+
+
+HB_FUNC(HBRVATOOFFSET)
+ {
+   const char              *ImageName = hb_parc(1);
+   PSTR                    DllPath = NULL;
+   LOADED_IMAGE            LoadedImage;
+   PIMAGE_NT_HEADERS       NtHeaders;
+   DWORD                   ImageBase;
+   BOOL                    DotDll= 0;
+   BOOL                    ReadOnly = 1 ; 
+   DWORD                   Offset ;
+   DWORD                   Rva=hb_parnl(2);
+   HINSTANCE              hLib = LoadLibrary( "ImageHlp.Dll" );
+   MapAndLoad( (char *) ImageName,DllPath, &LoadedImage, DotDll, ReadOnly );
+   NtHeaders = LoadedImage.FileHeader;
+   Offset = RvaToOffset( NtHeaders, Rva);
+   UnMapAndLoad(&LoadedImage);
+   FreeLibrary( hLib );
+   hb_retnl(Offset);
+   return;
+ }
+
+
+HB_FUNC( HBREAD16OFFSET )
+{
+   const char             *ImageName = hb_parc(1);
+   PSTR                   DllPath = NULL;
+   BOOL                   DotDll= 0;
+   BOOL                   ReadOnly = 1 ; 
+   LOADED_IMAGE           LoadedImage;
+   PUCHAR                 pBuf;
+   DWORD                  Offset = hb_parnl(2);
+   PHB_ITEM               pReturn;
+   PHB_ITEM               pData;
+   HINSTANCE              hLib = LoadLibrary( "ImageHlp.Dll" );
+
+   MapAndLoad( (char *) ImageName,DllPath, &LoadedImage, DotDll, ReadOnly );
+   pBuf = LoadedImage.MappedAddress;
+   pReturn = hb_itemNew(NULL);
+   pData = hb_itemNew(NULL);
+   hb_arrayNew(pReturn,0);
+   hb_arrayNew(pData,16);
+   if (pBuf == NULL)
+     { 
+
+        MessageBox(NULL,"Could not map view of file","ABORT PROGRAM",MB_ICONWARNING);
+        UnMapAndLoad(&LoadedImage);
+        FreeLibrary( hLib );
+        hb_retc( "Map view of file failed !" );
+        return;
+     }
+   hb_arraySetNI(pData,1, *(pBuf+Offset));
+   hb_arraySetNI(pData,2, *(pBuf+Offset+1));
+   hb_arraySetNI(pData,3, *(pBuf+Offset+2));
+   hb_arraySetNI(pData,4, *(pBuf+Offset+3));
+   hb_arraySetNI(pData,5, *(pBuf+Offset+4));
+   hb_arraySetNI(pData,6, *(pBuf+Offset+5));
+   hb_arraySetNI(pData,7, *(pBuf+Offset+6));
+   hb_arraySetNI(pData,8, *(pBuf+Offset+7));
+   hb_arraySetNI(pData,9, *(pBuf+Offset+8));
+   hb_arraySetNI(pData,10, *(pBuf+Offset+9));
+   hb_arraySetNI(pData,11, *(pBuf+Offset+10));
+   hb_arraySetNI(pData,12, *(pBuf+Offset+11));
+   hb_arraySetNI(pData,13, *(pBuf+Offset+12));
+   hb_arraySetNI(pData,14, *(pBuf+Offset+13));
+   hb_arraySetNI(pData,15, *(pBuf+Offset+14));
+   hb_arraySetNI(pData,16, *(pBuf+Offset+15));
+
+   UnMapAndLoad(&LoadedImage);
+   FreeLibrary( hLib );
+   hb_itemRelease(hb_itemReturn(pData));
+   return;
+  }
+
+HB_FUNC( HBREAD04OFFSET )
+{
+   const char             *ImageName = hb_parc(1);
+   PSTR                   DllPath = NULL;
+   BOOL                   DotDll= 0;
+   BOOL                   ReadOnly = 1 ; 
+   LOADED_IMAGE           LoadedImage;
+   PUCHAR                 pBuf;
+   DWORD                  Offset = hb_parnl(2);
+   PHB_ITEM               pData;
+   HINSTANCE              hLib = LoadLibrary( "ImageHlp.Dll" );
+
+   MapAndLoad( (char *) ImageName,DllPath, &LoadedImage, DotDll, ReadOnly );
+   pBuf = LoadedImage.MappedAddress;   
+   pData = hb_itemNew(NULL);
+   hb_arrayNew(pData,4);
+   if (pBuf == NULL)
+     { 
+        printf("Could not map view of file - error (%d).\n",GetLastError()); 
+        UnMapAndLoad(&LoadedImage);
+        FreeLibrary( hLib );
+        hb_itemRelease(pData);
+        hb_retc( "Map view of file failed !" );
+        return;
+     }
+   hb_arraySetNI(pData,1, *(pBuf+Offset));
+   hb_arraySetNI(pData,2, *(pBuf+Offset+1));
+   hb_arraySetNI(pData,3, *(pBuf+Offset+2));
+   hb_arraySetNI(pData,4, *(pBuf+Offset+3));
+   UnMapAndLoad(&LoadedImage);
+   FreeLibrary( hLib );
+   hb_itemRelease(hb_itemReturn(pData));
+   return;
+  }
+
+
+HB_FUNC( HBREADBYTECODE )
+{
+   HINSTANCE              hLib = LoadLibrary( "ImageHlp.Dll" );
+   const char             *ImageName = hb_parc(1);
+   PSTR                   DllPath = NULL;
+   BOOL                   DotDll= 0;
+   BOOL                   ReadOnly = 1 ; 
+   BOOL                   lFlag = 0 ; 
+   LOADED_IMAGE           LoadedImage;
+   PUCHAR                 pBuf;
+   int                    j=1;
+   DWORD                  Offset = hb_parnl(2);
+   PHB_ITEM               pReturn;
+   PHB_ITEM               pData;
+
+   MapAndLoad( (char *) ImageName,DllPath, &LoadedImage, DotDll, ReadOnly );
+   pBuf = LoadedImage.MappedAddress;
+   pReturn = hb_itemNew(NULL);
+   pData = hb_itemNew(NULL);
+   hb_arrayNew(pReturn,0);
+   hb_arrayNew(pData,1);
+   if (pBuf == NULL)
+     { 
+        printf("Could not map view of file - error (%d).\n",GetLastError()); 
+        UnMapAndLoad(&LoadedImage);
+        FreeLibrary( hLib );
+        hb_itemRelease(pData);
+        hb_itemRelease(pReturn);
+        hb_retc( "Map view of file failed !" );
+        return;
+     }
+
+     do
+     {
+       hb_arraySetNI(pData,1, *(pBuf+Offset+j-1));
+       hb_arrayAdd(pReturn,pData);
+       hb_arrayNew(pData,1);
+       j++;
+       if (  ( *(pBuf+Offset+j-1)==0x6E ) && ( *(pBuf+Offset+j)==0x07 ) )
+                {
+                 if (*(pBuf+Offset+j+1) !=0x24)
+                   {
+                     lFlag=1;
+                   }
+                }          
+
+     }  while ( !lFlag );
+
+     {
+       hb_arraySetNI(pData,1, *(pBuf+Offset+j-1));
+       hb_arrayAdd(pReturn,pData);
+       hb_arrayNew(pData,1);
+       j++;
+       hb_arraySetNI(pData,1, *(pBuf+Offset+j-1));
+       hb_arrayAdd(pReturn,pData);
+     }
+
+   UnMapAndLoad(&LoadedImage);
+   FreeLibrary( hLib );
+   hb_itemRelease(pData);
+   hb_itemRelease(hb_itemReturn(pReturn));
+   return;
+  }
+
+
+HB_FUNC( HBLOADBASICADDRESSES ) 
+{
+   const char             *ImageName = hb_parc(1);
+   PSTR                   DllPath = NULL;
+   LOADED_IMAGE           LoadedImage;
+   PIMAGE_NT_HEADERS      NtHeaders;
+   PUCHAR                 pBuf;
+   DWORD                  k;
+   DWORD                  Offset;
+   BOOL                   DotDll= 0;
+   BOOL                   ReadOnly = 1 ; 
+   HINSTANCE              hLib = LoadLibrary( "ImageHlp.Dll" );
+   PHB_ITEM               pData;
+   pData = hb_itemNew(NULL);
+   hb_arrayNew(pData,16);
+   MapAndLoad( (char *) ImageName,DllPath, &LoadedImage, DotDll, ReadOnly );
+   NtHeaders = LoadedImage.FileHeader;
+
+   hb_arraySetNL(pData,1,NtHeaders->OptionalHeader.ImageBase );
+   hb_arraySetNL(pData,2,NtHeaders->OptionalHeader.BaseOfCode);
+   hb_arraySetNL(pData,3,NtHeaders->OptionalHeader.BaseOfData);   
+   hb_arraySetNL(pData,4,NtHeaders->OptionalHeader.SectionAlignment);   
+   hb_arraySetNL(pData,5,NtHeaders->OptionalHeader.FileAlignment);   
+   hb_arraySetNL(pData,6,(NtHeaders->OptionalHeader.ImageBase)+(NtHeaders->OptionalHeader.BaseOfCode));   
+   hb_arraySetNL(pData,7,(NtHeaders->OptionalHeader.ImageBase)+(NtHeaders->OptionalHeader.BaseOfData));   
+   hb_arraySetNL(pData,8,NtHeaders->OptionalHeader.AddressOfEntryPoint);
+   hb_arraySetNL(pData,9 ,RvaToOffset(NtHeaders,NtHeaders->OptionalHeader.ImageBase));
+   hb_arraySetNL(pData,10,RvaToOffset(NtHeaders,NtHeaders->OptionalHeader.BaseOfCode));
+   hb_arraySetNL(pData,11,RvaToOffset(NtHeaders,NtHeaders->OptionalHeader.BaseOfData));   
+   hb_arraySetNL(pData,12,RvaToOffset(NtHeaders,NtHeaders->OptionalHeader.AddressOfEntryPoint));   
+
+   pBuf = LoadedImage.MappedAddress;
+   if (pBuf == NULL)
+     { 
+        MessageBox(NULL,"Could not map view of file ","ABORT PROGRAM",MB_ICONWARNING);         
+        UnMapAndLoad(&LoadedImage);
+        FreeLibrary( hLib );
+        hb_itemRelease(pData);
+        hb_retc( "Map view of file failed !" );
+        return;
+     }
+
+      {
+
+       k = RvaToOffset(NtHeaders,NtHeaders->OptionalHeader.AddressOfEntryPoint);
+       hb_arraySetNL(pData,13,*(pBuf+k+17));
+       hb_arraySetNL(pData,14,*(pBuf+k+16));
+       hb_arraySetNL(pData,15,*(pBuf+k+15));
+       hb_arraySetNL(pData,16,*(pBuf+k+14));
+
+      }
+   UnMapAndLoad( &LoadedImage );
+   FreeLibrary( hLib );
+   hb_itemRelease(hb_itemReturn(pData));
+   return;
+ }
+
+
+DWORD RvaToOffset( IMAGE_NT_HEADERS *NtHeaders, DWORD Rva)
+{
+   IMAGE_SECTION_HEADER   *Section;
+   DWORD                   Offset = Rva, Limit ;
+   WORD                    i;
+
+   Section = IMAGE_FIRST_SECTION ( NtHeaders );
+   if (Rva < Section->PointerToRawData)
+        return Rva ;
+   for (i = 0; i < NtHeaders->FileHeader.NumberOfSections; i++)
+	{
+          if (Section[i].SizeOfRawData)
+                  Limit = Section[i].SizeOfRawData;
+          else
+                  Limit = Section[i].Misc.VirtualSize;
+
+          if (Rva >= Section[i].VirtualAddress && Rva < (Section[i].VirtualAddress + Limit))
+		{
+                    if (Section[i].PointerToRawData != 0)
+                      {
+                           Offset -= Section[i].VirtualAddress;
+                           Offset += Section[i].PointerToRawData;
+                       }                        
+
+                      return Offset;
+		}
+           }
+     return NULL;
+ }
+
+#pragma ENDDUMP
+#line 19 "rcvrdbl.prg"
+function RECOVER_DOUBLE(n8,n7,n6,n5,n4,n3,n2,n1,n9,n10)
+
+
+
+
+
+
+
+
+
+
+
+Local aNumero:={n1,n2,n3,n4,n5,n6,n7,n8},nLen:=LEN(aNumero)
+Local nWidth:=n9+n10+1,nDecimal:=n10,nOriginalValue:=0
+Local cOriginalValue:=str(0,nWidth,nDecimal)
+Local i:=0 ,k:=0,cStringa:="", cSegno:="",cBiased:="", cFractional:=""
+Local cBit:="",nBiased:=0,nTotale:=0,nCount:=0
+Local STable:={},nSet:=0,nBase:=0
+nSet:=SET(3)
+Set( 3, 40 )
+for i= 1 to nLen
+  cStringa:=cStringa+DC_DecToBin(aNumero[i])
+next
+nLen:=len(cStringa)
+i:=0
+for i= 1 to nLen
+     cBit:=substr(cStringa,i,1)
+     do case
+        case i=1
+           iif (cBit=="1",cSegno:="-",cSegno:="+")
+        case i>1 .AND. i<13
+           cBiased:=cBiased+cBit
+        case i >=13
+           cFractional:=cFractional+cBit
+       otherwise
+        MsgExclamation( "Severe error", "Exit Program", , .F. )
+     endcase
+next
+nBase:=DC_BinToDec(cBiased)
+nBiased:=2^(nBase-1023)
+if cSegno=="-"
+   nBiased:=(-1)*nBiased
+endif
+nCount:=LEN(cFractional)
+for k= 1 to nCount
+      aadd(STable, (1/2^k))
+next
+i:=0
+for i= 1 to nCount
+  nTotale:=nTotale+val(substr(cFractional,i,1))*STable[i]
+next
+nTotale:=nTotale+1
+nOriginalValue:=nTotale*nBiased
+cOriginalValue:=str(nOriginalValue,nWidth,nDecimal)
+Set( 3, (nSet) )
+return (alltrim(cOriginalValue))
+
+
+STATIC FUNCTION DC_DecToBin(nNumber)
+
+
+
+   local cNewString:="",nLen:=0,i:=0
+   local nTemp:=0
+   WHILE(nNumber > 0)
+      nTemp:=(nNumber%2)
+      cNewString:=SubStr("01",(nTemp+1),1)+cNewString
+      nNumber:=Int((nNumber-nTemp)/2)
+   ENDDO
+   nLen:=len(cNewString)
+   if nLen < 8
+      for i = (nLen+1) to 8
+         cNewString:="0"+cNewString
+      next
+   endif
+RETURN(cNewString)
+
+
+STATIC FUNCTION DC_BinToDec(cString)
+
+
+   local nNumber:=0,nX:=0
+   local cNewString:=AllTrim(cString)
+   local nLen:=Len(cNewString)
+   FOR nX:=1 to nLen
+      nNumber+=(At(SubStr(cNewString,nX,1),"01")-1)*(2^(nLen-nX))
+   next
+RETURN(int(nNumber))
+#line 20 "recc2prg.prg"
+Function decode_c2prg(cFilename)
+Local cStringa:="",aReturn:={}
+Local cNewFilename:=BEFORATNUM(".",cFilename,1)+".dhr"
+Local nHandle:=0,i:=0,k:=0,lMode:=.T.,aFunctionName:={},nMode:= -1
+Local nLen:=0,aMacroCode:={},aFunctionCode:={}
+Local cFuncCode:=""
+ IF FILE(cNewFilename)
+     FErase( (cNewFilename) )
+ ENDIF
+ IF ((nHandle:=FCREATE(cNewFilename,0))== -1)
+     MsgInfo ( "File cannot be created !", "Exit Procedure", , .F. )
+     return nil
+ ENDIF
+ IF !(FCLOSE(nHandle))
+     MsgInfo ( "File cannot be closed !", "Exit Procedure", , .F. )
+     return nil
+ ENDIF
+ aReturn:=dcp_load_Data(cFilename)
+ aReturn:=dcp_split_code(aReturn,cNewFileName)
+return nil
+
+
+function dcp_load_Data(cFilename)
+Local cStringa:=""
+Local cNewString:="" ,cFuncName:="",nLen:=0
+Local i:=0,aSFuncName:={},aLFuncName:={},aReturn:={},k:=0,j:=0
+Local aCode:={},nResult:= -1, nStart:=0,aParam:={},nEnd:=0,lOneTime:=.T.
+Local nTotalVar:=0,nParam:=0,aVar:={},aWFuncName:={},aGlobalVar:={}
+cStringa:=MEMOREAD(cFileName)
+WHILE .T.
+ if !empty(cStringa)
+   IF lOneTime
+     nStart:=AT("HB_FUNC(",cStringa)
+     nEnd:=hb_At( ")", cStringa, nStart )
+     cFuncName:=ALLTRIM(Substr(cStringa, nStart,nEnd-nStart))
+     lOneTime:=.F.
+   ELSE
+       cFuncName:=alltrim(BEFORATNUM(";",cStringa,1))
+   ENDIF
+     cNewString:=alltrim(AFTERATNUM(";",cStringa,1))
+   if left(cFuncName,8)="HB_FUNC("
+     cFuncName:=alltrim(ATREPL("HB_FUNC(",cFuncName,""))
+     cFuncName:=alltrim(ATREPL(")",cFuncName,""))
+     AADD(aSFuncName,cFuncName)
+   elseif left(cFuncName,15)="HB_FUNC_STATIC("
+     cFuncName:=alltrim(ATREPL("HB_FUNC_",cFuncName,""))
+     cFuncName:=alltrim(ATREPL("(",cFuncName,""))
+     cFuncName:=alltrim(ATREPL(")",cFuncName,""))
+     AADD(aSFuncName,cFuncName)
+   elseif left(cFuncName,15)="HB_FUNC_EXTERN("
+     cFuncName:=alltrim(ATREPL("HB_FUNC_EXTERN(",cFuncName,""))
+     cFuncName:=alltrim(ATREPL(")",cFuncName,""))
+     AADD(aLFuncName,cFuncName)
+   elseif left(cFuncName,8)="HB_FUNC_"
+     cFuncName:=alltrim(ATREPL("HB_FUNC",cFuncName,""))
+     AADD(aSFuncName,cFuncName)
+   endif
+   cStringa:=cNewString
+ else
+    exit
+ endif
+END
+aCode:=dcp_load_array(cFileName)[1]
+nStart:=0
+I:=0
+nLen:=LEN(aCode)
+ FOR i= 1 TO nLen
+   nResult:=1
+   if aCode[i][nResult]==13
+     aadd(aParam,{aCode[i][nResult+1],aCode[i][nResult+2]})
+     nTotalVar:=aCode[i][nResult+1]+aCode[i][nResult+2]
+     nParam:=aCode[i][nResult+2]
+     aVar:=array(nTotalVar)
+      for j:=1 to  nTotalVar
+            if j <= nParam
+                aVar[j]:="Par"+alltrim(str(j))
+            else
+                aVar[j]:="Var"+alltrim(str(j))
+            endif
+      next
+      aadd(aGlobalVar,Avar)
+      aVar:={}
+   else
+     aadd(aParam,{0,0})
+     aadd(aGlobalVar,Avar)
+   endif
+ next
+i:=0
+k:=0
+aWFuncName:=ACLONE(aSFuncName)
+ for i=1 to nLen
+   cStringa:=""
+    if aParam[i][2]>0
+      for k:=1 to aParam[i][2]
+        if  k<>aParam[i][2]
+          cStringa:=cStringa+"Par"+alltrim(str(k))+","
+        else
+          cStringa:=cStringa+"Par"+alltrim(str(k))+")"
+        endif
+      next
+     if !empty(aWFuncName[i])
+       if left(aWFuncName[i],6)="STATIC"
+         aWFuncName[i]:="Static Function "+alltrim(substr(aWFuncName[i],7,len(aWFuncName)))+"("+cStringa
+       else
+         aWFuncName[i]:="Function "+aWFuncName[i]+"("+cStringa
+       endif
+     endif
+    else
+     if !empty(aWFuncName[i])
+      if left(aWFuncName[i],6)="STATIC"
+        aWFuncName[i]:="Static Function "+alltrim(substr(aWFuncName[i],7,len(aWFuncName)))
+      else
+        aWFuncName[i]:="Function "+aWFuncName[i]
+      endif
+     endif
+    endif
+  next
+aadd(aReturn,aSFuncName)
+aadd(aReturn,aLFuncName)
+aadd(aReturn,aWFuncName)
+aadd(aReturn,aCode)
+aadd(aReturn,aGlobalVar)
+RETURN aReturn
+
+function dcp_load_array(cFilename)
+Local aCode:={},cStringa:="",nPos:=0
+Local cGlobalString:="",aTemp:={},nStart:=0,cTempString:=""
+cGlobalString:=memoread(cFilename)
+while .T.
+ nPos:=hb_At( "pcode[] =", cGlobalString, nStart )
+ if nPos=0 .AND. empty(aCode)
+    MsgInfo ( "Not a valid Harbour 'c'pcode source", "Trace Message", , .F. )
+    return nil
+ elseif nPos=0 .AND. !empty(aCode)
+        exit
+ else
+   nPos:=nPos+10
+   cTempString:="pcode[] ="+alltrim(AFTERATNUM("pcode[] =",cGlobalString,2))
+   cGlobalString:=alltrim(substr(cGlobalString,nPos,len(cGlobalString)))
+   cGlobalString:=alltrim(ATREPL(chr(13),cGlobalString,""))
+   cGlobalString:=alltrim(ATREPL(chr(10),cGlobalString,""))
+   cGlobalString:=alltrim(ATREPL(chr(9),cGlobalString,""))
+   cGlobalString:=alltrim(ATREPL("{",cGlobalString,""))
+   cGlobalString:=alltrim(ATREPL("  ",cGlobalString,""))
+   cGlobalString:=alltrim(ATREPL(" ",cGlobalString,""))
+   cGlobalString:=alltrim(BEFORATNUM("}",cGlobalString,1))
+   if empty(cGlobalString)
+      MsgInfo ( "All function were processed !", "Trace Message", , .F. )
+      exit
+   endif
+ endif
+ if !empty(cGlobalString)
+    AADD(aCode,dcp_str2arr(cGlobalString,","))
+ endif
+ cGlobalString:=cTempString
+ cTempString:=""
+end
+aadd(aTemp,aCode)
+aadd(aTemp,cFilename)
+return (aTemp)
+
+static function dcp_str2arr( cList, cDelimiter )
+LOCAL nPos
+LOCAL aList := {}
+LOCAL nlencd:=0
+LOCAL asub
+DO CASE
+ CASE VALTYPE(cDelimiter)=="C"
+   cDelimiter:=if(cDelimiter==NIL,",",cDelimiter)
+   nlencd:=len(cdelimiter)
+   while ( nPos := AT( cDelimiter, cList )) <> 0
+       AADD( aList, VAL(SUBSTR( cList, 1, nPos - 1 )))
+      cList := SUBSTR( cList, nPos + nlencd )
+   ENDDO
+    AADD( aList, VAL(cList) )
+ CASE VALTYPE(cDelimiter)=="N"
+   while len((nPos:=left(cList,cDelimiter)))==cDelimiter
+      aadd(aList,nPos)
+      cList:=substr(cList,cDelimiter+1)
+   ENDDO
+ CASE VALTYPE(cDelimiter)=="A"
+   AEVAL(cDelimiter,{|x| nlencd+=x})
+   while len((nPos:=left(cList,nlencd)))==nlencd
+      asub:={}
+      aeval(cDelimiter,{|x| aadd(asub,left(nPos,x)),nPos:=substr(nPos,x+1)})
+      aadd(aList,asub)
+      cList:=substr(cList,nlencd+1)
+   ENDDO
+ ENDCASE
+RETURN ( aList )
+
+
+function dcp_split_code(aReturn,cNewFileName)
+Local aGlobalCode:={},aCode:={},aSFuncName:={},aLFuncName:={}
+Local aWFuncName:={},aGlobalVar:={},aTemp:={},aVar:={}
+Local nLen:=0,i:=0,j:=0,aRowCode:={},nResult:= -1,nStart:=0,nLenCode:=0
+Local cStringa:="",nLenRow:=0,nPCode:=0,nNextRow:=0,nJump:=0
+Local aStack:={},nLenVar:=0,lDeclaration:=.T.,nAssignedVar:=0
+Local aGlobalRowCode:={},aForNextStack:={},aSkipCode:={}
+aSFuncName:=aReturn[1]
+aLFuncName:=aReturn[2]
+aWFuncName:=aReturn[3]
+aGlobalCode:=aReturn[4]
+aGlobalVar:=aReturn[5]
+nLen:=LEN(aGlobalCode)
+for j=1 to nLen
+    aCode:=aGlobalCode[j]
+    aVar:=aGlobalVar[j]
+    nLenCode:=LEN(aCode)
+    nLenVar:=LEN(aVar)
+    nLenRow:=dcp_FindLastRow(aCode)
+    aRowCode:=array(nLenRow)
+    AFILL(aRowCode,NIL)
+    aRowCode[1]:=aWFuncName[j]
+    While .T.
+      if i<nLenCode
+        i:=i+1
+         nPcode:=aCode[i]
+         DO CASE
+            CASE nPcode==51
+
+               aTemp:=dcp_f51(aCode,i)
+               cStringa:=cStringa+aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+            CASE nPcode==36
+
+
+
+
+
+               aTemp:=dcp_f36(aCode,i,aRowCode,nNextRow,cStringa,lDeclaration)
+               nJump:=aTemp[1]
+               if aTemp[2] >= nNextRow
+                 nNextRow:=aTemp[2]
+               else
+                 nNextRow:=nNextRow+1
+               endif
+               aRowCode:=aTemp[3]
+               cStringa:=aTemp[4]
+               i:=nJump
+               if (nAssignedVar==nLenVar)
+                  lDeclaration:=.F.
+               endif
+
+            CASE nPcode==4
+               aTemp:=dcp_f4(aCode,i,aStack)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+
+            CASE nPcode==95
+               aTemp:=dcp_f95(aCode,i,aStack,aVar)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==72
+               aTemp:=dcp_f72(aCode,i,aStack,aVar)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+
+            CASE nPcode==101
+               aTemp:=dcp_f101(aCode,i,aStack)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==106
+               aTemp:=dcp_f106(aCode,i,aStack)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==98
+               altd()
+               aTemp:=dcp_f98(aCode,i,aLFuncName)
+               cStringa:=cStringa+aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==165
+               aTemp:=dcp_f165(aCode,i,aStack,aVar,aRowCode,nNextRow,lDeclaration,aSkipCode)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               aRowCode:=aTemp[3]
+               nNextRow:=aTemp[4]
+               aSkipCode:=aTemp[5]
+               i:=nJump
+
+            CASE nPcode==93
+               altd()
+               aTemp:=dcp_f93(aCode,i,cStringa)
+               cStringa:=cStringa+aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==92
+               aTemp:=dcp_f92(aCode,i,aStack)
+               nJump:=aTemp[1]
+               aStack:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==97
+               aTemp:=dcp_f97(aCode,i,aStack)
+               nJump:=aTemp[1]
+               aStack:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==13
+               nJump:=i+2
+               i:=nJump
+
+            CASE nPcode==25
+               aTemp:=dcp_f25(aCode,i,aVar,aStack,cStringa,lDeclaration)
+               aStack:=aTemp[1]
+               cStringa:=cStringa+aTemp[2]
+               nJump:=aTemp[3]
+               i:=nJump
+
+            CASE nPcode==120
+               aTemp:=dcp_f120(aCode,i,aStack)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==9
+               aTemp:=dcp_f9(aCode,i,aStack)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==121
+               aTemp:=dcp_f121(aCode,i,aStack)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==122
+               aTemp:=dcp_f122(aCode,i,aStack)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==80
+               aTemp:=dcp_f80(aCode,i,aVar,aStack,cStringa,lDeclaration)
+               aStack:=aTemp[1]
+               cStringa:=aTemp[2]
+               nJump:=aTemp[3]
+               nAssignedVar:=aTemp[4]
+               i:=nJump
+
+            CASE nPcode==2
+               dcp_f2()
+
+            CASE nPcode==175
+               aTemp:=dcp_f175(aCode,i,aStack,aVar,aRowCode,nNextRow,aSkipCode)
+               aRowCode:=aTemp[1]
+               nNextRow:=aTemp[2]
+               nJump:=aTemp[3]
+               i:=nJump
+
+            CASE nPcode==176
+               aTemp:=dcp_f176(aCode,i,aLFuncName)
+               cStringa:=cStringa+aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==100
+               aTemp:=dcp_f100(aCode,i,aStack)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+
+            CASE nPcode==110
+               aTemp:=dcp_f110(aCode,i,aStack)
+               aStack:=aTemp[1]
+               nJump:=aTemp[2]
+               cStringa:=aTemp[3]
+               i:=nJump
+
+            CASE nPcode==7
+               aTemp:=dcp_f7(aRowCode,nNextRow,cStringa,i)
+               aRowCode:=aTemp[1]
+               nJump:=aTemp[2]
+               i:=nJump
+             OTHERWISE
+
+                   MsgInfo ( "PCODE : "+alltrim(str(aCode[i]))+hb_eol()+ "Not yet coded", "Trace Message", , .F. )
+        ENDCASE
+      else
+         exit
+      endif
+    end
+    i:=0
+    aGlobalVar[j]:=aVar
+    lDeclaration:=.T.
+    aadd(aGlobalRowCode,aRowCode)
+    aRowCode:={}
+    cStringa:=""
+next
+if(dcp_Write_Code(aGlobalRowCode,cNewFilename))
+
+   SetProperty ( "DECOMPILER", "RichEdit_2" , "value" , memoread(cNewFilename) )
+ else
+
+     MsgInfo ( "Error occurs writing file "+cNewFilename+hb_eol()+ "NEED CAREFULLY DEBUGGING !", "Trace Message decode_c2prg", , .F. )
+ endif
+return aReturn
+
+function dcp_Write_Code(aGlobalRowCode,cFilename)
+Local nLenFunc:=LEN(aGlobalRowCode),cStringa:="",lMode:=.T.
+Local aRigo:={},nLineToWrite:=0,i:=0,j:=0,nHandle,nError
+ for i=1 to nLenFunc
+   aRigo:=aGlobalRowCode[i]
+   nLineToWrite:=LEN(aRigo)
+     for j=1 to nLineToWrite
+        if empty(aRigo[j])
+           cStringa:=cStringa+hb_eol()
+        else
+          cStringa:=cStringa+aRigo[j]+hb_eol()
+        endif
+     next
+ next
+ if (nHandle:=Fopen(cFilename,2))>0
+    fseek(nHandle,0,2)
+    nError:=fwrite(nHandle,cStringa)
+    IF nError==0
+
+       MsgInfo ( "String cannot be written in file "+cFilename + " !"+hb_eol()+ "Error # : "+alltrim(str((nError))), "Trace Message", , .F. )
+       lMode:=.F.
+    endif
+ else
+    MsgInfo ( "File "+cFilename + " cannot be opened !", "Trace Message", , .F. )
+    lMode:=.F.
+ endif
+ IF !(FCLOSE(nHandle))
+     MsgInfo ( "File cannot be closed !", "Trace Message", , .F. )
+     lMode:=.F.
+ ENDIF
+return lMode
+
+
+static function dcp_FindLastRow(aCode)
+Local nLastRow:=0,nResult:= -1,nLen:=LEN(aCode),nStart:=nLen-15
+ while .T.
+ if nStart>1
+   nResult:=ASCAN(aCode,36,nStart)
+    if nResult > 0
+      nLastRow:=aCode[nResult+1]+aCode[nResult+2]*256
+      exit
+    else
+      nResult:= -1
+      nStart:=nStart-15
+    endif
+ else
+      MsgInfo ( "No source code found", "Trace Message in FindLastRow", , .F. )
+      exit
+ endif
+ end
+return nLastRow
+
+
+Static Function dcp_CheckVarType(xVar)
+Local cStringa:="",xType:=""
+IF VALTYPE(xVar)="C"
+      cStringa:=xVar
+      xType:="c"
+ELSEIF VALTYPE(xVar)="N"
+     cStringa:=ALLTRIM(STR(xVar))
+     xType:="n"
+ELSEIF VALTYPE(xVar)="L"
+     IF (xVar, cStringa:=".T.",cStringa:=".F.")
+     xType:="l"
+ELSEIF VALTYPE(xVar)="D"
+     cStringa:=DTOC(xVar)
+     xType:="d"
+ELSEIF VALTYPE(xVar)="A"
+     if (LEN(xVar)==1 .AND. empty(xVar[1]))
+         cStringa:="{}"
+     else
+         cStringa:=xVar[1]
+     endif
+     xType:="a"
+ENDIF
+Return {cStringa,xType}
+
+Static Function dcp_FormatVarType(xVar,lArrayEmpty)
+Local cStringa:=""
+IF VALTYPE(xVar)="C"
+      cStringa:=xVar
+ELSEIF VALTYPE(xVar)="N"
+     cStringa:=ALLTRIM(STR(xVar))
+ELSEIF VALTYPE(xVar)="L"
+     IF (xVar, cStringa:=".T.",cStringa:=".F.")
+ELSEIF VALTYPE(xVar)="D"
+     cStringa:=DTOC(xVar)
+ELSEIF VALTYPE(xVar)="A"
+     if (LEN(xVar)==1 .AND. empty(xVar[1]) .AND. lArrayEmpty=.T.)
+         cStringa:="{}"
+     else
+         if Valtype(xVar[1])="C"
+            cStringa:=xVar[1]
+         elseif Valtype(xVar[1])="N"
+            cStringa:=ALLTRIM(STR(xVar[1]))
+         elseif Valtype(xVar[1])="D"
+            cStringa:=DTOC(xVar)
+         elseif Valtype(xVar[1])="L"
+             IF (xVar[1], cStringa:=".T.",cStringa:=".F.")
+         elseif Valtype(xVar[1])="A"
+              MsgInfo ( "Nested array - Not yet coded", "Trace message FormatVarType", , .F. )
+         endif
+     endif
+ENDIF
+Return cStringa
+
+static function dcp_f4(aCode,nIndex,aStack)
+Local aReturn:={},nElements:=aCode[nIndex+1]+aCode[nIndex+2]*256
+Local i:=0,aTemp:={},cTemp:="}",cStringa:="",nStack:=0,lArrayEmpty:=.T.
+if nElements>0
+ lArrayEmpty:=.F.
+ for i= 1 to nElements
+  aTemp:=dcp_pop_stack(aStack)
+    if i==1
+     cTemp:=alltrim(dcp_FormatVarType({aTemp[2]},lArrayEmpty))+cTemp
+    elseif i<>nElements
+      cTemp:=alltrim(dcp_FormatVarType({aTemp[2]},lArrayEmpty))+","+cTemp
+    elseif i==nElements
+     cTemp:="{"+alltrim(dcp_FormatVarType({aTemp[2]},lArrayEmpty))+","+cTemp
+    endif
+  aStack:=aTemp[1]
+ next
+else
+   cTemp:=""
+endif
+cStringa:=cStringa+cTemp
+aStack:=dcp_push_stack(aStack,{cStringa})
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex+2)
+return aReturn
+
+static function dcp_f101(aCode,nIndex,aStack)
+Local aReturn:={},nNumero:=0
+
+
+
+
+
+
+
+
+
+nNumero:=RECOVER_DOUBLE(aCode[nIndex+1],+ aCode[nIndex+2],+ aCode[nIndex+3],+ aCode[nIndex+4],+ aCode[nIndex+5],+ aCode[nIndex+6],+ aCode[nIndex+7],+ aCode[nIndex+8],+ aCode[nIndex+9],+ aCode[nIndex+10])
+aStack:=dcp_push_stack(aStack,nNumero)
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex+10)
+return aReturn
+
+
+
+static function dcp_f95(aCode,nIndex,aStack,aVar)
+Local aReturn:={},nVar:=aCode[nIndex+1]
+Local cStringa:=aVar[nVar]
+aStack:=dcp_push_stack(aStack,cStringa)
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex+1)
+return aReturn
+
+
+static function dcp_f72(aCode,nIndex,aStack,aVar)
+Local aReturn:={},xString1:="", xString2:="",aTemp:={}
+aTemp:=dcp_pop_stack(aStack)
+xString1:=aTemp[2]
+aTemp:=dcp_pop_stack(aTemp[1])
+xString2:=aTemp[2]
+aStack:={}
+aStack:=dcp_push_stack(aStack,":=")
+aStack:=dcp_push_stack(aStack,xString2)
+aStack:=dcp_push_stack(aStack,"+")
+aStack:=dcp_push_stack(aStack,xString1)
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex)
+return aReturn
+
+static function dcp_f175(aCode,nIndex,aStack,aVar,aRowCode,nNextRow,aSkipCode)
+Local aReturn:={},cStringa:="",nRow:=0,aTemp:={},nSkipPcode:=0
+Local nVar:=aCode[nIndex+1]+aCode[nIndex+2]*256
+Local nPrint:=ASCAN(aCode,36,nIndex+1)
+aTemp:=dcp_pop_stack(aSkipCode)
+aSkipCode:=aTemp[1]
+
+
+
+
+nSkipPcode:=aTemp[2][2]-aTemp[2][1]
+nRow:=aCode[nPrint+1]+aCode[nPrint+2]*256
+if nRow<nNextRow
+  nRow:=nNextRow
+endif
+cStringa:="NEXT "+ aVar[nVar]
+aRowCode[nNextRow]:=cStringa
+aadd(aReturn,aRowCode)
+aadd(aReturn,nRow)
+aadd(aReturn,nIndex+2+nSkipPcode)
+return aReturn
+
+static function dcp_f121(aCode,nIndex,aStack)
+Local aReturn:={},nNumero:=0
+aStack:=dcp_push_stack(aStack,nNumero)
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex)
+return aReturn
+
+
+static function dcp_f122(aCode,nIndex,aStack)
+Local aReturn:={},nNumero:=1
+aStack:=dcp_push_stack(aStack,nNumero)
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex)
+return aReturn
+
+
+static function dcp_f120(aCode,nIndex,aStack)
+Local aReturn:={},lMode:=.T.
+aStack:=dcp_push_stack(aStack,lMode)
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex)
+return aReturn
+
+static function dcp_f9(aCode,nIndex,aStack)
+Local aReturn:={},lMode:=.F.
+aStack:=dcp_push_stack(aStack,lMode)
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex)
+return aReturn
+
+
+static function dcp_f25(aCode,nIndex,aVar,aStack,cStringa,lDeclaration)
+Local aReturn:={},nJump:=0,nToNumber:=0, nVar:=0,aTemp:={}
+if aCode[nIndex-2]==80
+     nVar:=aCode[nIndex-1]
+endif
+
+nJump:=aCode[nIndex+1]
+if nJump > 128
+  nJump:=(256-aCode[nIndex+1])
+endif
+nToNumber:=aCode[nIndex+nJump+1]
+aStack:=dcp_push_stack(aStack,nToNumber)
+aStack:=dcp_push_stack(aStack,"TO")
+
+aTemp:=dcp_f80(aCode,nIndex-2,aVar,aStack,cStringa,lDeclaration)
+aadd(aReturn,aTemp[1])
+aadd(aReturn,aTemp[2])
+aadd(aReturn,nIndex+1)
+aadd(aReturn,aTemp[4])
+return aReturn
+
+
+static function dcp_f165(aCode,nIndex,aStack,aVar,aRowCode,nNextRow,lDeclaration,aSkipCode)
+Local aReturn:={},cVar:="",nJump:=0,cTemp:="",cStringa:="",nNewIndex:=0
+Local nResult:= -1,nStart:=0,aTemp:={},nReadEnd:=0
+if aCode[nIndex+1]==80 .AND. aCode[nIndex+3]==25
+          nJump:=aCode[nIndex+4]
+          nReadEnd:=nIndex+4+nJump-1
+          nResult:=ASCAN(aCode,36,nReadEnd)
+          if nResult>0
+            AADD(aSkipCode,{nReadEnd,nResult})
+          endif
+          if aCode[nReadEnd]==95
+                cVar:=aVar[aCode[nIndex+4+nJump]]
+          elseif aCode[nReadEnd]==92
+                cVar:=alltrim(dcp_FormatVarType({aCode[nReadEnd+1]},.T.))
+          endif
+          cTemp:=alltrim(dcp_FormatVarType({dcp_pop_stack(aStack)[2]},.T.))
+          cStringa:="FOR "+aVar[aCode[nIndex+2]]+"="+cTemp+" TO "+cVar
+          nStart:=nIndex-7
+          nResult:=ASCAN(aCode,36,nStart)
+          aTemp:=dcp_f36(aCode,nResult,aRowCode,nNextRow,cStringa,lDeclaration)
+           nNextRow:=aTemp[2]+1
+           aRowCode:=aTemp[3]
+           cStringa:=aTemp[4]
+           nStart:=nResult+1
+           nResult:= -1
+           nResult:=ASCAN(aCode,36,nStart)
+           nResult:=nResult+2
+else
+    MsgInfo ( "dcp_f165->80,<>25 not yet improved function", "Trace Message", , .F. )
+endif
+aStack:={}
+aadd(aReturn,aStack)
+aadd(aReturn,nResult)
+aadd(aReturn,aRowCode)
+aadd(aReturn,nNextRow)
+aadd(aReturn,aSkipCode)
+return aReturn
+
+
+static function dcp_f80(aCode,nIndex,aVar,aStack,cStringa,lDeclaration)
+Local aReturn:={},nVar:=aCode[nIndex+1],aTemp:={},xReturn,aType:={}
+Local cValue:="",xType,cNewString:=cStringa, nLastVar:=LEN(aVar)
+Local aStringa:={}
+
+
+
+if lDeclaration
+ aTemp:=dcp_pop_stack(aStack)
+ aStack:=aTemp[1]
+ xReturn:=aTemp[2]
+ aType:=dcp_CheckVarType(xReturn)
+ cValue:=aType[1]
+ xType:=aType[2]
+ If Empty(cNewString)
+   cNewString:=xType+aVar[nVar]+":="+cValue+","
+   aVar[nVar]:=xType+aVar[nVar]
+ else
+   cNewString:=cStringa+xType+aVar[nVar]+":="+cValue+","
+   aVar[nVar]:=xType+aVar[nVar]
+ endif
+else
+ while !empty(aStack)
+   aTemp:=dcp_pop_stack(aStack)
+   aStack:=aTemp[1]
+   xReturn:=aTemp[2]
+   aadd(aStringa,dcp_FormatVarType(xReturn,if(Valtype(xReturn)="A",.T.,.F.)))
+ end
+ cNewString:=dcp_mask_convert(aStringa,aVar,nVar,aCode,nIndex)
+endif
+aadd(aReturn,aStack)
+aadd(aReturn,cNewString)
+aadd(aReturn,nIndex+1)
+aadd(aReturn,nVar)
+return aReturn
+
+
+static function dcp_f51(aCode,nIndex)
+Local aReturn:={},cStringa:=""
+Local i:=nIndex
+ while .T.
+   i:=i+1
+   cStringa:=cStringa+CHR(aCode[i])
+   if aCode[i]==0
+     cStringa:=substr(cStringa,1,LEN(cStringa)-1)
+     exit
+   endif
+ end
+aadd(aReturn,cStringa)
+aadd(aReturn,i)
+return aReturn
+
+static function dcp_f36(aCode,nIndex,aRowCode,nNextRow,cStringa,lDeclaration)
+Local aReturn:={},nJump:=nIndex+2
+Local nRow:=aCode[nIndex+1]+aCode[nIndex+2]*256
+if (!empty(cStringa) .AND. lDeclaration = .T.)
+     cStringa:="Local "+cStringa
+endif
+if nNextRow==0
+  if (!empty(cStringa) .AND. alltrim(cStringa)<>"Local")
+    aRowCode[nRow-1]:=substr(cStringa,1,LEN(cStringa)-1)
+  endif
+else
+  if !empty(cStringa) .AND. lDeclaration=.T.
+    aRowCode[nNextRow]:=substr(cStringa,1,LEN(cStringa)-1)
+  elseif !empty(cStringa) .AND. lDeclaration=.F.
+    aRowCode[nNextRow]:=cStringa
+  endif
+endif
+cStringa:=""
+aadd(aReturn,nJump)
+aadd(aReturn,nRow)
+aadd(aReturn,aRowCode)
+aadd(aReturn,cStringa)
+return aReturn
+
+static function dcp_f106(aCode,nIndex,aStack)
+Local aReturn:={},cStringa:=""
+Local i:=0,nLen:=aCode[nIndex+1]
+for i=nIndex+2 to nIndex+nLen+1
+   cStringa:=cStringa+CHR(aCode[i])
+next
+cStringa:=substr(cStringa,1,LEN(cStringa)-1)
+aStack:=dcp_push_stack(aStack,cStringa)
+i:=nIndex+nLen+1
+aadd(aReturn,aStack)
+aadd(aReturn,i)
+return aReturn
+
+static function dcp_f98(aCode,nIndex,aLFuncName)
+Local aReturn:={},cStringa:=""
+Local nFunction:=aCode[nIndex+1]+aCode[nIndex+2]*256
+Local i:=nIndex+2
+cStringa:=aLFuncName[nFunction]
+aadd(aReturn,cStringa)
+aadd(aReturn,i)
+return aReturn
+
+static function dcp_f93(aCode,nIndex,cStringa)
+Local aReturn:={},nNumero:=0
+nNumero:=aCode[nIndex+1]+aCode[nIndex+2]
+cStringa:=cStringa+"["+alltrim(str(nNumero))+"]"
+aadd(aReturn,cStringa)
+aadd(aReturn,nIndex+2)
+return aReturn
+
+static function dcp_f92(aCode,nIndex,aStack)
+Local aReturn:={},nNumero:=0
+nNumero:=aCode[nIndex+1]
+if nNumero>127
+   nNumero:=(256-nNumero)*(-1)
+endif
+aStack:=dcp_push_stack(aStack,nNumero)
+aadd(aReturn,nIndex+1)
+aadd(aReturn,aStack)
+return aReturn
+
+static function dcp_f97(aCode,nIndex,aStack)
+Local aReturn:={},nNumero:=0
+
+
+
+nNumero:=HB_MAKELONG (aCode[nIndex+1],+ aCode[nIndex+2],+ aCode[nIndex+3],+ aCode[nIndex+4])
+aStack:=dcp_push_stack(aStack,nNumero)
+aadd(aReturn,nIndex+4)
+aadd(aReturn,aStack)
+return aReturn
+
+
+static function dcp_f2()
+return NIL
+
+
+static function dcp_f100(aCode,nIndex,aStack)
+Local aReturn:={},cReturn:="NIL"
+aStack:=dcp_push_stack(aStack,cReturn)
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex)
+return aReturn
+
+static function dcp_f110(aCode,nIndex,aStack)
+Local aReturn:={},cStringa:="Return ",aTemp:={}
+aTemp:=dcp_pop_stack(aStack)
+aStack:=aTemp[1]
+cStringa:=cStringa+aTemp[2]
+aadd(aReturn,aStack)
+aadd(aReturn,nIndex)
+aadd(aReturn,cStringa)
+return aReturn
+
+static function dcp_f7(aRowCode,nNextRow,cStringa,nIndex)
+Local aReturn:={}
+ aRowCode[nNextRow]:=cStringa
+aadd(aReturn,aRowCode)
+aadd(aReturn,nIndex)
+return aReturn
+
+
+static function dcp_push_stack(aStack,xvariable)
+Local aNewStack:=ACLONE(aStack)
+ aadd(aNewStack,xVariable)
+ aStack:=ACLONE(aNewStack)
+return aStack
+
+
+static function dcp_pop_stack(aStack)
+Local aNewStack:={},xReturn:=NIL
+Local nLen:=LEN(aStack),i:=0
+if nLen<>0
+  xReturn:=aStack[nLen]
+  if nLen>2
+    FOR i= 1 TO nLen-1
+      aadd(aNewStack,aStack[i])
+    next
+  elseif nLen=2
+      aadd(aNewStack,aStack[1])
+  else
+
+  endif
+
+
+endif
+return {aNewStack,xReturn}
+
+
+static function dcp_toppush_stack(aStack,xvariable)
+Local aTemp:={},nLen:=LEN(aStack)
+Local i:=0
+ aadd(aTemp,xVariable)
+ for i=1 to nLen
+   aadd(aTemp,aStack[i])
+ next
+ aStack:=ACLONE(aTemp)
+return aStack
+
+
+static function dcp_f176(aCode,nIndex,aLFuncName)
+Local aReturn:={},nFunction,cStringa
+nFunction:=aCode[nIndex+1]+aCode[nIndex+2]
+cStringa:=aLFuncName[nFunction]
+aadd(aReturn,cStringa)
+aadd(aReturn,nIndex+2)
+return aReturn
+
+
+static function dcp_Mask_convert(aStringa,aVar,nVar,aCode,nIndex)
+Local i:=0,cStringa:="",nLen:=LEN(aStringa),cStartNumber:=""
+Local nPcodeFor:=aCode[nIndex-1]
+If nPcodeFor==165
+ for i=1 to  nLen
+    DO CASE
+        CASE aStringa[i]="FOR"
+            cStringa:=aStringa[i]+" "+cStringa
+        CASE aStringa[i]="="
+            cStringa:=cStringa+aVar[nVar]+aStringa[i]
+        CASE aStringa[i]="TO"
+            cStringa:=cStringa+" "+aStringa[i]+" "
+        OTHERWISE
+           cStartNumber:=aStringa[i]
+    ENDCASE
+ next
+ cStringa:=cStringa+cStartNumber
+else
+ for i=1 to  nLen
+   cStartNumber:=aStringa[i]+cStartNumber
+ next
+ cStringa:=aVar[nVar]+cStartNumber
+endif
+return cStringa
+
+#pragma BEGINDUMP
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_USED
+#define _WIN32_WINNT   0x0400
+#define WINVER   0x0400
+#include <windows.h>
+#include <hbapiitm.h>
+
+HB_FUNC (HB_MAKELONG)
+{
+  (hb_retnl) HB_MKLONG( hb_parni(1), hb_parni(2), hb_parni(3), hb_parni(4) );
+}
+
+HB_FUNC (HB_MAKESHORT)
+{
+  (hb_retnl) HB_MKSHORT( hb_parni(1), hb_parni(2));
+}
+
+#pragma ENDDUMP

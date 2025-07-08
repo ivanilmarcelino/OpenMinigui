@@ -1,0 +1,65 @@
+// для смены иконки в Form_About.prg
+#define MSGINFO     1005
+//
+// Resource    Resource         Resource
+// Name	       Type             FileName
+//
+1MAIN_ICO       ICON         res\1MiniGui.ico
+iColor32x1      ICON         res\iColor32x1.ico
+iColor32x2      ICON         res\iColor32x2.ico
+iExit32x1       ICON         res\iExit32x1.ico
+iExit32x2       ICON         res\iExit32x2.ico
+iXls32x1        ICON         res\iXls32x1.ico
+iXls32x2        ICON         res\iXls32x2.ico
+iTable32x1      ICON         res\iTable32x1.ico
+iTable32x2      ICON         res\iTable32x2.ico
+CheckF24        BITMAP       res\bCheckF24.bmp
+CheckT24        BITMAP       res\bCheckT24.bmp
+CheckF24        PNG          res\Check_f24.png
+CheckT24        PNG          res\Check_t24.png
+LogoMG          PNG          res\MiniGuiLogo.png
+
+// menu MsgInfo для смены иконки в Form_About.prg
+MSGINFO        ICON          res\1MiniGui.ico
+
+// ------ WaitThreadIco.prg
+zmk01          ICON          res\zmk01.ico
+zmk02          ICON          res\zmk02.ico
+zmk03          ICON          res\zmk03.ico
+zmk04          ICON          res\zmk04.ico
+zmk05          ICON          res\zmk05.ico
+zmk06          ICON          res\zmk06.ico
+zmk07          ICON          res\zmk07.ico
+zmk08          ICON          res\zmk08.ico
+
+
+#define __VERSION_INFO
+
+1 VERSIONINFO
+FILEVERSION 1,0
+PRODUCTVERSION 1,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+  BLOCK "040904b0"
+  {
+    VALUE "FileDescription", "Table export MiniGui\000"
+    VALUE "FileVersion", "9.5"
+    VALUE "InternalName", "HbpMerge.exe\000"
+    VALUE "LegalCopyright", "(c) Copyright 2018 Verchenko Andrey (Dmitrov)\000"
+    VALUE "LegalTrademarks", "Harbour + MiniGui\000"
+    VALUE "OriginalFilename", "demo.exe\000"
+    VALUE "CompanyName", "V-Soft Dmitrov, Moscow region\000"
+    VALUE "ProductName", "Table export MiniGui\000"
+    VALUE "ProductVersion", "1.0."
+    VALUE "Comments", "Created by Verchenko Andrey <verchenkoag@gmail.com>\000"
+  }
+}
+
+BLOCK "VarFileInfo"
+{
+  VALUE "Translation", 0x0409 0x04B0
+}
+}

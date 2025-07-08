@@ -1,0 +1,20 @@
+#
+# hmgaddon.hbp
+#
+
+-hblib
+
+-inc
+-workdir=c:/minigui/lib/hbmk/obj
+
+-oc:/minigui/lib/hmgaddon
+
+-Ic:/minigui/include
+
+-warn=max
+
+-w2 -es2 -q0
+
+alertdebug.prg
+util_font.prg
+winprocess.prg

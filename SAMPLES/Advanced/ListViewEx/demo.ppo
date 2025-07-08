@@ -1,0 +1,314 @@
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 9 "demo.prg"
+STATIC a_image[ 2 ], a_cab[ 4 ], a_width[ 4 ]
+
+FUNCTION Main
+
+   LOCAL i, aRows := {}
+   LOCAL aStyles := {}, aStylesTip := {}, aStylesEx := {}, aStylesExTip := {}
+
+
+   a_image[ 1 ] = "BMP_NO"
+   a_image[ 2 ] = "BMP_OK"
+
+
+   FOR i := 1 TO 100
+      AAdd( aRows, { i % 2, "Item " + hb_ntos( i ), hb_ntos( i * 10 ), "Created: " + hb_TSToStr( hb_DateTime() ) } )
+   NEXT
+
+
+   a_cab[ 1 ] = "" ; a_width[ 1 ] = 20
+   a_cab[ 2 ] = "Item Name" ; a_width[ 2 ] = 180
+   a_cab[ 3 ] = "Value" ; a_width[ 3 ] = 80
+   a_cab[ 4 ] = "Time" ; a_width[ 4 ] = 80
+
+
+   AAdd( aStyles, "ALIGNLEFT" )
+   AAdd( aStyles, "ALIGNTOP" )
+   AAdd( aStyles, "AUTOARRANGE" )
+   AAdd( aStyles, "NOCOLUMNHEADER" )
+   AAdd( aStyles, "NOLABELWRAP" )
+   AAdd( aStyles, "NOSCROLL" )
+   AAdd( aStyles, "NOSORTHEADER" )
+   AAdd( aStyles, "SHOWSELALWAYS" )
+   AAdd( aStyles, "SINGLESEL" )
+   AAdd( aStyles, "SORTASCENDING" )
+   AAdd( aStyles, "SORTDESCENDING" )
+
+   AAdd( aStylesTip, "Specifies that items are left-aligned in icon and small icon view." )
+   AAdd( aStylesTip, "Specifies that items are aligned with the top of the control in icon and small icon view." )
+   AAdd( aStylesTip, "Specifies that icons are automatically kept arranged in icon view and small icon view." )
+   AAdd( aStylesTip, "Specifies that a column header is not displayed in report view." )
+   AAdd( aStylesTip, "Displays item text on a single line in icon view." )
+   AAdd( aStylesTip, "Disables scrolling. All items must be within the client area." )
+   AAdd( aStylesTip, "Specifies that column headers do not work like buttons." )
+   AAdd( aStylesTip, "Always show the selection, if any, even if the control does not have the focus." )
+   AAdd( aStylesTip, "Allows only one item at a time to be selected." )
+   AAdd( aStylesTip, "Sorts items based on item text in ascending order." )
+   AAdd( aStylesTip, "Sorts items based on item text in descending order." )
+
+
+   AAdd( aStylesEx, "CHECKBOXES" )
+   AAdd( aStylesEx, "FLATSB" )
+   AAdd( aStylesEx, "DOUBLEBUFFER" )
+   AAdd( aStylesEx, "GRIDLINES" )
+   AAdd( aStylesEx, "HEADERDRAGDROP" )
+   AAdd( aStylesEx, "INFOTIP" )
+   AAdd( aStylesEx, "ONECLICKACTIVATE" )
+   AAdd( aStylesEx, "TRACKSELECT" )
+   AAdd( aStylesEx, "TWOCLICKACTIVATE" )
+   AAdd( aStylesEx, "UNDERLINECOLD" )
+   AAdd( aStylesEx, "UNDERLINEHOT" )
+
+   AAdd( aStylesExTip, "Enables check boxes for items in a list view control." )
+   AAdd( aStylesExTip, "Enables flat scroll bars in the list view." )
+   AAdd( aStylesExTip, "Paints via double-buffering, which reduces flickering." )
+   AAdd( aStylesExTip, "Displays gridlines around items and subitems." )
+   AAdd( aStylesExTip, "Enables drag-and-drop reordering of columns in a list view control." )
+   AAdd( aStylesExTip, "Enables a LVN_GETINFOTIP notification message to the parent window before displaying an item's tooltip." )
+   AAdd( aStylesExTip, "The list view control sends an LVN_ITEMACTIVATE notification message to the parent window when the user clicks an item." )
+   AAdd( aStylesExTip, "Enables hot-track selection in a list view control.  Requires either ONECLICKACTIVATE or TWOCLICKACTIVATE." )
+   AAdd( aStylesExTip, "The list view control sends an LVN_ITEMACTIVATE notification message to the parent window when the user double-clicks an item." )
+   AAdd( aStylesExTip, "Causes non-hot items that are activatable to be displayed with underlined text. This style requires that TWOCLICKACTIVATE also be set." )
+   AAdd( aStylesExTip, "Causes hot items that are activatable to be displayed with underlined text. This style requires that ONECLICKACTIVATE or TWOCLICKACTIVATE also be set." )
+
+
+
+
+
+
+
+ _DefineWindow ( "Form_1", "Grid control with Extended styles",,, 640, 480, .F., .T., .T., .F., .F., {,}, {,}, {|| GridOnChange()}, ,, , ,, , , .F. , .F. , .T. , , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+      _BeginMessageBar( "StatusBar",, .F.,,, .F., .F., .F., .F., )
+         _DefineItemMessage( "STATUSITEM", , 0, 0, "",,, 0,,,, .F.,, {   0 ,   0 ,   0 }, iif( .F. == .T., 2, iif( .T. == .T., 1, 0 ) ) )
+      _EndMessageBar ()
+
+
+
+
+
+
+
+
+
+
+
+
+
+      _DefineGrid ( "Grid_1" , , 10 , 20 , 360 , 389 , a_cab , a_width , aRows , { 1 } , , , , {|| GridOnChange()} , , , ,, .T., a_image, , .F. , , .F., .F., .F., .F. , .F. , , , .F. , , , .T. , , , , 0, , , , !.F. , , .F. , .F. , .F. , , , .T. , .F. , , , , , , .F. , , )
+
+
+
+
+
+
+      _BeginTab( "Tab_1" , , 20 , 389 , 230 , 389 , 1 , , , , , .F. , .F. , .F. , .F. , .F. , .F. , .F., .F., .F., .F., .F., {,,},,, .F. )
+
+
+         _BeginTabPage ( "Styles" , , )
+
+            _BeginFrame ( "Frame_1",, 35, 15, 200, 300 , , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+
+            FOR i := 1 TO Len( aStyles )
+               _DefineCheckBox ( ( "Check1_" + hb_ntos( i ) ),, 30, 30 + i * 24, aStyles[ i ], , , , aStylesTip[ i ] , , 160 , 18 ,, ,, .F., .F. ,.F., .F., .F., .F. , , , , .F. , .F. , .F. , , .F. , .F. , , )
+            NEXT
+
+
+            _DefineButton ( "Button_1", , 115, 350, "Apply", {|| ApplyStyles()}, 100, 26,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+         _EndTabPage()
+
+
+         _BeginTabPage ( "Extended Styles" , , )
+
+            _BeginFrame ( "Frame_2",, 35, 15, 200, 300 , , , , .F. , .F., .F., .F., .F. , , , .F. , .F. , , )
+
+
+            FOR i := 1 TO Len( aStylesEx )
+               _DefineCheckBox ( ( "Check2_" + hb_ntos( i ) ),, 30, 30 + i * 24, aStylesEx[ i ], , , , aStylesExTip[ i ] , , 160 , 18 ,, ,, .F., .F. ,.F., .F., .F., .F. , , , , .F. , .F. , .F. , , .F. , .F. , , )
+            NEXT
+
+
+            _DefineButton ( "Button_2", , 115, 350, "Apply", {|| ApplyStylesEx()}, 100, 26,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+         _EndTabPage()
+
+      _EndTab()
+
+
+      SetProperty ( "Form_1", "Check1_1" , "Enabled" , .F. )
+      SetProperty ( "Form_1", "Check1_2" , "Enabled" , .F. )
+      SetProperty ( "Form_1", "Check1_3" , "Enabled" , .F. )
+      SetProperty ( "Form_1", "Check1_5" , "Enabled" , .F. )
+      SetProperty ( "Form_1", "Check1_8" , "VALUE" , .T. )
+      SetProperty ( "Form_1", "Check1_8" , "Enabled" , .F. )
+      SetProperty ( "Form_1", "Check1_10" , "VALUE" , .T. )
+
+      SetProperty ( "Form_1", "Check2_3" , "VALUE" , .T. )
+      SetProperty ( "Form_1", "Check2_5" , "VALUE" , .T. )
+      SetProperty ( "Form_1", "Check2_6" , "VALUE" , .T. )
+
+   _EndWindow ()
+
+   DoMethod ( "Form_1", "Center" )
+   DoMethod ( "Form_1", "Activate" )
+
+RETURN NIL
+
+
+
+
+PROCEDURE GridOnChange()
+
+   LOCAL v := GetProperty ( "Form_1", "grid_1" , "VALUE" )
+
+
+
+   SetProperty ( "Form_1", "statusbar" , "item" , 1 , "Selected: " + iif( ValType( v ) == "N", hb_ntos( v ), hb_ValToExp( v ) ) + "/" +  hb_ntos( GetProperty ( "Form_1", "grid_1" , "ItemCount" ) ) )
+
+RETURN
+
+
+
+
+PROCEDURE ApplyStyles()
+
+   LOCAL i, aRows := {}, v
+
+   v := GetProperty ( "Form_1", "Grid_1" , "VALUE" )
+
+   Domethod ( "Form_1", "Grid_1" , "RELEASE" )
+
+
+   IF GetProperty ( "Form_1", "Check1_11" , "VALUE" )
+      FOR i := 100 TO 1 STEP -1
+         AAdd( aRows, { i % 2, "Item " + hb_ntos( i ), hb_ntos( i * 10 ), "Created: " + hb_TSToStr( hb_DateTime() ) } )
+      NEXT
+      SetProperty ( "Form_1", "Check1_10" , "VALUE" , .F. )
+   ELSE
+      FOR i := 1 TO 100
+         AAdd( aRows, { i % 2, "Item " + hb_ntos( i ), hb_ntos( i * 10 ), "Created: " + hb_TSToStr( hb_DateTime() ) } )
+      NEXT
+      SetProperty ( "Form_1", "Check1_10" , "VALUE" , .T. )
+   ENDIF
+
+   SetProperty ( "Form_1", "statusbar" , "item" , 1 , "" )
+
+
+   _HMG_SYSDATA[89] := .T. ; _HMG_SYSDATA[316] := "Grid_1" ; _HMG_SYSDATA[317] := Nil ; _HMG_SYSDATA[406] := Nil ; _HMG_SYSDATA[332] := Nil ; _HMG_SYSDATA[331] := Nil ; _HMG_SYSDATA[320] := Nil ; _HMG_SYSDATA[321] := Nil ; _HMG_SYSDATA[346] := Nil ; _HMG_SYSDATA[373] := Nil ; _HMG_SYSDATA[347] := Nil ; _HMG_SYSDATA[337] := Nil ; _HMG_SYSDATA[334] := Nil ; _HMG_SYSDATA[322] := Nil ; _HMG_SYSDATA[323] := Nil ; _HMG_SYSDATA[324] := Nil ; _HMG_SYSDATA[304] := Nil ; _HMG_SYSDATA[326] := Nil ; _HMG_SYSDATA[335] := Nil ; _HMG_SYSDATA[327] := Nil ; _HMG_SYSDATA[348] := Nil ; _HMG_SYSDATA[349] := Nil ; _HMG_SYSDATA[350] := .F. ; _HMG_SYSDATA[351] := Nil ; _HMG_SYSDATA[352] := Nil ; _HMG_SYSDATA[329] := Nil ; _HMG_SYSDATA[356] := .F. ; _HMG_SYSDATA[357] := .F. ; _HMG_SYSDATA[344] := .F. ; _HMG_SYSDATA[312] := .F. ; _HMG_SYSDATA[313] := .F. ; _HMG_SYSDATA[314] := .F. ; _HMG_SYSDATA[315] := .F. ; _HMG_SYSDATA[307] := Nil ; _HMG_SYSDATA[306] := Nil ; _HMG_SYSDATA[358] := Nil ; _HMG_SYSDATA[359] := Nil ; _HMG_SYSDATA[299] := Nil ; _HMG_SYSDATA[298] := Nil ; _HMG_SYSDATA[409] := Nil ; _HMG_SYSDATA[393] := .F. ; _HMG_SYSDATA[308] := Nil ; _HMG_SYSDATA[342] := Nil ; _HMG_SYSDATA[300] := .F. ; _HMG_SYSDATA[386] := Nil ; _HMG_SYSDATA[297] := Nil ; _HMG_SYSDATA[387] := Nil ; _HMG_SYSDATA[200] := Nil ; _HMG_SYSDATA[309] := .F. ; _HMG_SYSDATA[328] := .F. ; _HMG_SYSDATA[366] := .F. ; _HMG_SYSDATA[367] := Nil ; _HMG_SYSDATA[364] := .F. ; _HMG_SYSDATA[372] := .F. ; _HMG_SYSDATA[365] := Nil ; _HMG_SYSDATA[336] := Nil ; _HMG_SYSDATA[399] := Nil ; _HMG_SYSDATA[303] := Nil ; _HMG_SYSDATA[333] := Nil ; _HMG_SYSDATA[360] := .F.
+      _HMG_SYSDATA[317] := "Form_1"
+      _HMG_SYSDATA[331] := 20
+      _HMG_SYSDATA[332] := 10
+      _HMG_SYSDATA[320] := 358
+      _HMG_SYSDATA[321] := 388
+      _HMG_SYSDATA[346] := a_cab
+      _HMG_SYSDATA[347] := a_width
+      _HMG_SYSDATA[337] := aRows
+      _HMG_SYSDATA[334] := iif( GetProperty ( "Form_1", "Check1_9" , "VALUE" ), iif( hb_IsArray( v ) .AND. Len( v ) > 0, v[ 1 ], 1 ), { v } )
+      _HMG_SYSDATA[351] := a_image
+      _HMG_SYSDATA[335] := {|| GridOnChange()}
+      _HMG_SYSDATA[373] := ! GetProperty ( "Form_1", "Check1_4" , "VALUE" )
+      _HMG_SYSDATA[372] := GetProperty ( "Form_1", "Check1_7" , "VALUE" )
+      _HMG_SYSDATA[356] := ! GetProperty ( "Form_1", "Check1_9" , "VALUE" )
+   _HMG_SYSDATA[89] := .F. ; _DefineGrid ( _HMG_SYSDATA[316] , _HMG_SYSDATA[317] , _HMG_SYSDATA[332] , _HMG_SYSDATA[331] , _HMG_SYSDATA[320] , _HMG_SYSDATA[321] , _HMG_SYSDATA[346] , _HMG_SYSDATA[347] , _HMG_SYSDATA[337] , _HMG_SYSDATA[334] , _HMG_SYSDATA[322] , _HMG_SYSDATA[323] , _HMG_SYSDATA[324] , _HMG_SYSDATA[335] , _HMG_SYSDATA[348] , _HMG_SYSDATA[349] , _HMG_SYSDATA[326] , _HMG_SYSDATA[327], _HMG_SYSDATA[350], _HMG_SYSDATA[351], _HMG_SYSDATA[352] , _HMG_SYSDATA[344] , _HMG_SYSDATA[329] , _HMG_SYSDATA[312], _HMG_SYSDATA[313], _HMG_SYSDATA[315], _HMG_SYSDATA[314] , _HMG_SYSDATA[309] , _HMG_SYSDATA[307] , _HMG_SYSDATA[306] , _HMG_SYSDATA[357] , _HMG_SYSDATA[298] , _HMG_SYSDATA[299] , _HMG_SYSDATA[356], _HMG_SYSDATA[300], _HMG_SYSDATA[358], _HMG_SYSDATA[359], _HMG_SYSDATA[406], _HMG_SYSDATA[386], _HMG_SYSDATA[297], _HMG_SYSDATA[387], _HMG_SYSDATA[373], _HMG_SYSDATA[200], _HMG_SYSDATA[328], _HMG_SYSDATA[360], _HMG_SYSDATA[366], _HMG_SYSDATA[304], _HMG_SYSDATA[367], _HMG_SYSDATA[364], _HMG_SYSDATA[372], _HMG_SYSDATA[365], _HMG_SYSDATA[409], _HMG_SYSDATA[336], _HMG_SYSDATA[399], _HMG_SYSDATA[308], _HMG_SYSDATA[393], _HMG_SYSDATA[303], _HMG_SYSDATA[333] )
+
+   SetWindowStyle ( GetProperty ( "Form_1", "Grid_1" , "Handle" ), 0x2000, GetProperty ( "Form_1", "Check1_6" , "Value" ) )
+
+   ApplyStylesEx()
+
+   Domethod ( "Form_1", "Grid_1" , "SetFocus" )
+
+RETURN
+
+
+
+
+PROCEDURE ApplyStylesEx()
+
+   LOCAL h := GetControlHandle( "Grid_1", "Form_1" )
+   LOCAL iStyle
+
+
+
+   iStyle := 0x00000004
+   IF GetProperty ( "Form_1", "Check2_1" , "VALUE" )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x00000100
+   IF GetProperty ( "Form_1", "Check2_2" , "VALUE" )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x10000
+   IF GetProperty ( "Form_1", "Check2_3" , "VALUE" )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x00000001
+   IF GetProperty ( "Form_1", "Check2_4" , "VALUE" )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x00000010
+   IF GetProperty ( "Form_1", "Check2_5" , "VALUE" )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x00000400
+   IF GetProperty ( "Form_1", "Check2_6" , "VALUE" )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x00000040
+   IF GetProperty ( "Form_1", "Check2_7" , "VALUE" )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x00000008
+   IF GetProperty ( "Form_1", "Check2_8" , "VALUE" ) .AND. ( GetProperty ( "Form_1", "Check2_7" , "VALUE" ) .OR. GetProperty ( "Form_1", "Check2_9" , "Value" ) )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x00000080
+   IF GetProperty ( "Form_1", "Check2_9" , "VALUE" )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x00001000
+   IF GetProperty ( "Form_1", "Check2_9" , "VALUE" ) .AND. GetProperty ( "Form_1", "Check2_10" , "VALUE" ) .AND. GetProperty ( "Form_1", "Check2_11" , "VALUE" ) == .F.
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+   iStyle := 0x00000800
+   IF GetProperty ( "Form_1", "Check2_11" , "VALUE" ) .AND. GetProperty ( "Form_1", "Check2_10" , "VALUE" ) == .F. .AND. ( GetProperty ( "Form_1", "Check2_7" , "VALUE" ) .OR. GetProperty ( "Form_1", "Check2_9" , "Value" ) )
+      ListView_ChangeExtendedStyle ( h, iStyle, NIL )
+   ELSE
+      ListView_ChangeExtendedStyle ( h, NIL, iStyle )
+   ENDIF
+
+RETURN

@@ -1,0 +1,66 @@
+/*  SOBRE A IDE
+    ==============================================================================================
+    Gerado pela IDE Designer
+    1.0.14.0 RELEASE CANDIDATE (RC) 211106 1625
+    https://github.com/ivanilmarcelino/designer by IVANIL MARCELINO <ivanil.marcelino@yahoo.com.br>
+    Versão Minigui:  Harbour MiniGUI Extended Edition 21.10.3 (32-bit) ANSI  Grigory Filatov <gfilatov@inbox.ru>
+    Versão Harbour/xHarbour: Harbour 3.2.0dev (r2104281802)
+    Compilador : MinGW GNU C 11.2 (32-bit)
+    ----------------------------------------------------------------------------------------------
+    SOBRE ESTE CÓDIGO GERADO:
+    Última alteração : 02/12/2021-15:28:08 Máquina: 8-1 Usuário:Pierpaolo
+    Codice modulo modificato
+    ----------------------------------------------------------------------------------------------
+    Projeto : Anchor
+*/
+
+    #ifndef TRUE
+      # DEFINE TRUE .T.
+    #endif
+
+DEFINE WINDOW TEMPLATE AT 140, 235 WIDTH 286 HEIGHT 233  TITLE "Titolo" MODAL NOSIZE NOSYSMENU ON INIT (load_Scegli_base(title,def, note, opt),PosRel (wName, PosRel, "SCEGLI"))
+
+    DEFINE RADIOGROUP RadioGroup_1
+        COL 21
+        HEIGHT 59
+        OPTIONS { "" }
+        ROW 11
+        SPACING 25
+        TRANSPARENT TRUE
+        WIDTH 230
+    END RADIOGROUP
+
+    DEFINE BUTTONEX Button_1
+        ACTION ( r:= Scegli.RadioGroup_1.value ,Scegli.release)
+        CAPTION "C&onferma"
+        COL 20
+        FONTNAME "Arial"
+        FONTSIZE 9
+        HEIGHT 40
+        NOXPSTYLE TRUE
+        PICTURE "Edit_OK"
+        ROW 129
+        WIDTH 100
+    END BUTTONEX
+
+    DEFINE BUTTONEX Button_2
+        ACTION (Scegli.release)
+        CAPTION "&Annulla"
+        COL 160
+        FONTNAME "Arial"
+        FONTSIZE 9
+        HEIGHT 40
+        NOXPSTYLE TRUE
+        PICTURE "Minigui_edit_cancel"
+        ROW 129
+        WIDTH 100
+    END BUTTONEX
+
+    DEFINE STATUSBAR FONT "Arial" SIZE 9 BOLD
+        STATUSITEM "note" 
+    END STATUSBAR
+END WINDOW
+
+SendMessageString( GetFormToolTipHandle ( _HMG_TempWindowName ), TTM_SETTITLE,TTI_NONE ,"WinCrf Plus")
+/*Fim*/
+

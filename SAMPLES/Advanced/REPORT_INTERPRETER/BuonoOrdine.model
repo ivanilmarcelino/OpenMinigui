@@ -1,0 +1,84 @@
+# BuonoOrdine.model
+
+[Declare]80/PREV
+SET UNITS MM
+#set Vruler 12 .t.
+#set Hruler 15 .t.
+SET JOB NAME [Purchase voucher]
+SET SPLASH TO
+SET PAPERSIZE DMPAPER_A4
+SET OFFSET HBCOMPATIBLE
+
+SET SAVEBUTTONS OFF
+
+SET CHARSET ANSI_CHARSET
+SET TEXT ALIGN LEFT
+set separator ON
+SET OFFSET HBPCOMPATIBLE
+
+SET PRINT MARGINS TOP 10 LEFT 20
+SET PREVIEW ON
+SET COLORMODE 0
+SET QUALITY HIGH
+SET TEXTCOLOR BLACK
+
+VAR NARRY N 0
+VAR BLANK N 0
+
+Set preview rect 0, 0, GetDesktopRealHeight(), GetDesktopRealWidth()
+
+IF (owr:prndrv = "PDF")
+   SET JOB NAME [Purchase voucher PDF demo]
+   SET OFFSET HBPCOMPATIBLE 3.5
+   SET HPDFDOC COMPRESS ALL
+   SET HPDFDOC PAGENUMBERING FROM 1 STYLE LETTERS PREFIX "Page: "
+   //SET HPDFDOC PASSWORD OWNER [Pierpaolo] USER [TEST]
+   SET HPDFDOC PAGEMODE TO OUTLINE
+   SET HPDFINFO DATECREATED TO [DATE()] TIME [TIME()]
+   SET HPDFINFO AUTHOR TO [Pierpaolo Martinello]
+   SET HPDFINFO CREATOR TO [Pierpaolo Martinello]
+   SET HPDFINFO TITLE   TO [Report interpreter Pdf export]
+   SET HPDFINFO SUBJECT TO [A Test of pdf creation with Report Interpreter]
+   SET HPDFINFO KEYWORDS TO [HMG, HPDF, Documentation, LibHaru, Harbour, MiniGUI]
+Endif
+
+[HEAD]17
+ DEFINE PEN P12 Ps_INSIDEFRAME WIDTH 0.2 COLOR 0,0,255
+ DEFINE BRUSH B1 STYLE PS_SOLID COLOR SILVER
+
+ 1, 1, 18, 180 RECTANGLE pen p12 brush b1
+
+ 5, 90 SAY [ RICHIESTA D'ACQUISTO ] FONT [ARIAL] SIZE 14 BOLD color BLACK align CENTER
+10, 90 SAY [ BUONO D'ORDINE ]       FONT [ARIAL] SIZE 14 BOLD color BLACK align CENTER
+
+ 5, 3   SAY [ PICPIS SNC ] FONT [ARIAL] SIZE 12 BOLD
+ 5, 160 SAY [ M745C ] FONT [ARIAL] SIZE 12
+
+10, 160 SAY [PQ 7.4-A] FONT [ARIAL] SIZE 12  align left
+
+20, 1, 60, 180 RECTANGLE
+27, 3  SAY [ Persona richiedente l'acquisto:  ______________________________________________ ]  FONT [ARIAL] SIZE 12 BOLD
+
+40, 3  Say [ Buono AE N   _______________ ] FONT [ARIAL] SIZE 12 BOLD
+40,97  Say [Data della richiesta _________________ ] FONT [ARIAL] SIZE 12 BOLD
+
+53, 3  say [ Firma del richiedente ______________________________]                               FONT [ARIAL] SIZE 12 BOLD
+
+[BODY]40
+//(nline * lstep ), 1 PUTARRAY m->aStampa  len { 20, 138, {len , nDdec, cDSep, cMSep } FONT ARIAL SIZE 10 COLOR BLACK bold sa
+(nline * lstep ), 1   PUTARRAY m->aStampa  len { 20, 138, {20,3,"/","´"} } FONT ARIAL SIZE 10 COLOR BLACK bold sa
+
+( narry ++ )
+IF ( narry % 2 = 1 )
+   ( blank ++ )
+   //Method MyMask(num, nlen, nDec, cDSep , cMSep )
+   (nline * lstep ), 155  Say (oWr:MyMask (Blank,6,3," whit 3 decimals ") )  FONT ARIAL SIZE 10 color RED bold ALIGN RIGHT
+Endif
+
+[FEET]4
+@( 66 *lstep), 70 SAY ['Page:' + trans(m->npag,[999]) ] FONT ARIAL SIZE 12
+IF last_pag
+   @((eline +3) * lstep ), 9 SAY chr(91)+[End of page ... ]+CHR(93) FONT ARIAL SIZE 16 BOLD ITALIC color red
+Endif
+
+[END]

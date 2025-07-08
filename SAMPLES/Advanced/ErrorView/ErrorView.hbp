@@ -1,0 +1,8 @@
+-inc
+-workdir=OBJ
+
+-w -es2 -q0
+{!xhb}-ko
+
+ErrorView.Prg
+ErrorSys.prg

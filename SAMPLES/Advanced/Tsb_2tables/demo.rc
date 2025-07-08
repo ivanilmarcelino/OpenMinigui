@@ -1,0 +1,7 @@
+//
+// Resource    Resource         Resource
+// Name         Type            FileName
+//
+1MAIN_ICO        ICON           res\1MG.ico
+2MAIN_64         ICON           res\2MG64.ico
+

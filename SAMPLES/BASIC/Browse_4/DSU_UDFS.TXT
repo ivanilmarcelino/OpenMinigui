@@ -1,0 +1,275 @@
+/*
+ * Author...: Peter Townsend
+ * e-mail...: cephas@tpgi.com.au
+ *
+ * A set of functions to save and restore database information.
+ *     DSU_Save()
+ *     DSU_Rest()
+ *     OrdBagsGet()
+ *     OrdBagsSet()
+ *     RelsGet()
+ *     RelsSet()
+ *
+ * Assumptions: 1. That all databases are open in contiguous areas.
+ *                 (that is, that all areas between the first and the
+ *                  last area are used.)
+ *              2. That the first area used is area 1.
+ *              3. That no databases are opened read-only.
+ *              4. That a database name is the same as its alias.
+ *
+ * NB: This function depends on my SaveArry() and LoadArry() functions
+ *     which can save and restore multi-level arrays.
+ *     It also uses my version of Victor Szol's OpenMode() function.
+ */
+/*  $DOC$
+ *  $FUNCNAME$
+ *      DSU_Save()
+ *
+ *  $ONELINER$
+ *      Save all information about open databases to a file.
+ *
+ *  $SYNTAX$
+ *      DSU_Save( [<cFileName>] ) -> lSuccess
+ *
+ *  $ARGUMENTS$
+ *      cFileName  - name of file into which information is to be stored
+ *                   (Default value for cFileName is "DSETUP.ARR")
+ *
+ *  $RETURNS$
+ *      lSuccess   - was the information successfully saved?
+ *
+ *  $DESCRIPTION$
+ *      This function saves a list of all open databases to a file.
+ *      The following information is saved for each open database:
+ *          1. The name (alias) of the database file
+ *          2. The RDD used to access the database file
+ *          3. Whether the database file is open for sharing
+ *          4. The current record number
+ *          5. The list of record locks on this database
+ *          6. The current filter condition
+ *          7. The relations set from this database
+ *          8. The index files which are open
+ *          9. The controlling index
+ *
+ *  $EXAMPLES$
+ *      IF DSU_Save()
+ *          DBCLOSEALL()
+ *          .
+ *          * Housekeeping
+ *          .
+ *          IF ! DSU_Rest()
+ *              ? "Cannot restore file setup"
+ *              StdOpen()    // Open standard file list
+ *          ENDIF
+ *       ENDIF
+ *
+ *  $SEEALSO$
+ *      DSU_Rest()
+ *
+ *  $INCLUDE$
+ *      common.ch
+ *      openmode.ch
+ *
+ *  $END$
+ */
+/*  $DOC$
+ *  $FUNCNAME$
+ *      DSU_Rest()
+ *
+ *  $ONELINER$
+ *      Load all information about databases/indexes to open from a file.
+ *
+ *  $SYNTAX$
+ *      DSU_Rest( [<cFileName>] ) -> lSuccess
+ *
+ *  $ARGUMENTS$
+ *      cFileName  - name of file from which information is to be restored
+ *                   (Default value for cFileName is "DSETUP.ARR")
+ *
+ *  $RETURNS$
+ *      lSuccess   - was the information successfully restored?
+ *
+ *  $DESCRIPTION$
+ *      This function loads a list of all databases to be opened from
+ *      a file.  Associated information which is also loaded includes
+ *      the current record no, the RDD, whether the database is opened
+ *      SHARED, the list of index files, and the order of the controlling
+ *      index.  This information is used to set the databases up in
+ *      exactly the manner of their use at the time that the information
+ *      was saved.
+ *
+ *  $EXAMPLES$
+ *      IF DSU_Save()
+ *          DBCLOSEALL()
+ *          .
+ *          * Housekeeping
+ *          .
+ *          IF !DSU_Rest()
+ *              ? "Cannot restore file setup"
+ *              StdOpen()    // Open standard file list
+ *          ENDIF
+ *      ENDIF
+ *
+ *  $SEEALSO$
+ *      DSU_Save()
+ *
+ *  $INCLUDE$
+ *      common.ch
+ *
+ *  $END$
+ */
+/*  $DOC$
+ *  $FUNCNAME$
+ *      OrdBagsGet()
+ *
+ *  $ONELINER$
+ *      Returns an array of the open indexes for the current area.
+ *
+ *  $SYNTAX$
+ *      OrdBagsGet() -> aOrdBags
+ *
+ *  $ARGUMENTS$
+ *
+ *  $RETURNS$
+ *      An array of the index files in use for the current area.
+ *
+ *  $DESCRIPTION$
+ *      This function obtains a list of the current open index files
+ *      for the current area, returning the list in an array of index names.
+ *
+ *  $EXAMPLES$
+ *      aCustBags := customer->(OrdBagsGet())
+ *      customer->(DBCLOSEAREA())
+ *      .
+ *      .
+ *      SELECT 0
+ *      USE customer
+ *      IF ! OrdBagsSet(aCustBags)
+ *          ? "Error re-opening indexes"
+ *          QUIT()
+ *      ENDIF
+ *
+ *  $SEEALSO$
+ *      OrdBagsSet()
+ *
+ *  $INCLUDE$
+ *
+ *  $END$
+ */
+/*  $DOC$
+ *  $FUNCNAME$
+ *      OrdBagsSet()
+ *
+ *  $ONELINER$
+ *      For the current area, open the indexes passed in as an array.
+ *
+ *  $SYNTAX$
+ *      OrdBagsSet( <aOrdBags> ) -> lSuccess
+ *
+ *  $ARGUMENTS$
+ *      aOrdBags - an array of indexes, obtained from OrdBagsGet()
+ *
+ *  $RETURNS$
+ *      lSuccess - were the index openings successful?
+ *
+ *  $DESCRIPTION$
+ *      This function closes all open indexes for the current area,
+ *      then opens the indexes passed in as an array.
+ *
+ *  $EXAMPLES$
+ *      aCustBags := customer->(OrdBagsGet())
+ *      customer->(DBCLOSEAREA())
+ *      .
+ *      .
+ *      SELECT 0
+ *      USE customer
+ *      IF ! OrdBagsSet(aCustBags)
+ *          ? "Error re-opening indexes"
+ *          QUIT()
+ *      ENDIF
+ *
+ *  $SEEALSO$
+ *      OrdBagsGet()
+ *
+ *  $INCLUDE$
+ *
+ *  $END$
+ */
+/*  $DOC$
+ *  $FUNCNAME$
+ *      RelsGet()
+ *
+ *  $ONELINER$
+ *      Returns an array of the relations set for the current area.
+ *
+ *  $SYNTAX$
+ *      RelsGet() -> aRelations
+ *
+ *  $ARGUMENTS$
+ *
+ *  $RETURNS$
+ *      aRelations - An array of the relations set for the current area.
+ *
+ *  $DESCRIPTION$
+ *      This function obtains a list of the relations for the current area,
+ *      returning the list in an array.
+ *
+ *  $EXAMPLES$
+ *      aCustRels := customer->(RelsGet())
+ *      DBCLEARRELATION()
+ *      .
+ *      .
+ *      IF ! RelsSet(aCustRels)
+ *          ? "Error re-setting relations"
+ *          QUIT()
+ *      ENDIF
+ *
+ *  $SEEALSO$
+ *      RelsSet()
+ *
+ *  $INCLUDE$
+ *
+ *  $END$
+ */
+/*  $DOC$
+ *  $FUNCNAME$
+ *      RelsSet()
+ *
+ *  $ONELINER$
+ *      For the current area, set the relations passed in as an array.
+ *
+ *  $SYNTAX$
+ *      RelsSet( <aRelations> ) -> lSuccess
+ *
+ *  $ARGUMENTS$
+ *      aRelations - an array of relations, obtained from RelsGet()
+ *
+ *  $RETURNS$
+ *      lSuccess - were the relations successfully set?
+ *
+ *  $DESCRIPTION$
+ *      This function clears all relations for the current area,
+ *      then sets the relations passed in as an array.
+ *
+ *  $EXAMPLES$
+ *      aCustRels := customer->(RelsGet())
+ *      customer->(DBCLEARRELATION())
+ *      .
+ *      .
+ *      lRetry := .T.
+ *      DO WHILE lRetry
+ *          lRetry := .F.
+ *          IF ! customer->(RelsSet(aCustRels))
+ *              IF ALERT("Error re-setting relations - retry?", {"yes", "no"}) == 1
+ *                  lRetry := .T.
+ *              ENDIF
+ *          ENDIF
+ *      ENDDO
+ *
+ *  $SEEALSO$
+ *      RelsGet()
+ *
+ *  $INCLUDE$
+ *
+ *  $END$
+ */

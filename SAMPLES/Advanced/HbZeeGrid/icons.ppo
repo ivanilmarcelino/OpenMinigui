@@ -1,0 +1,158 @@
+
+
+
+
+
+MEMVAR hG
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 15 "icons.prg"
+PROCEDURE Main()
+
+   LOCAL hMod := zg_LoadDll()
+
+   if Empty( hMod )
+      ReleaseAllWindows ()
+   endif
+
+   PUBLIC hG
+
+   SetGlobalListener( "App_OnEvents" )
+
+
+
+
+ _DefineWindow ( "Win_1", "ZeeGrid demo",,,,, .F., .F., .F., .F., .F., {,}, {,},, {|| FreeLibrary( hMod )} ,, , ,, , , .F. , .F. , .T. , "MAIN" , .F. , ,, , , ,, , , , , , , , , , .F. , , , , .F. , , , , , .F. , .F. , , , .F. , , 600 , 600 )
+
+      _DefineMainMenu( )
+         _DefineMenuPopup( "Info" , , , )
+            _DefineMenuItem ( "About .." , {|| MsgInfo( ( MiniGuiVersion() + hb_eol() + "ZeeGrid build " + hb_NtoS( zgm_QueryBuild( hG, .F. ) ) + " by David Hillard" ) )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+
+            _DefineSeparator()
+
+            _DefineMenuItem ( "Exit" , {|| DoMethod ( "Win_1", "Release" )} , , , .F. , .F. ,,,, .F., .F. ,, .F. )
+         _EndMenuPopup()
+      _EndMenu()
+
+   _EndWindow ()
+
+   DoMethod ( "Win_1", "Center" )
+   _ActivateWindow ( {"Win_1"}, .F., , )
+
+   RETURN
+
+
+FUNCTION App_OnEvents( hWnd, nMsg, wParam, lParam )
+
+   LOCAL result := 0, i
+
+   switch nMsg
+   case 1
+
+      zg_InitGrid( hWnd, @hG, 700, "ZeeGrid Icons",,,,, {|h| Grid_OnInit( h ) } )
+      exit
+
+   case 273
+
+      switch HIWORD( wParam )
+
+      case 25
+         if LOWORD( wParam ) == 700
+
+            i := zgm_GetCursorIndex( hG )
+            if i > 0
+               zgm_gotoCell( hG, i )
+            else
+               zgm_gotoCell( hG, zgm_GetCellIndex( hG, 1, 1 ) )
+            endif
+
+         endif
+         exit
+
+      otherwise
+         result := Events( hWnd, nMsg, wParam, lParam )
+      end
+      exit
+
+   case 5
+
+      zg_Resize( hWnd, hG )
+      exit
+
+   otherwise
+
+      result := Events( hWnd, nMsg, wParam, lParam )
+   end
+
+   RETURN result
+
+
+
+
+PROCEDURE Grid_OnInit( h )
+
+   LOCAL i
+
+
+   for i := 1 to 10
+      zgm_AppendRow( h )
+   next
+
+
+   for i := 1 to zgm_GetCols( h )
+      zgm_SetColWidth( h, i, 80 )
+   next
+
+
+   _DefineFont ( "hTitleFont", "MS Sans Serif", 28, .T., .F., .F., .F.,, .F., )
+
+   zgm_SetFont( h, 20, GetFontHandle( "hTitleFont" ) )
+
+   zgm_SetCellFont( h, 0, 20 )
+
+
+
+
+
+   zgm_setColor( h, 21, ( 255 + ( 192 * 256 ) + ( 183 * 65536 ) ) )
+   zgm_setColor( h, 22, ( 72 + ( 118 * 256 ) + ( 255 * 65536 ) ) )
+
+
+   zgm_setRowHeight  ( h, 35 )
+   zgm_showRowNumbers( h, .T. )
+   zgm_showGridLines ( h, .F. )
+   zgm_setGridLineColor( h, 22 )
+   zgm_alternateRowColors( h, 1, 21 )
+
+
+
+   zgm_setCellText( h, 1, e"First\nColumn" )
+   zgm_setCellText( h, 2, e"Second\nColumn" )
+
+
+
+
+   i := zgm_getCellIndex( h, 4, 4 )
+
+   zgm_setCellText  ( h, i++, "XX-XXX-XXX" )
+   zgm_setCellInt   ( h, i++, 100 )
+   zgm_setCellDouble( h, i++, 100.00 )
+   zgm_setCellDouble( h, i,   100.00 * zgm_getCellDouble( h, i - 1 ) )
+
+   i := zgm_getCellIndex( h,  5, 4 )
+   zgm_setCellText  ( h, i++, "XX-XXX-XXX" )
+   zgm_setCellInt   ( h, i++, 200 )
+   zgm_setCellDouble( h, i++, 200.00 )
+   zgm_setCellDouble( h, i,   200.00 * zgm_getCellDouble( h, i - 1 ) )
+
+
+   zg_LoadIcon2( h, 1, "GREEN" )
+   zg_LoadIcon2( h, 2, "BLUE" )
+   zg_LoadIcon2( h, 3, "RED" )
+
+   zgm_SetCellIcon( h, 0, 1 )
+   zgm_SetColIcon ( h, 2, 2 )
+   zgm_SetRowIcon ( h, 2, 3 )
+   zgm_SetColWidth( h, 2, 100 )
+
+   RETURN

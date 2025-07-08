@@ -1,0 +1,95 @@
+*HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
+*OPEN SOURCE PROJECT 2005-2020 Walter Formigoni http://sourceforge.net/projects/hmgs-minigui/
+
+DEFINE WINDOW TEMPLATE AT 0 , 0 WIDTH 735 HEIGHT 525 TITLE "NETIO Client Demo" MAIN
+
+     DEFINE BUTTON connect
+            ROW    10
+            COL    10
+            WIDTH  100
+            HEIGHT 28
+            ACTION main_connect_action()
+            CAPTION "Connect"
+     END BUTTON  
+
+     DEFINE BUTTON disconnect
+            ROW    10
+            COL    120
+            WIDTH  100
+            HEIGHT 28
+            ACTION main_disconnect_action()
+            CAPTION "Disconnect"
+     END BUTTON  
+
+     DEFINE GRID Grid_1
+            ROW    50
+            COL    10
+            WIDTH  700
+            HEIGHT 390
+            HEADERS { "ID", "Last" , 'First' , "Street" , "City" , "State" , "Zip" , "Hire Date" , "Married" , "Age" , "Salary" }
+            WIDTHS { 0 , 100 , 100 , 100 , 100 , 100 , 100 , 100 , 100 , 100 , 100 }
+            ITEMS NIL
+            ONDBLCLICK main_modify_action()
+            VIRTUAL .T.
+            ONQUERYDATA main_grid_1_onquerydata()
+            NOSORTHEADERS .F.
+            JUSTIFY { 0 , 0 , 0 , 0 , 0 , 2 , 0 , 2 , 2 , 1 , 1 }
+            HEADERIMAGE ""
+            LOCKCOLUMNS 0
+     END GRID  
+
+     DEFINE LABEL Label_1
+            ROW    18
+            COL    238
+            WIDTH  64
+            HEIGHT 20
+            VALUE "Last Name:"
+     END LABEL  
+
+     DEFINE TEXTBOX query_string
+            ROW    14
+            COL    310
+            WIDTH  120
+            HEIGHT 24
+            ONENTER main_query_server_action()
+     END TEXTBOX 
+
+     DEFINE BUTTON query_server
+            ROW    10
+            COL    440
+            WIDTH  100
+            HEIGHT 28
+            ACTION main_query_server_action()
+            CAPTION "Query Server"
+     END BUTTON  
+
+     DEFINE BUTTON new
+            ROW    450
+            COL    10
+            WIDTH  100
+            HEIGHT 28
+            ACTION main_new_action()
+            CAPTION "New"
+     END BUTTON  
+
+     DEFINE BUTTON delete
+            ROW    450
+            COL    120
+            WIDTH  100
+            HEIGHT 28
+            ACTION main_delete_action()
+            CAPTION "Delete"
+     END BUTTON  
+
+     DEFINE BUTTON modify
+            ROW    450
+            COL    230
+            WIDTH  100
+            HEIGHT 28
+            ACTION main_modify_action()
+            CAPTION "Modify"
+     END BUTTON  
+
+END WINDOW
+
+

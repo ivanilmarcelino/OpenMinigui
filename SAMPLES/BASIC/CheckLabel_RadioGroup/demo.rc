@@ -1,0 +1,15 @@
+//
+// Resource    Resource         Resource
+// Name	       Type             FileName
+//
+1MAIN_ICO        ICON           res\1MG.ico
+
+iExit48x1        ICON           res\iExit48x1.ico
+iExit48x2        ICON           res\iExit48x2.ico
+iCancel48x1      ICON           res\iCancel48x1.ico
+iCancel48x2      ICON           res\iCancel48x2.ico
+iResume48x1      ICON           res\iResume48x1.ico
+iResume48x2      ICON           res\iResume48x2.ico
+CheckF32         BITMAP         res\check_circle_false32.bmp
+CheckT32         BITMAP         res\check_circle_true32.bmp
+

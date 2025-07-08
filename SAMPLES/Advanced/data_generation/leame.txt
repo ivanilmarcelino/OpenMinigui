@@ -1,0 +1,23 @@
+Después de crear un sistema se necesita probarlo con datos, manualmente solo se pueden ingresar algunos.
+
+Se necesita una herramienta que genere miles o millones de datos para probar el rendimiento del sistema que se está implementando.
+
+En esta primera versión solo permite los siguientes datos:
+
+Nombre completo
+País
+Email
+Salario
+Fecha
+
+La salida de datos es en dbf y archivo de csv.
+
+Le coloque un límite de 1.000.000 de registros que fácilmente se puede eliminar.
+
+Con la cantidad de nombres se puede crear más de 100.000.000  de datos de nombres sin repetirse sin problemas.
+
+Estoy analizando sacar nuevas versiones con más datos tanto de entrada como de salida, por ejemplo: SQL, JSON etc.
+
+Marcos Jarrin.
+
+https://badasystem.tech/

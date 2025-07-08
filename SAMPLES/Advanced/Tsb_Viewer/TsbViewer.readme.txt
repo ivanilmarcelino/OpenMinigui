@@ -1,0 +1,173 @@
+MINIGUI - Harbour Win32 GUI library Demo 
+
+Copyright (c) 2021 Sergej Kiselev <bilance@bilance.lv>
+Copyright (c) 2021 Andrey Verchenko <verchenkoag@gmail.com>
+All rights reserved. Dmitrov, Russia.
+
+ОПИСАНИЕ:
+~~~~~~~~~~~~
+Показ и редактирование содержимого dbf-файла в несколько строчек кода.
+
+Пример кода:
+
+   #include "minigui.ch"
+   REQUEST DBFCDX, DBFFPT
+
+   FUNCTION Main()
+      LOCAL cDbf := GetStartUpFolder() + '\test_Engl.dbf'
+            
+      RddSetDefault("DBFCDX")
+
+      SET FONT TO "DejaVu Sans Mono", 13
+
+      USE (cDbf) NEW EXCLUSIVE
+      TsbViewer()   
+
+   RETURN NIL
+   // добавить при сборке библиотеку TsbViewer.lib
+
+
+Показ/редактирование в любом месте кода содержимого dbf-файла.
+
+Пример кода:
+   SET FONT TO "DejaVu Sans Mono", 13  // фонты построения в таблице берутся от этого фонта
+   USE custom.dbf
+   TsbViewer()
+
+Или так:
+   SET FONT TO "DejaVu Sans Mono", 13  // фонты построения в таблице берутся от этого фонта
+   cAls      := "TEST_CALC"
+   cDbf      := GetStartUpFolder() + '\_Ru866.dbf'
+   cCodePage := "RU866"
+   USE (cDbf) ALIAS (cAls) CODEPAGE cCodePage NEW EXCLUSIVE
+
+   aTsbPar := { cAls, cCodePage, "Точка проверки(3)!" }
+   aWinPar := {}
+   TsbViewer( aTsbPar, aWinPar)  // окно с таблицей
+
+Или так:
+   aTsbPar := { cAls, cCodePage, "Точка проверки(3)!" }
+   aWinPar := { "NOWAIT", "", nY, nX, nW, nH, lCenter, RED }
+   //aWinPar := { "WAIT", "", , , , , , RED }
+   TsbViewer( aTsbPar, aWinPar)  // окно с таблицей
+
+
+Существует более продвинутый показ/редактирование базы для пользователя:
+
+   SET FONT TO "DejaVu Sans Mono", 13  // фонты построения в таблице берутся от этого фонта
+
+   oWin   := CreateDataWin(1)                                             // параметры окна
+   oUse   := CreateDateDbf(GetStartUpFolder(),'_Ru866.dbf',"RU_LIST","RU866",.T.)
+   oIndx  := CreateDateIndex(1,oUse,GetStartUpFolder())                   // создать индексы
+   oIndx:nSetOrder := 2                      // переключиться на ордер индекса
+   oMenu  := CreateDateMenu( {99,1,2,3,4} )  // события                   // меню-кнопки окна
+   oTsbW  := CreateDateTsb(oUse,oUse:cCodePage,"Checkpoint (1) !",oWin)   // параметры ТСБ
+   aEvent := {}                                 // события на окне, вызов функций
+   AAdd( aEvent, {99, {|ow| myExit(ow) }} )     // выход
+   AAdd( aEvent, { 1, {|ow| myBtn1(ow) }} )     // кнопка 1
+   AAdd( aEvent, { 2, {|ow| myBtn2(ow) }} )     // кнопка 2
+   AAdd( aEvent, { 3, {|ow| myBtn3(ow) }} )     // кнопка 3
+   AAdd( aEvent, { 4, {|ow| myBtn4(ow) }} )     // кнопка 4
+
+   TsbObjViewer(oWin, oUse, oIndx, oMenu, oTsbW, aEvent)   // окно с таблицей
+
+Кол-во кнопок для таблицы задаётся в CreateDateMenu(смотреть demo2.prg)
+На каждую кнопку назначается событие, к которому потом привязывается функция обработки.
+Местонахождение кнопок тоже задаётся в CreateDateMenu(), примерно так:
+   oMenu:nPosWin   := 3         // 1-TopWindow, 2-BottomWindow, 3-LeftWindow, 4-RightWindow
+   oMenu:nHAlign   := DT_LEFT   // горизонтальные кнопки: 0-LEFT, 1-CENTER, 2-RIGHT
+   oMenu:nVAlign   := DT_TOP    // вертикальные кнопки: 0-TOP , 1-CENTER, 2-BOTTOM
+   oMenu:aCaption  := { "Выход", "База", "Авторы" }
+   ......
+
+10.11.23 - Дабавлено: Копировать/Вставить буфер обмена Windows, правая кнопка мышки на ячейке  
+  
+
+РАСПРОСТРАНЕНИЕ:
+~~~~~~~~~~~~~
+Эта программа является бесплатной, и может свободно копироваться и распространяться,
+до тех пор, как она не изменяется каким-либо образом, и никакая плата не взимается
+за распределение (плата за небольшую доставку и обработку приемлема).
+
+
+DESCRIPTION:
+~~~~~~~~~~~~
+Display and edit the contents of a dbf file in a few lines of code.
+
+Sample code:
+
+    #include "minigui.ch"
+    REQUEST DBFCDX, DBFFPT
+
+    FUNCTION Main()
+       LOCAL cDbf := GetStartUpFolder() + '\test_Engl.dbf'
+            
+       RddSetDefault("DBFCDX")
+
+       SET FONT TO "DejaVu Sans Mono", 13
+
+       USE (cDbf) NEW EXCLUSIVE
+       TsbViewer()
+
+    RETURN NIL
+    // add the TsbViewer.lib library when building
+
+Show / edit anywhere in the code of the content of the dbf file.
+
+Sample code:
+    SET FONT TO "DejaVu Sans Mono", 13 // construction fonts in the table are taken from this font
+    USE custom.dbf
+    TsbViewer() 
+
+Or like this:
+    SET FONT TO "DejaVu Sans Mono", 13 // construction fonts in the table are taken from this font
+    cAls: = "TEST_CALC"
+    cDbf: = GetStartUpFolder () + '\ _Ru866.dbf'
+    cCodePage: = "RU866"
+    USE (cDbf) ALIAS (cAls) CODEPAGE cCodePage NEW EXCLUSIVE
+
+    aTsbPar: = {cAls, cCodePage, "Checkpoint (3)!" }
+    aWinPar: = {"NOWAIT"}
+    TsbViewer(aTsbPar, aWinPar) // window with table
+
+Or like this:
+    aTsbPar: = {cAls, cCodePage, "Checkpoint (3)!" }
+    aWinPar: = {"NOWAIT", "", nY, nX, nW, nH, lCenter, RED}
+    TsbViewer(aTsbPar, aWinPar) // window with table
+
+
+There is a more advanced display / editing of the base for the user: 
+
+   SET FONT TO "DejaVu Sans Mono", 13 // construction fonts in the table are taken from this font
+
+   oWin: = CreateDataWin (1) // window parameters
+   oUse: = CreateDateDbf (GetStartUpFolder (), '_ Ru866.dbf', "RU_LIST", "RU866",. T.)
+   oIndx: = CreateDateIndex (1, oUse, GetStartUpFolder ()) // create indexes
+   oMenu: = CreateDateMenu ({99,1,2,3,4}) // events // window menu-buttons
+   oTsbW: = CreateDateTsb (oUse, oUse: cCodePage, "Checkpoint (1)!", oWin) // TSB parameters
+   oIndx: nSetOrder: = 2 // switch to index order
+   aEvent: = {} // events on the window, function calls
+   AAdd (aEvent, {99, {| ow | myExit (ow)}}) // exit
+   AAdd (aEvent, {1, {| ow | myBtn1 (ow)}}) // button 1
+   AAdd (aEvent, {2, {| ow | myBtn2 (ow)}}) // button 2
+   AAdd (aEvent, {3, {| ow | myBtn3 (ow)}}) // button 3
+   AAdd (aEvent, {4, {| ow | myBtn4 (ow)}}) // button 4
+
+   TsbObjViewer (oWin, oUse, oIndx, oMenu, oTsbW, aEvent) // window with a table 
+
+The number of buttons for the table is set in CreateDateMenu (see demo2.prg)
+An event is assigned to each button, to which the processing function is then attached.
+The location of the buttons is also set in CreateDateMenu (), something like this:
+    oMenu: nPosWin: = 3 // 1-TopWindow, 2-BottomWindow, 3-LeftWindow, 4-RightWindow
+    oMenu: nHAlign: = DT_LEFT // horizontal buttons: 0-LEFT, 1-CENTER, 2-RIGHT
+    oMenu: nVAlign: = DT_TOP // vertical buttons: 0-TOP, 1-CENTER, 2-BOTTOM
+    oMenu: aCaption: = {"Exit", "Base", "Authors"}
+    ......
+
+11/10/23 - Added: Copy/Paste Windows clipboard, right mouse button on cell
+
+SPREAD:
+~~~~~~~~~~~~~
+This program is free and can be freely copied and distributed.
+as long as it does not change in any way, and no fee is charged
+for distribution (payment for small shipping and handling is acceptable).

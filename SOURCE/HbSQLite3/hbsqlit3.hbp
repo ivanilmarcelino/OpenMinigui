@@ -1,0 +1,19 @@
+#
+# hbsqlit3.hbp
+#
+
+-hblib
+-inc
+-o../../harbour/lib/hbsqlit3
+
+-I../../include
+
+-hbx=../../include/hbsqlit3.hbx
+
+-w3 -es2 -ko -q0
+
+-cflag=-DSQLITE_ENABLE_COLUMN_METADATA
+
+core.c
+errstr.prg
+hdbc.prg

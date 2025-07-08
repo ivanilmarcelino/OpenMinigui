@@ -1,0 +1,4 @@
+incpaths=
+libpaths=
+libs=hbziparc hbmzip minizip
+{win}libs=cw32

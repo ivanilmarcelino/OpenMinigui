@@ -1,0 +1,75 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MEMVAR hBitmap
+#line 54 "S:\Mega\Dev\32\BCC\Minigui\include\i_var.ch"
+  MEMVAR _HMG_SYSDATA
+#line 14 "S:\Mega\Dev\32\BCC\Minigui\include\miniprint.ch"
+  MEMVAR _HMG_MINIPRINT
+#line 29 "Demo1.prg"
+FUNCTION MAIN
+
+PRIVATE hBitmap := 0
+
+
+
+
+
+
+
+
+
+
+
+ _DefineWindow ( "Win1", "Bos Taurus: Prototype Demo", 0, 0, 700, 600, .F., .F., .F., .F., .F., {,}, {,}, {||     Proc_ON_INIT ()}, {||  Proc_ON_RELEASE ()} ,, {||     BT_ClientAreaInvalidateAll ("Win1")} , ,, , {||    Proc_ON_PAINT ()} , .F. , .F. , .T. , , .F. , ,, , , ,, , , , , , , , , , .F. , {|| BT_ClientAreaInvalidateAll ("Win1")} , , , .F. , , , , , .F. , .F. , , , .F. , , , )
+
+
+            _DefineButton ( "Button_1", , 280, 500, "Click", {|| MsgInfo ( BT_InfoName() + Space(3) + BT_InfoVersion() + CHR(13)+CHR(10) + BT_InfoAuthor (), "Info", , .F. )},,,,,,,, .F., .F.,, .F. , .F., .F., .F., .F., .F., .F.,, )
+
+    _EndWindow ()
+
+    DoMethod ( "Win1", "Center" )
+    _ActivateWindow ( {"Win1"}, .F., , )
+RETURN NIL
+
+
+PROCEDURE Proc_ON_INIT
+   hBitmap := BT_BitmapLoadFile ("BosTaurus_LogoJPG")
+
+
+
+RETURN
+
+
+PROCEDURE Proc_ON_RELEASE
+   BT_BitmapRelease (hBitmap)
+RETURN
+
+
+PROCEDURE Proc_ON_PAINT
+LOCAL hDC, BTstruct
+   hDC := BT_CreateDC ("Win1", 4, @BTstruct)
+      BT_DrawGradientFillVertical (hDC, 0, 0, BT_ClientAreaWidth("Win1"), BT_ClientAreaHeight("Win1"), { 255 , 255 , 255 }, {   0 ,   0 ,   0 })
+      BT_DrawBitmap (hDC, 30, 150, 400, 400, 3, hBitmap)
+   BT_DeleteDC (BTstruct)
+RETURN

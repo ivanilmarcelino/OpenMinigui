@@ -1,0 +1,54 @@
+*HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
+*OPEN SOURCE PROJECT 2005-2010 Walter Formigoni http://sourceforge.net/projects/hmgs-minigui/
+
+DEFINE WINDOW TEMPLATE AT 97 , 335 WIDTH 794 HEIGHT 600 MODAL NOSIZE
+
+     DEFINE RICHEDITBOX RichEdit_1
+            ROW    15
+            COL    15
+            WIDTH  755
+            HEIGHT 490
+            FONTNAME "Courier New"
+            FONTSIZE 10
+            TABSTOP .F.
+            BACKCOLOR {255,255,255}
+     END RICHEDITBOX  
+
+    DEFINE BUTTON Button_Close
+           ROW    515
+           COL    660
+           WIDTH  110
+           HEIGHT 30
+           ACTION ThisWindow.Release
+           CAPTION "Close"
+     END BUTTON  
+
+    DEFINE BUTTON Button_Copy
+           ROW    515
+           COL    545
+           WIDTH  110
+           HEIGHT 30
+           ACTION BrowseTextCopy2Clipboard()
+           CAPTION "Copy to Cipboard"
+     END BUTTON  
+
+     DEFINE FRAME Frame_1
+            ROW    3
+            COL    5
+            WIDTH  775
+            HEIGHT 550
+            OPAQUE .T.
+     END FRAME  
+
+     DEFINE LABEL Label_1
+            ROW    520
+            COL    20
+            WIDTH  150
+            HEIGHT 24
+            VALUE "Harbour NetIO.lib doc."
+            FONTCOLOR {255,255,0}
+     END LABEL  
+
+END WINDOW
+
+

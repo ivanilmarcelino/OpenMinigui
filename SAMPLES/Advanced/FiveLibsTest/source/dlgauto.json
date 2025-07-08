@@ -1,0 +1,48 @@
+[
+[ "LOGIN", [ true ] ],
+[ "KEYLIST", [
+[ "cDbfName",    "cFieldName", "nBrowseOrder"],
+[ "DBCLIENT",    "IDCLIENT",   2 ],
+[ "DBPRODUCT",   "IDPRODUCT",  2 ],
+[ "DBUNIT",      "IDUNIT",     2 ],
+[ "DBSELLER",    "IDSELLER",   2 ],
+[ "DBBANK",      "IDBANK",     2 ],
+[ "DBGROUP",     "IDGROUP",    2 ],
+[ "DBSTOCK",     "IDSTOCK"       ],
+[ "DBFINANC",    "IDFINANC"      ],
+[ "DBSTATE",     "IDSTATE",    2 ],
+[ "DBTICKET",    "IDTICKET"      ],
+[ "DBTICKETPRO", "IDTICKETPRO"   ],
+[ "DBDBF",       "IDDBF",      2 ],
+[ "DBFIELDS",    "IDFIELD",    2 ]
+]],
+[ "SEEKLIST",[
+[ "cDbfOrigin", "cFieldName", "cDbfTarget", "cFieldTarget", "cFieldShow" ],
+[ "DBCLIENT",   "CLSELLER",   "DBSELLER",   "IDSELLER",     "SENAME" ],
+[ "DBCLIENT",   "CLBANK",     "DBBANK",     "IDBANK",       "BANAME" ],
+[ "DBTICKET",   "TICLIENT",   "DBCLIENT",   "IDCLIENT",     "CLNAME" ],
+[ "xxxDBCLIENT",   "CLSTATE",    "DBSTATE",    "IDSTATE",      "STNAME" ],
+[ "DBPRODUCT",  "IEUNIT",     "DBUNIT",     "IDUNIT",       "UNNAME" ],
+[ "DBSTOCK",    "STCLIENT",   "DBCLIENT",   "IDCLIENT",     "CLNAME" ],
+[ "DBSTOCK",    "STPRODUCT",  "DBPRODUCT",  "IDPRODUCT",    "PRNAME" ],
+[ "DBSTOCK",    "STGROUP",    "DBGROUP",    "IDGROUP",      "GRNAME" ],
+[ "DBFINANC",   "FICLIENT",   "DBCLIENT",   "IDCLIENT",     "CLNAME" ],
+[ "DBFINANC",   "FIBANK",     "DBBANK",     "IDBANK",       "BANAME" ]
+]],
+[ "BROWSELIST",[
+[ "cDbfOrigin",  "cFieldName", "cDbfTarget", "nOrder", "cFieldTarget", "cTargetKey", "lEdit", "cTitle" ],
+[ "DBTICKET",    "IDTICKET",   "DBTICKETPRO",2,        "TPTICKET",     "IDTICKEDPRO",true,   "PROD LIST" ],
+[ "DBDBF",       "NAME",       "DBFIELDS",   2,        "DBF",          "IDFIELD",    false,   "DBF LIST" ],
+[ "DBCLIENT",    "IDCLIENT",   "DBFINANC",   2,        "FICLIENT",     "IDFINANC",   true,    "FINANC LIST" ],
+[ "DBCLIENT",    "IDCLIENT",   "DBSTOCK",    2,        "STCLIENT",     "IDSTOCK",    false,   "STOCK LIST" ],
+[ "DBCLIENT",    "IDCLIENT",   "DBTICKET",   2,        "TICLIENT",     "IDTICKET",   true,    "TICKET LIST" ]
+]],
+[ "TYPELIST",[
+[ "cDbfName", "cFieldName", "cType",      "aListMinMax" ],
+[ "DBCLIENT", "CLSTATE",    "COMBOBOX",   ["AC","RS","SP","RJ","PR","RN"] ],
+[ "DBCLIENT", "CLSTATUS",   "CHECKBOX" ],
+[ "DBCLIENT", "CLDATE",     "DATEPICKER" ],
+[ "DBFINANC", "FIDATTOPAY", "DATEPICKER" ],
+[ "DBCLIENT", "CLPAYTERM",  "SPINNER",     [0,120] ]
+]]
+]

@@ -1,0 +1,169 @@
+GraphPlus Class Manual
+
+The GraphPlus class is part of the MINIGUI - Harbour Win32 GUI Library, originally developed by S. Rathinagiri. This class is used to generate various types of graphical charts in a Win32 GUI environment. It supports column, line, pie, and other advanced graph types.
+
+Class Properties (DATA)
+
+1. Graph Data & Structure
+   - aData: Holds the data to be visualized (INIT: {}).
+   - aCategories: Defines categories or labels on the horizontal axis (INIT: {}).
+   - nGraphType: Sets the type of graph. The default is column (GT_DEFAULT = 1).
+     - Possible graph types:
+       - GT_COLUMNS: Column (bar) graph.
+       - GT_LINE: Line graph.
+       - GT_POINTS: Scatter plot.
+       - GT_PIE: Pie chart.
+       - GT_BAR: Horizontal bar graph.
+       - GT_FUNNEL: Funnel chart.
+       - GT_STACKEDCOLUMN: Stacked column graph.
+       - GT_STACKEDBAR: Stacked horizontal bar graph.
+       - GT_AREA: Area graph.
+       - GT_SCATTERXY: XY Scatter plot.
+       - GT_DOUGHNUT: Doughnut chart.
+       - GT_SUNBURST: SunBurst chart.
+       - GT_WATERFALL: Waterfall chart.
+       - GT_TREEMAP: TreeMap chart.
+
+2. Graph Titles
+   - cTitle: Title for the graph (INIT: '').
+   - cXTitle: Label for the horizontal axis (INIT: '').
+   - cYTitle: Label for the vertical axis (INIT: '').
+
+3. Graph Dimensions
+   - nHeight: The height of the graph in pixels (INIT: 600).
+   - nWidth: The width of the graph in pixels (INIT: 600).
+   - lXRotate: Set to .T. if you want to rotate X-axis labels for readability (INIT: .F.).
+
+4. Legends
+   - lShowLegends: Show/hide legends (INIT: .F.).
+   - nLegendPos: Position of the legends. Options include:
+     - LEGEND_ON_RIGHT: Place legends on the right.
+     - LEGEND_ON_BOTTOM: Place legends at the bottom.
+   - nLegendBoxSize: Size of the legend boxes.
+   - aLegends: Stores the legends for the graph (INIT: {}).
+
+5. Grid & Axes
+   - lHGrid: Display horizontal grid lines (INIT: .T.).
+   - lVGrid: Display vertical grid lines (INIT: .T.).
+   - aGridLineColor: Color of grid lines (default: {200, 200, 200}).
+   - lShowValues: Show numeric values on axes (INIT: .T.).
+   - lShowCategories: Show category labels on the X-axis (INIT: .T.).
+
+6. Appearance & Colors
+   - aColors: Array of colors used in the graph.
+   - nColorTheme: Select one of the predefined color themes:
+     - THEME_PALETTE_1: Default theme.
+     - THEME_PALETTE_2
+     - THEME_PALETTE_3
+     - THEME_PALETTE_4
+   - Color Definitions:
+     - CLR_HAVELOCK_BLUE: { 68, 115, 197 }
+     - CLR_WESTSIDE: { 237, 125, 49 }
+     - CLR_LIGHT_GREY: { 165, 165, 165 }
+     - CLR_ORANGE_YELLOW: { 255, 192, 0 }
+     - CLR_PICTON_BLUE: { 91, 155, 213 }
+     - CLR_APPLE: { 112, 173, 71 }
+     - CLR_DARK_GREY: { 99, 99, 99 }
+     - CLR_ENDEAVOUR: { 37, 95, 145 }
+     - CLR_SADDLE_BROWN: { 160, 71, 13 }
+     - CLR_DELL: { 66, 104, 43 }
+     - CLR_LIGHT_BROWN: { 152, 115, 0 }
+     - CLR_DARKER_BLUE: { 38, 68, 120 }
+     - CLR_WHITE: { 255, 255, 255 }
+
+7. Fonts
+   - aTitleFont: Font settings for the title (INIT: {'Arial', 12, .T., .F., .F., .F.}).
+   - aLegendFont: Font settings for the legends (INIT: {'Arial', 8, .F., .F., .F., .F.}).
+
+8. Custom Graph Features
+   - nBarGapRatio: Gap between bars in a column/bar graph (INIT: 0.2).
+   - nPieGap: Gap between pie chart slices (INIT: 3).
+   - nLineWidth: Thickness of lines in line graphs (INIT: 2).
+   - nImageHeight: Height of the generated image (INIT: 600).
+   - nImageWidth: Width of the generated image (INIT: 600).
+
+9. Advanced Graphs (SunBurst & TreeMap)
+   - aSunBurstData, nLevels, aLevelHeaders, aLevelValues: Stores data for SunBurst charts.
+   - aTreeMapRect, aTreeMapData: Stores data for TreeMap charts.
+
+---
+
+Class Methods (METHOD)
+
+1. Graph Initialization and Drawing
+   - New(): Initializes a new GraphPlus object.
+   - Draw(): Draws the graph with the current data and settings.
+   - Bitmap(): Returns the graph as a bitmap.
+
+2. Graph Types
+   - DrawColumnGraph(): Draws a column (bar) graph.
+   - DrawBarGraph(): Draws a horizontal bar graph.
+   - DrawLineGraph(): Draws a line graph.
+   - DrawPieGraph(): Draws a pie chart.
+   - DrawPointsGraph(): Draws a scatter plot.
+   - DrawFunnelGraph(): Draws a funnel chart.
+   - DrawStackedColumnGraph(): Draws a stacked column graph.
+   - DrawStackedBarGraph(): Draws a stacked horizontal bar graph.
+   - DrawAreaGraph(): Draws an area graph.
+   - DrawScatterXYGraph(): Draws a scatter plot with XY coordinates.
+   - DrawDoughnutGraph(): Draws a doughnut chart.
+   - DrawSunBurstGraph(): Draws a SunBurst chart.
+   - DrawWaterfallGraph(): Draws a waterfall chart.
+   - DrawTreeMapGraph(): Draws a TreeMap chart.
+
+3. Grid, Titles, and Legends
+   - DrawLegends(): Draws legends for the graph.
+   - DrawXYTitles(): Draws titles for the X and Y axes.
+   - DrawCategories(): Draws the category labels on the horizontal axis.
+   - DrawVerticalScale(): Draws the vertical axis scale.
+   - DrawHorizontalGrid(), DrawVerticalGrid(): Draws grid lines.
+
+4. Data Manipulation
+   - GraphData(): Gets or sets the graph data.
+   - Categories(): Gets or sets category labels.
+   - GraphColors(): Gets or sets custom graph colors.
+   - GraphType(): Gets or sets the type of graph (e.g., GT_PIE, GT_BAR).
+
+5. Saving the Graph
+   - Save(): Saves the graph as an image (e.g., bitmap).
+   - Picture(), PictureX(), PictureY(): Sets or gets image properties.
+
+6. TreeMap and SunBurst Processing
+   - FillSunBurstData(): Prepares SunBurst chart data.
+   - FillTreeMapData(): Prepares TreeMap chart data.
+   - StripTreemap(), LayoutStrip(), ComputeHorizontalBoxLayout(): Internal methods for TreeMap layout.
+
+---
+
+How to Use the GraphPlus Class
+
+1. Initialize the GraphPlus Object
+
+   LOCAL oGraph
+   oGraph := GraphPlus():New()
+
+2. Set the Data for the Graph
+
+   oGraph:aData := { { "January", 30 }, { "February", 50 } }
+   oGraph:aCategories := { "January", "February" }
+
+3. Customize the Appearance
+
+   oGraph:cTitle := "Sales Data"
+   oGraph:cXTitle := "Months"
+   oGraph:cYTitle := "Revenue"
+   oGraph:lShowLegends := .T.
+   oGraph:nLegendPos := LEGEND_ON_BOTTOM
+   oGraph:nColorTheme := THEME_PALETTE_2
+
+4. Draw the Graph
+
+   oGraph:DrawColumnGraph()
+
+5. Save the Graph as an Image
+
+   oGraph:Save("sales_data.bmp")
+
+---
+
+This manual provides detailed guidance on using the GraphPlus class to generate a wide variety of graphical charts in the Harbour programming environment.
