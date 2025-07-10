@@ -72,8 +72,7 @@ INIT PROCEDURE ClipInit()
 
    ENDIF
 
-   __TRACEPRGCALLS( .T. )
-   HB_TRACESTATE( .T. )
+
    Init()
 
 RETURN
@@ -166,10 +165,10 @@ STATIC FUNCTION HMG_GenError( cMsg )
 
 RETURN oError
 
-#define MG_VERSION "Harbour MiniGUI Extended Edition 25.06 ("
+#define MG_VERSION "Open Minigui v1.0.0 ("
 
 /*-----------------------------------------------------------------------------*
-* FUNCTION MiniGuiVersion( nVer )
+* FUNCTION MiniGuiVersion(  )
 *
 * Description:
 *   This function returns the version string of the Harbour MiniGUI Extended Edition.
@@ -181,32 +180,15 @@ RETURN oError
 *   This can be useful for debugging, logging, or displaying the version information
 *   to the user. The different levels of version information allow for flexibility
 *   in how the version is displayed.
-*
-* Parameters:
-*   nVer: Optional. Specifies the level of version information to return.
-*                   0 (default): Returns the full version string.
-*                   1: Returns a shorter version string (38 characters).
-*                   2: Returns an even shorter version string (15 characters).
-*
-* Return Value:
-*   cVer: The version string of the Harbour MiniGUI Extended Edition, truncated based on nVer.
 *-----------------------------------------------------------------------------*/
-FUNCTION MiniGuiVersion( nVer )
+FUNCTION MiniGuiVersion()
 #ifndef __XHARBOUR__
    LOCAL cVer := MG_VERSION + hb_ntos( hb_Version( HB_VERSION_BITWIDTH ) ) + "-bit) "
 #else
    LOCAL cVer := MG_VERSION + iif( IsExe64(), "64", "32" ) + "-bit) "
 #endif
-   LOCAL anOfs
-
-   hb_default( @nVer, 0 )
-
    cVer += HMG_CharsetName()
-
    IF Set( _SET_DEBUG )
       cVer += " (DEBUG)"
    ENDIF
-
-   anOfs := { Len( cVer ), 38, 15 }
-
-RETURN Left( cVer, anOfs[ iif( nVer > 2, 2, iif( nVer < 0, 0, nVer ) ) + 1 ] )
+Return cVer

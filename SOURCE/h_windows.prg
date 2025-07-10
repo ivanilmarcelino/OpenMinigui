@@ -1304,7 +1304,6 @@ FUNCTION _EndWindow ()
    CASE _HMG_MdiChildActive == .T.  // JP MDI
       _EndMdiChildWindow ()
    OTHERWISE
-      *_DefineTimer( "0", _HMG_ActiveFormName, 100, {|| _AltD( 1 ) }, .T. )
       _HMG_BeginWindowActive := .F.
       _HMG_ActiveFormName := ""
    ENDCASE
@@ -2912,10 +2911,10 @@ FUNCTION WaitWindow ( cMessage, lNoWait, nWidth, nSize, cFont, aFontColor, aBack
 *-----------------------------------------------------------------------------*
    LOCAL cFormName := "_HMG_CHILDWAITWINDOW"
    LOCAL lDefined := _IsWindowDefined( cFormName )
-   LOCAL lIsModal
+   LOCAL lIsModal, hWnd
    LOCAL lWidth := ( nWidth == NIL )
    LOCAL nHeight
-   LOCAL nY, nX, nW, nI, nK
+   LOCAL nY, nX, nW, nH, nI, nK
    LOCAL hFont, cTmp, nTmp, cLbl, bOnInit, l_No_Wait := .T.
 #ifdef _NAMES_LIST_
    LOCAL oo, lo
@@ -2947,10 +2946,10 @@ FUNCTION WaitWindow ( cMessage, lNoWait, nWidth, nSize, cFont, aFontColor, aBack
          IF HB_ISCHAR( cFont ) .AND. ! Empty( cFont )
             oo:cFontName := cFont
          ENDIF
-         IF HB_ISARRAY( aFontColor ) .AND. Len( aFontColor ) == 3
+         IF IsArrayRGB( aFontColor )
             oo:aFontColor := aFontColor
          ENDIF
-         IF HB_ISARRAY( aBackColor ) .AND. Len( aBackColor ) == 3
+         IF IsArrayRGB( aBackColor )
             oo:aBackColor := aBackColor
          ENDIF
          IF lo ; _SetGetNamesList():Set( cFormName, oo )
@@ -3028,8 +3027,17 @@ FUNCTION WaitWindow ( cMessage, lNoWait, nWidth, nSize, cFont, aFontColor, aBack
 
          nHeight += 8
 
-         IF lNoWait
-            _HMG_IsModalActive := .F.
+#ifdef _HMG_COMPAT_
+         IF ! Empty( _HMG_MainHandle )
+            hWnd := iif( _HMG_BeginWindowMDIActive, GetActiveMdiHandle(), GetActiveWindow() )
+            IF hWnd != NIL .AND. ( nI := GetFormIndexByHandle( hWnd ) ) > 0
+               IF _HMG_aFormType [ nI ] $ "MSY"
+                  _HMG_IsModalActive := .T.
+               ENDIF
+            ENDIF
+         ENDIF
+#endif
+         IF lNoWait .AND. ! _HMG_IsModalActive
             DEFINE WINDOW _HMG_CHILDWAITWINDOW CHILD
          ELSE
             DEFINE WINDOW _HMG_CHILDWAITWINDOW MODAL
@@ -3038,8 +3046,15 @@ FUNCTION WaitWindow ( cMessage, lNoWait, nWidth, nSize, cFont, aFontColor, aBack
             ENDIF
          ENDIF
 
-         SetProperty( cFormName, "Width", Min( 2 * nWidth, Min( GetDesktopWidth(), 800 ) ) )
-         SetProperty( cFormName, "Height", nHeight * nK + nY * 2 + GetBorderHeight() )
+         nW := Min( 2 * nWidth, Min( GetDesktopWidth(), 800 ) )
+         nH := nHeight * nK + nY * 2 + GetBorderHeight()
+
+         SetProperty( cFormName, "Width", nW )
+         SetProperty( cFormName, "Height", nH )
+
+         IF hb_osIsWin11() .AND. _HMG_IsThemed .AND. HB_ISARRAY( aBackColor )
+            SET REGION OF _HMG_CHILDWAITWINDOW ROUNDRECT 10, 10, nW, nH
+         ENDIF
 
          SetProperty( cFormName, "Title", "" )
          SetProperty( cFormName, "TitleBar", .F. )
@@ -3070,6 +3085,7 @@ FUNCTION WaitWindow ( cMessage, lNoWait, nWidth, nSize, cFont, aFontColor, aBack
          ENDIF
 
          IF HB_ISBLOCK( bOnInit )
+            _HMG_IsModalActive := .T.
             nK := GetFormIndex( cFormName )
             _HMG_aFormInitProcedure [ nK ] := bOnInit
          ENDIF
@@ -3130,28 +3146,6 @@ STATIC PROCEDURE EfeitoLabel ( cTxt )
    SetProperty( cFormName, "Message", "Value", cDescEfeito )
 
 RETURN
-
-/*
-#define ALTD_DISABLE  0
-#define ALTD_ENABLE   1
-
-*-----------------------------------------------------------------------------*
-STATIC PROCEDURE _AltD( nAction )
-*-----------------------------------------------------------------------------*
-   IF HB_ISNUMERIC( nAction )
-
-      SWITCH nAction
-      CASE ALTD_DISABLE
-         Set( _SET_DEBUG, .F. )
-         EXIT
-      CASE ALTD_ENABLE
-         Set( _SET_DEBUG, .T. )
-      ENDSWITCH
-
-   ENDIF
-
-RETURN
-*/
 
 *-----------------------------------------------------------------------------*
 FUNCTION _HMG_DialogBoxProperty ( nRow, nCol, lCenter, Form, lSet, hIcon )

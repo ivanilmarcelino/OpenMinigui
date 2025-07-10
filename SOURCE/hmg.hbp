@@ -9,6 +9,8 @@
 
 -inc
 
+-jobs=%NUMBER_OF_PROCESSORS%
+
 -workdir=../lib/hbmk/obj
 
 -o../lib/minigui
@@ -17,7 +19,7 @@
 
 -w3 -es2 -ko -q0
 
-#{!DEBUG&(allbcc|allmingw)|msvc|msvc64}-l
+{!DEBUG&bcc|bcc64|mingw|mingw64|msvc|msvc64}-l
 
 -warn=max
 

@@ -168,7 +168,7 @@ FUNCTION _BeginIni( cIniFile )
    LOCAL hFile
 
    IF At( "\", cIniFile ) == 0
-      cIniFile := ".\" + cIniFile
+      cIniFile := hb_DirBase() + cIniFile
    ENDIF
 
    IF Set( _SET_CODEPAGE ) == "UTF8"
@@ -508,6 +508,10 @@ FUNCTION _GetSectionNames( cIniFile )
    // or empty array if no sections are present
    LOCAL aSectionList := {}, aLista
 
+   IF At( "\", cIniFile ) == 0
+      cIniFile := hb_DirBase() + cIniFile
+   ENDIF
+
    IF File( cIniFile )
       aLista := _GetPrivateProfileSectionNames( cIniFile )
       IF ! Empty( aLista )
@@ -524,6 +528,10 @@ FUNCTION _GetSection( cSection, cIniFile )
 *-----------------------------------------------------------------------------*
    // return 2-dimensional array with {key,value} pairs from section cSection in cIniFile
    LOCAL aKeyValueList := {}, aLista, i, n
+
+   IF At( "\", cIniFile ) == 0
+      cIniFile := hb_DirBase() + cIniFile
+   ENDIF
 
    IF File( cIniFile )
       aLista := _GetPrivateProfileSection( cSection, cIniFile )

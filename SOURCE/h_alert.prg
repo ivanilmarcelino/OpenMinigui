@@ -204,7 +204,7 @@ FUNCTION HMG_Alert( cMsg, aOptions, cTitle, nType, cIcoFile, nIcoSize, aBtnColor
       hb_default( @_HMG_ModalDialogReturn, 0 )
    ENDIF
 
-   hPrevious := GetActiveWindow()
+   hPrevious := iif( _HMG_BeginWindowMDIActive, GetActiveMdiHandle(), GetActiveWindow() )
 
    DEFINE WINDOW ( cForm ) ;
       WIDTH 0 HEIGHT 0 ;

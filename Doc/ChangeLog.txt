@@ -1,3 +1,5 @@
+
+
 2025/06/05: HMG Extended Edition version 25.06.
   * Fixed: Corrections in the MiniGUI core C code based on an analysis of
            potential issues related to the return values of WinAPI functions,
@@ -5409,7 +5411,7 @@
            - update for using SQLITE3 latest version 3.32.3.
            Contributed by Grigory Filatov <gfilatov@inbox.ru>.
   * Updated: Modified the application manifest for compatibility with a recent
-           heap implementation in Windows 10 (‘heapType’ element).
+           heap implementation in Windows 10 ( heapType  element).
            This feature is supported in Windows 10, version 2004, and later.
            Contributed by Grigory Filatov <gfilatov@inbox.ru>
            (see Windows10.Manifest in folder \Resources)
@@ -5698,7 +5700,7 @@
            Based upon a contribution of HMG user Jimmy.
            Adapted for Minigui Extended by Grigory Filatov <gfilatov@inbox.ru>
            (see in folder \samples\Basic\Zip_4)
-  * New: 'TsBrowse SetArray for Ñlipboard' sample.
+  * New: 'TsBrowse SetArray for  lipboard' sample.
            Contributed by Sergej Kiselev and Verchenko Andrey
            (see demo4.prg in folder \samples\Advanced\Tsb_Array_2)
   * Updated: 'Cas_dbf' sample: added an enhanced demo with Tsbrowse search.
@@ -21697,7 +21699,7 @@
            Reported and explained by Janusz Pora <soft_design@poczta.onet.pl>
   * Changed: Window's ON RESTORE event operates on NOSIZE window only for avoid conflict with ON RESIZE event.
            Reported by Janusz Pora <soft_design@poczta.onet.pl>
-  * Fixed: RicheditEx sample resize problem on WinXP. Reported by René Koot <rene@plantenkennis.com>.
+  * Fixed: RicheditEx sample resize problem on WinXP. Reported by Ren  Koot <rene@plantenkennis.com>.
   * Changed: Sample Grid_1 for get and set column value of selected row in Grid. Contributed by Grigory Filatov <gfilatov@freemail.ru>
            (see \samples\basic\Grid_1\demo.prg)
 
@@ -21763,7 +21765,7 @@
      + SET ERRORLOG TO <cFile> - set new errorlog file (default {APPDIR>}\ErrorLog.htm)
      + SET ERRORLOG TO         - reset errorlog file to default value  
      ! Default errorlog dir is always set to *.exe dir, and not modified by other HMG functions.
-     Thanks to René Koot <rene@plantenkennis.com> for report! ( see /samples/basic/errorlog/demo.prg )
+     Thanks to Ren  Koot <rene@plantenkennis.com> for report! ( see /samples/basic/errorlog/demo.prg )
 
   * New: useful additions in GRID & BROWSE controls. Contributed by Jacek Kubica <kubica@wssk.wroc.pl>
      + ColumnWidth(n) property added 
