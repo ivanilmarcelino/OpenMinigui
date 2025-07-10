@@ -17,6 +17,10 @@
 
 -I../include
 
+hbwin.hbc
+hbmzip.hbc
+hbhpdf.hbc
+
 -w3 -es2 -ko -q0
 
 {!DEBUG&bcc|bcc64|mingw|mingw64|msvc|msvc64}-l
