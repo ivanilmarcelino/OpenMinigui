@@ -374,6 +374,7 @@ HB_FUNC( GETITEMBAR )
  *      content of the status bar changes dynamically.
  */
 //---------------------------------------------------------------------------
+
 HB_FUNC( REFRESHITEMBAR )
 {
    HWND  hWndSB;        // Handle for the status bar.
@@ -434,6 +435,8 @@ HB_FUNC( REFRESHITEMBAR )
 
    hb_retni( nrOfParts );              // Return the updated part count.
 }
+
+
 
 //---------------------------------------------------------------------------
 /*
