@@ -80,22 +80,30 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
              aBtnColors -> optional array of colors for the buttons
 
              bInit      -> optional initial block of code for additional tuning
+             
+             lClosable ->
+             cFontName ->
+             
+             New: 
+             aListImage -> List {img1,img2,imgn}
 
    Last Modified by Grigory Filatov at 12-07-2021
+   
+   Last Modified by Ivanil Marcelino at 07-17-2025
 */
 
 #define MARGIN          32
 #define MARGIN_ICON     70
 #define VMARGIN_BUTTON  4
 #define HMARGIN_BUTTON  22
-#define SEP_BUTTON      10
+#define SEP_BUTTON      4
 #define TAB             Chr( 9 )
 
 STATIC lIsWin10, lPressButton
 STATIC aBackColor, aFontColor
-
+Declare window &(cForm)
 *-----------------------------------------------------------------------------*
-FUNCTION HMG_Alert( cMsg, aOptions, cTitle, nType, cIcoFile, nIcoSize, aBtnColors, bInit, lClosable, cFontName )
+FUNCTION HMG_Alert( cMsg, aOptions, cTitle, nType, cIcoFile, nIcoSize, aBtnColors, bInit, lClosable, cFontName, aListImage,nSeconds )
 *-----------------------------------------------------------------------------*
    LOCAL nLineas
    LOCAL aIcon := { "ALERT", "QUESTION", "INFO", "STOP" }
@@ -120,6 +128,7 @@ FUNCTION HMG_Alert( cMsg, aOptions, cTitle, nType, cIcoFile, nIcoSize, aBtnColor
    __defaultNIL( @aOptions, { "&OK" } )
    hb_default( @lClosable, .F. )
    hb_default( @cFontName, "DlgFont" )
+   hb_default( @nSeconds, 0)
 
    IF ISARRAY( aOptions )
       DEFAULT nType := iif( Len( aOptions ) > 1, 2, 1 )
@@ -137,7 +146,9 @@ FUNCTION HMG_Alert( cMsg, aOptions, cTitle, nType, cIcoFile, nIcoSize, aBtnColor
       aBtnColors AS USUAL, ;
       bInit AS USUAL, ;
       lClosable AS LOGICAL, ;
-      cFontName AS CHARACTER
+      cFontName AS CHARACTER,;
+      aListImage AS USUAL,;
+      nSeconds as Numeric
 #endif
    IF nType < 1 .OR. nType > 4
       nType := 1
@@ -169,7 +180,7 @@ FUNCTION HMG_Alert( cMsg, aOptions, cTitle, nType, cIcoFile, nIcoSize, aBtnColor
       ON INTERACTIVECLOSE ( lPressButton .OR. lClosable ) ;
       ON RELEASE iif( ! lPressButton .AND. lClosable, _HMG_ModalDialogReturn := 0, NIL )
 
-      FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors, bInit, lClosable, cFontName, nMaxLen )
+      FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors, bInit, lClosable, cFontName, nMaxLen,aListImage,nSeconds  )
 
    END WINDOW
 
@@ -208,18 +219,15 @@ FUNCTION HMG_Alert_RowStart( nRow )
 RETURN nOldRow
 
 *-----------------------------------------------------------------------------*
-STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors, bBlock, lClosable, cFont, nMaxLen )
+STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors, bBlock, lClosable, cFont, nMaxLen,aListImage,nSeconds )
 *-----------------------------------------------------------------------------*
    LOCAL hWnd
    LOCAL hDC
    LOCAL hDlgFont
-   LOCAL aBut := {}
    LOCAL cForm := ThisWindow.Name
-   LOCAL cLblName
    LOCAL cBtnName
    LOCAL nRow := HMG_Alert_RowStart()
    LOCAL nCol := MARGIN * 0.6
-   LOCAL nOpc := 1
    LOCAL nMaxLin := 0
    LOCAL nMaxBoton := 0
    LOCAL nMaxLines := HMG_Alert_MaxLines()
@@ -232,33 +240,16 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
    LOCAL nChrHeight
    LOCAL nHeightBtn
    LOCAL nVMARGIN_BUTTON //:= VMARGIN_BUTTON
-   LOCAL nSeconds
-   LOCAL n
+   LOCAL n,nColButton
+   Local cTitle,nSec,cFocus
 
-#ifdef _HMG_COMPAT_
-   CHECK TYPE cMsg AS CHARACTER, ;
-      aOptions AS USUAL, ;
-      nLineas AS NUMERIC, ;
-      cIcoFile AS CHARACTER, ;
-      nIcoSize AS NUMERIC, ;
-      aBtnColors AS USUAL, ;
-      bBlock AS USUAL, ;
-      lClosable AS LOGICAL, ;
-      cFont AS CHARACTER, ;
-      nMaxLen AS NUMERIC
-#endif
+   //Compatibilidade com versoes anteriores
    IF ISNUMERIC( aOptions )
-
-      nSeconds := aOptions
+      nSeconds :=  aOptions
       aOptions := { "&OK" }
-
-      DEFINE TIMER oTimer OF ( cForm ) INTERVAL nSeconds * 1000 ACTION ( lPressButton := .T., ThisWindow.Release() )
-
-      This.oTimer.Enabled := .F.
-
-   ENDIF
-
-   nLenaOp := iif( ISARRAY( aOptions ), Len( aOptions ), 1 )
+   endif
+   
+   nLenaOp :=  Len( aOptions )
 
    nVMARGIN_BUTTON := 3 * VMARGIN_BUTTON
 
@@ -319,6 +310,8 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
    ELSE
       nMaxWidth := 0
    ENDIF
+   
+   nWidthDlg += iif( nLineas < nMaxLines,40,0) //barra
 
    nHeightCli := ( Min( nMaxLines, nLineas ) + iif( nLineas == 1, 4, 3 ) ) * nChrHeight + nVMARGIN_BUTTON + nHeightBtn + GetBorderHeight()
    nHeightDlg := nHeightCli + GetTitleHeight() + SEP_BUTTON + GetBorderHeight() / iif( lIsWin10, 2.5, 1 )
@@ -346,18 +339,16 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
       nRow := nChrHeight
    ENDIF
 
-   cLblName := "Say_01"
    
-   DEFINE EDITBOX &( cLblName )
+   DEFINE EDITBOX MsgAlert
       PARENT  &( cForm ) 
       ROW nRow + GetBorderHeight()
       COL nCol
-      Width  nWidthCli - nCol + (iif( nLineas < nMaxLines + 5, 0.9, 1 ) * MARGIN) - nMaxWidth-iif( nLineas < nMaxLines,50,0)
+      Width  nWidthCli - nCol + (iif( nLineas < nMaxLines + 5, 0.9, 1 ) * MARGIN) - nMaxWidth
       HEIGHT nChrHeight * iif( nLineas < nMaxLines,nLineas,nMaxLines) + GetBorderHeight() 
       VALUE  AllTrim( cMsg )
       READONLY  TRUE
       FONTNAME  cFont
-      *FONTSIZE  o:FontSize  
       BACKCOLOR  aBackColor
       FONTCOLOR  aFontColor
       MAXLENGTH  65000
@@ -371,64 +362,67 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
 
       DRAW ICON IN WINDOW ( cForm ) ;
          AT nRow + GetBorderHeight(), MARGIN / iif( nIcoSize == 32, 1.4, iif( nIcoSize == 48, 1.7, 2 ) ) ;
-         PICTURE cIcoFile WIDTH nIcoSize HEIGHT nIcoSize TRANSPARENT
+         PICTURE cIcoFile ;
+         WIDTH nIcoSize ;
+         HEIGHT nIcoSize ;
+         TRANSPARENT
 
    ENDIF
-
+   
+   nColButton := (nWidthDlg - nLenBotones) / 2
+   
    FOR n := 1 TO nLenaOp
 
       cBtnName := "Btn_" + StrZero( n, 2 )
 
-      AAdd( aBut, cBtnName )
-
-     * @ 0, 0 BUTTONEX ( cBtnName ) OF ( cForm ) CAPTION aOptions[ n ] ;
-     *    FONTCOLOR aFontColor BACKCOLOR aBtnColors[ n ] NOXPSTYLE HANDCURSOR ;
-     *    FONT cFont WIDTH nMaxBoton HEIGHT nVMARGIN_BUTTON + nChrHeight + nVMARGIN_BUTTON ;
-     *    ACTION ( _HMG_ModalDialogReturn := This.Cargo, lPressButton := .T., ThisWindow.Release() )
-         
-         DEFINE BUTTONEX &( cBtnName )
-            PARENT  &( cForm )                     
-            Row  0                           
-            Col  0                              
-            Width  nMaxBoton                          
-            Height  nVMARGIN_BUTTON + nChrHeight                          
-            CAPTION  aOptions[ n ]                      
-            ACTION  ( _HMG_ModalDialogReturn := This.Cargo, lPressButton := .T., ThisWindow.Release() )                     
-            FONTNAME  cFont                    
-            *FONTSIZE  o:FontSize                     
-            FONTCOLOR  aFontColor  
-            BACKCOLOR  IIF(!empty(aBtnColors),aBtnColors[ n ],Nil)        
-            NOXPSTYLE  TRUE                   
-            HANDCURSOR TRUE
-         END BUTTONEX      
-
-      This.( aBut[ nOpc ] ).Cargo := nOpc++
+      DEFINE BUTTONEX &( cBtnName )
+         PARENT  &( cForm )                     
+         Row  nHeightCli + SEP_BUTTON + GetBorderHeight() / iif( lIsWin10, 2.5, .9 ) - nChrHeight - nHeightBtn                           
+         Col  nColButton                           
+         Width  nMaxBoton                          
+         Height  nVMARGIN_BUTTON + nChrHeight                          
+         CAPTION  aOptions[ n ]                      
+         ACTION  ( _HMG_ModalDialogReturn := This.Cargo, lPressButton := .T., ThisWindow.Release() )                     
+         FONTNAME  cFont                    
+         FONTCOLOR  aFontColor  
+         BACKCOLOR  IIF(!empty(aBtnColors),aBtnColors[ n ],Nil)        
+         NOXPSTYLE  TRUE                   
+         HANDCURSOR TRUE
+         if ISARRAY(aListImage) .and. n<=len(aListImage).and.!empty(aListImage[n])
+            PICTURE aListImage[n]
+            IMAGEHEIGHT (nVMARGIN_BUTTON + nChrHeight -8)
+            IMAGEWIDTH  (nVMARGIN_BUTTON + nChrHeight -8)   
+         endif
+      END BUTTONEX      
+      nColButton += ( nMaxBoton + SEP_BUTTON )
+      
+      This.&( cBtnName ).Cargo := n
+      if _HMG_ModalDialogReturn=n
+         cFocus := cBtnName
+      endif
 
    NEXT n
+   hb_default(@cFocus,"Btn_01")
 
-   nOpc := 1
+   &(cform).Closable := lClosable
 
-   FOR n := nLenaOp TO 1 STEP -1
-      This.( aBut[ n ] ).Row := nHeightCli + SEP_BUTTON + GetBorderHeight() / iif( lIsWin10, 2.5, .9 ) - nChrHeight - nHeightBtn
-      This.( aBut[ n ] ).Col := nWidthCli - nMaxWidth + iif( nLineas > nMaxLines, MARGIN * 1.5, 0 ) + iif( lIsWin10, 0, GetBorderWidth() / 2 ) - ( nMaxBoton + SEP_BUTTON ) * nOpc++
-   NEXT n
+   &(cform).(cFocus).SetFocus()
 
-   This.Closable := lClosable
-
-   This.( aBut[ Max( 1, Min( nLenaOp, _HMG_ModalDialogReturn ) ) ] ).SetFocus()
-
-   This.Center()
+   &(cform).Center()
 
    IF lClosable
       ON KEY ESCAPE OF ( cForm ) ACTION ( _HMG_ModalDialogReturn := 0, lPressButton := .T., ThisWindow.Release() )
    ENDIF
 
    IF HB_ISBLOCK( bBlock )
-      Do_WindowEventProcedure( bBlock, This.Index, 'WINDOW_INIT' )
+      &(cform).OnInit := bBlock
+      /*Pode ter sido modificado em OnInit*/
+      cTitle := &(cform).Title
    ENDIF
 
-   IF _IsControlDefined( "oTimer", cForm )
-      This.oTimer.Enabled := .T.
+   if nSeconds>0
+      nSec:= nSeconds
+      DEFINE TIMER oTimer OF ( cForm ) INTERVAL  1000 ACTION (&(cform).title:=cTitle+" ( "+hb_ntos(--nSec)+" )",IIF( nSec=0,(lPressButton := .T., ThisWindow.Release()),Nil))
    ENDIF
 
 RETURN NIL
@@ -514,13 +508,13 @@ RETURN
 *                          Auxiliary Functions
 *=============================================================================*
 
-STATIC FUNCTION GetDesktopRealWidth()
+FUNCTION GetDesktopRealWidth()
 
    LOCAL a := GetDesktopArea()
 
 RETURN( a [3] - a [1] )
 
-STATIC FUNCTION GetDesktopRealHeight()
+FUNCTION GetDesktopRealHeight()
 
    LOCAL a := GetDesktopArea()
 
@@ -529,42 +523,3 @@ RETURN( a [4] - a [2] )
 #ifdef __XHARBOUR__
 #include "alerts.prg"
 #endif
-
-/*
-FUNCTION AlertStop ( Message, Title, Icon, nSize, aColors, lTopMost, bInit, lNoSound )
-*-----------------------------------------------------------------------------*
-   LOCAL nWaitSec
-
-   IF ISNUMERIC( Title )
-      nWaitSec := Title
-   ELSEIF ISARRAY( Title )
-      nWaitSec := Title [2]
-      Title := Title [1]
-   ENDIF
-
-   IF Empty( lNoSound )
-      PlayHand()
-   ENDIF                 
-
-RETURN _Alert( Message, nWaitSec, hb_defaultValue( Title, _HMG_MESSAGE [12] ), ICON_STOP, , Icon, nSize, aColors, lTopMost, bInit )
-
-
-STATIC FUNCTION _Alert ( cMsg, aOptions, cTitle, nType, nDefault, xIcon, nSize, aColors, lTopMost, bInit, lClosable )
-*-----------------------------------------------------------------------------*
-   __defaultNIL( @cMsg, "" )
-   hb_default( @nDefault, 0 )
-
-   IF ! Empty( nDefault )
-      _HMG_ModalDialogReturn := nDefault
-   ENDIF
-
-   IF hb_defaultValue( lTopMost, .T. ) .AND. Empty( bInit )
-      bInit := {|| This.TopMost := .T. }
-   ENDIF
-
-   IF AScan( _HMG_aFormType, 'A' ) == 0
-      _HMG_MainWindowFirst := .F.
-   ENDIF
-
-RETURN HMG_Alert( cMsg, aOptions, cTitle, nType, xIcon, nSize, aColors, bInit, lClosable )
-*/
