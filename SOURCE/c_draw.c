@@ -45,7 +45,7 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   Parts  of  this  code  is contributed and used here under permission of his
+   Parts of this code are contributed and used here under permission of the
    author: Copyright 2017 (C) P.Chornyj <myorg63@mail.ru>
  */
 

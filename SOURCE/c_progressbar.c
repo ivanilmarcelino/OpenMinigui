@@ -43,7 +43,7 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   ---------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 #define _WIN32_IE 0x0501
 
 #include <mgdefs.h>
@@ -52,53 +52,68 @@
 // Function to get the current instance handle
 HINSTANCE   GetInstance( void );
 
-// Function: INITPROGRESSBAR
-// Initializes and creates a progress bar with optional styles and configurations.
-// Parameters:
-//   1. HWND parentHandle - The handle of the parent window.
-//   2. HMENU menuHandle - The handle of the menu or identifier for the progress bar.
-//   3-6. int x, y, width, height - Coordinates and dimensions for positioning the progress bar.
-//   7-8. int minRange, maxRange - The range of values for the progress bar.
-//   9. bool vertical - TRUE to make the progress bar vertical.
-//   10. bool smooth - TRUE to make the progress bar smooth.
-//   11. bool visible - FALSE to hide the progress bar initially.
-//   12. int initialPosition - The initial position value for the progress bar.
-// Returns:
-//   A handle to the created progress bar window.
+/*
+ * FUNCTION INITPROGRESSBAR( parentHandle, menuHandle, x, y, width, height, minRange, maxRange, vertical, smooth, visible, initialPosition )
+ *
+ * Creates and initializes a progress bar control.
+ *
+ * Parameters:
+ *   parentHandle: HWND - Handle to the parent window where the progress bar will be created.
+ *   menuHandle: HMENU - Handle to a menu or a control identifier.  Used as the control ID for the progress bar.
+ *   x: INT - The x-coordinate of the upper-left corner of the progress bar, relative to the parent window.
+ *   y: INT - The y-coordinate of the upper-left corner of the progress bar, relative to the parent window.
+ *   width: INT - The width of the progress bar control.
+ *   height: INT - The height of the progress bar control.
+ *   minRange: INT - The minimum value for the progress bar's range.
+ *   maxRange: INT - The maximum value for the progress bar's range.
+ *   vertical: LOGICAL - .T. to create a vertical progress bar, .F. for a horizontal progress bar.
+ *   smooth: LOGICAL - .T. to create a smooth progress bar (PBS_SMOOTH style), .F. for a segmented progress bar.
+ *   visible: LOGICAL - .T. to make the progress bar visible upon creation, .F. to create it hidden.
+ *   initialPosition: INT - The initial position of the progress bar.
+ *
+ * Returns:
+ *   HWND - The handle to the newly created progress bar control.
+ *
+ * Purpose:
+ *   This function provides a convenient way to create and configure a progress bar control within an HMG application.
+ *   It encapsulates the Windows API calls necessary to create the control, set its range, initial position, and style.
+ *   The progress bar can be used to visually indicate the progress of a long-running operation to the user.
+ */
 HB_FUNC( INITPROGRESSBAR )
 {
    HWND                 hbutton;
    DWORD                Style = WS_CHILD; // Basic style for the progress bar
    INITCOMMONCONTROLSEX i;                // Struct for initializing common controls
 
-   // Initialize the common controls for progress bars
+   // Initialize the common controls for progress bars.
+   // This ensures that the progress bar control class is registered and available.
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
    i.dwICC = ICC_PROGRESS_CLASS;
    InitCommonControlsEx( &i );
 
-   // Set styles based on input parameters
-   if( hb_parl( 9 ) )            // If the 9th parameter is TRUE, make it vertical
+   // Set styles based on input parameters.
+   if( hb_parl( 9 ) )            // If the 9th parameter (vertical) is TRUE, make it vertical.
    {
       Style |= PBS_VERTICAL;
    }
 
-   if( hb_parl( 10 ) )           // If the 10th parameter is TRUE, make it smooth
+   if( hb_parl( 10 ) )           // If the 10th parameter (smooth) is TRUE, make it smooth.
    {
       Style |= PBS_SMOOTH;
    }
 
-   if( !hb_parl( 11 ) )          // If the 11th parameter is FALSE, make it visible by default
+   if( !hb_parl( 11 ) )          // If the 11th parameter (visible) is FALSE, make it visible by default.
    {
       Style |= WS_VISIBLE;
    }
 
-   // Create the progress bar window with the specified styles and parameters
+   // Create the progress bar window with the specified styles and parameters.
    hbutton = CreateWindowEx
       (
          WS_EX_CLIENTEDGE,       // Extended window style with a client edge
          PROGRESS_CLASS,         // Class name for a progress bar
          0,                      // No window title
-         Style,                  // Window styles combined from above
+         Style,                  // Window styles combined from above (WS_CHILD, PBS_VERTICAL, PBS_SMOOTH, WS_VISIBLE).
          hb_parni( 3 ),          // X-coordinate
          hb_parni( 4 ),          // Y-coordinate
          hb_parni( 5 ),          // Width
@@ -109,12 +124,13 @@ HB_FUNC( INITPROGRESSBAR )
          NULL                    // No additional application data
       );
 
-   // Set the range of values for the progress bar
+   // Set the range of values for the progress bar.
+   // MAKELONG combines the minimum and maximum range values into a single LPARAM.
    SendMessage( hbutton, PBM_SETRANGE, 0, MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
 
-   // Set the initial position of the progress bar
+   // Set the initial position of the progress bar.
    SendMessage( hbutton, PBM_SETPOS, ( WPARAM ) hb_parni( 12 ), 0 );
 
-   // Return the handle to the created progress bar
+   // Return the handle to the created progress bar.
    hmg_ret_raw_HWND( hbutton );
 }

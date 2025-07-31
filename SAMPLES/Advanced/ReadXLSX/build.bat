@@ -1,1 +1,1 @@
-call ..\..\..\batch\hbmk2.bat demo_xlsx_reader.hbp
+call ..\..\..\build.bat demo_xlsx_reader.hbp

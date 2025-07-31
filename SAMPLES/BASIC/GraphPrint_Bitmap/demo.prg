@@ -64,7 +64,7 @@ FUNCTION Main
       WIDTH 720 HEIGHT 600 ;
       MAIN ;
       TITLE "Print Pie Graph" ;
-      BACKCOLOR WHITE
+      BACKCOLOR { 216, 208, 200 }
 
    DEFINE BUTTON d
       ROW 10
@@ -181,6 +181,11 @@ FUNCTION showpieinBitmap
    IF Empty( _HMG_DefaultFontSize )
       _HMG_DefaultFontSize := GetDefaultFontSize()
    ENDIF
+
+   DRAW BOX ;
+      IN WINDOW m ;
+      AT 10-1, 160-1 ;
+      TO 550, 560
 
    GRAPH BITMAP PIE ;
          SIZE        400, 540 ;

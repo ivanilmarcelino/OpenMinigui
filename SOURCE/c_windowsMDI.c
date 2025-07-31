@@ -163,7 +163,7 @@ HB_FUNC( REGISTERMDIWINDOW )
    hb_strfree( hClassName );
    if( HB_ISCHAR( 1 ) )
    {
-      hb_xfree( ( TCHAR * ) lpIconName );
+      hb_xfree( lpIconName );
    }
 #endif
    HB_RETNL( ( LONG_PTR ) hbrush );
@@ -321,8 +321,8 @@ HB_FUNC( INITMDIWINDOW )
    HB_RETNL( ( LONG_PTR ) hwnd );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpWindowName );
-   hb_xfree( ( TCHAR * ) lpClassName );
+   hb_xfree( lpWindowName );
+   hb_xfree( lpClassName );
 #endif
 }
 
@@ -392,7 +392,7 @@ HB_FUNC( INITMDICHILDWINDOW )
          HB_STRNCPY( rgch, lpTitle, 149 );
          rgch[149] = 0;
 #ifdef UNICODE
-         hb_xfree( ( TCHAR * ) lpTitle );
+         hb_xfree( lpTitle );
 #endif
       }
    }

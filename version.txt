@@ -1,1 +1,1 @@
-OpenMinigui v1.0.0
+Harbour MiniGUI Extended Edition 25.08 (Standard)

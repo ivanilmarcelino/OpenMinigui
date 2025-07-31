@@ -48,6 +48,7 @@
 
 #include <mgdefs.h>                 // Includes necessary definitions and macros.
 #include <commctrl.h>               // Includes common controls header for status bar and tooltips.
+#include "hbapierr.h"               // Include Harbour error handling API
 
 // Function prototypes for character conversion functions if using Unicode.
 #ifdef UNICODE
@@ -59,9 +60,8 @@ LPSTR       WideToAnsi( LPWSTR );   // Converts a wide (Unicode) string to an AN
 HINSTANCE   GetInstance( void );
 HINSTANCE   GetResources( void );
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( INITMESSAGEBAR )
+ * FUNCTION:  INITMESSAGEBAR
  *
  *  Description:
  *      Initializes a status bar with a single section.  This function creates
@@ -83,7 +83,6 @@ HINSTANCE   GetResources( void );
  *      This function provides a basic status bar for displaying simple messages.
  *      It's a starting point for more complex status bar configurations.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( INITMESSAGEBAR )
 {
    HWND  hWndSB;                    // Handle for the status bar window.
@@ -103,9 +102,8 @@ HB_FUNC( INITMESSAGEBAR )
    hmg_ret_raw_HWND( hWndSB );
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( INITITEMBAR )
+ * FUNCTION: INITITEMBAR
  *
  *  Description:
  *      Initializes a customized item bar (status bar) with icons and text.
@@ -133,7 +131,6 @@ HB_FUNC( INITMESSAGEBAR )
  *      with multiple interactive elements, such as icons and tooltips.  It's
  *      useful for providing detailed status information to the user.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( INITITEMBAR )
 {
    HWND  hWndSB;                    // Handle for the status bar window.
@@ -145,7 +142,7 @@ HB_FUNC( INITITEMBAR )
    HDC   hDC;           // Device context handle.
    WORD  displayFlags;  // Display style for the item.
    HICON hIcon;         // Icon handle for the item.
-   int   Style;         // Style of the status bar window.
+   int   Style = 0;     // Style of the status bar window.
    int   cx, cy;        // Dimensions for the icon.
 #ifndef UNICODE
    // ANSI strings for item text, icon name, and tooltip text.
@@ -158,11 +155,16 @@ HB_FUNC( INITITEMBAR )
    LPWSTR   lpIconName = AnsiToWide( ( char * ) hb_parc( 6 ) );
    LPWSTR   lpTipText = AnsiToWide( ( char * ) hb_parc( 7 ) );
 #endif
+   HWND     hWndParent;
 
    hWndSB = hmg_par_raw_HWND( 1 );
+   hWndParent = GetParent( hWndSB );
 
    // Get the parent window style.
-   Style = GetWindowLong( ( HWND ) GetParent( hWndSB ), GWL_STYLE );
+   if( hWndParent != NULL )
+   {
+      Style = GetWindowLong( hWndParent, GWL_STYLE );
+   }
 
    // Sets display flags based on the parameter value.
    switch( hb_parni( 8 ) )
@@ -194,71 +196,73 @@ HB_FUNC( INITITEMBAR )
 
    // Get the client area rectangle dimensions for the status bar.
    hDC = GetDC( hWndSB );
-   GetClientRect( hWndSB, &rect );
-
-   if( hb_parnl( 5 ) == 0 )
+   if( hDC != NULL )
    {
-      ptArray[nrOfParts - 1] = rect.right;   // Set the last part to fill the width.
-   }
-   else
-   {
-      for( n = 0; n < nrOfParts - 1; n++ )
-      {
-         ptArray[n] -= hb_parni( 4 ) - cSpaceInBetween;
-      }
+      GetClientRect( hWndSB, &rect );
 
-      // Adjusts the last part if the parent has a size box style.
-      if( Style & WS_SIZEBOX )
+      if( hb_parnl( 5 ) == 0 )
       {
-         if( nrOfParts == 2 )
-         {
-            ptArray[0] -= 21;
-         }
-
-         ptArray[nrOfParts - 1] = rect.right - rect.bottom - rect.top + 2;
+         ptArray[nrOfParts - 1] = rect.right;   // Set the last part to fill the width.
       }
       else
       {
-         ptArray[nrOfParts - 1] = rect.right;
+         for( n = 0; n < nrOfParts - 1; n++ )
+         {
+            ptArray[n] -= hb_parni( 4 ) - cSpaceInBetween;
+         }
+
+         // Adjusts the last part if the parent has a size box style.
+         if( Style & WS_SIZEBOX )
+         {
+            if( nrOfParts == 2 )
+            {
+               ptArray[0] -= 21;
+            }
+
+            ptArray[nrOfParts - 1] = rect.right - rect.bottom - rect.top + 2;
+         }
+         else
+         {
+            ptArray[nrOfParts - 1] = rect.right;
+         }
       }
-   }
 
-   ReleaseDC( hWndSB, hDC );                 // Release device context.
+      ReleaseDC( hWndSB, hDC );                 // Release device context.
 
-   // Apply the parts array to the status bar.
-   SendMessage( hWndSB, SB_SETPARTS, ( WPARAM ) nrOfParts, ( LPARAM ) ( LPINT ) ptArray );
+      // Apply the parts array to the status bar.
+      SendMessage( hWndSB, SB_SETPARTS, ( WPARAM ) nrOfParts, ( LPARAM ) ( LPINT ) ptArray );
 
-   // Set icon dimensions and load icon image.
-   cy = rect.bottom - rect.top - 4;
-   cx = cy;
-   hIcon = ( HICON ) LoadImage( GetResources(), lpIconName, IMAGE_ICON, cx, cy, 0 );
+      // Set icon dimensions and load icon image.
+      cy = rect.bottom - rect.top - 4;
+      cx = cy;
+      hIcon = ( HICON ) LoadImage( GetResources(), lpIconName, IMAGE_ICON, cx, cy, 0 );
 
-   if( hIcon == NULL )
-   {
-      hIcon = ( HICON ) LoadImage( NULL, lpIconName, IMAGE_ICON, cx, cy, LR_LOADFROMFILE );
-   }
+      if( hIcon == NULL )
+      {
+         hIcon = ( HICON ) LoadImage( NULL, lpIconName, IMAGE_ICON, cx, cy, LR_LOADFROMFILE );
+      }
 
-   // Set the icon in the last part if successfully loaded.
-   if( hIcon != NULL )
-   {
-      SendMessage( hWndSB, SB_SETICON, ( WPARAM ) nrOfParts - 1, ( LPARAM ) hIcon );
+      // Set the icon in the last part if successfully loaded.
+      if( hIcon != NULL )
+      {
+         SendMessage( hWndSB, SB_SETICON, ( WPARAM ) nrOfParts - 1, ( LPARAM ) hIcon );
+      }
    }
 
    // Set text and tooltip for the last part of the status bar.
    SendMessage( hWndSB, SB_SETTEXT, ( WPARAM ) ( ( nrOfParts - 1 ) | displayFlags ), ( LPARAM ) lpText );
    SendMessage( hWndSB, SB_SETTIPTEXT, ( WPARAM ) nrOfParts - 1, ( LPARAM ) lpTipText );
 
-   hb_retni( nrOfParts );                    // Return the updated number of parts.
+   hb_retni( nrOfParts );                 // Return the updated number of parts.
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpText );           // Free Unicode memory allocations.
-   hb_xfree( ( TCHAR * ) lpIconName );
-   hb_xfree( ( TCHAR * ) lpTipText );
+   hb_xfree( lpText );                    // Free Unicode memory allocations.
+   hb_xfree( lpIconName );
+   hb_xfree( lpTipText );
 #endif
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( SETITEMBAR )
+ * FUNCTION: SETITEMBAR
  *
  *  Description:
  *      Updates the text in a specified part of the item bar (status bar).
@@ -280,11 +284,10 @@ HB_FUNC( INITITEMBAR )
  *      This function is useful for dynamically updating the status bar with
  *      information that changes during the application's execution.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( SETITEMBAR )
 {
-   HWND     hWnd = hmg_par_raw_HWND( 1 );    // Handle for the status bar.
-   int      iPos = hb_parni( 3 );            // Position of the item to update.
+   HWND     hWnd = hmg_par_raw_HWND( 1 ); // Handle for the status bar.
+   int      iPos = hb_parni( 3 );         // Position of the item to update.
    WORD     nFlags;                 // Current display flags for the text.
 #ifndef UNICODE
    LPCSTR   lpText = hb_parc( 2 );  // ANSI text to set.
@@ -296,13 +299,12 @@ HB_FUNC( SETITEMBAR )
    nFlags = HIWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, ( WPARAM ) iPos, 0 ) );
    SendMessage( hWnd, SB_SETTEXT, ( WPARAM ) ( iPos | nFlags ), ( LPARAM ) lpText );   // Update the text.
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpText );     // Free allocated memory if using Unicode.
+   hb_xfree( lpText );                 // Free allocated memory if using Unicode.
 #endif
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( GETITEMBAR )
+ * FUNCTION: GETITEMBAR
  *
  *  Description:
  *      Retrieves and returns the text of a specified part of the item bar (status bar).
@@ -324,7 +326,6 @@ HB_FUNC( SETITEMBAR )
  *      displayed in the status bar, allowing other parts of the application
  *      to react to changes in the status.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( GETITEMBAR )
 {
 #ifdef UNICODE
@@ -333,24 +334,30 @@ HB_FUNC( GETITEMBAR )
    HWND  hWnd = hmg_par_raw_HWND( 1 ); // Handle for the status bar.
    int   iPos = hb_parni( 2 );         // Position of the item to retrieve.
    TCHAR *cString;                     // Pointer to hold the retrieved text.
-
-   // Allocate memory based on text length and retrieve the text.
-   cString = ( TCHAR * ) hb_xgrab( ( LOWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, ( WPARAM ) iPos - 1, 0 ) ) + 1 ) * sizeof( TCHAR ) );
-   SendMessage( hWnd, SB_GETTEXT, ( WPARAM ) iPos - 1, ( LPARAM ) cString );
+   int   nLen = ( LOWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, ( WPARAM ) iPos - 1, 0 ) ) + 1 ) * sizeof( TCHAR );
+   if( nLen > 0 )
+   {
+      // Allocate memory based on text length and retrieve the text.
+      cString = ( TCHAR * ) hb_xgrab( nLen );
+      SendMessage( hWnd, SB_GETTEXT, ( WPARAM ) iPos - 1, ( LPARAM ) cString );
 
 #ifndef UNICODE
-   hb_retc( cString );                 // Return the ANSI string directly.
+      hb_retc( cString );              // Return the ANSI string directly.
 #else
-   pStr = WideToAnsi( cString );       // Convert to ANSI and return.
-   hb_retc( pStr );
-   hb_xfree( pStr );                   // Free memory after conversion.
+      pStr = WideToAnsi( cString );    // Convert to ANSI and return.
+      hb_retc( pStr );
+      hb_xfree( pStr );                // Free memory after conversion.
 #endif
-   hb_xfree( cString );                // Free the initial memory allocation.
+      hb_xfree( cString );             // Free the initial memory allocation.
+   }
+   else
+   {
+      hb_errRT_BASE_SubstR( EG_ARG, 0, "MiniGUI Err.", HB_ERR_FUNCNAME, 1, hb_paramError( 2 ) );
+   }
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( REFRESHITEMBAR )
+ * FUNCTION: REFRESHITEMBAR
  *
  *  Description:
  *      Refreshes the layout and dimensions of parts in the item bar (status bar).
@@ -373,8 +380,6 @@ HB_FUNC( GETITEMBAR )
  *      the status bar when the application window is resized or when the
  *      content of the status bar changes dynamically.
  */
-//---------------------------------------------------------------------------
-
 HB_FUNC( REFRESHITEMBAR )
 {
    HWND  hWndSB;        // Handle for the status bar.
@@ -431,16 +436,12 @@ HB_FUNC( REFRESHITEMBAR )
    }
 
    ReleaseDC( hWndSB, hDC );        // Release device context.
-   SendMessage( hWndSB, SB_SETPARTS, ( WPARAM ) nrOfParts, ( LPARAM ) ( LPINT ) ptArray );   // Update parts with new layout.
-
-   hb_retni( nrOfParts );              // Return the updated part count.
+   SendMessage( hWndSB, SB_SETPARTS, ( WPARAM ) nrOfParts, ( LPARAM ) ( LPINT ) ptArray ); // Update parts with new layout.
+   hb_retni( nrOfParts );           // Return the updated part count.
 }
 
-
-
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( KEYTOGGLE )
+ * FUNCTION: KEYTOGGLE
  *
  *  Description:
  *      Toggles the state of a specific key on the keyboard (e.g., Caps Lock, Num Lock).
@@ -460,7 +461,6 @@ HB_FUNC( REFRESHITEMBAR )
  *      This function is useful for programmatically controlling keyboard
  *      settings, such as enabling or disabling Caps Lock or Num Lock.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( KEYTOGGLE )
 {
    BYTE  pBuffer[256];                 // Buffer to hold the keyboard state for each key.
@@ -480,9 +480,8 @@ HB_FUNC( KEYTOGGLE )
    SetKeyboardState( pBuffer );        // Updates the keyboard state to reflect the toggle.
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( KEYTOGGLENT )
+ * FUNCTION: KEYTOGGLENT
  *
  *  Description:
  *      Simulates a key press and release for a specified key using keybd_event.
@@ -502,7 +501,6 @@ HB_FUNC( KEYTOGGLE )
  *      operating system, which can be used to trigger actions in other
  *      applications or within the current application.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( KEYTOGGLENT )
 {
    BYTE  wKey = hmg_par_BYTE( 1 );     // Key code to simulate, passed as a parameter.
@@ -514,9 +512,8 @@ HB_FUNC( KEYTOGGLENT )
    keybd_event( wKey, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0 );
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( SETSTATUSITEMICON )
+ * FUNCTION: SETSTATUSITEMICON
  *
  *  Description:
  *      Sets an icon on a specific item in the status bar.
@@ -542,7 +539,6 @@ HB_FUNC( KEYTOGGLENT )
  *      providing users with a clear understanding of the current state of
  *      different aspects of the application.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( SETSTATUSITEMICON )
 {
    HWND     hwnd;
@@ -565,15 +561,15 @@ HB_FUNC( SETSTATUSITEMICON )
    cy = rect.bottom - rect.top - 4; // Sets icon size based on status bar height.
    cx = cy;
 
-   if ( HB_ISCHAR( 3 ) )   // Load icon from resources.
+   if( HB_ISCHAR( 3 ) )             // Load icon from resources.
    {
       hIcon = ( HICON ) LoadImage( GetResources(), lpIconName, IMAGE_ICON, cx, cy, 0 );
-      if( hIcon == NULL )  // If loading from resources failed, try loading from file.
+      if( hIcon == NULL )           // If loading from resources failed, try loading from file.
       {
          hIcon = ( HICON ) LoadImage( NULL, lpIconName, IMAGE_ICON, cx, cy, LR_LOADFROMFILE );
       }
    }
-   else if( HB_ISNUM( 4 ) ) // Get hIcon from 4th parameter.
+   else if( HB_ISNUM( 4 ) )         // Get hIcon from 4th parameter.
    {
       hIcon = hmg_par_raw_HICON( 4 );
    }
@@ -582,14 +578,14 @@ HB_FUNC( SETSTATUSITEMICON )
    {
       SendMessage( hwnd, SB_SETICON, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) hIcon ); // Sets the icon in the status bar.
    }
+
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpIconName );             // Frees memory if Unicode conversion was used.
+   hb_xfree( lpIconName );   // Frees memory if Unicode conversion was used.
 #endif
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( SETSTATUSBARSIZE )
+ * FUNCTION: SETSTATUSBARSIZE
  *
  *  Description:
  *      Configures the width of each part/section in the status bar.
@@ -612,7 +608,6 @@ HB_FUNC( SETSTATUSITEMICON )
  *      varying sizes, allowing you to optimize the display of different
  *      types of information.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( SETSTATUSBARSIZE )
 {
    HLOCAL   hloc;
@@ -638,14 +633,12 @@ HB_FUNC( SETSTATUSBARSIZE )
 
    SendMessage( hwndStatus, SB_SETPARTS, ( WPARAM ) nParts, ( LPARAM ) lpParts );   // Sets the parts on the status bar.
    MoveWindow( hwndStatus, 0, 0, 0, 0, TRUE );  // Redraws the window to apply changes.
-
    LocalUnlock( hloc ); // Releases the allocated memory.
    LocalFree( hloc );
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( REFRESHPROGRESSITEM )
+ * FUNCTION: REFRESHPROGRESSITEM
  *
  *  Description:
  *      Updates the position of a progress bar in a status bar item to match the item's current position.
@@ -669,7 +662,6 @@ HB_FUNC( SETSTATUSBARSIZE )
  *      relationship between the progress bar and its containing status bar
  *      section, ensuring a consistent and user-friendly display.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( REFRESHPROGRESSITEM )
 {
    HWND  hwndStatus = hmg_par_raw_HWND( 1 ); // Handle to the status bar.
@@ -682,9 +674,8 @@ HB_FUNC( REFRESHPROGRESSITEM )
    SetWindowPos( hmg_par_raw_HWND( 3 ), 0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE );
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( CREATEPROGRESSBARITEM )
+ * FUNCTION: CREATEPROGRESSBARITEM
  *
  *  Description:
  *      Creates a progress bar control within a specified status bar item.
@@ -710,7 +701,6 @@ HB_FUNC( REFRESHPROGRESSITEM )
  *      This function is useful for providing users with a visual representation
  *      of the progress of long-running tasks, improving the user experience.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( CREATEPROGRESSBARITEM )
 {
    HWND  hwndStatus = hmg_par_raw_HWND( 1 ); // Handle to the status bar.
@@ -751,17 +741,16 @@ HB_FUNC( CREATEPROGRESSBARITEM )
       SendMessage( hwndProgressBar, PBM_SETRANGE, 0, MAKELONG( hb_parni( 4 ), hb_parni( 5 ) ) );
       SendMessage( hwndProgressBar, PBM_SETPOS, ( WPARAM ) hb_parni( 3 ), 0 );
 
-      hmg_ret_raw_HWND( hwndProgressBar );  // Returns the handle to the new progress bar.
+      hmg_ret_raw_HWND( hwndProgressBar );   // Returns the handle to the new progress bar.
    }
    else
    {
-      hb_ret();  // Returns NULL if creation failed.
+      hb_ret();   // Returns NULL if creation failed.
    }
 }
 
-//---------------------------------------------------------------------------
 /*
- *  HB_FUNC( SETPOSPROGRESSBARITEM )
+ * FUNCTION: SETPOSPROGRESSBARITEM
  *
  *  Description:
  *      Sets the position and visibility of a progress bar in a status bar item.
@@ -775,7 +764,6 @@ HB_FUNC( CREATEPROGRESSBARITEM )
  *      control allows the progress bar to be shown only when needed,
  *      avoiding unnecessary screen clutter.
  */
-//---------------------------------------------------------------------------
 HB_FUNC( SETPOSPROGRESSBARITEM )
 {
    HWND  hwndProgressBar = hmg_par_raw_HWND( 1 );  // Handle to the progress bar.

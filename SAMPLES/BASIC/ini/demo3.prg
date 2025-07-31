@@ -35,22 +35,22 @@ Procedure Main
 		@ 80, 240 BUTTON Button_2    ;
 		  CAPTION 'IsINI ["Form_0"]' ;
                   WIDTH 220 HEIGHT 30        ;
-                  ACTION MsgDebug(IsINISection(INI_FILE_WIN_CFG, "Form_0")) 
+                  ACTION MsgDebug(IsINISectionExists("Form_0", INI_FILE_WIN_CFG)) 
 
 		@ 120, 240 BUTTON Button_3    ;
 		  CAPTION 'IsINI ["Form_04"]' ;
                   WIDTH 220 HEIGHT 30        ;
-                  ACTION MsgDebug(IsINISection(INI_FILE_WIN_CFG, "Form_04")) 
+                  ACTION MsgDebug(IsINISectionExists("Form_04", INI_FILE_WIN_CFG)) 
 
 		@ 160, 240 BUTTON Button_4  ;
 		  CAPTION 'IsVarINI ["Form_04","Test_11"]' ;
                   WIDTH 220 HEIGHT 30 ;
-                  ACTION MsgDebug( IsVarINISection(INI_FILE_WIN_CFG, "Form_04", "Test_11") ) 
+                  ACTION MsgDebug( IsINIKeyExists("Form_04", "Test_11", INI_FILE_WIN_CFG) ) 
 
 		@ 200, 240 BUTTON Button_5  ;
 		  CAPTION 'IsVarINI ["Form_04","Test_1"]' ;
                   WIDTH 220 HEIGHT 30 ;
-                  ACTION MsgDebug( IsVarINISection(INI_FILE_WIN_CFG, "Form_04", "Test_1") ) 
+                  ACTION MsgDebug( IsINIKeyExists("Form_04", "Test_1", INI_FILE_WIN_CFG) ) 
 
 		@ 230, 20 BUTTON Button_6 ;
 		  CAPTION 'Exit' ACTION	ThisWindow.Release DEFAULT
@@ -75,7 +75,7 @@ Function IniRead( FormName, cProgName )
 
    IF FILE( cFileIni)
 
-      IF IsINISection(cFileIni, cSection) // there is a section
+      IF IsINISectionExists(cSection, cFileIni) // there is a section
   
         M->nPubVal := VAL( GetIni( cSection , "Number"    , "0", cFileIni) )        // read a number 
         M->cPubVal := GetIni( cSection , "String"    , "", cFileIni )               // read a string
@@ -86,7 +86,7 @@ Function IniRead( FormName, cProgName )
         M->aPubDim := {}
         FOR nI := 1 TO 100
             cStr := "Array_" + HB_NToS(nI)
-            IF IsVarINISection(cFileIni, cSection, cStr)
+            IF IsINIKeyExists(cSection, cStr, cFileIni)
                // read a string to array
                aDim := CTOA( GetIni( cSection , cStr , '{}', cFileIni ) )
                IF LEN(aDim) > 0
@@ -99,7 +99,7 @@ Function IniRead( FormName, cProgName )
         M->aPubDim2 := {}
         FOR nI := 1 TO 100
            cStr := "Dim_" + HB_NToS(nI)
-           IF IsVarINISection(cFileIni, cSection, cStr)
+           IF IsINIKeyExists(cSection, cStr, cFileIni)
               aDim := &( GetIni( cSection , cStr , '{}', cFileIni ) ) // read array 
               AADD( M->aPubDim2, aDim )
            ENDIF
@@ -173,9 +173,3 @@ RETURN GetPrivateProfileString(cSection, cEntry, cDefault, cFile )
 *--------------------------------------------------------*
 STATIC Function WriteIni( cSection, cEntry, cValue, cFile )
 RETURN( WritePrivateProfileString( cSection, cEntry, cValue, cFile ) )
-*--------------------------------------------------------*
-STATIC Function IsINISection(cIniFile, cName)
-Return ( aScan( _GetSectionNames(cIniFile), {|x| UPPER(x) == UPPER(cName)} ) > 0 )
-*--------------------------------------------------------*
-STATIC Function IsVarINISection(cIniFile, cSecName, cName) 
-Return ( aScan( _GetSection(cSecName, cIniFile), {|x| UPPER(x[1]) == UPPER(cName)} ) > 0 ) 

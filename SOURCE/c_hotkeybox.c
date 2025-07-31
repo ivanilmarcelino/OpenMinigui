@@ -108,7 +108,7 @@ void InterpretHotKey( UINT setting, TCHAR *szKeyName )
    GetKeyNameText( WorkKey, lpString + lstrlen( lpString ), 100 );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpString );      // Free memory if Unicode conversion was used
+   hb_xfree( lpString );      // Free memory if Unicode conversion was used
 #endif
 }
 

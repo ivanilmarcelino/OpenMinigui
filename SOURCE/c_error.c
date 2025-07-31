@@ -4,29 +4,29 @@
    Copyright 2002-2010 Roberto Lopez <harbourminigui@gmail.com>
    http://harbourminigui.googlepages.com/
 
-   This    program  is  free  software;  you can redistribute it and/or modify
-   it under  the  terms  of the GNU General Public License as published by the
-   Free  Software   Foundation;  either  version 2 of the License, or (at your
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by the
+   Free Software Foundation; either version 2 of the License, or (at your
    option) any later version.
 
-   This   program   is   distributed  in  the hope that it will be useful, but
-   WITHOUT    ANY    WARRANTY;    without   even   the   implied  warranty  of
-   MERCHANTABILITY  or  FITNESS  FOR A PARTICULAR PURPOSE. See the GNU General
+   This program is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
    Public License for more details.
 
-   You   should  have  received a copy of the GNU General Public License along
-   with   this   software;   see  the  file COPYING. If not, write to the Free
-   Software   Foundation,   Inc.,   59  Temple  Place,  Suite  330, Boston, MA
+   You should have received a copy of the GNU General Public License along
+   with this software; see the file COPYING. If not, write to the Free
+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA (or visit the web site http://www.gnu.org/).
 
-   As   a   special  exception, you have permission for additional uses of the
-   text  contained  in  this  release  of  Harbour Minigui.
+   As a special exception, you have permission for additional uses of the
+   text contained in this release of Harbour Minigui.
 
-   The   exception   is that,   if   you  link  the  Harbour  Minigui  library
-   with  other    files   to  produce   an   executable,   this  does  not  by
-   itself   cause  the   resulting   executable    to   be  covered by the GNU
-   General  Public  License.  Your    use  of that   executable   is   in   no
-   way  restricted on account of linking the Harbour-Minigui library code into
+   The exception is that, if you link the Harbour Minigui library
+   with other files to produce an executable, this does not by
+   itself cause the resulting executable to be covered by the GNU
+   General Public License. Your use of that executable is in no
+   way restricted on account of linking the Harbour-Minigui library code into
    it.
 
    Parts of this project are based upon:
@@ -45,11 +45,12 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   Parts  of  this  code  is contributed and used here under permission of his
+   Parts of this code are contributed and used here under permission of his
    author: Copyright 2016 (C) P.Chornyj <myorg63@mail.ru>
- */
+*/
 #include <mgdefs.h>
 
+// Define rsize_t and declare swprintf_s for Watcom C compiler.
 #if defined( __WATCOMC__ )
 #ifndef _RSIZE_T_DEFINED
 #define _RSIZE_T_DEFINED
@@ -57,14 +58,33 @@ typedef size_t       rsize_t;
 #endif
 _WCRTLINK extern int swprintf_s( wchar_t * __restrict __s, rsize_t __n, const wchar_t * __restrict __format, ... );
 #endif
+
+// External function declaration for getting the length of a TCHAR string.
 extern HB_SIZE       hmg_tstrlen( const TCHAR *pText );
 
+/*
+ * FUNCTION: hmg_ErrorExit
+ *
+ * Displays an error message in a message box and optionally exits the process.
+ *
+ * Parameters:
+ *   lpszMessage: The message to display.
+ *   dwError: The error code to display. If 0, the last error code is used.
+ *   bExit: If TRUE, the process will exit with the error code.
+ *
+ * This function formats an error message including the system error message corresponding to the error code,
+ * displays it in a message box, and optionally exits the process with the given error code.
+ */
 void hmg_ErrorExit( LPCTSTR lpszMessage, DWORD dwError, BOOL bExit )
 {
-   LPVOID   lpMsgBuf = NULL;
-   LPVOID   lpDisplayBuf = NULL;
-   DWORD    nError = ( dwError != 0 ) ? dwError : GetLastError();
+   LPVOID   lpMsgBuf = NULL;     // Buffer for the system error message
+   LPVOID   lpDisplayBuf = NULL; // Buffer for the formatted error message
+   DWORD    nError = ( dwError != 0 ) ? dwError : GetLastError();  // Use the provided error code or get the last error code
 
+   /*
+    * Format the system error message corresponding to the error code.
+    * This function allocates a buffer for the message and stores it in lpMsgBuf.
+    */
    if
    (
       FormatMessage
@@ -73,7 +93,7 @@ void hmg_ErrorExit( LPCTSTR lpszMessage, DWORD dwError, BOOL bExit )
             NULL,
             nError,
             MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-            ( LPTSTR ) &lpMsgBuf,
+            ( LPTSTR ) & lpMsgBuf,
             0,
             NULL
          )
@@ -86,10 +106,10 @@ void hmg_ErrorExit( LPCTSTR lpszMessage, DWORD dwError, BOOL bExit )
       if( lpDisplayBuf )
       {
          // Format the combined error message
-   #ifdef UNICODE
-      #if defined( __BORLANDC__ ) && ( __BORLANDC__ <= 1410 )
+#ifdef UNICODE
+#if defined( __BORLANDC__ ) && ( __BORLANDC__ <= 1410 )
          swprintf( ( LPTSTR ) lpDisplayBuf, TEXT( "'%s' failed with error %lu: %s" ), lpszMessage, nError, ( LPTSTR ) lpMsgBuf );
-      #else
+#else
          swprintf_s
          (
             ( LPTSTR ) lpDisplayBuf,
@@ -99,8 +119,8 @@ void hmg_ErrorExit( LPCTSTR lpszMessage, DWORD dwError, BOOL bExit )
             nError,
             ( LPTSTR ) lpMsgBuf
          );
-      #endif
-   #else
+#endif
+#else
          hb_snprintf
          (
             ( LPTSTR ) lpDisplayBuf,
@@ -110,25 +130,25 @@ void hmg_ErrorExit( LPCTSTR lpszMessage, DWORD dwError, BOOL bExit )
             nError,
             ( LPTSTR ) lpMsgBuf
          );
-   #endif
-
-         // Show the formatted error message
+#endif
+         // Show the formatted error message in a message box
          MessageBox( NULL, ( LPCTSTR ) lpDisplayBuf, TEXT( "MiniGUI Error" ), MB_OK );
       }
    }
 
-   // Clean up allocated memory
+   // Clean up allocated memory for the system error message buffer
    if( lpMsgBuf )
    {
       LocalFree( lpMsgBuf );
    }
 
+   // Clean up allocated memory for the formatted error message buffer
    if( lpDisplayBuf )
    {
       LocalFree( lpDisplayBuf );
    }
 
-   // Exit process if specified
+   // Exit the process with the error code if specified
    if( bExit )
    {
       ExitProcess( nError );

@@ -438,7 +438,9 @@ FUNCTION InitDialogGrid ( ParentName, ControlHandle, k )
    ENDIF
 
    wBitmap := iif ( Len( _HMG_aControlBkColor[ k ] ) > 0, AddListViewBitmap( ControlHandle, _HMG_aControlBkColor[ k ] ), 0 ) // Add Bitmap Column
-   aWidths[ 1 ] := Max ( aWidths[ 1 ], wBitmap + GetBorderWidth() / 2 ) // Set Column 1 width to Bitmap width
+   IF wBitmap > 0
+      aWidths[ 1 ] := Max ( aWidths[ 1 ], wBitmap + GetBorderWidth() / 2 ) // Set Column 1 width to Bitmap width
+   ENDIF
 
    InitListViewColumns ( ControlHandle, _HMG_aControlCaption[ k ], aWidths, aJust )
 

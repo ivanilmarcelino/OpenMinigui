@@ -57,7 +57,7 @@ PROCEDURE Main()
                                         aSize[HBITMAP_WIDTH], ;
                                         aSize[HBITMAP_HEIGHT], ;
                                         "jpeg", ;
-                                        100 )
+                                        90 )
                ENDIF
                IF "gif" $ aMimeType[i]
                   MENUITEM 'Save as GIF' NAME mnu_GIF DISABLED ;

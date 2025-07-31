@@ -43,7 +43,7 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-  ---------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 #define _WIN32_IE 0x0501
 
 #include <mgdefs.h>
@@ -52,11 +52,44 @@
 // Function to retrieve the instance handle of the application
 HINSTANCE   GetInstance( void );
 
-// Initialize a slider (trackbar) control with optional customization for orientation, tick marks, and selection range
+/*
+ * FUNCTION HB_FUNC( INITSLIDER )
+ *
+ * Initializes a slider (trackbar) control with specified properties and creates the control.
+ *
+ * Parameters:
+ *   1: hParent (HWND) - Handle to the parent window.
+ *   2: hMenu (HMENU) - Menu handle (used as control ID).
+ *   3: nX (NUMERIC) - X coordinate of the slider's top-left corner.
+ *   4: nY (NUMERIC) - Y coordinate of the slider's top-left corner.
+ *   5: nWidth (NUMERIC) - Width of the slider control.
+ *   6: nHeight (NUMERIC) - Height of the slider control.
+ *   7: nMin (NUMERIC) - Minimum value of the slider range.
+ *   8: nMax (NUMERIC) - Maximum value of the slider range.
+ *   9: lVertical (LOGICAL) - .T. for vertical orientation, .F. for horizontal.
+ *  10: lNoTicks (LOGICAL) - .T. to hide tick marks, .F. to show auto ticks.
+ *  11: lBothTicks (LOGICAL) - .T. to show tick marks on both sides (vertical slider only).
+ *  12: lTopTicks (LOGICAL) - .T. to show tick marks on top (horizontal slider only).
+ *  13: lLeftTicks (LOGICAL) - .T. to show tick marks on the left (vertical slider only).
+ *  14: lHidden (LOGICAL) - .T. to create the slider initially hidden, .F. for visible.
+ *  15: lNoTabStop (LOGICAL) - .T. to disable tab stop, .F. to enable tab stop.
+ *  16: lSelRange (LOGICAL) - .T. to enable selection range, .F. to disable.
+ *  17: nSelMin (NUMERIC) - Minimum value of the selection range (only if lSelRange is .T.).
+ *  18: nSelMax (NUMERIC) - Maximum value of the selection range (only if lSelRange is .T.).
+ *
+ * Returns:
+ *   HWND - Handle to the created slider (trackbar) control.
+ *
+ * Purpose:
+ *   This function provides a convenient way to create and configure a slider control within an HMG application.
+ *   It encapsulates the Windows API calls required to create the control, set its properties (orientation, range, tick marks),
+ *   and handle optional features like selection ranges.  It simplifies the process of adding slider controls to forms
+ *   and dialogs, allowing developers to easily create interactive elements for adjusting values.
+ */
 HB_FUNC( INITSLIDER )
 {
    HWND                 hTrackBar;
-   DWORD                style = WS_CHILD | ( hb_parl( 10 ) ? TBS_NOTICKS : TBS_AUTOTICKS );  // Base style with or without ticks
+   DWORD                style = WS_CHILD | ( hb_parl( 10 ) ? TBS_NOTICKS : TBS_AUTOTICKS ); // Base style with or without ticks
    DWORD                selMin = 0, selMax = 0; // Default selection range values
 
    // Initialize common controls for the trackbar

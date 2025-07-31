@@ -43,7 +43,7 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   ---------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 #define _WIN32_IE 0x0501
 
 #include <mgdefs.h>
@@ -57,6 +57,7 @@ typedef wchar_t   HB_WCHAR;
 #else
 #include "hbapicdp.h"
 #endif
+
 extern BOOL       _isValidCtrlClass( HWND, LPCTSTR );
 
 HIMAGELIST        HMG_ImageListLoadFirst( const char *FileName, int cGrow, int Transparent, int *nWidth, int *nHeight );
@@ -66,6 +67,7 @@ void              HMG_ImageListAdd( HIMAGELIST himl, char *FileName, int Transpa
 LPWSTR            AnsiToWide( LPCSTR );
 LPSTR             WideToAnsi( LPWSTR );
 #endif
+
 HINSTANCE         GetInstance( void );
 HINSTANCE         GetResources( void );
 
@@ -187,10 +189,41 @@ typedef struct tagLVGROUP
 #define LVM_GETGROUPCOUNT                             ( LVM_FIRST + 152 )
 #define ListView_GetGroupCount( hwnd )                SNDMSG( ( hwnd ), LVM_GETGROUPCOUNT, ( WPARAM ) 0, ( LPARAM ) 0 )
 #endif
+
+/*
+ * FUNCTION: INITLISTVIEW
+ *
+ * Initializes a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the parent window.
+ *   hMenu: Handle to the menu.
+ *   x: The x-coordinate of the upper-left corner of the list view control.
+ *   y: The y-coordinate of the upper-left corner of the list view control.
+ *   w: The width of the list view control.
+ *   h: The height of the list view control.
+ *   MultiSelect: If .T., the list view control allows multiple selections.
+ *   TabStop: If .T., the list view control is included in the tab order.
+ *   NoHeader: If .T., the list view control does not have a header.
+ *   NoSortHeader: If .T., the list view control does not sort when a header is clicked.
+ *   OwnerData: If .T., the list view control uses owner data.
+ *   ItemCount: The number of items in the list view control.
+ *
+ * Returns:
+ *   Handle to the created list view control.
+ *
+ * Purpose:
+ *   This function initializes a list view control with the specified properties.
+ *   It is used to create a list view control within a window.
+ *
+ * Notes:
+ *   The function checks for various conditions and ensures that the list view control is properly initialized.
+ *   It also handles the registration of the list view control class and the creation of the list view control handle.
+ */
 HB_FUNC( INITLISTVIEW )
 {
-   HWND                 hbutton;
-   DWORD                style;
+   HWND hbutton;
+   DWORD style;
 
    INITCOMMONCONTROLSEX i;
 
@@ -225,20 +258,20 @@ HB_FUNC( INITLISTVIEW )
    }
 
    hbutton = CreateWindowEx
-      (
-         WS_EX_CLIENTEDGE,
-         WC_LISTVIEW,
-         TEXT( "" ),
-         style,
-         hb_parni( 3 ),
-         hb_parni( 4 ),
-         hb_parni( 5 ),
-         hb_parni( 6 ),
-         hmg_par_raw_HWND( 1 ),
-         hmg_par_raw_HMENU( 2 ),
-         GetInstance(),
-         NULL
-      );
+   (
+      WS_EX_CLIENTEDGE,
+      WC_LISTVIEW,
+      TEXT( "" ),
+      style,
+      hb_parni( 3 ),
+      hb_parni( 4 ),
+      hb_parni( 5 ),
+      hb_parni( 6 ),
+      hmg_par_raw_HWND( 1 ),
+      hmg_par_raw_HMENU( 2 ),
+      GetInstance(),
+      NULL
+   );
 
    if( hb_parl( 7 ) )
    {
@@ -248,20 +281,55 @@ HB_FUNC( INITLISTVIEW )
    hmg_ret_raw_HWND( hbutton );
 }
 
+/*
+ * FUNCTION: LISTVIEW_SETITEMCOUNT
+ *
+ * Sets the number of items in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   ItemCount: The number of items in the list view control.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the number of items in a list view control.
+ *   It is used to update the item count in a list view control.
+ */
 HB_FUNC( LISTVIEW_SETITEMCOUNT )
 {
    ListView_SetItemCount( hmg_par_raw_HWND( 1 ), hb_parni( 2 ) );
 }
 
-HB_FUNC( ADDLISTVIEWBITMAP )                 // Grid+
+/*
+ * FUNCTION: ADDLISTVIEWBITMAP
+ *
+ * Adds a bitmap to a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   aBitmaps: An array of bitmap file names.
+ *
+ * Returns:
+ *   The width of the bitmap.
+ *
+ * Purpose:
+ *   This function adds a bitmap to a list view control, which is used to display icons in the list view.
+ *   It is used to enhance the visual appearance of the list view control.
+ *
+ * Notes:
+ *   The function checks for various conditions and ensures that the bitmap is properly added to the list view control.
+ */
+HB_FUNC( ADDLISTVIEWBITMAP ) // Grid+
 {
-   HIMAGELIST  himl = ( HIMAGELIST ) NULL;
-   PHB_ITEM    hArray;
-   char        *FileName;
-   int         nCount;
-   int         s;
-   int         cx = -1;
-   int         cy = -1;
+   HIMAGELIST himl = ( HIMAGELIST ) NULL;
+   PHB_ITEM hArray;
+   char *FileName;
+   int nCount;
+   int s;
+   int cx = -1;
+   int cy = -1;
 
    nCount = ( int ) hb_parinfa( 2, 0 );
 
@@ -292,16 +360,35 @@ HB_FUNC( ADDLISTVIEWBITMAP )                 // Grid+
    hb_retni( cx );
 }
 
-HB_FUNC( ADDLISTVIEWBITMAPHEADER )           // Grid+
+/*
+ * FUNCTION: ADDLISTVIEWBITMAPHEADER
+ *
+ * Adds a bitmap to the header of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   aBitmaps: An array of bitmap file names.
+ *
+ * Returns:
+ *   Handle to the image list.
+ *
+ * Purpose:
+ *   This function adds a bitmap to the header of a list view control, which is used to display icons in the header.
+ *   It is used to enhance the visual appearance of the list view control header.
+ *
+ * Notes:
+ *   The function checks for various conditions and ensures that the bitmap is properly added to the list view control header.
+ */
+HB_FUNC( ADDLISTVIEWBITMAPHEADER ) // Grid+
 {
-   HWND        hheader;
-   HIMAGELIST  himl = ( HIMAGELIST ) NULL;
-   PHB_ITEM    hArray;
-   char        *FileName;
-   int         nCount;
-   int         s;
-   int         cx = -1;
-   int         cy = -1;
+   HWND hheader;
+   HIMAGELIST himl = ( HIMAGELIST ) NULL;
+   PHB_ITEM hArray;
+   char *FileName;
+   int nCount;
+   int s;
+   int cx = -1;
+   int cy = -1;
 
    hheader = ListView_GetHeader( hmg_par_raw_HWND( 1 ) );
 
@@ -338,34 +425,84 @@ HB_FUNC( ADDLISTVIEWBITMAPHEADER )           // Grid+
    hmg_ret_raw_HANDLE( himl );
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETFOCUSEDITEM
+ *
+ * Retrieves the index of the focused item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   The index of the focused item.
+ *
+ * Purpose:
+ *   This function retrieves the index of the focused item in a list view control.
+ *   It is used to determine which item currently has focus.
+ */
 HB_FUNC( LISTVIEW_GETFOCUSEDITEM )
 {
    hb_retni( ListView_GetNextItem( hmg_par_raw_HWND( 1 ), -1, LVNI_ALL | LVNI_FOCUSED ) + 1 );
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETFIRSTITEM
+ *
+ * Retrieves the index of the first selected item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   The index of the first selected item.
+ *
+ * Purpose:
+ *   This function retrieves the index of the first selected item in a list view control.
+ *   It is used to determine which item is currently selected.
+ */
 HB_FUNC( LISTVIEW_GETFIRSTITEM )
 {
    hb_retni( ListView_GetNextItem( hmg_par_raw_HWND( 1 ), -1, LVNI_ALL | LVNI_SELECTED ) + 1 );
 }
 
-/* code INITLISTVIEWCOLUMNS function was borrowed from ooHG */
-HB_FUNC( INITLISTVIEWCOLUMNS )
+/*
+ * FUNCTION: INITLISTVIEWCOLUMNS
+ *
+ * Initializes the columns of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   aColumns: An array of column captions.
+ *   aWidths: An array of column widths.
+ *   aJustify: An array of column justification values.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function initializes the columns of a list view control with the specified captions, widths, and justification values.
+ *   It is used to set up the columns in a list view control.
+ *
+ * Notes:
+ *   The function checks for various conditions and ensures that the columns are properly initialized.
+ */
+HB_FUNC( INITLISTVIEWCOLUMNS ) // code INITLISTVIEWCOLUMNS function was borrowed from ooHG
 {
-   PHB_ITEM    wArray;
-   PHB_ITEM    hArray;
-   PHB_ITEM    jArray;
+   PHB_ITEM wArray;
+   PHB_ITEM hArray;
+   PHB_ITEM jArray;
 
-   HWND        hc;
+   HWND hc;
 
 #ifndef UNICODE
-   LPSTR       lpText;
+   LPSTR lpText;
 #else
-   LPWSTR      lpText;
+   LPWSTR lpText;
 #endif
-   LV_COLUMN   COL;
-   int         iLen;
-   int         s;
-   int         iColumn = 0;
+   LV_COLUMN COL;
+   int iLen;
+   int s;
+   int iColumn = 0;
 
    hc = hmg_par_raw_HWND( 1 );
 
@@ -408,22 +545,42 @@ HB_FUNC( INITLISTVIEWCOLUMNS )
    }
 }
 
-//        AddListViewItems( hWnd, aItem, iImage, [nRow] )
-HB_FUNC( ADDLISTVIEWITEMS )
+/*
+ * FUNCTION: ADDLISTVIEWITEMS
+ *
+ * Adds items to a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   aItems: An array of item captions.
+ *   iImage: The index of the image to associate with the items.
+ *   nRow: The row index to insert the items.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function adds items to a list view control with the specified captions and image index.
+ *   It is used to populate the list view control with data.
+ *
+ * Notes:
+ *   The function checks for various conditions and ensures that the items are properly added to the list view control.
+ */
+HB_FUNC( ADDLISTVIEWITEMS ) // AddListViewItems( hWnd, aItem, iImage, [nRow] )
 {
    PHB_ITEM hArray;
-   char     *caption;
+   char *caption;
 
 #ifndef UNICODE
-   LPSTR    lpText;
+   LPSTR lpText;
 #else
-   LPWSTR   lpText;
+   LPWSTR lpText;
 #endif
-   LV_ITEM  LI;
-   HWND     h;
-   int      l;          // ColumnCount
-   int      s;          // Col
-   int      c;          // Row
+   LV_ITEM LI;
+   HWND h;
+   int l; // ColumnCount
+   int s; // Col
+   int c; // Row
    h = hmg_par_raw_HWND( 1 );
    l = ( int ) hb_parinfa( 2, 0 ) - 1;
    hArray = hb_param( 2, HB_IT_ARRAY );
@@ -460,17 +617,48 @@ HB_FUNC( ADDLISTVIEWITEMS )
    }
 }
 
+/*
+ * FUNCTION: LISTVIEW_SETCURSEL
+ *
+ * Sets the current selection in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item to select.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the current selection in a list view control to the specified item.
+ *   It is used to change the selected item in the list view control.
+ */
 HB_FUNC( LISTVIEW_SETCURSEL )
 {
    ListView_SetItemState( hmg_par_raw_HWND( 1 ), ( WPARAM ) hb_parni( 2 ) - 1, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
 }
 
+/*
+ * FUNCTION: LISTVIEWGETMULTISEL
+ *
+ * Retrieves the indices of the selected items in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   An array of the indices of the selected items.
+ *
+ * Purpose:
+ *   This function retrieves the indices of the selected items in a list view control.
+ *   It is used to determine which items are currently selected.
+ */
 HB_FUNC( LISTVIEWGETMULTISEL )
 {
-   HWND  hwnd = hmg_par_raw_HWND( 1 );
-   int   i = -1;
-   int   n;
-   int   j = 0;
+   HWND hwnd = hmg_par_raw_HWND( 1 );
+   int i = -1;
+   int n;
+   int j = 0;
 
    n = ( int ) SendMessage( hwnd, LVM_GETSELECTEDCOUNT, 0, 0 );
 
@@ -493,12 +681,28 @@ HB_FUNC( LISTVIEWGETMULTISEL )
    }
 }
 
+/*
+ * FUNCTION: LISTVIEWSETMULTISEL
+ *
+ * Sets the selected items in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   aItems: An array of item indices to select.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the selected items in a list view control to the specified item indices.
+ *   It is used to change the selected items in the list view control.
+ */
 HB_FUNC( LISTVIEWSETMULTISEL )
 {
    PHB_ITEM wArray;
-   HWND     hwnd = hmg_par_raw_HWND( 1 );
-   int      i = -1;
-   int      l;
+   HWND hwnd = hmg_par_raw_HWND( 1 );
+   int i = -1;
+   int l;
 
    wArray = hb_param( 2, HB_IT_ARRAY );
 
@@ -526,20 +730,37 @@ HB_FUNC( LISTVIEWSETMULTISEL )
    }
 }
 
+/*
+ * FUNCTION: LISTVIEWSETITEM
+ *
+ * Sets the text of an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   aTexts: An array of text strings for the item.
+ *   Row: The row index of the item.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the text of an item in a list view control to the specified text strings.
+ *   It is used to update the text of an item in the list view control.
+ */
 HB_FUNC( LISTVIEWSETITEM )
 {
    PHB_ITEM hArray;
-   char     *caption;
+   char *caption;
 
 #ifndef UNICODE
-   LPSTR    lpText;
+   LPSTR lpText;
 #else
-   LPWSTR   lpText;
+   LPWSTR lpText;
 #endif
-   HWND     h = hmg_par_raw_HWND( 1 );
-   int      l = ( int ) hb_parinfa( 2, 0 ) - 1;
-   int      c = hb_parni( 3 ) - 1;
-   int      s;
+   HWND h = hmg_par_raw_HWND( 1 );
+   int l = ( int ) hb_parinfa( 2, 0 ) - 1;
+   int c = hb_parni( 3 ) - 1;
+   int s;
 
    hArray = hb_param( 2, HB_IT_ARRAY );
 
@@ -559,16 +780,33 @@ HB_FUNC( LISTVIEWSETITEM )
    }
 }
 
+/*
+ * FUNCTION: GetLVItemText
+ *
+ * Retrieves the text of an item in a list view control.
+ *
+ * Parameters:
+ *   hListView: Handle to the list view control.
+ *   i: The index of the item.
+ *   iSubItem_: The index of the subitem.
+ *
+ * Returns:
+ *   The text of the item.
+ *
+ * Purpose:
+ *   This function retrieves the text of an item in a list view control.
+ *   It is used to get the text of an item for display or processing.
+ */
 static TCHAR *GetLVItemText( HWND hListView, int i, int iSubItem_ )
 {
 #ifndef UNICODE
-   LPSTR    lpText = '\0';
+   LPSTR lpText = '\0';
 #else
-   LPWSTR   lpText = TEXT( '\0' );
+   LPWSTR lpText = TEXT( '\0' );
 #endif
-   int      nLen = 64;
-   int      nRes;
-   LV_ITEM  lvi;
+   int nLen = 64;
+   int nRes;
+   LV_ITEM lvi;
 
    lvi.iSubItem = iSubItem_;
 
@@ -585,15 +823,32 @@ static TCHAR *GetLVItemText( HWND hListView, int i, int iSubItem_ )
    return ( TCHAR * ) lpText;
 }
 
+/*
+ * FUNCTION: LISTVIEWGETITEM
+ *
+ * Retrieves the text of an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Row: The row index of the item.
+ *   ColCount: The number of columns in the item.
+ *
+ * Returns:
+ *   An array of the text strings of the item.
+ *
+ * Purpose:
+ *   This function retrieves the text of an item in a list view control.
+ *   It is used to get the text of an item for display or processing.
+ */
 HB_FUNC( LISTVIEWGETITEM )
 {
 #ifdef UNICODE
    LPSTR pStr;
 #endif
-   HWND  h = hmg_par_raw_HWND( 1 );
-   int   c = hb_parni( 2 ) - 1;
-   int   l = hb_parni( 3 );
-   int   s;
+   HWND h = hmg_par_raw_HWND( 1 );
+   int c = hb_parni( 2 ) - 1;
+   int l = hb_parni( 3 );
+   int s;
    TCHAR *pszRet;
 
    hb_reta( l );
@@ -612,6 +867,22 @@ HB_FUNC( LISTVIEWGETITEM )
    }
 }
 
+/*
+ * FUNCTION: LISTVIEWGETITEMROW
+ *
+ * Retrieves the row index of an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item.
+ *
+ * Returns:
+ *   The row index of the item.
+ *
+ * Purpose:
+ *   This function retrieves the row index of an item in a list view control.
+ *   It is used to determine the row index of an item.
+ */
 HB_FUNC( LISTVIEWGETITEMROW )
 {
    POINT point;
@@ -621,14 +892,46 @@ HB_FUNC( LISTVIEWGETITEMROW )
    hmg_ret_LONG( point.y );
 }
 
+/*
+ * FUNCTION: LISTVIEWGETITEMCOUNT
+ *
+ * Retrieves the number of items in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   The number of items in the list view control.
+ *
+ * Purpose:
+ *   This function retrieves the number of items in a list view control.
+ *   It is used to determine the total number of items in the list view control.
+ */
 HB_FUNC( LISTVIEWGETITEMCOUNT )
 {
    hmg_ret_NINT( ListView_GetItemCount( hmg_par_raw_HWND( 1 ) ) );
 }
 
+/*
+ * FUNCTION: SETGRIDCOLUMNJUSTIFY
+ *
+ * Sets the justification of a column in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Column: The index of the column.
+ *   Justify: The justification value for the column.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the justification of a column in a list view control.
+ *   It is used to align the text in the column.
+ */
 HB_FUNC( SETGRIDCOLUMNJUSTIFY )
 {
-   LV_COLUMN   COL;
+   LV_COLUMN COL;
 
    COL.mask = LVCF_FMT;
    COL.fmt = hb_parni( 3 );
@@ -636,14 +939,32 @@ HB_FUNC( SETGRIDCOLUMNJUSTIFY )
    ListView_SetColumn( hmg_par_raw_HWND( 1 ), hb_parni( 2 ) - 1, &COL );
 }
 
+/*
+ * FUNCTION: SETGRIDCOLUMNHEADER
+ *
+ * Sets the header text and justification of a column in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Column: The index of the column.
+ *   Text: The text for the column header.
+ *   Justify: The justification value for the column header.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the header text and justification of a column in a list view control.
+ *   It is used to customize the appearance of the column header.
+ */
 HB_FUNC( SETGRIDCOLUMNHEADER )
 {
 #ifndef UNICODE
-   LPSTR       lpText = ( char * ) hb_parc( 3 );
+   LPSTR lpText = ( char * ) hb_parc( 3 );
 #else
-   LPWSTR      lpText = AnsiToWide( ( char * ) hb_parc( 3 ) );
+   LPWSTR lpText = AnsiToWide( ( char * ) hb_parc( 3 ) );
 #endif
-   LV_COLUMN   COL;
+   LV_COLUMN COL;
 
    COL.mask = LVCF_FMT | LVCF_TEXT;
    COL.pszText = lpText;
@@ -656,10 +977,28 @@ HB_FUNC( SETGRIDCOLUMNHEADER )
 #endif
 }
 
+/*
+ * FUNCTION: SETGRIDCOLUMNHEADERIMAGE
+ *
+ * Sets the header image and justification of a column in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Column: The index of the column.
+ *   Image: The index of the image for the column header.
+ *   Right: If .T., the image is displayed on the right side of the header.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the header image and justification of a column in a list view control.
+ *   It is used to customize the appearance of the column header with an image.
+ */
 HB_FUNC( SETGRIDCOLUMNHEADERIMAGE )
 {
-   LV_COLUMN   COL;
-   int         fmt = LVCFMT_IMAGE | LVCFMT_COL_HAS_IMAGES;
+   LV_COLUMN COL;
+   int fmt = LVCFMT_IMAGE | LVCFMT_COL_HAS_IMAGES;
 
    COL.mask = LVCF_FMT | LVCF_IMAGE;
 
@@ -678,20 +1017,68 @@ HB_FUNC( SETGRIDCOLUMNHEADERIMAGE )
    ListView_SetColumn( hmg_par_raw_HWND( 1 ), hb_parni( 2 ) - 1, &COL );
 }
 
+/*
+ * FUNCTION: LISTVIEWGETCOUNTPERPAGE
+ *
+ * Retrieves the number of items that can fit vertically in the visible area of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   The number of items that can fit vertically in the visible area.
+ *
+ * Purpose:
+ *   This function retrieves the number of items that can fit vertically in the visible area of a list view control.
+ *   It is used to determine the visible capacity of the list view control.
+ */
 HB_FUNC( LISTVIEWGETCOUNTPERPAGE )
 {
    hmg_ret_NINT( ListView_GetCountPerPage( hmg_par_raw_HWND( 1 ) ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_ENSUREVISIBLE
+ *
+ * Ensures that an item in a list view control is visible.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item to ensure is visible.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function ensures that an item in a list view control is visible, scrolling the list view if necessary.
+ *   It is used to make sure an item is visible to the user.
+ */
 HB_FUNC( LISTVIEW_ENSUREVISIBLE )
 {
    ListView_EnsureVisible( hmg_par_raw_HWND( 1 ), hb_parni( 2 ) - 1, 1 );
 }
 
+/*
+ * FUNCTION: SETIMAGELISTVIEWITEMS
+ *
+ * Sets the image for an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item.
+ *   Image: The index of the image to set.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the image for an item in a list view control.
+ *   It is used to customize the appearance of the item with an image.
+ */
 HB_FUNC( SETIMAGELISTVIEWITEMS )
 {
-   HWND     h = hmg_par_raw_HWND( 1 );
-   LV_ITEM  LI;
+   HWND h = hmg_par_raw_HWND( 1 );
+   LV_ITEM LI;
 
    LI.mask = LVIF_IMAGE;
    LI.state = 0;
@@ -703,11 +1090,27 @@ HB_FUNC( SETIMAGELISTVIEWITEMS )
    ListView_SetItem( h, &LI );
 }
 
+/*
+ * FUNCTION: GETIMAGELISTVIEWITEMS
+ *
+ * Retrieves the image index for an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item.
+ *
+ * Returns:
+ *   The index of the image for the item.
+ *
+ * Purpose:
+ *   This function retrieves the image index for an item in a list view control.
+ *   It is used to get the image index of an item.
+ */
 HB_FUNC( GETIMAGELISTVIEWITEMS )
 {
-   HWND     h = hmg_par_raw_HWND( 1 );
-   LV_ITEM  LI;
-   int      i;
+   HWND h = hmg_par_raw_HWND( 1 );
+   LV_ITEM LI;
+   int i;
 
    LI.mask = LVIF_IMAGE;
    LI.state = 0;
@@ -721,33 +1124,82 @@ HB_FUNC( GETIMAGELISTVIEWITEMS )
    hmg_ret_NINT( i );
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETTOPINDEX
+ *
+ * Retrieves the index of the topmost visible item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   The index of the topmost visible item.
+ *
+ * Purpose:
+ *   This function retrieves the index of the topmost visible item in a list view control.
+ *   It is used to determine the position of the visible area in the list view control.
+ */
 HB_FUNC( LISTVIEW_GETTOPINDEX )
 {
    hmg_ret_NINT( ListView_GetTopIndex( hmg_par_raw_HWND( 1 ) ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_REDRAWITEMS
+ *
+ * Redraws the items in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   First: The index of the first item to redraw.
+ *   Last: The index of the last item to redraw.
+ *
+ * Returns:
+ *   A logical value indicating whether the redraw was successful.
+ *
+ * Purpose:
+ *   This function redraws the items in a list view control.
+ *   It is used to update the display of the items in the list view control.
+ */
 HB_FUNC( LISTVIEW_REDRAWITEMS )
 {
    hb_retl( ListView_RedrawItems( hmg_par_raw_HWND( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_HITTEST
+ *
+ * Performs a hit test on a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Row: The row index to test.
+ *   Col: The column index to test.
+ *   Checkbox: If .T., the hit test is performed on the checkbox area.
+ *
+ * Returns:
+ *   An array containing the item and subitem indices if the hit test is successful.
+ *
+ * Purpose:
+ *   This function performs a hit test on a list view control to determine if a specific point is within an item or subitem.
+ *   It is used to handle user interactions with the list view control.
+ */
 HB_FUNC( LISTVIEW_HITTEST )
 {
    POINT          point;
-   LVHITTESTINFO  lvhti;
+   LVHITTESTINFO lvhti;
 
    point.y = hb_parni( 2 );
    point.x = hb_parni( 3 );
-
    lvhti.pt = point;
 
-   if( hb_parni( 4 ) )  // checkbox area.
+   if( hb_parni( 4 ) ) // checkbox area.
    {
       ListView_HitTest( hmg_par_raw_HWND( 1 ), &lvhti );
 
       hmg_ret_L( lvhti.flags & LVHT_ONITEMSTATEICON );
    }
-   else                 // item area.
+   else // item area.
    {
       ListView_SubItemHitTest( hmg_par_raw_HWND( 1 ), &lvhti );
 
@@ -766,9 +1218,26 @@ HB_FUNC( LISTVIEW_HITTEST )
    }
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETSUBITEMRECT
+ *
+ * Retrieves the bounding rectangle of a subitem in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item.
+ *   SubItem: The index of the subitem.
+ *
+ * Returns:
+ *   An array containing the coordinates of the bounding rectangle.
+ *
+ * Purpose:
+ *   This function retrieves the bounding rectangle of a subitem in a list view control.
+ *   It is used to determine the position and size of a subitem.
+ */
 HB_FUNC( LISTVIEW_GETSUBITEMRECT )
 {
-   RECT  *pRect;
+   RECT *pRect;
 
    pRect = ( RECT * ) hb_xgrab( sizeof( RECT ) );
 
@@ -783,9 +1252,25 @@ HB_FUNC( LISTVIEW_GETSUBITEMRECT )
    hb_xfree( ( void * ) pRect );
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETITEMRECT
+ *
+ * Retrieves the bounding rectangle of an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item.
+ *
+ * Returns:
+ *   An array containing the coordinates of the bounding rectangle.
+ *
+ * Purpose:
+ *   This function retrieves the bounding rectangle of an item in a list view control.
+ *   It is used to determine the position and size of an item.
+ */
 HB_FUNC( LISTVIEW_GETITEMRECT )
 {
-   RECT  *pRect;
+   RECT *pRect;
 
    pRect = ( RECT * ) hb_xgrab( sizeof( RECT ) );
 
@@ -800,56 +1285,218 @@ HB_FUNC( LISTVIEW_GETITEMRECT )
    hb_xfree( ( void * ) pRect );
 }
 
+/*
+ * FUNCTION: LISTVIEW_UPDATE
+ *
+ * Updates an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item to update.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function updates an item in a list view control.
+ *   It is used to refresh the display of an item in the list view control.
+ */
 HB_FUNC( LISTVIEW_UPDATE )
 {
    ListView_Update( hmg_par_raw_HWND( 1 ), hb_parni( 2 ) - 1 );
 }
 
+/*
+ * FUNCTION: LISTVIEW_SCROLL
+ *
+ * Scrolls the contents of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   dx: The number of pixels to scroll horizontally.
+ *   dy: The number of pixels to scroll vertically.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function scrolls the contents of a list view control by the specified number of pixels.
+ *   It is used to change the visible area of the list view control.
+ */
 HB_FUNC( LISTVIEW_SCROLL )
 {
    ListView_Scroll( hmg_par_raw_HWND( 1 ), hb_parni( 2 ), hb_parni( 3 ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_SETBKCOLOR
+ *
+ * Sets the background color of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Red: The red component of the background color.
+ *   Green: The green component of the background color.
+ *   Blue: The blue component of the background color.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the background color of a list view control.
+ *   It is used to customize the appearance of the list view control.
+ */
 HB_FUNC( LISTVIEW_SETBKCOLOR )
 {
    ListView_SetBkColor( hmg_par_raw_HWND( 1 ), RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_SETTEXTBKCOLOR
+ *
+ * Sets the background color of the text in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Red: The red component of the background color.
+ *   Green: The green component of the background color.
+ *   Blue: The blue component of the background color.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the background color of the text in a list view control.
+ *   It is used to customize the appearance of the text in the list view control.
+ */
 HB_FUNC( LISTVIEW_SETTEXTBKCOLOR )
 {
    ListView_SetTextBkColor( hmg_par_raw_HWND( 1 ), RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_SETTEXTCOLOR
+ *
+ * Sets the text color of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Red: The red component of the text color.
+ *   Green: The green component of the text color.
+ *   Blue: The blue component of the text color.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the text color of a list view control.
+ *   It is used to customize the appearance of the text in the list view control.
+ */
 HB_FUNC( LISTVIEW_SETTEXTCOLOR )
 {
    ListView_SetTextColor( hmg_par_raw_HWND( 1 ), RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETTEXTCOLOR
+ *
+ * Retrieves the text color of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   The text color of the list view control.
+ *
+ * Purpose:
+ *   This function retrieves the text color of a list view control.
+ *   It is used to get the current text color of the list view control.
+ */
 HB_FUNC( LISTVIEW_GETTEXTCOLOR )
 {
    hmg_ret_NINT( ListView_GetTextColor( hmg_par_raw_HWND( 1 ) ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETBKCOLOR
+ *
+ * Retrieves the background color of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   The background color of the list view control.
+ *
+ * Purpose:
+ *   This function retrieves the background color of a list view control.
+ *   It is used to get the current background color of the list view control.
+ */
 HB_FUNC( LISTVIEW_GETBKCOLOR )
 {
    hmg_ret_NINT( ListView_GetBkColor( hmg_par_raw_HWND( 1 ) ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETHEADER
+ *
+ * Retrieves the handle to the header control of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   Handle to the header control.
+ *
+ * Purpose:
+ *   This function retrieves the handle to the header control of a list view control.
+ *   It is used to access the header control for further operations.
+ */
 HB_FUNC( LISTVIEW_GETHEADER )
 {
    hmg_ret_raw_HWND( ListView_GetHeader( hmg_par_raw_HWND( 1 ) ) );
 }
 
+/*
+ * FUNCTION: GETHEADERLISTVIEWITEM
+ *
+ * Retrieves the index of the header item in a list view control.
+ *
+ * Parameters:
+ *   lParam: Pointer to the header notification data.
+ *
+ * Returns:
+ *   The index of the header item.
+ *
+ * Purpose:
+ *   This function retrieves the index of the header item in a list view control.
+ *   It is used to determine which header item is being interacted with.
+ */
 HB_FUNC( GETHEADERLISTVIEWITEM )
 {
-   LPNMHEADER  lpnmheader = ( LPNMHEADER ) HB_PARNL( 1 );
+   LPNMHEADER lpnmheader = ( LPNMHEADER ) HB_PARNL( 1 );
 
    hmg_ret_NINT( lpnmheader->iItem );
 }
 
+/*
+ * FUNCTION: GETHEADERLISTVIEWITEMCX
+ *
+ * Retrieves the width of a header item in a list view control.
+ *
+ * Parameters:
+ *   lParam: Pointer to the header notification data.
+ *
+ * Returns:
+ *   The width of the header item.
+ *
+ * Purpose:
+ *   This function retrieves the width of a header item in a list view control.
+ *   It is used to determine the width of a header item.
+ */
 HB_FUNC( GETHEADERLISTVIEWITEMCX )
 {
-   LPNMHEADER  lpnmheader = ( LPNMHEADER ) HB_PARNL( 1 );
+   LPNMHEADER lpnmheader = ( LPNMHEADER ) HB_PARNL( 1 );
 
    if( lpnmheader->pitem->mask == HDI_WIDTH )
    {
@@ -861,17 +1508,36 @@ HB_FUNC( GETHEADERLISTVIEWITEMCX )
    }
 }
 
+/*
+ * FUNCTION: LISTVIEW_ADDCOLUMN
+ *
+ * Adds a column to a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Column: The index of the column to add.
+ *   Width: The width of the column.
+ *   Text: The text of the column header.
+ *   Justify: The justification of the column header.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function adds a column to a list view control with the specified width, text, and justification.
+ *   It is used to customize the appearance of the list view control.
+ */
 HB_FUNC( LISTVIEW_ADDCOLUMN )
 {
 #ifndef UNICODE
-   LPSTR       lpText;
+   LPSTR lpText;
 #else
-   LPWSTR      lpText;
+   LPWSTR lpText;
 #endif
-   LV_COLUMN   COL;
-   HWND        hwnd = hmg_par_raw_HWND( 1 );
-   int         iColumn = hb_parni( 2 ) - 1;
-   PHB_ITEM    pValue = hb_itemNew( NULL );
+   LV_COLUMN COL;
+   HWND hwnd = hmg_par_raw_HWND( 1 );
+   int iColumn = hb_parni( 2 ) - 1;
+   PHB_ITEM pValue = hb_itemNew( NULL );
 
    hb_itemCopy( pValue, hb_param( 4, HB_IT_STRING ) );
 
@@ -903,9 +1569,25 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
    RedrawWindow( hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 }
 
+/*
+ * FUNCTION: LISTVIEW_DELETECOLUMN
+ *
+ * Deletes a column from a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Column: The index of the column to delete.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function deletes a column from a list view control.
+ *   It is used to remove a column from the list view control.
+ */
 HB_FUNC( LISTVIEW_DELETECOLUMN )
 {
-   HWND  hwnd = hmg_par_raw_HWND( 1 );
+   HWND hwnd = hmg_par_raw_HWND( 1 );
 
    ListView_DeleteColumn( hwnd, hb_parni( 2 ) - 1 );
 
@@ -914,19 +1596,68 @@ HB_FUNC( LISTVIEW_DELETECOLUMN )
    RedrawWindow( hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETCOLUMNWIDTH
+ *
+ * Retrieves the width of a column in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Column: The index of the column.
+ *
+ * Returns:
+ *   The width of the column.
+ *
+ * Purpose:
+ *   This function retrieves the width of a column in a list view control.
+ *   It is used to determine the width of a column.
+ */
 HB_FUNC( LISTVIEW_GETCOLUMNWIDTH )
 {
    hmg_ret_NINT( ListView_GetColumnWidth( hmg_par_raw_HWND( 1 ), hb_parni( 2 ) ) );
 }
 
-HB_FUNC( LISTVIEW_SETCOLUMNWIDTH )        // (JK) HMG Experimental Build 6
+/*
+ * FUNCTION: LISTVIEW_SETCOLUMNWIDTH
+ *
+ * Sets the width of a column in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Column: The index of the column.
+ *   Width: The width to set for the column.
+ *
+ * Returns:
+ *   A logical value indicating whether the width was successfully set.
+ *
+ * Purpose:
+ *   This function sets the width of a column in a list view control.
+ *   It is used to customize the appearance of the list view control.
+ */
+HB_FUNC( LISTVIEW_SETCOLUMNWIDTH ) // (JK) HMG Experimental Build 6
 {
    hb_retl( ListView_SetColumnWidth( hmg_par_raw_HWND( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETCHECKSTATE
+ *
+ * Retrieves the check state of an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item.
+ *
+ * Returns:
+ *   A logical value indicating the check state of the item.
+ *
+ * Purpose:
+ *   This function retrieves the check state of an item in a list view control.
+ *   It is used to determine the check state of an item.
+ */
 HB_FUNC( LISTVIEW_GETCHECKSTATE )
 {
-   HWND  hwndLV = hmg_par_raw_HWND( 1 );
+   HWND hwndLV = hmg_par_raw_HWND( 1 );
 
    if( _isValidCtrlClass( hwndLV, WC_LISTVIEW ) )
    {
@@ -938,9 +1669,26 @@ HB_FUNC( LISTVIEW_GETCHECKSTATE )
    }
 }
 
+/*
+ * FUNCTION: LISTVIEW_SETCHECKSTATE
+ *
+ * Sets the check state of an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Item: The index of the item.
+ *   Check: The check state to set for the item.
+ *
+ * Returns:
+ *   A logical value indicating whether the check state was successfully set.
+ *
+ * Purpose:
+ *   This function sets the check state of an item in a list view control.
+ *   It is used to change the check state of an item.
+ */
 HB_FUNC( LISTVIEW_SETCHECKSTATE )
 {
-   HWND  hwndLV = hmg_par_raw_HWND( 1 );
+   HWND hwndLV = hmg_par_raw_HWND( 1 );
 
    if( _isValidCtrlClass( hwndLV, WC_LISTVIEW ) )
    {
@@ -954,10 +1702,24 @@ HB_FUNC( LISTVIEW_SETCHECKSTATE )
    }
 }
 
-//        ListView_GetColumnCount( hWnd )
-HB_FUNC( LISTVIEW_GETCOLUMNCOUNT )        // Dr. Claudio Soto 2016/APR/07
+/*
+ * FUNCTION: LISTVIEW_GETCOLUMNCOUNT
+ *
+ * Retrieves the number of columns in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   The number of columns in the list view control.
+ *
+ * Purpose:
+ *   This function retrieves the number of columns in a list view control.
+ *   It is used to determine the total number of columns in the list view control.
+ */
+HB_FUNC( LISTVIEW_GETCOLUMNCOUNT ) // Dr. Claudio Soto 2016/APR/07
 {
-   HWND  hwndLV = hmg_par_raw_HWND( 1 );
+   HWND hwndLV = hmg_par_raw_HWND( 1 );
 
    if( _isValidCtrlClass( hwndLV, WC_LISTVIEW ) )
    {
@@ -969,14 +1731,30 @@ HB_FUNC( LISTVIEW_GETCOLUMNCOUNT )        // Dr. Claudio Soto 2016/APR/07
    }
 }
 
+/*
+ * FUNCTION: LISTVIEW_GETCOLUMNORDERARRAY
+ *
+ * Retrieves the order of columns in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   ColumnCount: The number of columns.
+ *
+ * Returns:
+ *   An array of column indices in the current order.
+ *
+ * Purpose:
+ *   This function retrieves the order of columns in a list view control.
+ *   It is used to determine the current order of columns.
+ */
 HB_FUNC( LISTVIEW_GETCOLUMNORDERARRAY )
 {
-   int   iCols = hb_parni( 2 );
+   int iCols = hb_parni( 2 );
 
    if( iCols )
    {
-      int      i;
-      int      *iArray = ( int * ) hb_xgrab( iCols * sizeof( int ) );
+      int i;
+      int *iArray = ( int * ) hb_xgrab( iCols * sizeof( int ) );
       PHB_ITEM pArray = hb_itemArrayNew( ( HB_SIZE ) iCols );
 
       ListView_GetColumnOrderArray( hmg_par_raw_HWND( 1 ), iCols, ( int * ) iArray );
@@ -996,18 +1774,35 @@ HB_FUNC( LISTVIEW_GETCOLUMNORDERARRAY )
    }
 }
 
+/*
+ * FUNCTION: LISTVIEW_SETCOLUMNORDERARRAY
+ *
+ * Sets the order of columns in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   ColumnCount: The number of columns.
+ *   OrderArray: An array of column indices in the new order.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function sets the order of columns in a list view control.
+ *   It is used to customize the appearance of the list view control.
+ */
 HB_FUNC( LISTVIEW_SETCOLUMNORDERARRAY )
 {
    PHB_ITEM pOrder = hb_param( 3, HB_IT_ARRAY );
 
    if( NULL != pOrder )
    {
-      int   iColumn = hb_parni( 2 );
+      int iColumn = hb_parni( 2 );
 
       if( iColumn )
       {
-         int   i;
-         int   *iArray = ( int * ) hb_xgrab( iColumn * sizeof( int ) );
+         int i;
+         int *iArray = ( int * ) hb_xgrab( iColumn * sizeof( int ) );
 
          for( i = 0; i < iColumn; i++ )
          {
@@ -1021,10 +1816,26 @@ HB_FUNC( LISTVIEW_SETCOLUMNORDERARRAY )
    }
 }
 
-//       ListView_ChangeExtendedStyle ( hWnd, [ nAddStyle ], [ nRemoveStyle ] )
-HB_FUNC( LISTVIEW_CHANGEEXTENDEDSTYLE )   // Dr. Claudio Soto
+/*
+ * FUNCTION: LISTVIEW_CHANGEEXTENDEDSTYLE
+ *
+ * Changes the extended style of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   AddStyle: The style to add.
+ *   RemoveStyle: The style to remove.
+ *
+ * Returns:
+ *   The new extended style of the list view control.
+ *
+ * Purpose:
+ *   This function changes the extended style of a list view control by adding or removing styles.
+ *   It is used to customize the appearance and behavior of the list view control.
+ */
+HB_FUNC( LISTVIEW_CHANGEEXTENDEDSTYLE ) // Dr. Claudio Soto
 {
-   HWND  hWnd = hmg_par_raw_HWND( 1 );
+   HWND hWnd = hmg_par_raw_HWND( 1 );
    DWORD Add = hmg_par_DWORD( 2 );
    DWORD Remove = hmg_par_DWORD( 3 );
    DWORD OldStyle, NewStyle;
@@ -1035,10 +1846,25 @@ HB_FUNC( LISTVIEW_CHANGEEXTENDEDSTYLE )   // Dr. Claudio Soto
    hmg_ret_DWORD( ListView_SetExtendedListViewStyle( hWnd, NewStyle ) );
 }
 
-//       ListView_GetExtendedStyle ( hWnd, [ nExStyle ] )
-HB_FUNC( LISTVIEW_GETEXTENDEDSTYLE )      // Dr. Claudio Soto
+/*
+ * FUNCTION: LISTVIEW_GETEXTENDEDSTYLE
+ *
+ * Retrieves the extended style of a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   ExStyle: The extended style to check.
+ *
+ * Returns:
+ *   A logical value indicating whether the extended style is set.
+ *
+ * Purpose:
+ *   This function retrieves the extended style of a list view control.
+ *   It is used to determine the current extended style of the list view control.
+ */
+HB_FUNC( LISTVIEW_GETEXTENDEDSTYLE ) // Dr. Claudio Soto
 {
-   HWND  hWnd = hmg_par_raw_HWND( 1 );
+   HWND hWnd = hmg_par_raw_HWND( 1 );
    DWORD ExStyle = hmg_par_DWORD( 2 );
    DWORD OldStyle = ListView_GetExtendedListViewStyle( hWnd );
 
@@ -1057,14 +1883,30 @@ HB_FUNC( LISTVIEW_GETEXTENDEDSTYLE )      // Dr. Claudio Soto
 #define HDF_SORTUP   0x0400
 #endif
 
-//       ListView_SetSortHeader ( nHWndLV, nColumn [, nType
-//                                /*0==none, positive==UP arrow or negative==DOWN arrow*/] ) -> nType (previous setting)
+/*
+ * FUNCTION: LISTVIEW_SETSORTHEADER
+ *
+ * Sets the sort indicator for a header in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Column: The index of the column.
+ *   Type: The type of sort indicator to set.
+ *   Image: If .T., use an image for the sort indicator.
+ *
+ * Returns:
+ *   The previous sort indicator type.
+ *
+ * Purpose:
+ *   This function sets the sort indicator for a header in a list view control.
+ *   It is used to indicate the sort direction of a column.
+ */
 HB_FUNC( LISTVIEW_SETSORTHEADER )
 {
-   HWND     hWndHD = ( HWND ) SendMessage( hmg_par_raw_HWND( 1 ), LVM_GETHEADER, 0, 0 );
-   INT      nItem = hb_parni( 2 ) - 1;
-   INT      nType;
-   HDITEM   hdItem;
+   HWND hWndHD = ( HWND ) SendMessage( hmg_par_raw_HWND( 1 ), LVM_GETHEADER, 0, 0 );
+   INT nItem = hb_parni( 2 ) - 1;
+   INT nType;
+   HDITEM hdItem;
 
    if( hb_parl( 4 ) )
    {
@@ -1162,17 +2004,33 @@ HB_FUNC( LISTVIEW_SETSORTHEADER )
 
 #define MAX_GROUP_BUFFER   2048
 
-//        ListView_GroupItemSetID ( hWnd, nRow, nGroupID )
+/*
+ * FUNCTION: LISTVIEW_GROUPITEMSETID
+ *
+ * Sets the group ID for an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Row: The index of the item.
+ *   GroupID: The group ID to set.
+ *
+ * Returns:
+ *   A logical value indicating whether the group ID was successfully set.
+ *
+ * Purpose:
+ *   This function sets the group ID for an item in a list view control.
+ *   It is used to group items in the list view control.
+ */
 HB_FUNC( LISTVIEW_GROUPITEMSETID )
 {
-   HWND     hWnd = hmg_par_raw_HWND( 1 );
-   INT      nRow = hmg_par_INT( 2 );
-   INT      GroupID = hmg_par_INT( 3 );
+   HWND hWnd = hmg_par_raw_HWND( 1 );
+   INT nRow = hmg_par_INT( 2 );
+   INT GroupID = hmg_par_INT( 3 );
 
 #if ( ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 ) )
-   _LVITEM  LVI;
+   _LVITEM LVI;
 #else
-   LVITEM   LVI;
+   LVITEM LVI;
 #endif
    LVI.mask = LVIF_GROUPID;
    LVI.iItem = nRow;
@@ -1182,16 +2040,31 @@ HB_FUNC( LISTVIEW_GROUPITEMSETID )
    hb_retl( ListView_SetItem( hWnd, &LVI ) );
 }
 
-//        ListView_GroupItemGetID ( hWnd, nRow )
+/*
+ * FUNCTION: LISTVIEW_GROUPITEMGETID
+ *
+ * Retrieves the group ID for an item in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Row: The index of the item.
+ *
+ * Returns:
+ *   The group ID of the item.
+ *
+ * Purpose:
+ *   This function retrieves the group ID for an item in a list view control.
+ *   It is used to determine the group ID of an item.
+ */
 HB_FUNC( LISTVIEW_GROUPITEMGETID )
 {
-   HWND     hWnd = hmg_par_raw_HWND( 1 );
-   INT      nRow = hmg_par_INT( 2 );
+   HWND hWnd = hmg_par_raw_HWND( 1 );
+   INT nRow = hmg_par_INT( 2 );
 
 #if ( ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 ) )
-   _LVITEM  LVI;
+   _LVITEM LVI;
 #else
-   LVITEM   LVI;
+   LVITEM LVI;
 #endif
    LVI.mask = LVIF_GROUPID;
    LVI.iItem = nRow;
@@ -1201,38 +2074,112 @@ HB_FUNC( LISTVIEW_GROUPITEMGETID )
    hmg_ret_NINT( LVI.iGroupId );
 }
 
-//        ListView_IsGroupViewEnabled ( hWnd )
+/*
+ * FUNCTION: LISTVIEW_ISGROUPVIEWENABLED
+ *
+ * Determines whether group view is enabled in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   A logical value indicating whether group view is enabled.
+ *
+ * Purpose:
+ *   This function determines whether group view is enabled in a list view control.
+ *   It is used to check the current state of the list view control.
+ */
 HB_FUNC( LISTVIEW_ISGROUPVIEWENABLED )
 {
    hb_retl( ListView_IsGroupViewEnabled( hmg_par_raw_HWND( 1 ) ) );
 }
 
-//        ListView_EnableGroupView ( hWnd, lEnable )
+/*
+ * FUNCTION: LISTVIEW_ENABLEGROUPVIEW
+ *
+ * Enables or disables group view in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   Enable: If .T., enables group view; otherwise, disables group view.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function enables or disables group view in a list view control.
+ *   It is used to customize the appearance and behavior of the list view control.
+ */
 HB_FUNC( LISTVIEW_ENABLEGROUPVIEW )
 {
    ListView_EnableGroupView( hmg_par_raw_HWND( 1 ), hb_parl( 2 ) );
 }
 
-//        ListView_GroupDeleteAll ( hWnd )
+/*
+ * FUNCTION: LISTVIEW_GROUPDELETEALL
+ *
+ * Deletes all groups in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *
+ * Returns:
+ *   NIL.
+ *
+ * Purpose:
+ *   This function deletes all groups in a list view control.
+ *   It is used to remove all groups from the list view control.
+ */
 HB_FUNC( LISTVIEW_GROUPDELETEALL )
 {
    ListView_RemoveAllGroups( hmg_par_raw_HWND( 1 ) );
 }
 
-//        ListView_GroupDelete ( hWnd, nGroupID )
+/*
+ * FUNCTION: LISTVIEW_GROUPDELETE
+ *
+ * Deletes a group in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   GroupID: The ID of the group to delete.
+ *
+ * Returns:
+ *   A logical value indicating whether the group was successfully deleted.
+ *
+ * Purpose:
+ *   This function deletes a group in a list view control.
+ *   It is used to remove a specific group from the list view control.
+ */
 HB_FUNC( LISTVIEW_GROUPDELETE )
 {
    hb_retni( ( int ) ListView_RemoveGroup( hmg_par_raw_HWND( 1 ), hmg_par_INT( 2 ) ) );
 }
 
-//        ListView_GroupAdd ( hWnd, nGroupID, [ nIndex ] )
+/*
+ * FUNCTION: LISTVIEW_GROUPADD
+ *
+ * Adds a group to a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   GroupID: The ID of the group to add.
+ *   Index: The index at which to insert the group.
+ *
+ * Returns:
+ *   The index of the newly added group.
+ *
+ * Purpose:
+ *   This function adds a group to a list view control.
+ *   It is used to create a new group in the list view control.
+ */
 HB_FUNC( LISTVIEW_GROUPADD )
 {
-   HWND     hWnd = hmg_par_raw_HWND( 1 );
-   INT      GroupID = hmg_par_INT( 2 );
-   INT      nIndex = HB_ISNUM( 3 ) ? hmg_par_INT( 3 ) : ( INT ) - 1;
+   HWND hWnd = hmg_par_raw_HWND( 1 );
+   INT GroupID = hmg_par_INT( 2 );
+   INT nIndex = HB_ISNUM( 3 ) ? hmg_par_INT( 3 ) : ( INT ) - 1;
 
-   LVGROUP  LVG;
+   LVGROUP LVG;
 
    LVG.cbSize = sizeof( LVGROUP );
    LVG.stateMask = LVM_SETGROUPINFO;
@@ -1246,21 +2193,41 @@ HB_FUNC( LISTVIEW_GROUPADD )
    hb_retni( ( int ) ListView_InsertGroup( hWnd, nIndex, &LVG ) );
 }
 
-//        ListView_GroupSetInfo ( hWnd, nGroupID, cHeader, nAlignHeader, cFooter, nAlingFooter, nState )
+/*
+ * FUNCTION: LISTVIEW_GROUPSETINFO
+ *
+ * Sets the information for a group in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   GroupID: The ID of the group.
+ *   Header: The header text for the group.
+ *   AlignHeader: The alignment of the header text.
+ *   Footer: The footer text for the group.
+ *   AlignFooter: The alignment of the footer text.
+ *   State: The state of the group.
+ *
+ * Returns:
+ *   The index of the group if successful, otherwise -1.
+ *
+ * Purpose:
+ *   This function sets the information for a group in a list view control.
+ *   It is used to customize the appearance and behavior of the group.
+ */
 HB_FUNC( LISTVIEW_GROUPSETINFO )
 {
-   HWND     hWnd = hmg_par_raw_HWND( 1 );
-   INT      GroupID = hmg_par_INT( 2 );
+   HWND hWnd = hmg_par_raw_HWND( 1 );
+   INT GroupID = hmg_par_INT( 2 );
    HB_WCHAR *cHeader = ( HB_WCHAR * ) ( ( hb_parclen( 3 ) == 0 ) ? NULL : hb_mbtowc( hb_parc( 3 ) ) );
-   UINT     nAlignHeader = hmg_par_UINT( 4 );
+   UINT nAlignHeader = hmg_par_UINT( 4 );
    HB_WCHAR *cFooter = hb_parclen( 5 ) == 0 ? NULL : hb_mbtowc( hb_parc( 5 ) );
-   UINT     nAlignFooter = hmg_par_UINT( 6 );
-   UINT     nState = hmg_par_UINT( 7 );
+   UINT nAlignFooter = hmg_par_UINT( 6 );
+   UINT nState = hmg_par_UINT( 7 );
 
    HB_WCHAR cHeaderBuffer[MAX_GROUP_BUFFER];
    HB_WCHAR cFooterBuffer[MAX_GROUP_BUFFER];
 
-   LVGROUP  LVG;
+   LVGROUP LVG;
 
    LVG.cbSize = sizeof( LVGROUP );
    LVG.stateMask = LVM_GETGROUPINFO;
@@ -1272,7 +2239,7 @@ HB_FUNC( LISTVIEW_GROUPSETINFO )
 
    if( ListView_GetGroupInfo( hWnd, GroupID, &LVG ) != -1 )
    {
-      UINT  nAlign = 0;
+      UINT nAlign = 0;
       LVG.stateMask = LVM_SETGROUPINFO;
       LVG.pszHeader = ( cHeader != NULL ) ? cHeader : cHeaderBuffer;
       LVG.pszFooter = ( cFooter != NULL ) ? cFooter : cFooterBuffer;
@@ -1289,17 +2256,37 @@ HB_FUNC( LISTVIEW_GROUPSETINFO )
    }
 }
 
-//        ListView_GroupGetInfo ( hWnd, nGroupID, @cHeader, @nAlignHeader, @cFooter, @nAlingFooter, @nState )
+/*
+ * FUNCTION: LISTVIEW_GROUPGETINFO
+ *
+ * Retrieves the information for a group in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   GroupID: The ID of the group.
+ *   Header: Reference to store the header text.
+ *   AlignHeader: Reference to store the alignment of the header text.
+ *   Footer: Reference to store the footer text.
+ *   AlignFooter: Reference to store the alignment of the footer text.
+ *   State: Reference to store the state of the group.
+ *
+ * Returns:
+ *   The result of the operation.
+ *
+ * Purpose:
+ *   This function retrieves the information for a group in a list view control.
+ *   It is used to get the current settings of the group.
+ */
 HB_FUNC( LISTVIEW_GROUPGETINFO )
 {
-   HWND     hWnd = hmg_par_raw_HWND( 1 );
-   INT      GroupID = hmg_par_INT( 2 );
+   HWND hWnd = hmg_par_raw_HWND( 1 );
+   INT GroupID = hmg_par_INT( 2 );
 
-   int      nRet;
+   int nRet;
    HB_WCHAR cHeaderBuffer[MAX_GROUP_BUFFER];
    HB_WCHAR cFooterBuffer[MAX_GROUP_BUFFER];
 
-   LVGROUP  LVG;
+   LVGROUP LVG;
 
    LVG.cbSize = sizeof( LVGROUP );
    LVG.stateMask = LVM_GETGROUPINFO;
@@ -1321,28 +2308,71 @@ HB_FUNC( LISTVIEW_GROUPGETINFO )
    hb_retni( nRet );
 }
 
-//        ListView_HasGroup ( hWnd, nGroupID )
+/*
+ * FUNCTION: LISTVIEW_HASGROUP
+ *
+ * Determines whether a group exists in a list view control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list view control.
+ *   GroupID: The ID of the group.
+ *
+ * Returns:
+ *   A logical value indicating whether the group exists.
+ *
+ * Purpose:
+ *   This function determines whether a group exists in a list view control.
+ *   It is used to check the existence of a group in the list view control.
+ */
 HB_FUNC( LISTVIEW_HASGROUP )
 {
-   HWND  hWnd = hmg_par_raw_HWND( 1 );
-   INT   GroupID = hmg_par_INT( 2 );
+   HWND hWnd = hmg_par_raw_HWND( 1 );
+   INT GroupID = hmg_par_INT( 2 );
 
    hb_retl( ( BOOL ) ListView_HasGroup( hWnd, GroupID ) );
 }
 
-//        Header_CustomDraw_GetItem ( lParam ) --> nColumnHeader
+/*
+ * FUNCTION: HEADER_CUSTOMDRAW_GETITEM
+ *
+ * Retrieves the item index from a header custom draw notification.
+ *
+ * Parameters:
+ *   lParam: Pointer to the custom draw notification data.
+ *
+ * Returns:
+ *   The item index.
+ *
+ * Purpose:
+ *   This function retrieves the item index from a header custom draw notification.
+ *   It is used to determine which item is being customized.
+ */
 HB_FUNC( HEADER_CUSTOMDRAW_GETITEM )
 {
-   LPARAM         lParam = hmg_par_raw_LPARAM( 1 );
+   LPARAM lParam = hmg_par_raw_LPARAM( 1 );
    LPNMCUSTOMDRAW lpNMCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
 
    hmg_ret_DWORD( lpNMCustomDraw->dwItemSpec );
 }
 
-//        Header_CustomDraw_GetAction ( lParam )
+/*
+ * FUNCTION: HEADER_CUSTOMDRAW_GETACTION
+ *
+ * Determines the action to take for a header custom draw notification.
+ *
+ * Parameters:
+ *   lParam: Pointer to the custom draw notification data.
+ *
+ * Returns:
+ *   The action to take.
+ *
+ * Purpose:
+ *   This function determines the action to take for a header custom draw notification.
+ *   It is used to customize the appearance of the header control.
+ */
 HB_FUNC( HEADER_CUSTOMDRAW_GETACTION )
 {
-   LPARAM         lParam = hmg_par_raw_LPARAM( 1 );
+   LPARAM lParam = hmg_par_raw_LPARAM( 1 );
    LPNMCUSTOMDRAW lpNMCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
 
    if( lpNMCustomDraw->dwDrawStage == CDDS_PREPAINT )
@@ -1359,14 +2389,31 @@ HB_FUNC( HEADER_CUSTOMDRAW_GETACTION )
    }
 }
 
-//        Header_SetFont
+/*
+ * FUNCTION: HEADER_SETFONT
+ *
+ * Sets the font for a header custom draw notification.
+ *
+ * Parameters:
+ *   lParam: Pointer to the custom draw notification data.
+ *   BackColor: The background color.
+ *   TextColor: The text color.
+ *   hFont: Handle to the font.
+ *
+ * Returns:
+ *   The action to take.
+ *
+ * Purpose:
+ *   This function sets the font for a header custom draw notification.
+ *   It is used to customize the appearance of the header control.
+ */
 HB_FUNC( HEADER_SETFONT )
 {
-   LPARAM         lParam = hmg_par_raw_LPARAM( 1 );
+   LPARAM lParam = hmg_par_raw_LPARAM( 1 );
    LPNMCUSTOMDRAW lpNMCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
-   HFONT          hFont = hmg_par_raw_HFONT( 4 );
-   RECT           rect = lpNMCustomDraw->rc;
-   HBRUSH         hBrush;
+   HFONT hFont = hmg_par_raw_HFONT( 4 );
+   RECT rect = lpNMCustomDraw->rc;
+   HBRUSH hBrush;
 
    SetBkColor( lpNMCustomDraw->hdc, hb_parni( 2 ) );
    SetTextColor( lpNMCustomDraw->hdc, hb_parni( 3 ) );

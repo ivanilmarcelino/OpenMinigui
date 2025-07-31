@@ -12,14 +12,56 @@ ANNOUNCE RDDSYS
 #include "minigui.ch"
 #include "winprint.ch"
 
+/*
+ * XCOMMAND ON KEY SPACE [ OF <parent> ] ACTION <action>
+ *
+ * Defines a hotkey for the SPACE key.
+ *
+ * Parameters:
+ *   <parent>: The parent window or control to which the hotkey applies.
+ *   <action>: A code block to execute when the SPACE key is pressed.
+ *
+ * Purpose:
+ *   This XCOMMAND simplifies the process of defining hotkeys for specific keys.
+ *   It encapsulates the _DefineHotKey function, making the code more readable and maintainable.
+ *   In this specific application, it's used to trigger an action when the SPACE key is pressed within a specified window.
+ */
 #xcommand ON KEY SPACE [ OF <parent> ] ACTION <action> ;
       = > ;
       _DefineHotKey ( < "parent" >, 0, VK_SPACE, < { action } > )
 
+/*
+ * XCOMMAND ON KEY GRAYPLUS [ OF <parent> ] ACTION <action>
+ *
+ * Defines a hotkey for the GRAYPLUS (Add) key.
+ *
+ * Parameters:
+ *   <parent>: The parent window or control to which the hotkey applies.
+ *   <action>: A code block to execute when the GRAYPLUS key is pressed.
+ *
+ * Purpose:
+ *   This XCOMMAND simplifies the process of defining hotkeys for specific keys.
+ *   It encapsulates the _DefineHotKey function, making the code more readable and maintainable.
+ *   In this specific application, it's used to trigger an action when the GRAYPLUS key is pressed within a specified window.
+ */
 #xcommand ON KEY GRAYPLUS [ OF <parent> ] ACTION <action> ;
       = > ;
       _DefineHotKey ( < "parent" >, 0, VK_ADD, < { action } > )
 
+/*
+ * XCOMMAND ON KEY GRAYMINUS [ OF <parent> ] ACTION <action>
+ *
+ * Defines a hotkey for the GRAYMINUS (Subtract) key.
+ *
+ * Parameters:
+ *   <parent>: The parent window or control to which the hotkey applies.
+ *   <action>: A code block to execute when the GRAYMINUS key is pressed.
+ *
+ * Purpose:
+ *   This XCOMMAND simplifies the process of defining hotkeys for specific keys.
+ *   It encapsulates the _DefineHotKey function, making the code more readable and maintainable.
+ *   In this specific application, it's used to trigger an action when the GRAYMINUS key is pressed within a specified window.
+ */
 #xcommand ON KEY GRAYMINUS [ OF <parent> ] ACTION <action> ;
       = > ;
       _DefineHotKey ( < "parent" >, 0, VK_SUBTRACT, < { action } > )
@@ -37,9 +79,27 @@ STATIC nWidth, nHeight, nColor, cFile := "", nKoef := 1, aFiles := {}, nItem := 
 
 MEMVAR nScrWidth, nScrHeight
 
-*--------------------------------------------------------*
+/*
+ * PROCEDURE Main( fname )
+ *
+ * Initializes the application, defines the main window, and displays a BMP image.
+ *
+ * Parameters:
+ *   fname (STRING, optional): The filename of the BMP image to open on startup. If omitted, the application starts without loading a file.
+ *
+ * Purpose:
+ *   This is the main entry point of the application. It performs the following tasks:
+ *     1. Sets up the main window with menus, a toolbar, an image control, and a status bar.
+ *     2. Defines hotkeys for various actions (e.g., opening, printing, zooming).
+ *     3. Loads the specified BMP image (if provided) and displays it in the image control.
+ *     4. Handles user interactions, such as clicking on the image to view the next image in the directory.
+ *     5. Manages the zoom level of the displayed image.
+ *
+ * Notes:
+ *   The application assumes that all BMP files are located in the current directory.
+ *   The zoom functionality is limited to a range of 0.11 to 9.9.
+ */
 PROCEDURE Main( fname )
-*--------------------------------------------------------*
    LOCAL nLen, aRect := GetDesktopArea()
    PRIVATE nScrWidth := aRect[ 3 ] - aRect[ 1 ], nScrHeight := aRect[ 4 ] - aRect[ 2 ]
 
@@ -188,9 +248,30 @@ PROCEDURE Main( fname )
 
 RETURN
 
-*--------------------------------------------------------*
+/*
+ * STATIC PROCEDURE FileOpen( fname, lInit )
+ *
+ * Opens a BMP image file and displays it in the main window.
+ *
+ * Parameters:
+ *   fname (STRING, optional): The filename of the BMP image to open. If omitted, a file open dialog is displayed.
+ *   lInit (LOGICAL, optional): A flag indicating whether to re-initialize the file list. Defaults to .T. (true).
+ *
+ * Purpose:
+ *   This procedure handles the opening of BMP image files. It performs the following steps:
+ *     1. If fname is empty, it displays a file open dialog to allow the user to select a BMP file.
+ *     2. If a valid filename is provided (either through the parameter or the dialog), it updates the cFile variable.
+ *     3. If lInit is true, it rebuilds the list of BMP files in the current directory.
+ *     4. Resets the zoom level to 1.
+ *     5. Retrieves the dimensions and color depth of the BMP image.
+ *     6. Calculates the optimal window size to fit the image within the screen boundaries, adjusting the zoom level if necessary.
+ *     7. Updates the main window's title, status bar, and image control to reflect the newly opened image.
+ *
+ * Notes:
+ *   The procedure assumes that all BMP files are located in the current directory.
+ *   The window size calculation ensures that the image is fully visible within the screen boundaries.
+ */
 STATIC PROCEDURE FileOpen( fname, lInit )
-*--------------------------------------------------------*
    LOCAL cPath := "\" + CurDir() + IF( Empty( CurDir() ), "", "\" ), ;
       aSize, nLen := Len( aFiles ), nFormWidth, nFormHeight, nStart
 
@@ -267,9 +348,27 @@ STATIC PROCEDURE FileOpen( fname, lInit )
 
 RETURN
 
-*--------------------------------------------------------*
+/*
+ * STATIC PROCEDURE Zoom( nOp )
+ *
+ * Zooms the displayed image in or out.
+ *
+ * Parameters:
+ *   nOp (NUMERIC):  A value indicating the zoom operation:
+ *     - Positive value (e.g., 1): Zoom in.
+ *     - Negative value (e.g., -1): Zoom out.
+ *     - Zero (0): Reset to original size (100% zoom).
+ *
+ * Purpose:
+ *   This procedure allows the user to zoom in or out on the displayed image. It calculates the new zoom level based on the nOp parameter and updates the image control and window size accordingly.
+ *   The zoom level is adjusted in increments of 0.1, with a minimum zoom level of 0.11 and a maximum zoom level of 9.9.
+ *   If nOp is 0, the zoom level is reset to 1 (100%).
+ *
+ * Notes:
+ *   The procedure checks if an image is currently loaded before performing the zoom operation.
+ *   The window size is adjusted to fit the zoomed image within the screen boundaries.
+ */
 STATIC PROCEDURE Zoom( nOp )
-*--------------------------------------------------------*
    LOCAL nPictWidth, nPictHeight
 
    IF Form_Main.StatusBar.Item( 1 ) == "No file loaded"
@@ -324,9 +423,30 @@ STATIC PROCEDURE Zoom( nOp )
 
 RETURN
 
-*--------------------------------------------------------*
+/*
+ * STATIC PROCEDURE PictInfo()
+ *
+ * Displays a modal window with information about the currently loaded image.
+ *
+ * Parameters:
+ *   None
+ *
+ * Purpose:
+ *   This procedure displays a modal window containing details about the currently loaded BMP image, such as:
+ *     - Filename
+ *     - Folder
+ *     - Original size (width x height in pixels)
+ *     - Color depth (bits per pixel)
+ *     - Disk size (in KB and bytes)
+ *     - Current folder index (position in the list of BMP files)
+ *     - File date and time
+ *     - Load time (in milliseconds)
+ *
+ * Notes:
+ *   The information is displayed in a modal window, which prevents the user from interacting with the main window until the information window is closed.
+ *   The procedure checks if an image is currently loaded before displaying the information.
+ */
 STATIC PROCEDURE PictInfo()
-*--------------------------------------------------------*
    LOCAL aLabel := {}, cLabel, aText := {}, cText, n
 
    IF ! Empty( cFile )
@@ -395,9 +515,26 @@ STATIC PROCEDURE PictInfo()
 
 RETURN
 
-*--------------------------------------------------------*
+/*
+ * STATIC PROCEDURE Next( nOp )
+ *
+ * Displays the next or previous image in the directory.
+ *
+ * Parameters:
+ *   nOp (NUMERIC): A value indicating the direction to navigate:
+ *     - Negative value (e.g., -1): Previous image.
+ *     - Positive value (e.g., 1): Next image.
+ *     - Zero (0): Reload current image.
+ *
+ * Purpose:
+ *   This procedure allows the user to navigate through the list of BMP images in the current directory.
+ *   It updates the nItem variable to point to the next or previous image in the aFiles array and then calls the FileOpen() procedure to display the selected image.
+ *   If there is only one image in the directory, it updates the text box with the current item number.
+ *
+ * Notes:
+ *   The procedure handles wrapping around the beginning and end of the file list.
+ */
 STATIC PROCEDURE Next( nOp )
-*--------------------------------------------------------*
    LOCAL nLen := Len( aFiles )
 
    IF nLen > 1
@@ -416,9 +553,30 @@ STATIC PROCEDURE Next( nOp )
 
 RETURN
 
-*--------------------------------------------------------*
+/*
+ * STATIC PROCEDURE FilePrint()
+ *
+ * Prints the currently displayed image.
+ *
+ * Parameters:
+ *   None
+ *
+ * Purpose:
+ *   This procedure allows the user to print the currently displayed BMP image. It performs the following steps:
+ *     1. Initializes the printing system.
+ *     2. Displays a print dialog to allow the user to select a printer and configure print settings.
+ *     3. Sets the print units to millimeters and the paper size to A4.
+ *     4. Determines the optimal paper orientation (portrait or landscape) based on the image dimensions.
+ *     5. Sets the print quality to high and the color mode to color.
+ *     6. Enables print preview.
+ *     7. Starts the print job and draws the image on the page, scaling it to fit within the printable area.
+ *     8. Releases the printing system.
+ *
+ * Notes:
+ *   The procedure uses the WINPRINT.CH library for printing functionality.
+ *   The image is scaled to fit within the printable area while maintaining its aspect ratio.
+ */
 STATIC PROCEDURE FilePrint()
-*--------------------------------------------------------*
    LOCAL nScale := 1 / 3.937, nX, nY, nH, nW
 
    IF ! Empty( cFile ) .AND. File( cFile )
@@ -479,16 +637,53 @@ STATIC PROCEDURE FilePrint()
 
 RETURN
 
-*--------------------------------------------------------*
+/*
+ * STATIC FUNCTION GetToolBarHeight()
+ *
+ * Returns the height of the toolbar in the main window.
+ *
+ * Parameters:
+ *   None
+ *
+ * Return Value:
+ *   NUMERIC: The height of the toolbar in pixels.
+ *
+ * Purpose:
+ *   This function is used to calculate the height of the toolbar, which is needed to determine the correct size and position of other controls in the main window.
+ *   It retrieves the handle of the toolbar control and then calls the GetSizeToolBar() function to get the toolbar's dimensions.
+ *
+ * Notes:
+ *   The function adds twice the border height to the toolbar height to account for the toolbar's borders.
+ */
 STATIC FUNCTION GetToolBarHeight()
-*--------------------------------------------------------*
    LOCAL h := Form_Main.ToolBar_1.Handle
 
 RETURN ( LoWord( GetSizeToolBar( h ) ) + 2 * GetBorderHeight() )
 
-*--------------------------------------------------------*
+/*
+ * STATIC FUNCTION MsgAbout()
+ *
+ * Displays an "About" message box with application information.
+ *
+ * Parameters:
+ *   None
+ *
+ * Return Value:
+ *   LOGICAL: The return value of the MsgInfo() function (typically .T.).
+ *
+ * Purpose:
+ *   This function displays a message box containing information about the application, such as:
+ *     - Program name and version
+ *     - Copyright information
+ *     - Compiler and Harbour version
+ *     - MiniGUI version
+ *     - A message indicating that the program is freeware
+ *
+ * Notes:
+ *   The function uses the MsgInfo() function to display the message box.
+ */
 STATIC FUNCTION MsgAbout()
-*--------------------------------------------------------*
+*
 
 RETURN MsgInfo( PadC( PROGRAM + VERSION, 40 ) + CRLF + ;
       "Copyright " + Chr( 169 ) + COPYRIGHT + CRLF + CRLF + ;

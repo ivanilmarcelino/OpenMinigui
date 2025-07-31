@@ -1,7 +1,7 @@
 
 -hblib
 -inc
--o../../harbour/lib/${hb_name}
+-o../../lib/hbcomm
 
 -I../../include
 

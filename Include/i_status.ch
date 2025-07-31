@@ -70,22 +70,10 @@
           [ TOOLTIP <cToolTip> ] ;
           [ BACKCOLOR <backcolor> ] ;
           [ FONTCOLOR <fontcolor> ] ;
-          [ <c: CENTERALIGN> ] ;
-          [ <r: RIGHTALIGN> ] ;
+          [ <c: CENTERALIGN> ] [ <r: RIGHTALIGN> ] ;
           [ <default: DEFAULT> ] ;
    => ;
-   _DefineItemMessage( "STATUSITEM", , 0, 0, ;
-      <cMsg>, ;
-      <{uAction}>, ;
-      <nSize>, ;
-      0, ;
-      <cBitmap>, ;
-      <"style">, ;
-      <cToolTip>, ;
-      <.default.>, ;
-      <backcolor>, ;
-      IIF(<.r.> .or. <.c.>,hb_defaultValue(<fontcolor>,BLACK),Nil), ;
-      iif( <.r.> == .t., 2, iif( <.c.> == .t., 1, 0 ) ) )
+   _DefineItemMessage( "STATUSITEM", , 0, 0, <cMsg>, <{uAction}>, <nSize>, 0, <cBitmap>, <"style">, <cToolTip>, <.default.>, <backcolor>, <fontcolor>, iif( <.r.> == .t., 2, iif( <.c.> == .t., 1, 0 ) ) )
 
 #xcommand DATE ;
           [ <w: WIDTH> <nSize> ] ;

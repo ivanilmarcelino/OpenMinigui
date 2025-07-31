@@ -43,7 +43,7 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   Parts of this code is contributed and used here under permission of his author:
+   Parts of this code are contributed and used here under permission of the author:
        Copyright 2005 (C) Jacek Kubica <kubica@wssk.wroc.pl>
  ---------------------------------------------------------------------------*/
 #include <mgdefs.h>     // Minigui definitions
@@ -55,11 +55,9 @@
 #define WC_BUTTON                      "Button" // Button class name
 #define BUTTON_IMAGELIST_ALIGN_CENTER  4        // Image alignment center
 #endif
-
 #include <math.h>       // Math functions
 #include "hbapiitm.h"   // Harbour API for item management
 #include "hbvm.h"       // Harbour VM interaction
-
 #ifndef BCM_FIRST       // Define BCM_FIRST for button message compatibility
 #define BCM_FIRST          0x1600
 #define BCM_SETIMAGELIST   ( BCM_FIRST + 0x0002 )                 // Set image list for button
@@ -106,7 +104,31 @@ typedef struct
 } BUTTON_IMAGELIST, *PBUTTON_IMAGELIST;
 #endif
 
-// Creates and initializes a basic button with configurable styles.
+/*
+ * FUNCTION: INITBUTTON
+ *
+ * Creates and initializes a basic button with configurable styles.
+ *
+ * Parameters:
+ *   1: HWND - Handle of the parent window.
+ *   2: LPCSTR/LPCWSTR - Button text.
+ *   3: HMENU - Menu handle (used as control ID).
+ *   4: INT - X coordinate of the button.
+ *   5: INT - Y coordinate of the button.
+ *   6: INT - Width of the button.
+ *   7: INT - Height of the button.
+ *   10: LOGICAL - Flag to set flat style.
+ *   11: LOGICAL - Flag to enable tab stop.
+ *   12: LOGICAL - Flag to make button visible.
+ *   13: LOGICAL - Flag to enable multiline text.
+ *   14: LOGICAL - Flag to set default push button style.
+ *
+ * Returns:
+ *   HWND - Handle of the created button.
+ *
+ * Purpose:
+ *   Creates a button with specified styles and dimensions.
+ */
 HB_FUNC( INITBUTTON )
 {
 #ifndef UNICODE
@@ -162,8 +184,37 @@ HB_FUNC( INITBUTTON )
 #endif
 }
 
-// Creates and initializes a button with an image (icon or bitmap).
-// Supports both inline and image list-based image display.
+/*
+ * FUNCTION: INITIMAGEBUTTON
+ *
+ * Creates and initializes a button with an image (icon or bitmap).
+ * Supports both inline and image list-based image display.
+ *
+ * Parameters:
+ *   1: HWND - Handle of the parent window.
+ *   2: LPCSTR/LPCWSTR - Button text.
+ *   3: HMENU - Menu handle (used as control ID).
+ *   4: INT - X coordinate of the button.
+ *   5: INT - Y coordinate of the button.
+ *   6: INT - Width of the button.
+ *   7: INT - Height of the button.
+ *   8: LPCSTR/LPCWSTR - Image file name.
+ *   9: LOGICAL - Flag to set flat style.
+ *   10: LOGICAL - Flag for transparency.
+ *   11: LOGICAL - Flag to make button visible.
+ *   12: LOGICAL - Flag to enable tab stop.
+ *   13: LOGICAL - Flag to set default push button style.
+ *   14: LPCSTR/LPCWSTR - Icon file name.
+ *   15: LOGICAL - Flag to extract icon.
+ *   16: INT - Icon index.
+ *   17: LOGICAL - Flag to use image list.
+ *
+ * Returns:
+ *   Array - Array containing handles to the button and image/icon.
+ *
+ * Purpose:
+ *   Creates a button with an image or icon, with various customization options.
+ */
 HB_FUNC( INITIMAGEBUTTON )
 {
    HWND        hbutton;
@@ -267,7 +318,7 @@ HB_FUNC( INITIMAGEBUTTON )
       }
 
 #ifdef UNICODE
-      hb_xfree( lpIconName );             // Free allocated memory for Unicode text
+      hb_xfree( lpIconName );           // Free allocated memory for Unicode text
 #endif
 
       // Handle image list or single icon setting
@@ -280,7 +331,7 @@ HB_FUNC( INITIMAGEBUTTON )
          // Extract icon info to create an image list for the button
          if( GetIconInfo( hIcon, &sIconInfo ) )
          {
-            GetObject( sIconInfo.hbmColor, sizeof( BITMAP ), ( LPVOID ) &bm );
+            GetObject( sIconInfo.hbmColor, sizeof( BITMAP ), ( LPVOID ) & bm );
 
             if( sIconInfo.hbmMask )
             {
@@ -306,7 +357,7 @@ HB_FUNC( INITIMAGEBUTTON )
             bi.margin.right = 10;
             bi.uAlign = BUTTON_IMAGELIST_ALIGN_CENTER;
 
-            SendMessage( ( HWND ) hbutton, BCM_SETIMAGELIST, ( WPARAM ) 0, ( LPARAM ) &bi );
+            SendMessage( ( HWND ) hbutton, BCM_SETIMAGELIST, ( WPARAM ) 0, ( LPARAM ) & bi );
 
             hb_reta( 2 );
             hmg_storvnl_HANDLE( hbutton, -1, 1 );
@@ -325,7 +376,35 @@ HB_FUNC( INITIMAGEBUTTON )
    }
 }
 
-// Initialize a custom owner-drawn button with images or icons
+/*
+ * FUNCTION: INITOWNERBUTTON
+ *
+ * Initializes a custom owner-drawn button with images or icons.
+ *
+ * Parameters:
+ *   1: HWND - Handle of the parent window.
+ *   2: LPCSTR/LPCWSTR - Button text.
+ *   3: HMENU - Menu handle (used as control ID).
+ *   4: INT - X coordinate of the button.
+ *   5: INT - Y coordinate of the button.
+ *   6: INT - Width of the button.
+ *   7: INT - Height of the button.
+ *   8: LPCSTR/LPCWSTR - Image file name.
+ *   9: LOGICAL - Flag to set flat style.
+ *   10: LOGICAL - Flag for transparency.
+ *   11: LOGICAL - Flag to make button visible.
+ *   12: LOGICAL - Flag to enable tab stop.
+ *   13: LOGICAL - Flag to set default push button style.
+ *   14: LPCSTR/LPCWSTR - Icon file name.
+ *   15: INT - Width of the image/icon.
+ *   16: INT - Height of the image/icon.
+ *
+ * Returns:
+ *   Array - Array containing handles to the button and image/icon.
+ *
+ * Purpose:
+ *   Creates a custom owner-drawn button with images or icons.
+ */
 HB_FUNC( INITOWNERBUTTON )
 {
    HWND     hbutton;                      // Handle to the button control
@@ -380,7 +459,7 @@ HB_FUNC( INITOWNERBUTTON )
       );
 
    // Subclass the button to use a custom window procedure
-   SetProp( ( HWND ) hbutton, TEXT( "oldbtnproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hbutton, GWLP_WNDPROC ) );
+   SetProp( ( HWND ) hbutton, TEXT( "oldbtnproc" ), ( HANDLE ) GetWindowLongPtr( ( HWND ) hbutton, GWLP_WNDPROC ) );
    SubclassWindow2( hbutton, OwnButtonProc );
 
    // Check if using a bitmap or icon and load accordingly
@@ -463,7 +542,23 @@ HB_FUNC( INITOWNERBUTTON )
 #endif
 }
 
-// Function to set a bitmap picture on an existing button
+/*
+ * FUNCTION: _SETBTNPICTURE
+ *
+ * Sets a bitmap picture on an existing button.
+ *
+ * Parameters:
+ *   1: HWND - Handle to the button.
+ *   2: LPCSTR/LPCWSTR - Image file name.
+ *   3: INT - Width of the image.
+ *   4: INT - Height of the image.
+ *
+ * Returns:
+ *   HWND - Handle to the loaded image.
+ *
+ * Purpose:
+ *   Sets a bitmap picture on an existing button.
+ */
 HB_FUNC( _SETBTNPICTURE )
 {
    HWND     hwnd = hmg_par_raw_HWND( 1 ); // Handle to the button
@@ -514,13 +609,42 @@ HB_FUNC( _SETBTNPICTURE )
 #endif
 }
 
-// Retrieve a handle to the current button picture
+/*
+ * FUNCTION: _GETBTNPICTUREHANDLE
+ *
+ * Retrieves a handle to the current button picture.
+ *
+ * Parameters:
+ *   1: HWND - Handle to the button.
+ *
+ * Returns:
+ *   HWND - Handle to the current button picture.
+ *
+ * Purpose:
+ *   Retrieves a handle to the current button picture.
+ */
 HB_FUNC( _GETBTNPICTUREHANDLE )
 {
    hmg_ret_raw_HWND( SendMessage( hmg_par_raw_HWND( 1 ), BM_GETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) 0 ) );
 }
 
-// Set a button image list with multiple images
+/*
+ * FUNCTION: _SETMIXEDBTNPICTURE
+ *
+ * Sets a button image list with multiple images.
+ *
+ * Parameters:
+ *   1: HWND - Handle to the button.
+ *   2: LPCSTR - Image file name.
+ *   3: LOGICAL - Flag for transparency.
+ *   4: UINT - Alignment.
+ *
+ * Returns:
+ *   HIMAGELIST - Handle to the image list.
+ *
+ * Purpose:
+ *   Sets a button image list with multiple images.
+ */
 HB_FUNC( _SETMIXEDBTNPICTURE )
 {
    HIMAGELIST  himl;
@@ -531,7 +655,23 @@ HB_FUNC( _SETMIXEDBTNPICTURE )
    hmg_ret_raw_HANDLE( himl );
 }
 
-// Set an icon for the button
+/*
+ * FUNCTION: _SETBTNICON
+ *
+ * Sets an icon for the button.
+ *
+ * Parameters:
+ *   1: HWND - Handle to the button.
+ *   2: LPCSTR/LPCWSTR - Icon file name.
+ *   3: INT - Width of the icon.
+ *   4: INT - Height of the icon.
+ *
+ * Returns:
+ *   HICON - Handle to the loaded icon.
+ *
+ * Purpose:
+ *   Sets an icon for the button.
+ */
 HB_FUNC( _SETBTNICON )
 {
    HICON    hIcon;
@@ -574,7 +714,21 @@ HB_FUNC( _SETBTNICON )
 #endif
 }
 
-// Set a button icon list with multiple icons
+/*
+ * FUNCTION: _SETMIXEDBTNICON
+ *
+ * Sets a button icon list with multiple icons.
+ *
+ * Parameters:
+ *   1: HWND - Handle to the button.
+ *   2: LPCSTR/LPCWSTR - Icon file name.
+ *
+ * Returns:
+ *   HIMAGELIST - Handle to the image list.
+ *
+ * Purpose:
+ *   Sets a button icon list with multiple icons.
+ */
 HB_FUNC( _SETMIXEDBTNICON )
 {
    BITMAP            bm;
@@ -597,7 +751,7 @@ HB_FUNC( _SETMIXEDBTNICON )
 
    GetIconInfo( hIcon, &sIconInfo );
 
-   GetObject( sIconInfo.hbmColor, sizeof( BITMAP ), ( LPVOID ) &bm );
+   GetObject( sIconInfo.hbmColor, sizeof( BITMAP ), ( LPVOID ) & bm );
 
    if( sIconInfo.hbmMask )
    {
@@ -622,7 +776,7 @@ HB_FUNC( _SETMIXEDBTNICON )
    bi.margin.right = 10;
    bi.uAlign = 4;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), BCM_SETIMAGELIST, ( WPARAM ) 0, ( LPARAM ) &bi );
+   SendMessage( hmg_par_raw_HWND( 1 ), BCM_SETIMAGELIST, ( WPARAM ) 0, ( LPARAM ) & bi );
 
    RegisterResource( himl, "IMAGELIST" );
    hmg_ret_raw_HANDLE( himl );
@@ -632,7 +786,24 @@ HB_FUNC( _SETMIXEDBTNICON )
 #endif
 }
 
-// Handles custom drawing of the button, including different states (focused, clicked, etc.)
+/*
+ * FUNCTION: DRAWBUTTON
+ *
+ * Handles custom drawing of the button, including different states (focused, clicked, etc.).
+ *
+ * Parameters:
+ *   1: INT - Focus state.
+ *   2: INT - Button state.
+ *   3: INT - Mouse over state.
+ *   4: INT - Flat style state.
+ *   5: DRAWITEMSTRUCT* - Pointer to the DRAWITEMSTRUCT structure.
+ *
+ * Returns:
+ *   None.
+ *
+ * Purpose:
+ *   Handles custom drawing of the button, including different states (focused, clicked, etc.).
+ */
 HB_FUNC( DRAWBUTTON )
 {
    DRAWITEMSTRUCT *pps = hmg_par_raw_DITEMSTRUCT( 4 );
@@ -663,7 +834,18 @@ HB_FUNC( DRAWBUTTON )
 }
 
 /*
-   Function GETOWNBTNHANDLE return value of hwndItem DRAWITEMSTRUCT member
+ * FUNCTION: GETOWNBTNHANDLE
+ *
+ * Returns the handle of the button from the DRAWITEMSTRUCT structure.
+ *
+ * Parameters:
+ *   1: DRAWITEMSTRUCT* - Pointer to the DRAWITEMSTRUCT structure.
+ *
+ * Returns:
+ *   HWND - Handle to the button.
+ *
+ * Purpose:
+ *   Returns the handle of the button from the DRAWITEMSTRUCT structure.
  */
 HB_FUNC( GETOWNBTNHANDLE )
 {
@@ -676,7 +858,18 @@ HB_FUNC( GETOWNBTNHANDLE )
 }
 
 /*
-   Function GETOWNBTNSTATE return value of itemState DRAWITEMSTRUCT member
+ * FUNCTION: GETOWNBTNSTATE
+ *
+ * Returns the state of the button from the DRAWITEMSTRUCT structure.
+ *
+ * Parameters:
+ *   1: DRAWITEMSTRUCT* - Pointer to the DRAWITEMSTRUCT structure.
+ *
+ * Returns:
+ *   UINT - State of the button.
+ *
+ * Purpose:
+ *   Returns the state of the button from the DRAWITEMSTRUCT structure.
  */
 HB_FUNC( GETOWNBTNSTATE )
 {
@@ -689,7 +882,18 @@ HB_FUNC( GETOWNBTNSTATE )
 }
 
 /*
-   Function GETOWNBTNDC return value of hDC DRAWITEMSTRUCT member
+ * FUNCTION: GETOWNBTNDC
+ *
+ * Returns the device context handle from the DRAWITEMSTRUCT structure.
+ *
+ * Parameters:
+ *   1: DRAWITEMSTRUCT* - Pointer to the DRAWITEMSTRUCT structure.
+ *
+ * Returns:
+ *   HDC - Device context handle.
+ *
+ * Purpose:
+ *   Returns the device context handle from the DRAWITEMSTRUCT structure.
  */
 HB_FUNC( GETOWNBTNDC )
 {
@@ -702,7 +906,18 @@ HB_FUNC( GETOWNBTNDC )
 }
 
 /*
-   Function GETOWNBTNITEMACTION return value of itemID DRAWITEMSTRUCT member
+ * FUNCTION: GETOWNBTNITEMID
+ *
+ * Returns the item ID from the DRAWITEMSTRUCT structure.
+ *
+ * Parameters:
+ *   1: DRAWITEMSTRUCT* - Pointer to the DRAWITEMSTRUCT structure.
+ *
+ * Returns:
+ *   UINT - Item ID.
+ *
+ * Purpose:
+ *   Returns the item ID from the DRAWITEMSTRUCT structure.
  */
 HB_FUNC( GETOWNBTNITEMID )
 {
@@ -715,7 +930,18 @@ HB_FUNC( GETOWNBTNITEMID )
 }
 
 /*
-   Function GETOWNBTNITEMACTION return value of itemAction DRAWITEMSTRUCT member
+ * FUNCTION: GETOWNBTNITEMACTION
+ *
+ * Returns the item action from the DRAWITEMSTRUCT structure.
+ *
+ * Parameters:
+ *   1: DRAWITEMSTRUCT* - Pointer to the DRAWITEMSTRUCT structure.
+ *
+ * Returns:
+ *   UINT - Item action.
+ *
+ * Purpose:
+ *   Returns the item action from the DRAWITEMSTRUCT structure.
  */
 HB_FUNC( GETOWNBTNITEMACTION )
 {
@@ -728,7 +954,18 @@ HB_FUNC( GETOWNBTNITEMACTION )
 }
 
 /*
-   Function GETOWNBTNCTLTYPE return value of CtlType DRAWITEMSTRUCT member
+ * FUNCTION: GETOWNBTNCTLTYPE
+ *
+ * Returns the control type from the DRAWITEMSTRUCT structure.
+ *
+ * Parameters:
+ *   1: DRAWITEMSTRUCT* - Pointer to the DRAWITEMSTRUCT structure.
+ *
+ * Returns:
+ *   UINT - Control type.
+ *
+ * Purpose:
+ *   Returns the control type from the DRAWITEMSTRUCT structure.
  */
 HB_FUNC( GETOWNBTNCTLTYPE )
 {
@@ -741,7 +978,18 @@ HB_FUNC( GETOWNBTNCTLTYPE )
 }
 
 /*
-   Function GETOWNBTNRECT return array with button rectangle coords
+ * FUNCTION: GETOWNBTNRECT
+ *
+ * Returns an array with the button rectangle coordinates from the DRAWITEMSTRUCT structure.
+ *
+ * Parameters:
+ *   1: DRAWITEMSTRUCT* - Pointer to the DRAWITEMSTRUCT structure.
+ *
+ * Returns:
+ *   Array - Array with the button rectangle coordinates.
+ *
+ * Purpose:
+ *   Returns an array with the button rectangle coordinates from the DRAWITEMSTRUCT structure.
  */
 HB_FUNC( GETOWNBTNRECT )
 {
@@ -758,7 +1006,23 @@ HB_FUNC( GETOWNBTNRECT )
    hb_itemReturnRelease( aMetr );
 }
 
-// Custom button procedure handling button events (e.g., mouse events)
+/*
+ * FUNCTION: OwnButtonProc
+ *
+ * Custom button procedure handling button events (e.g., mouse events).
+ *
+ * Parameters:
+ *   hButton: HWND - Handle to the button.
+ *   Msg: UINT - Message identifier.
+ *   wParam: WPARAM - Additional message-specific information.
+ *   lParam: LPARAM - Additional message-specific information.
+ *
+ * Returns:
+ *   LRESULT - Result of the message processing.
+ *
+ * Purpose:
+ *   Custom button procedure handling button events (e.g., mouse events).
+ */
 LRESULT CALLBACK OwnButtonProc( HWND hButton, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
    static PHB_SYMB   pSymbol = NULL;
@@ -831,7 +1095,24 @@ LRESULT CALLBACK OwnButtonProc( HWND hButton, UINT Msg, WPARAM wParam, LPARAM lP
    return CallWindowProc( OldWndProc, hButton, Msg, wParam, lParam );
 }
 
-// Creates a gradient brush for button backgrounds
+/*
+ * FUNCTION: CREATEBUTTONBRUSH
+ *
+ * Creates a gradient brush for button backgrounds.
+ *
+ * Parameters:
+ *   1: HDC - Device context handle.
+ *   2: INT - Width of the brush.
+ *   3: INT - Height of the brush.
+ *   4: COLORREF - First color of the gradient.
+ *   5: COLORREF - Second color of the gradient.
+ *
+ * Returns:
+ *   HBRUSH - Handle to the created gradient brush.
+ *
+ * Purpose:
+ *   Creates a gradient brush for button backgrounds.
+ */
 HB_FUNC( CREATEBUTTONBRUSH )
 {
    // Create a gradient brush by calling the helper function CreateGradientBrush
@@ -845,7 +1126,24 @@ HB_FUNC( CREATEBUTTONBRUSH )
    hmg_ret_raw_HBRUSH( hBrush );
 }
 
-// Helper function that generates a gradient brush
+/*
+ * FUNCTION: CreateGradientBrush
+ *
+ * Helper function that generates a gradient brush.
+ *
+ * Parameters:
+ *   hDC: HDC - Device context handle.
+ *   nWidth: INT - Width of the brush.
+ *   nHeight: INT - Height of the brush.
+ *   Color1: COLORREF - First color of the gradient.
+ *   Color2: COLORREF - Second color of the gradient.
+ *
+ * Returns:
+ *   HBRUSH - Handle to the created gradient brush.
+ *
+ * Purpose:
+ *   Generates a gradient brush for button backgrounds.
+ */
 static HBRUSH CreateGradientBrush( HDC hDC, INT nWidth, INT nHeight, COLORREF Color1, COLORREF Color2 )
 {
    // Variables to hold handles and color calculations
@@ -855,7 +1153,7 @@ static HBRUSH CreateGradientBrush( HDC hDC, INT nWidth, INT nHeight, COLORREF Co
    RECT     rcF;                    // Rectangle for drawing gradient
    int      r1, g1, b1, r2, g2, b2; // RGB values for start and end colors
    int      nCount;                 // Number of gradient steps based on size
-   int      i;                   // Loop counter for gradient steps
+   int      i;                // Loop counter for gradient steps
 
    // Extract RGB components of the two colors for gradient calculation
    r1 = GetRValue( Color1 );
@@ -908,14 +1206,31 @@ static HBRUSH CreateGradientBrush( HDC hDC, INT nWidth, INT nHeight, COLORREF Co
    return hBrushPat;
 }
 
-// Loads an image into an image list for buttons
+/*
+ * FUNCTION: HMG_SetButtonImageList
+ *
+ * Loads an image into an image list for buttons.
+ *
+ * Parameters:
+ *   hButton: HWND - Handle to the button.
+ *   FileName: LPCSTR - Image file name.
+ *   Transparent: INT - Flag for transparency.
+ *   uAlign: UINT - Alignment.
+ *
+ * Returns:
+ *   HIMAGELIST - Handle to the image list.
+ *
+ * Purpose:
+ *   Loads an image into an image list for buttons.
+ */
 HIMAGELIST HMG_SetButtonImageList( HWND hButton, const char *FileName, int Transparent, UINT uAlign )
 {
-   HBITMAP           hBitmap;    // Bitmap to hold the loaded image
-   HIMAGELIST        hImageList; // Image list to hold the button images
-   BITMAP            Bmp;        // Bitmap structure to get image details
-   BUTTON_IMAGELIST  bi;         // Structure to set image list for a button
-   TCHAR             TempPathFileName[MAX_PATH];   // Temporary file path for loading the image
+   HBITMAP           hBitmap; // Bitmap to hold the loaded image
+   HIMAGELIST        himl;    // Image list to hold the button images
+   BITMAP            Bmp;     // Bitmap structure to get image details
+   BUTTON_IMAGELIST  bi;      // Structure to set image list for a button
+   TCHAR             TempPath[MAX_PATH];  // Temporary file path for loading the image
+   TCHAR             TempPathFileName[MAX_PATH];
 
    // Load the image file into a bitmap object with transparency if needed
    hBitmap = HMG_LoadPicture( FileName, -1, -1, NULL, 0, 0, -1, 0, HB_TRUE, 255 );
@@ -929,15 +1244,15 @@ HIMAGELIST HMG_SetButtonImageList( HWND hButton, const char *FileName, int Trans
    GetObject( hBitmap, sizeof( BITMAP ), &Bmp );
 
    // Get a temporary path and file name for saving the loaded image
-   GetTempPath( MAX_PATH, TempPathFileName );
-   lstrcat( TempPathFileName, TEXT( "_MG_temp.BMP" ) );
+   GetTempPath( MAX_PATH, TempPath );
+   GetTempFileName( TempPath, TEXT( "HMG" ), 0, TempPathFileName );
    bmp_SaveFile( hBitmap, TempPathFileName );
    DeleteObject( hBitmap );
 
    // Load the bitmap into an image list, using transparency if specified
    if( Transparent == 1 )
    {
-      hImageList = ImageList_LoadImage
+      himl = ImageList_LoadImage
          (
             GetResources(),
             TempPathFileName,
@@ -950,7 +1265,7 @@ HIMAGELIST HMG_SetButtonImageList( HWND hButton, const char *FileName, int Trans
    }
    else
    {
-      hImageList = ImageList_LoadImage
+      himl = ImageList_LoadImage
          (
             GetResources(),
             TempPathFileName,
@@ -966,7 +1281,7 @@ HIMAGELIST HMG_SetButtonImageList( HWND hButton, const char *FileName, int Trans
    DeleteFile( TempPathFileName );
 
    // Set up the BUTTON_IMAGELIST structure with margin and alignment details
-   bi.himl = hImageList;
+   bi.himl = himl;
    bi.margin.left = 10;
    bi.margin.top = 10;
    bi.margin.bottom = 10;
@@ -974,8 +1289,8 @@ HIMAGELIST HMG_SetButtonImageList( HWND hButton, const char *FileName, int Trans
    bi.uAlign = uAlign;
 
    // Assign the image list to the button control
-   SendMessage( hButton, BCM_SETIMAGELIST, ( WPARAM ) 0, ( LPARAM ) &bi );
+   SendMessage( hButton, BCM_SETIMAGELIST, ( WPARAM ) 0, ( LPARAM ) & bi );
 
    // Return the handle to the created image list
-   return hImageList;
+   return himl;
 }

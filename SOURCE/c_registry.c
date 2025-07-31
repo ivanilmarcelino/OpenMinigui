@@ -47,220 +47,355 @@
 #include <mgdefs.h>
 #include <commctrl.h>
 
-// Convert pointer to long on Win64 platforms for compatibility.
 #if ( defined( __BORLANDC__ ) || defined( __POCC__ ) ) && defined( _WIN64 )
 #define PtrToLong( p )  ( ( LONG ) ( LONG_PTR ) ( p ) )
 #endif
 
-// Function to close a registry key handle.
-HB_FUNC( REGCLOSEKEY )
+// Helper function that wraps RegSetValueExA
+// Sets a registry value using the provided parameters.
+static LONG _setRegValue( HKEY hKey, LPCSTR lpValueName, DWORD dwType, const void *pData, DWORD cbData )
 {
-   HKEY  hwHandle = ( HKEY ) HB_PARNL( 1 );  // Get the registry key handle from the first parameter.
-
-   // Close the registry key and return success or error code.
-   hb_retnl( ( RegCloseKey( hwHandle ) == ERROR_SUCCESS ) ? ERROR_SUCCESS : -1 );
+   return RegSetValueExA( hKey, lpValueName, 0, dwType, ( const BYTE * ) pData, cbData );
 }
 
-// Function to open a registry key using `RegOpenKeyExA`.
+/*
+ * REGCLOSEKEY
+ *
+ * Closes a handle to an open registry key.
+ *
+ * Parameters:
+ *   1: (NUMERIC) Handle to the registry key to close.
+ *
+ * Return Value:
+ *   Returns 0 on success, -1 on failure.
+ */
+HB_FUNC( REGCLOSEKEY )
+{
+   HKEY  hKey = ( HKEY ) HB_PARNL( 1 );
+   hb_retnl( ( RegCloseKey( hKey ) == ERROR_SUCCESS ) ? 0 : -1 );
+}
+
+/*
+ * REGOPENKEYEXA
+ *
+ * Opens the specified subkey of an open registry key.
+ *
+ * Parameters:
+ *   1: (NUMERIC) Handle to an open parent registry key.
+ *   2: (STRING)  Subkey name to open.
+ *   4: (NUMERIC) Access rights mask (e.g., KEY_READ, KEY_WRITE).
+ *   5: (NUMERIC, BY REF) Variable to receive the opened key handle.
+ *
+ * Return Value:
+ *   Returns 0 on success, -1 on failure.
+ */
 HB_FUNC( REGOPENKEYEXA )
 {
-   HKEY     hwKey = ( HKEY ) HB_PARNL( 1 );  // Parent registry key handle.
-   LPCTSTR  lpValue = hb_parc( 2 );          // Subkey name to open.
-   long     lError;     // Variable to store the error code.
-   HKEY     phwHandle;  // Handle for the opened subkey.
+   HKEY     hParentKey = ( HKEY ) HB_PARNL( 1 );
+   LPCSTR   cSubKey = hb_parc( 2 );
+   HKEY     hOpenedKey;
+   LONG     lResult;
 
-   // Attempt to open the registry key.
-   lError = RegOpenKeyExA( ( HKEY ) hwKey, lpValue, 0, ( REGSAM ) hb_parnl( 4 ), &phwHandle );
-
-   // Check if the operation was successful.
-   if( lError != ERROR_SUCCESS )
+   if( !cSubKey )
    {
-      hb_retnl( -1 );   // Return -1 on failure.
+      hb_retnl( -1 );
+      return;
+   }
+
+   lResult = RegOpenKeyExA( hParentKey, cSubKey, 0, ( REGSAM ) hb_parnl( 4 ), &hOpenedKey );
+
+   if( lResult == ERROR_SUCCESS )
+   {
+      HB_STORNL( PtrToLong( hOpenedKey ), 5 );
+      hb_retnl( 0 );
    }
    else
    {
-      HB_STORNL( PtrToLong( phwHandle ), 5 );   // Store the new key handle in the fifth parameter.
-      hb_retnl( 0 );             // Return success.
+      hb_retnl( -1 );
    }
 }
 
-// Function to query a registry value, returning its type, data, and length.
+/*
+ * REGQUERYVALUEEXA
+ *
+ * Retrieves the data for a specified value name associated with an open registry key.
+ *
+ * Parameters:
+ *   1: (NUMERIC) Registry key handle.
+ *   2: (STRING)  Name of the value to query.
+ *   3: (unused)
+ *   4: (NUMERIC, BY REF) Variable to receive the value type (e.g., REG_SZ, REG_DWORD).
+ *   5: (STRING, BY REF)  Buffer to receive the value data (as a string).
+ *   6: (NUMERIC, BY REF) Variable to receive the size of the data (in bytes).
+ *
+ * Return Value:
+ *   Returns 0 on success, -1 on failure.
+ *
+ * Note:
+ *   This function only returns the value as a string in parameter 5.
+ */
 HB_FUNC( REGQUERYVALUEEXA )
 {
-   long  lError;                 // Variable to store error code.
-   DWORD lpType = hb_parnl( 4 ); // Variable type identifier.
-   DWORD lpcbData = 0;           // Size of the data buffer.
+   DWORD dwType = hb_parnl( 4 );
+   DWORD dwSize = 0;
+   LONG  lError;
 
-   // Query registry value size and type.
-   lError = RegQueryValueExA( ( HKEY ) HB_PARNL( 1 ), ( LPTSTR ) hb_parc( 2 ), NULL, &lpType, NULL, &lpcbData );
+   // First call to get required buffer size
+   lError = RegQueryValueExA( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), NULL, &dwType, NULL, &dwSize );
 
    if( lError == ERROR_SUCCESS )
    {
-      BYTE  *lpData;
+      BYTE  *lpData = ( BYTE * ) hb_xgrab( dwSize + 1 ); // +1 for null-termination safety
 
-      // Allocate memory to hold the registry data and query the actual value.
-      lpData = ( BYTE * ) hb_xgrab( lpcbData + 1 );
-      lError = RegQueryValueExA( ( HKEY ) HB_PARNL( 1 ), ( LPTSTR ) hb_parc( 2 ), NULL, &lpType, ( BYTE * ) lpData, &lpcbData );
+      // Second call to retrieve actual data
+      lError = RegQueryValueExA( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), NULL, &dwType, lpData, &dwSize );
 
-      if( lError != ERROR_SUCCESS )
+      if( lError == ERROR_SUCCESS )
       {
-         hb_retnl( -1 );         // Return -1 on failure.
+         HB_STORNL( ( LONG ) dwType, 4 );
+         hb_storc( ( char * ) lpData, 5 );
+         HB_STORNL( ( LONG ) dwSize, 6 );
+         hb_retnl( 0 );
       }
       else
       {
-         HB_STORNL( ( long ) lpType, 4 );    // Store the data type.
-         hb_storc( ( char * ) lpData, 5 );   // Store the data.
-         HB_STORNL( ( long ) lpcbData, 6 );  // Store the data size.
-         hb_retnl( 0 );                      // Return success.
+         hb_retnl( -1 );
       }
 
-      hb_xfree( lpData );                    // Free allocated memory for data buffer.
+      hb_xfree( lpData );
    }
    else
    {
-      hb_retnl( -1 );                        // Return -1 if the value query fails.
+      hb_retnl( -1 );
    }
 }
 
-// Function to enumerate subkeys in a registry key.
+/*
+ * REGENUMKEYEXA
+ *
+ * Enumerates subkeys of the specified open registry key.
+ *
+ * Parameters:
+ *   1: (NUMERIC) Registry key handle.
+ *   2: (NUMERIC) Index of the subkey to retrieve.
+ *   3: (STRING, BY REF) Buffer to receive the subkey name.
+ *   4: (NUMERIC, BY REF) Variable to receive subkey name length.
+ *   5: (unused)
+ *   6: (STRING, BY REF) Buffer to receive the class string.
+ *   7: (NUMERIC, BY REF) Variable to receive class string length.
+ *
+ * Return Value:
+ *   Returns 0 on success, -1 on failure.
+ */
 HB_FUNC( REGENUMKEYEXA )
 {
-   FILETIME ft;                              // Filetime variable for last write time.
-   long     bErr;
-   TCHAR    Buffer[255];                     // Buffer for subkey name.
-   DWORD    dwBuffSize = 255;                // Size of subkey buffer.
-   TCHAR    Class[255];                      // Buffer for class name.
-   DWORD    dwClass = 255;                   // Size of class buffer.
+#define MAX_REG_BUFFER  255
+   FILETIME ft;
+   CHAR     cName[MAX_REG_BUFFER];
+   CHAR     cClass[MAX_REG_BUFFER];
+   DWORD    dwNameSize = MAX_REG_BUFFER;
+   DWORD    dwClassSize = MAX_REG_BUFFER;
+   LONG     lError;
 
-   // Enumerate subkeys in the registry key.
-   bErr = RegEnumKeyEx( ( HKEY ) HB_PARNL( 1 ), hb_parnl( 2 ), Buffer, &dwBuffSize, NULL, Class, &dwClass, &ft );
+   lError = RegEnumKeyExA( ( HKEY ) HB_PARNL( 1 ), hb_parnl( 2 ), cName, &dwNameSize, NULL, cClass, &dwClassSize, &ft );
 
-   if( bErr != ERROR_SUCCESS )
+   if( lError == ERROR_SUCCESS )
    {
-      hb_retnl( -1 );                        // Return -1 on failure.
+      hb_storc( cName, 3 );
+      HB_STORNL( ( LONG ) dwNameSize, 4 );
+      hb_storc( cClass, 6 );
+      HB_STORNL( ( LONG ) dwClassSize, 7 );
+      hb_retnl( 0 );
    }
    else
    {
-      hb_storc( Buffer, 3 );                 // Store the subkey name.
-      HB_STORNL( ( long ) dwBuffSize, 4 );   // Store the size of the subkey name.
-      hb_storc( Class, 6 );                  // Store the class name.
-      HB_STORNL( ( long ) dwClass, 7 );      // Store the class name size.
-      hb_retnl( 0 );                // Return success.
+      hb_retnl( -1 );
    }
 }
 
-// Function to set a value in the registry.
+/*
+ * REGSETVALUEEXA
+ *
+ * Sets the value for a named entry under an open registry key.
+ *
+ * Parameters:
+ *   1: (NUMERIC) Registry key handle.
+ *   2: (STRING)  Name of the value to set.
+ *   3: (unused)
+ *   4: (NUMERIC) Type of the data (e.g., REG_SZ, REG_DWORD).
+ *   5: (STRING or NUMERIC) Data to write.
+ *
+ * Return Value:
+ *   Returns 0 on success, -1 on failure.
+ *
+ * Notes:
+ *   REG_DWORD expects a numeric input; strings are null-terminated.
+ */
 HB_FUNC( REGSETVALUEEXA )
 {
-   DWORD nType = hb_parnl( 4 );     // Data type of the value.
-   if( nType != REG_DWORD )
+   DWORD dwType = hb_parnl( 4 );
+   LONG  lError;
+
+   if( dwType == REG_DWORD )
    {
-      // Set non-DWORD data (e.g., strings) in the registry.
-      if( RegSetValueExA( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), 0, nType, ( BYTE * ) hb_parc( 5 ), ( DWORD ) hb_parclen( 5 ) + 1 ) == ERROR_SUCCESS )
-      {
-         hb_retnl( 0 );             // Return success.
-      }
-      else
-      {
-         hb_retnl( -1 );            // Return -1 on failure.
-      }
+      DWORD nValue = hb_parnl( 5 );
+      lError = _setRegValue( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), dwType, &nValue, sizeof( DWORD ) );
    }
    else
    {
-      DWORD nSpace = hb_parnl( 5 ); // For DWORD type, value is passed directly.
-      if( RegSetValueExA( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), 0, nType, ( BYTE * ) &nSpace, sizeof( REG_DWORD ) ) == ERROR_SUCCESS )
+      LPCSTR   cValue = hb_parc( 5 );
+      if( !cValue )
       {
-         hb_retnl( 0 );             // Return success.
+         hb_retnl( -1 );
+         return;
       }
-      else
-      {
-         hb_retnl( -1 );            // Return -1 on failure.
-      }
+
+      lError = _setRegValue( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), dwType, cValue, hb_parclen( 5 ) + 1 );
    }
+
+   hb_retnl( ( lError == ERROR_SUCCESS ) ? 0 : -1 );
 }
 
-// Function to create a registry key.
+/*
+ * REGCREATEKEY
+ *
+ * Creates or opens a registry key under a specified parent.
+ *
+ * Parameters:
+ *   1: (NUMERIC) Handle to an open parent key.
+ *   2: (STRING)  Subkey name to create or open.
+ *   3: (NUMERIC, BY REF) Variable to receive the key handle.
+ *   4: (NUMERIC, BY REF) Receives disposition (e.g., REG_CREATED_NEW_KEY).
+ *
+ * Return Value:
+ *   Returns 0 on success (and closes the key), -1 on failure.
+ */
 HB_FUNC( REGCREATEKEY )
 {
-   HKEY  hKey; // Handle for the new registry key.
+   HKEY  hKey;
+   DWORD dwDisposition;
 
-   // Attempt to create the registry key.
-   if( RegCreateKey( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), &hKey ) == ERROR_SUCCESS )
+   if( RegCreateKeyExA( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, &dwDisposition ) == ERROR_SUCCESS )
    {
-      HB_STORNL( PtrToLong( hKey ), 3 );  // Store the new key handle.
-      hb_retnl( 0 );          // Return success.
+      HB_STORNL( PtrToLong( hKey ), 3 );
+      hb_stornl( dwDisposition, 4 );
+      hb_retnl( ( RegCloseKey( hKey ) == ERROR_SUCCESS ) ? 0 : -1 );
    }
    else
    {
-      hb_retnl( -1 );         // Return -1 on failure.
+      hb_retnl( -1 );
    }
 }
 
-// Function to enumerate a registry key's values.
+/*
+ * REGENUMVALUEA
+ *
+ * Enumerates the values under an open registry key.
+ *
+ * Parameters:
+ *   1: (NUMERIC) Registry key handle.
+ *   2: (NUMERIC) Index of the value to retrieve.
+ *   3: (STRING, BY REF) Buffer to receive the value name.
+ *   4: (NUMERIC, BY REF) Variable to receive the size of the value name.
+ *   5: (unused)
+ *   6: (NUMERIC, BY REF) Variable to receive the value type.
+ *   7: (unused)
+ *   8: (NUMERIC, BY REF) Variable to receive the size of the value data.
+ *
+ * Return Value:
+ *   Returns 0 on success, -1 on failure.
+ */
 HB_FUNC( REGENUMVALUEA )
 {
-   DWORD lpType = 1;          // Variable to store the type of the registry value.
-   TCHAR Buffer[255];         // Buffer for the value name.
-   DWORD dwBuffSize = 255;    // Size of the value name buffer.
-   DWORD dwClass = 255;       // Size of the class buffer.
-   long  lError;
+#define MAX_VAL_BUFFER  255
+   CHAR  cName[MAX_VAL_BUFFER];
+   DWORD dwNameSize = MAX_VAL_BUFFER;
+   DWORD dwType = 0;
+   DWORD dwDataSize = MAX_VAL_BUFFER;
+   LONG  lError;
 
-   // Enumerate registry values.
-   lError = RegEnumValueA( ( HKEY ) HB_PARNL( 1 ), hb_parnl( 2 ), Buffer, &dwBuffSize, NULL, &lpType, NULL, &dwClass );
+   lError = RegEnumValueA( ( HKEY ) HB_PARNL( 1 ), hb_parnl( 2 ), cName, &dwNameSize, NULL, &dwType, NULL, &dwDataSize );
 
-   if( lError != ERROR_SUCCESS )
+   if( lError == ERROR_SUCCESS )
    {
-      hb_retnl( -1 );         // Return -1 on failure.
+      hb_storc( cName, 3 );
+      HB_STORNL( ( LONG ) dwNameSize, 4 );
+      HB_STORNL( ( LONG ) dwType, 6 );
+      HB_STORNL( ( LONG ) dwDataSize, 8 );
    }
-   else
-   {
-      hb_storc( Buffer, 3 );  // Store the value name.
-      HB_STORNL( ( long ) dwBuffSize, 4 );   // Store the size of the value name.
-      HB_STORNL( ( long ) lpType, 6 );       // Store the value type.
-      HB_STORNL( ( long ) dwClass, 8 );      // Store the data size.
-      hb_retnl( lError );                    // Return success or error code.
-   }
+
+   hb_retnl( ( lError == ERROR_SUCCESS ) ? 0 : -1 );
 }
 
-// Function to delete a registry key.
+/*
+ * REGDELETEKEY
+ *
+ * Deletes a specified subkey from a parent key.
+ *
+ * Parameters:
+ *   1: (NUMERIC) Handle to the parent key.
+ *   2: (STRING)  Name of the subkey to delete.
+ *
+ * Return Value:
+ *   Returns 0 on success, or an error code.
+ */
 HB_FUNC( REGDELETEKEY )
 {
-   // Delete the specified registry key and return the result.
-   hb_retnl( RegDeleteKey( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ) ) );
+   hb_retnl( RegDeleteKeyA( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ) ) );
 }
 
-// Function to delete a registry value.
+/*
+ * REGDELETEVALUEA
+ *
+ * Deletes a named value from an open registry key.
+ *
+ * Parameters:
+ *   1: (NUMERIC) Registry key handle.
+ *   2: (STRING)  Name of the value to delete.
+ *
+ * Return Value:
+ *   Returns 0 on success, -1 on failure.
+ */
 HB_FUNC( REGDELETEVALUEA )
 {
-   // Delete the specified value within a registry key.
-   if( RegDeleteValueA( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ) ) == ERROR_SUCCESS )
-   {
-      hb_retnl( 0 );                // Return success.
-   }
-   else
-   {
-      hb_retnl( -1 );               // Return -1 on failure.
-   }
+   hb_retnl( ( RegDeleteValueA( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ) ) == ERROR_SUCCESS ) ? 0 : -1 );
 }
 
-// Function to connect to a registry on a remote computer.
+/*
+ * REGCONNECTREGISTRY
+ *
+ * Connects to a predefined key on a remote machine.
+ *
+ * Parameters:
+ *   1: (STRING)  Remote computer name (e.g., "\\MyPC").
+ *   2: (NUMERIC) Predefined key (e.g., HKEY_LOCAL_MACHINE).
+ *   3: (NUMERIC, BY REF) Receives a handle to the connected registry.
+ *
+ * Return Value:
+ *   Returns 0 on success, -1 on failure.
+ *
+ * Notes:
+ *   Requires network access and appropriate permissions.
+ */
 HB_FUNC( REGCONNECTREGISTRY )
 {
-   LPCTSTR  lpValue = hb_parc( 1 ); // Remote computer name.
-   HKEY     hwKey = ( ( HKEY ) HB_PARNL( 2 ) ); // Predefined key to connect.
-   long     lError;
-   HKEY     phwHandle;
+   LPCSTR   cRemoteName = hb_parc( 1 );
+   HKEY     hPredefKey = ( HKEY ) HB_PARNL( 2 );
+   HKEY     hConnected;
+   LONG     lResult;
 
-   // Attempt to connect to the registry on the specified computer.
-   lError = RegConnectRegistry( lpValue, ( HKEY ) hwKey, &phwHandle );
+   if( !cRemoteName )
+   {
+      hb_retnl( -1 );
+      return;
+   }
 
-   if( lError != ERROR_SUCCESS )
+   lResult = RegConnectRegistryA( cRemoteName, hPredefKey, &hConnected );
+
+   if( lResult == ERROR_SUCCESS )
    {
-      hb_retnl( -1 );   // Return -1 on failure.
+      HB_STORNL( PtrToLong( hConnected ), 3 );
    }
-   else
-   {
-      HB_STORNL( PtrToLong( phwHandle ), 3 );   // Store the new registry handle.
-      hb_retnl( lError );  // Return success or error code.
-   }
+
+   hb_retnl( ( lResult == ERROR_SUCCESS ) ? 0 : -1 );
 }

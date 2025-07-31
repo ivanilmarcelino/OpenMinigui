@@ -1,0 +1,12 @@
+-hblib
+-inc
+
+-oc:\hmg\harbour\lib\win\mingw\sddsqlt3
+
+-I../../include;./include
+
+-warn=max
+
+-hbx=../../include/${hb_name}.hbx
+
+sddsqlt3.c

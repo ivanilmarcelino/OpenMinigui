@@ -100,10 +100,10 @@
 
 // Predefined Value Types
 
-#define REG_SZ                   1   // Data string (unicode nul terminated)
-#define REG_EXPAND_              2   // Unicode string
-#define REG_BINARY v             3   // Binary data in any form.
-#define REG_DWORD                4   // A 32-bit number.
+#define REG_SZ                   1 // Data string (unicode nul terminated)
+#define REG_EXPAND_SZ            2 // Unicode string
+#define REG_BINARY               3 // Binary data in any form.
+#define REG_DWORD                4 // A 32-bit number.
 
 // End Registry functions for Harbour defines
 

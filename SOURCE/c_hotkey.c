@@ -43,18 +43,41 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   ---------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 #include <mgdefs.h>
 
-// Function: INITHOTKEY
-// Registers a system-wide hotkey that sends a notification to the specified window when triggered.
-// Parameters:
-//   1. hwnd (window handle) - The handle of the window that will receive the hotkey notifications.
-//   2. fsModifiers (integer) - Modifier keys for the hotkey (e.g., ALT, CTRL, SHIFT).
-//   3. vk (integer) - Virtual key code for the main key in the hotkey combination.
-//   4. id (integer) - Unique identifier for this hotkey registration (used for management and lookup).
-// Returns:
-//   A logical (TRUE or FALSE) indicating if the hotkey was successfully registered.
+/*
+ * FUNCTION INITHOTKEY( hwnd, fsModifiers, vk, id )
+ *
+ * Registers a system-wide hotkey. When the hotkey is pressed, a WM_HOTKEY message
+ * is sent to the specified window.
+ *
+ * Parameters:
+ *   hwnd        : HWND - The handle of the window that will receive the WM_HOTKEY message.
+ *   fsModifiers : NUMERIC - Modifier flags specifying which modifier keys (e.g., ALT, CTRL, SHIFT)
+ *                 must be pressed in combination with the virtual key.  Valid values are defined
+ *                 by the Windows API (e.g., MOD_ALT, MOD_CONTROL, MOD_SHIFT).
+ *   vk          : NUMERIC - The virtual-key code of the key that must be pressed to trigger the hotkey.
+ *                 See the Windows API documentation for a list of valid virtual-key codes (e.g., VK_F1, VK_A).
+ *   id          : NUMERIC - A unique identifier for the hotkey. This identifier is included in the WM_HOTKEY
+ *                 message, allowing the window to distinguish between different hotkeys.
+ *
+ * Returns:
+ *   LOGICAL - .T. if the hotkey was successfully registered; otherwise, .F..
+ *
+ * Purpose:
+ *   This function allows an application to define global hotkeys that trigger actions even when the application
+ *   is not in the foreground. This is useful for implementing features like global shortcuts or system-wide
+ *   commands. For example, a media player might use a global hotkey to start or stop playback, regardless of
+ *   which application currently has focus.
+ *
+ * Notes:
+ *   - Hotkeys are system-wide resources, so it's important to unregister them when they are no longer needed
+ *     to avoid conflicts with other applications.
+ *   - The 'id' parameter must be unique within the application.
+ *   - If another application has already registered the same hotkey, this function will fail.
+ *   - The function relies on the Windows API function RegisterHotKey.
+ */
 HB_FUNC( INITHOTKEY )
 {
    hb_retl
@@ -69,13 +92,29 @@ HB_FUNC( INITHOTKEY )
    );
 }
 
-// Function: RELEASEHOTKEY
-// Unregisters a previously registered hotkey for the specified window and identifier.
-// Parameters:
-//   1. hwnd (window handle) - The handle of the window associated with the hotkey.
-//   2. id (integer) - The unique identifier of the hotkey to unregister.
-// Returns:
-//   A logical (TRUE or FALSE) indicating if the hotkey was successfully unregistered.
+/*
+ * FUNCTION RELEASEHOTKEY( hwnd, id )
+ *
+ * Unregisters a previously registered hotkey.
+ *
+ * Parameters:
+ *   hwnd : HWND - The handle of the window that registered the hotkey.
+ *   id   : NUMERIC - The unique identifier of the hotkey to unregister.  This must match the 'id'
+ *          used when the hotkey was initially registered with INITHOTKEY().
+ *
+ * Returns:
+ *   LOGICAL - .T. if the hotkey was successfully unregistered; otherwise, .F..
+ *
+ * Purpose:
+ *   This function releases a hotkey that was previously registered using INITHOTKEY(). It is crucial to
+ *   unregister hotkeys when they are no longer needed to prevent conflicts with other applications and
+ *   to free up system resources.  Failing to unregister hotkeys can lead to unexpected behavior and
+ *   resource leaks.
+ *
+ * Notes:
+ *   - The function relies on the Windows API function UnregisterHotKey.
+ *   - If the specified hotkey was not previously registered, this function will return .F..
+ */
 HB_FUNC( RELEASEHOTKEY )
 {
    hb_retl( 

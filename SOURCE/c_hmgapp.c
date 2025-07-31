@@ -45,7 +45,7 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   Parts  of  this  code  is contributed and used here under permission of his
+   Parts of this code are contributed and used here under permission of the
    author: Copyright 2016 (C) P.Chornyj <myorg63@mail.ru>
  */
 
@@ -89,7 +89,25 @@ typedef HRESULT ( CALLBACK *_DLLGETVERSIONPROC ) ( DLLVERSIONINFO2 * );
 static HINSTANCE  g_hInstance = NULL;
 static DWORD      g_dwComCtl32Ver = 0;
 
-// Initialization function for HMG; configures necessary components
+/*
+ * FUNCTION: hmg_init( [void *cargo] )
+ *
+ * Initializes core components of the HMG (Harbour MiniGUI Extended) runtime,
+ * including COM, application instance handle, and GDI+.
+ *
+ * Parameters:
+ *   cargo : Optional. Used by the Harbour runtime for initialization callbacks.
+ *           This parameter is unused and ignored in this context.
+ *
+ * Returns:
+ *   void. This function has side effects: it initializes global variables and
+ *   system-level components required for GUI functionality.
+ *
+ * Purpose:
+ *   This startup routine ensures that critical subsystems like COM and GDI+ are
+ *   initialized before any GUI operations occur. It's designed to run automatically
+ *   when the application starts.
+ */
 #ifdef __XHARBOUR__
 static void hmg_init ( void )
 #else
@@ -98,7 +116,7 @@ static void hmg_init ( void *cargo )
 {
    LPCTSTR  lpszDllName = TEXT( "ComCtl32.dll" );  // Common Controls Library
 #ifndef __XHARBOUR__
-   HB_SYMBOL_UNUSED( cargo );  // Unused parameter, only required for specific Harbour versions
+   HB_SYMBOL_UNUSED( cargo ); // Unused parameter, only required for specific Harbour versions
 #endif
 
    // Initialize COM library for OLE (Object Linking and Embedding)
@@ -139,7 +157,25 @@ HB_CALL_ON_STARTUP_END( _hmg_init_ )
 #include "hbiniseg.h"
 #endif
 
-// Retrieves the application's instance handle, storing it in g_hInstance if not already set
+/*
+ * FUNCTION: GetInstance()
+ *
+ * Retrieves the application's instance handle, caching it globally.
+ *
+ * Parameters:
+ *   None
+ *
+ * Returns:
+ *   HINSTANCE - Handle to the current application module.
+ *
+ * Purpose:
+ *   Used by GUI functions and control creation APIs to associate window classes
+ *   with the running application.
+ *
+ * Notes:
+ *   - Uses lazy initialization pattern.
+ *   - Value is stored in g_hInstance for reuse.
+ */
 HINSTANCE GetInstance( void )
 {
    if( !g_hInstance )
@@ -150,7 +186,26 @@ HINSTANCE GetInstance( void )
    return g_hInstance;
 }
 
-// Retrieves the version of a specified DLL by calling DllGetVersion if available
+/*
+ * FUNCTION: DllGetVersion( LPCTSTR lpszDllName )
+ *
+ * Queries the version of a specified DLL using its DllGetVersion export.
+ *
+ * Parameters:
+ *   lpszDllName : Name of the DLL (e.g., "comctl32.dll")
+ *
+ * Returns:
+ *   DWORD - Packed version number using MAKELONG(minor, major).
+ *           Returns 0 if version information is unavailable.
+ *
+ * Purpose:
+ *   Provides version detection for system DLLs to enable or disable features
+ *   based on their availability.
+ *
+ * Notes:
+ *   - Safely handles missing DLLs or missing version exports.
+ *   - Frees DLL handle after use.
+ */
 static DWORD DllGetVersion( LPCTSTR lpszDllName )
 {
    HINSTANCE   hinstDll;
@@ -181,29 +236,54 @@ static DWORD DllGetVersion( LPCTSTR lpszDllName )
    return dwVersion;
 }
 
-// Harbour function to return the application instance handle
+/*
+ * FUNCTION: GETINSTANCE()
+ *
+ * Harbour wrapper for GetInstance(), returns the HINSTANCE.
+ */
 HB_FUNC( GETINSTANCE )
 {
    hmg_ret_raw_HANDLE( g_hInstance );
 }
 
-// Harbour function to return the ComCtl32.dll version
+/*
+ * FUNCTION: GETCOMCTL32DLLVER()
+ *
+ * Returns the version of ComCtl32.dll (common controls).
+ */
 HB_FUNC( GETCOMCTL32DLLVER )
 {
    hmg_ret_DWORD( g_dwComCtl32Ver );
 }
 
-// Releases COM resources upon shutdown
+/*
+ * FUNCTION: OLEDATARELEASE()
+ *
+ * Uninitializes the COM library.
+ * Should be called during application shutdown.
+ */
 HB_FUNC( OLEDATARELEASE )
 {
    CoUninitialize();
 }
 
-// Check if system supports LOAD_LIBRARY_SEARCH_SYSTEM32 for secure DLL loading
+/*
+ * FUNCTION: win_has_search_system32()
+ *
+ * Checks if the current system supports LOAD_LIBRARY_SEARCH_SYSTEM32 security flag.
+ *
+ * Parameters:
+ *   None
+ *
+ * Returns:
+ *   HB_BOOL - TRUE if supported, FALSE otherwise.
+ *
+ * Purpose:
+ *   Enables secure DLL loading when available on Windows 7+ with KB2533623.
+ */
 #ifndef LOAD_LIBRARY_SEARCH_SYSTEM32
 #define LOAD_LIBRARY_SEARCH_SYSTEM32   0x00000800
 #endif
-
 static HB_BOOL win_has_search_system32( void )
 {
    HMODULE  hKernel32 = GetModuleHandle( TEXT( "kernel32.dll" ) );
@@ -216,7 +296,21 @@ static HB_BOOL win_has_search_system32( void )
    return HB_FALSE;
 }
 
-// Loads a library from the system directory, using system-specific security features if available
+/*
+ * FUNCTION: hmg_LoadLibrarySystem( LPCTSTR pFileName )
+ *
+ * Loads a DLL from the system directory with the safest possible search strategy.
+ *
+ * Parameters:
+ *   pFileName : Name of the DLL file (e.g., "comctl32.dll")
+ *
+ * Returns:
+ *   HMODULE - Module handle if successful, NULL otherwise.
+ *
+ * Purpose:
+ *   Ensures system libraries are loaded from the correct directory, avoiding
+ *   DLL preloading attacks.
+ */
 HMODULE hmg_LoadLibrarySystem( LPCTSTR pFileName )
 {
    TCHAR    *pLibPath = hmg_FileNameAtSystemDir( pFileName );        // Get full path for system directory
@@ -226,7 +320,24 @@ HMODULE hmg_LoadLibrarySystem( LPCTSTR pFileName )
    return h;
 }
 
-// Constructs the full path of a file in the system directory
+/*
+ * FUNCTION: hmg_FileNameAtSystemDir( const TCHAR *pFileName )
+ *
+ * Builds a fully qualified path to a file in the system directory.
+ *
+ * Parameters:
+ *   pFileName : Name of the file to locate within the system directory.
+ *
+ * Returns:
+ *   TCHAR* - Dynamically allocated string containing full path.
+ *            Caller is responsible for freeing memory with hb_xfree().
+ *
+ * Purpose:
+ *   Ensures DLLs and executables are referenced from the secure system location.
+ *
+ * Notes:
+ *   - If GetSystemDirectory fails, duplicates and returns the original file name.
+ */
 static TCHAR *hmg_FileNameAtSystemDir( const TCHAR *pFileName )
 {
    UINT  nLen = GetSystemDirectory( NULL, 0 );
@@ -256,7 +367,11 @@ static TCHAR *hmg_FileNameAtSystemDir( const TCHAR *pFileName )
    }
 }
 
-// Duplicates a string
+/*
+ * FUNCTION: hmg_tstrdup()
+ *
+ * Duplicates a TCHAR string using dynamic allocation.
+ */
 TCHAR *hmg_tstrdup( const TCHAR *pszText )
 {
    TCHAR    *pszDup;
@@ -270,7 +385,11 @@ TCHAR *hmg_tstrdup( const TCHAR *pszText )
    return pszDup;
 }
 
-// Concatenates strings with a limit on destination buffer length
+/*
+ * FUNCTION: hmg_tstrncat()
+ *
+ * Concatenates a source string to a destination buffer, up to a maximum length.
+ */
 TCHAR *hmg_tstrncat( TCHAR *pDest, const TCHAR *pSource, HB_SIZE nLen )
 {
    TCHAR *pBuf = pDest;

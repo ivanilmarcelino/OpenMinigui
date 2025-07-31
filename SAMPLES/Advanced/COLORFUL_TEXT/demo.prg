@@ -7,13 +7,26 @@
 #include "hmg.ch"
 #include "i_winuser.ch"
 
-*------------------------------------------------------------------------------*
+/*------------------------------------------------------------------------------*/
 FUNCTION Main
-*------------------------------------------------------------------------------*
+/*------------------------------------------------------------------------------*/
 /*
-   This is the main function of the application. It defines the main window,
-   sets up the font and colors, and activates the window.
-*/
+ * This is the main function of the application. It defines the main window,
+ * sets up the font and colors, and activates the window.
+ *
+ * Purpose:
+ *   This function serves as the entry point for the application. It initializes
+ *   the main window, defines the visual elements (font, colors), and starts the
+ *   application's event loop.  It demonstrates how to create a window and
+ *   display multi-colored text within it.
+ *
+ * Notes:
+ *   - The application uses a shuffled array of colors to display each character
+ *     of the text in a different color.
+ *   - The font "IMPACT" is used, and if it's not already defined, it will be created.
+ *   - The window's ON PAINT event is handled by the App_OnPaint function, which
+ *     is responsible for drawing the multi-colored text.
+ */
    LOCAL cText := "MULTI-COLOR TEXT"
    LOCAL hFont
 
@@ -58,31 +71,44 @@ FUNCTION Main
 
 RETURN NIL
 
-#define DT_SINGLELINE   32
-#define DT_CALCRECT     1024
-*------------------------------------------------------------------------------*
+#define DT_SINGLELINE  32
+#define DT_CALCRECT    1024
+/*------------------------------------------------------------------------------*/
 FUNCTION App_OnPaint( hWnd, hFont, cText, aColors )
-*------------------------------------------------------------------------------*
+/*------------------------------------------------------------------------------*/
 /*
-   This function is called when the window needs to be repainted. It draws the
-   multi-colored text on the window.
-
-   Input parameters:
-       hWnd    - Handle to the window
-       hFont   - Handle to the font
-       cText   - The text to be displayed
-       aColors - An array of colors to use for the text
-
-   Return value:
-       NIL
-*/
+ * This function is called when the window needs to be repainted. It draws the
+ * multi-colored text on the window.
+ *
+ * Parameters:
+ *   hWnd    : (HWND) Handle to the window.
+ *   hFont   : (HFONT) Handle to the font to be used for drawing the text.
+ *   cText   : (Character) The text string to be displayed.
+ *   aColors : (Array) An array of color values (integers) to be used for each character.
+ *
+ * Returns:
+ *   NIL
+ *
+ * Purpose:
+ *   This function handles the WM_PAINT message for the main window. It retrieves
+ *   the client area of the window, calculates the center position for the text,
+ *   and then draws each character of the text in a different color from the
+ *   provided color array. This creates the multi-colored text effect.
+ *
+ * Notes:
+ *   - The function uses the DrawTextEx function (defined in the C section below)
+ *     to draw the text with specified formatting and colors.
+ *   - The SetBkMode function is used to set the background mode to transparent
+ *     (OPAQUE = 0, TRANSPARENT = 1) so that the text is drawn without a background color.
+ *   - The status bar text is also updated to be centered.
+ */
    LOCAL aRect := { 0, 0, 0, 0 }
    LOCAL c, n, hDC, nRight, bk
 
    GetCliAreaRect( hWnd, aRect )
 
    // Centered Statusbar Text
-   Form_Main.Statusbar.Item( 1 ) := PadC( "Color Text", aRect[ 4 ] / 4 )
+   Form_Main.Statusbar.Item( 1 ) := PadC( "Color Text", aRect[ 4 ] / 4 - GetBorderWidth() )
 
    hDC := GetDC( hWnd )
 
@@ -105,22 +131,38 @@ FUNCTION App_OnPaint( hWnd, hFont, cText, aColors )
 
 RETURN NIL
 
-*------------------------------------------------------------------------------*
+/*------------------------------------------------------------------------------*/
 FUNCTION App_OnEvents( hWnd, nMsg, wParam, lParam )
-*------------------------------------------------------------------------------*
+/*------------------------------------------------------------------------------*/
 /*
-   This function is the event handler for the application. It handles various
-   window messages, such as WM_SIZE, and performs actions accordingly.
-
-   Input parameters:
-       hWnd    - Handle to the window
-       nMsg    - The message code
-       wParam  - Message-specific information
-       lParam  - Message-specific information
-
-   Return value:
-       nResult - The result of the event handling
-*/
+ * This function is the event handler for the application. It handles various
+ * window messages, such as WM_SIZE, and performs actions accordingly.
+ *
+ * Parameters:
+ *   hWnd    : (HWND) Handle to the window that received the message.
+ *   nMsg    : (Integer) The message code (e.g., WM_SIZE, WM_PAINT).
+ *   wParam  : (Integer) Message-specific information.  Often used to pass flags or handles.
+ *   lParam  : (Integer) Message-specific information.  Often used to pass pointers to data structures.
+ *
+ * Returns:
+ *   nResult : (Integer) The result of the event handling.  The meaning of the result depends on the message.
+ *
+ * Purpose:
+ *   This function acts as the central event handler for the application's main
+ *   window. It intercepts Windows messages and performs actions based on the
+ *   message type.  Specifically, it handles the WM_SIZE message to adjust the
+ *   layout of controls within the window when the window is resized, maximized,
+ *   or minimized.  It also calls the default HMG event handler (Events()) for
+ *   messages that it doesn't explicitly handle.
+ *
+ * Notes:
+ *   - The function iterates through the controls associated with the window and
+ *     adjusts their positions and sizes as needed.
+ *   - It also calls user-defined event procedures (e.g., _HMG_aFormSizeProcedure)
+ *     associated with the window.
+ *   - The function uses the _HMG_aControlHandles, _HMG_aControlParentHandles,
+ *     and _HMG_aControlType arrays to access information about the controls.
+ */
    LOCAL nResult
    LOCAL ControlCount, i, k, x
 
@@ -216,18 +258,31 @@ FUNCTION App_OnEvents( hWnd, nMsg, wParam, lParam )
 
 RETURN nResult
 
-*------------------------------------------------------------------------------*
+/*------------------------------------------------------------------------------*/
 FUNCTION AShuffle( aArray )
-*------------------------------------------------------------------------------*
+/*------------------------------------------------------------------------------*/
 /*
-   This function shuffles the elements of an array in a random order.
-
-   Input parameters:
-       aArray - The array to be shuffled (passed by reference)
-
-   Return value:
-       aArray - The shuffled array
-*/
+ * This function shuffles the elements of an array in a random order.
+ *
+ * Parameters:
+ *   aArray : (Array) The array to be shuffled.  This array is passed by reference,
+ *            so the original array will be modified.
+ *
+ * Returns:
+ *   aArray : (Array) The shuffled array.  This is the same array that was passed
+ *            as input, but with its elements rearranged in a random order.
+ *
+ * Purpose:
+ *   This function implements a shuffling algorithm to randomize the order of
+ *   elements within an array.  It's used in this application to randomize the
+ *   order of colors used to display the multi-colored text.  This ensures that
+ *   each character is displayed in a different, randomly selected color.
+ *
+ * Notes:
+ *   - The function uses a temporary array 'a' to keep track of the indices that
+ *     have already been used.
+ *   - The function modifies the original array directly (passed by reference).
+ */
    LOCAL n, i, j, a := {}
 
    IF ( n := Len( aArray ) ) > 1
@@ -251,9 +306,9 @@ FUNCTION AShuffle( aArray )
 
 RETURN aArray
 
-*------------------------------------------------------------------------------*
-* Low Level C Routines
-*------------------------------------------------------------------------------*
+/*------------------------------------------------------------------------------*
+ * Low Level C Routines
+ *------------------------------------------------------------------------------*/
 
 #pragma BEGINDUMP
 
@@ -264,11 +319,23 @@ RECT *Param2Rect( int iParam, RECT *prct )
    Converts a Harbour array parameter to a RECT structure.
  
    Parameters:
-       iParam - The index of the Harbour array parameter
-       prct   - A pointer to the RECT structure to be filled
+       iParam - The index of the Harbour array parameter (1-based).
+       prct   - A pointer to a RECT structure.  This structure will be populated
+                with the values from the Harbour array.
  
    Return:
-       A pointer to the filled RECT structure.
+       A pointer to the same RECT structure that was passed as input (prct).
+ 
+   Purpose:
+       This function bridges the gap between Harbour's array data type and the
+       Windows API's RECT structure.  It allows Harbour code to easily pass
+       rectangle coordinates to Windows functions that expect a RECT structure.
+ 
+   Notes:
+       - The Harbour array is expected to contain four numeric elements: top, left,
+         bottom, and right, in that order.
+       - If the array parameter is missing or invalid, default values are assigned
+         to the RECT structure.
 */
 {
    if( hb_pcount() >= iParam && HB_ISARRAY( iParam ) )
@@ -291,16 +358,30 @@ RECT *Param2Rect( int iParam, RECT *prct )
 
 HB_FUNC( GETCLIAREARECT )
 /*
-   This function retrieves the client area rectangle of a window.
+   Retrieves the client area rectangle of a window.
 
-   Input parameters:
-       hWnd - Handle to the window
+   Parameters:
+       hWnd  : (HWND) Handle to the window.
+       aRect : (Array, passed by reference) An array to store the rectangle coordinates.
+               The array must have at least four elements. The function will store
+               the top, left, bottom, and right coordinates of the client area in
+               the first four elements of the array.
 
-   Return value:
-       .T. - If the function succeeds
-       .F. - If the function fails
+   Returns:
+       .T. : (Logical) If the function succeeds in retrieving the client area.
+       .F. : (Logical) If the function fails (e.g., invalid window handle).
 
-       The function also stores the rectangle coordinates in an array passed by reference as the second parameter.
+   Purpose:
+       This function provides a way to obtain the dimensions of a window's client
+       area, which is the area within the window's borders and excluding the title
+       bar and menu.  This information is often needed to position and size
+       controls within the window correctly.
+
+   Notes:
+       - The function uses the GetClientRect Windows API function to retrieve the
+         client area rectangle.
+       - The function modifies the array passed as the second parameter by storing
+         the rectangle coordinates in it.
 */
 {
    RECT  rect;
@@ -315,19 +396,37 @@ HB_FUNC( GETCLIAREARECT )
 
 HB_FUNC( DRAWTEXTEX )   // ( hDC, cText, aRect, nStyle, [hFont], [nClr], [@nRight] ) --> nHeight
 /*
-   This function draws formatted text in the specified rectangle.
+   Draws formatted text in the specified rectangle using a device context.
 
-   Input parameters:
-       hDC    - Handle to the device context
-       cText  - The text to be drawn
-       aRect  - An array containing the rectangle coordinates (top, left, bottom, right)
-       nStyle - The formatting options (e.g., DT_SINGLELINE, DT_CALCRECT)
-       hFont  - (Optional) Handle to the font to use
-       nClr   - (Optional) The color of the text
-       nRight - (Optional) Variable to store the right coordinate of the drawn text (used with DT_CALCRECT)
+   Parameters:
+       hDC    : (HDC) Handle to the device context.  This specifies the drawing surface.
+       cText  : (Character) The text string to be drawn.
+       aRect  : (Array) An array containing the rectangle coordinates (top, left, bottom, right).
+       nStyle : (Integer) Formatting options (e.g., DT_SINGLELINE, DT_CALCRECT).  These flags control how the text is drawn.
+       hFont  : (HFONT, Optional) Handle to the font to use. If omitted, the default font of the device context is used.
+       nClr   : (Integer, Optional) The color of the text (as a COLORREF value). If omitted, the default text color of the device context is used.
+       nRight : (Numeric, Optional, passed by reference) A variable to store the right coordinate of the drawn text.  This is only used when the DT_CALCRECT style is specified.
 
-   Return value:
-       nHeight - The height of the drawn text
+   Returns:
+       nHeight : (Integer) The height of the drawn text (in logical units).
+
+   Purpose:
+       This function provides a flexible way to draw text within a specified rectangle,
+       allowing control over formatting, font, and color.  It's a wrapper around the
+       Windows API's DrawTextEx function, making it easier to use from Harbour.  The
+       DT_CALCRECT style is particularly useful for calculating the required size of
+       the rectangle to fit the text before actually drawing it.
+
+   Notes:
+       - The function dynamically allocates memory for the text string using hb_xgrab
+         and hb_xfree.
+       - The function handles optional parameters for font and color.
+       - The function uses SelectObject to select the specified font into the device
+         context and restores the original font after drawing.
+       - The function uses SetTextColor to set the text color and restores the
+         original color after drawing.
+       - The nRight parameter is only used when DT_CALCRECT is specified, and it
+         returns the right coordinate of the calculated rectangle.
 */
 {
    HDC      hDC;
@@ -343,9 +442,11 @@ HB_FUNC( DRAWTEXTEX )   // ( hDC, cText, aRect, nStyle, [hFont], [nClr], [@nRigh
    if( hb_pcount() > 1 && HB_ISCHAR( 2 ) )
    {
       hDC = hmg_par_raw_HDC( 1 );
+
       iLen = hb_parclen( 2 );
 
       Param2Rect( 3, &rct );
+
       dwStyle = hb_pcount() > 3 && HB_ISNUM( 4 ) ? hb_parnl( 4 ) : DT_NOCLIP | DT_SINGLELINE;
 
       if( hb_pcount() > 4 && HB_ISNUM( 5 ) && ( GetObjectType( hmg_par_raw_HGDIOBJ( 5 ) ) == OBJ_FONT ) )

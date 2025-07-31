@@ -43,9 +43,9 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   Parts of this code is contributed and used here under permission of his author:
+   Parts of this code are contributed and used here under permission of the author:
        Copyright 2006 (C) Grigory Filatov <gfilatov@gmail.com>
-   ---------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 
 // Define the minimum required Internet Explorer version to be 5.01, which is needed by some Windows controls.
 #define _WIN32_IE 0x0501

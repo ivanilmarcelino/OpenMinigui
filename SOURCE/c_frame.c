@@ -122,7 +122,7 @@ HB_FUNC( INITFRAME )
 
       // Free allocated memory for the title if UNICODE is used
 #ifdef UNICODE
-      hb_xfree( ( TCHAR * ) lpWindowName );
+      hb_xfree( lpWindowName );
 #endif
    }
    else

@@ -893,7 +893,7 @@ FUNCTION _DefineSplitChildWindow ( FormName, w, h, break, grippertext, nocaption
 
    IF i > 0
 
-      Formhandle := InitSplitChildWindow ( w, h, FormName, nocaption, title, 0, vscroll, hscroll )
+      Formhandle := InitSplitChildWindow ( w, h, FormName, nocaption, title, vscroll, hscroll )
 
       IF cursor != NIL
          SetWindowCursor( FormHandle, cursor )
@@ -2015,7 +2015,9 @@ PROCEDURE _hmg_OnHideFocusManagement ( i )
 
          AEval ( _HMG_aFormHandles, bEnableWindow )
 
-         SetFocus ( _HMG_MainHandle )
+         IF ! Empty ( _HMG_MainHandle )
+            SetFocus ( _HMG_MainHandle )
+         ENDIF
 
       ENDIF
 
@@ -2925,7 +2927,7 @@ FUNCTION WaitWindow ( cMessage, lNoWait, nWidth, nSize, cFont, aFontColor, aBack
       IF lDefined
          nCtEfeito := 0
          cDescEfeito := ""
-         DoMethod ( cFormName, "Release" )
+         DoMethod( cFormName, "Release" )
       ENDIF
 
    ELSE
@@ -3101,11 +3103,11 @@ FUNCTION WaitWindow ( cMessage, lNoWait, nWidth, nSize, cFont, aFontColor, aBack
             IF _IsWindowDefined( cFormName ) 
                InkeyGUI( 0 )
 
-               IF _IsControlDefined ( "Timer", cFormName )
+               IF _IsControlDefined( "Timer", cFormName )
                   nCtEfeito := 0
                   cDescEfeito := ""
                ENDIF
-               DoMethod ( cFormName, "Release" )
+               DoMethod( cFormName, "Release" )
             ENDIF
          ENDIF
 

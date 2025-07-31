@@ -43,7 +43,7 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-  ---------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 
 // Set compatibility for Windows/Internet Explorer features at version 5.01
 #define _WIN32_IE 0x0501
@@ -55,55 +55,44 @@
 LPWSTR      AnsiToWide( LPCSTR );                  // Convert ANSI string to Wide string
 #endif
 
-// Function to free resources associated with graphical objects or handles
-void pascal DelResource( HANDLE hResource );
+void pascal DelResource( HANDLE hResource );       // Frees resources associated with a handle.
 
 // Compatibility for older Harbour versions with function translation
 #ifndef HMG_LEGACY_OFF
 #if !defined( __MINGW32__ ) && !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 > 0x020000 ) && ( __HARBOUR__ - 0 < 0x030200 )
-HB_FUNC_TRANSLATE( HB_SETCODEPAGE, HB_CDPSELECT )  // Translate code page selection function
+HB_FUNC_TRANSLATE( HB_SETCODEPAGE, HB_CDPSELECT )  // Translate HB_SETCODEPAGE to HB_CDPSELECT for compatibility.
 #endif
 #endif
 
 /*
  *  HB_FUNC( MAKELONG )
  *
- *  Combines two 16-bit integers into a single 32-bit LONG value.
+ *  Combines two 16-bit integers into a 32-bit LONG value.
  *
  *  Parameters:
- *      1: The low-order word (16 bits) of the LONG value.
- *      2: The high-order word (16 bits) of the LONG value.
+ *      1: <nLowWord> - The low-order word (16 bits).
+ *      2: <nHighWord> - The high-order word (16 bits).
  *
  *  Returns:
  *      A LONG value constructed from the two input integers.
- *
- *  Purpose:
- *      This function is used to create a LONG value from two separate integer values,
- *      which is often required when interacting with Windows API functions that expect
- *      a combined value.
  */
 HB_FUNC( MAKELONG )
 {
-   hmg_ret_LONG( MAKELONG( hb_parni( 1 ), hb_parni( 2 ) ) );   // Return combined LONG value
+   hmg_ret_LONG( MAKELONG( hb_parni( 1 ), hb_parni( 2 ) ) );  // Return combined LONG value
 }
 
 /*
  *  HB_FUNC( _ENABLESCROLLBARS )
  *
- *  Enables or disables the scroll bars of a window.
+ *  Enables or disables scroll bars for a window.
  *
  *  Parameters:
- *      1: hWnd - The handle of the window whose scroll bars are to be modified.
- *      2: wSBflags - Specifies the type of scroll bars to enable or disable.  Can be SB_HORZ, SB_VERT, or SB_BOTH.
- *      3: wArrows - Specifies whether the scroll arrows should be shown or hidden. Can be ESB_ENABLE_BOTH, ESB_DISABLE_LTUP, or ESB_DISABLE_RTDN.
+ *      1: <hWnd> - The handle of the window.
+ *      2: <wSBflags> - Scroll bar flags (SB_HORZ, SB_VERT, SB_BOTH).
+ *      3: <wArrows> - Arrow enabling/disabling flags (ESB_ENABLE_BOTH, ESB_DISABLE_LTUP, ESB_DISABLE_RTDN).
  *
  *  Returns:
  *      None.
- *
- *  Purpose:
- *      This function allows you to dynamically control the visibility and functionality of
- *      a window's scroll bars, which is useful for adapting the user interface based on
- *      the content being displayed.
  */
 HB_FUNC( _ENABLESCROLLBARS )
 {
@@ -113,19 +102,13 @@ HB_FUNC( _ENABLESCROLLBARS )
 /*
  *  HB_FUNC( DELETEOBJECT )
  *
- *  Deletes a graphics object (e.g., a pen, brush, font, bitmap) and frees any system resources
- *  associated with the object.
+ *  Deletes a GDI object (pen, brush, font, bitmap) and frees associated resources.
  *
  *  Parameters:
- *      1: hResource - The handle of the graphics object to be deleted.
+ *      1: <hResource> - The handle of the GDI object to delete.
  *
  *  Returns:
- *      .T. (TRUE) if the object was successfully deleted; otherwise, .F. (FALSE).
- *
- *  Purpose:
- *      This function is essential for managing memory and preventing resource leaks when
- *      working with graphics objects in Windows.  It ensures that the system resources
- *      allocated to the object are released when the object is no longer needed.
+ *      .T. (TRUE) on success, .F. (FALSE) on failure.
  */
 HB_FUNC( DELETEOBJECT )
 {
@@ -145,18 +128,13 @@ HB_FUNC( DELETEOBJECT )
 /*
  *  HB_FUNC( IMAGELIST_DESTROY )
  *
- *  Destroys an image list and frees all memory associated with it.
+ *  Destroys an image list and frees its memory.
  *
  *  Parameters:
- *      1: himl - The handle of the image list to be destroyed.
+ *      1: <himl> - The handle of the image list to destroy.
  *
  *  Returns:
- *      .T. (TRUE) if the image list was successfully destroyed; otherwise, .F. (FALSE).
- *
- *  Purpose:
- *      Image lists are used to store collections of images for use in controls such as
- *      list views and tree views.  This function is used to release the memory occupied
- *      by the image list when it is no longer needed.
+ *      .T. (TRUE) on success, .F. (FALSE) on failure.
  */
 HB_FUNC( IMAGELIST_DESTROY )
 {
@@ -169,19 +147,13 @@ HB_FUNC( IMAGELIST_DESTROY )
 /*
  *  HB_FUNC( SETFOCUS )
  *
- *  Sets the keyboard focus to the specified window.  The window with the keyboard focus
- *  receives all keyboard input.
+ *  Sets the keyboard focus to the specified window.
  *
  *  Parameters:
- *      1: hWnd - The handle of the window to which the keyboard focus is to be set.
+ *      1: <hWnd> - The handle of the window to receive focus.
  *
  *  Returns:
- *      The handle of the window that previously had the keyboard focus, or NULL if there was no previous focus window.
- *
- *  Purpose:
- *      This function is used to programmatically control which window receives keyboard input.
- *      It is often used to ensure that the correct control is active when the user interacts
- *      with the application.
+ *      The handle of the window that previously had focus, or NULL.
  */
 HB_FUNC( SETFOCUS )
 {
@@ -191,18 +163,13 @@ HB_FUNC( SETFOCUS )
 /*
  *  HB_FUNC( INSERTSHIFTTAB )
  *
- *  Simulates a Shift+Tab key press, which typically moves the keyboard focus to the previous
- *  control in a dialog or form.
+ *  Simulates a Shift+Tab key press.
  *
  *  Parameters:
  *      None.
  *
  *  Returns:
  *      None.
- *
- *  Purpose:
- *      This function provides a way to programmatically simulate the Shift+Tab key press,
- *      which can be useful for implementing custom navigation behavior in an application.
  */
 HB_FUNC( INSERTSHIFTTAB )
 {
@@ -214,44 +181,34 @@ HB_FUNC( INSERTSHIFTTAB )
 /*
  *  HB_FUNC( SYSTEMPARAMETERSINFO )
  *
- *  Retrieves or sets the value of a system-wide parameter. This function can be used to
- *  customize the appearance and behavior of Windows.
+ *  Retrieves or sets system-wide parameters.
  *
  *  Parameters:
- *      1: uiAction - The system parameter to be retrieved or set.  See the Windows API documentation for a list of valid values.
- *      2: uiParam - A parameter whose meaning depends on the uiAction parameter.
- *      3: pvParam - A pointer to a buffer that receives the value of the system parameter, or contains the new value to be set.
- *      4: fWinIni - Specifies whether to update the user profile in the WIN.INI file.
+ *      1: <uiAction> - The system parameter to query or set (e.g., SPI_GETSCREENSAVEACTIVE).
+ *      2: <uiParam> - Parameter specific to the action.
+ *      3: <pvParam> - Pointer to a buffer to receive or set the parameter value.
+ *      4: <fWinIni> - Flags controlling update behavior (e.g., SPIF_UPDATEINIFILE).
  *
  *  Returns:
- *      .T. (TRUE) if the function succeeds; otherwise, .F. (FALSE).
- *
- *  Purpose:
- *      This function provides access to a wide range of system settings, allowing applications
- *      to adapt to the user's preferences and environment.
+ *      .T. (TRUE) on success, .F. (FALSE) on failure.
  */
 HB_FUNC( SYSTEMPARAMETERSINFO )
 {
-   hb_retl( SystemParametersInfoA( hmg_par_UINT( 1 ), hmg_par_UINT( 2 ), ( VOID * ) hb_parc( 3 ), hmg_par_UINT( 4 ) ) );
+   hb_retl( SystemParametersInfo( hmg_par_UINT( 1 ), hmg_par_UINT( 2 ), ( VOID * ) hb_parc( 3 ), hmg_par_UINT( 4 ) ) );
 }
 
 /*
  *  HB_FUNC( GETTEXTWIDTH )
  *
- *  Calculates the width, in pixels, of a specified string when drawn using a particular font
- *  in a given device context.
+ *  Calculates the width of a text string in pixels, using a specified font.
  *
  *  Parameters:
- *      1: hDC - The handle of the device context (HDC) in which the text will be drawn. If NULL, a DC will be created and destroyed.
- *      2: lpString - The string whose width is to be calculated.
- *      3: hFont - The handle of the font (HFONT) to be used to draw the text. If NULL, the current DC font is used.
+ *      1: <hDC> - The handle of the device context (HDC). If NULL, a DC is created and destroyed.
+ *      2: <lpString> - The text string to measure.
+ *      3: <hFont> - The handle of the font (HFONT). If NULL, the current DC font is used.
  *
  *  Returns:
- *      The width of the string, in pixels.
- *
- *  Purpose:
- *      This function is used to determine the amount of space required to display a string
- *      using a specific font, which is essential for layout and formatting purposes.
+ *      The width of the string in pixels.
  */
 HB_FUNC( GETTEXTWIDTH )
 {
@@ -269,9 +226,9 @@ HB_FUNC( GETTEXTWIDTH )
 #endif
    if( !hDC )
    {
-      bDestroyDC = TRUE;
       hWnd = GetActiveWindow();
       hDC = GetDC( hWnd ); // Acquire device context if not provided
+      bDestroyDC = TRUE;
    }
 
    if( hFont )
@@ -292,51 +249,44 @@ HB_FUNC( GETTEXTWIDTH )
 
    hmg_ret_LONG( sz.cx );              // Return calculated text width
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpString );
+   if( lpString )
+   {
+      hb_xfree( ( TCHAR * ) lpString );
+   }
 #endif
 }
 
 /*
  *  HB_FUNC( KEYBD_EVENT )
  *
- *  Synthesizes a keystroke. The system can use such a synthesized keystroke to trigger a keyboard event.
+ *  Synthesizes a keystroke event.
  *
  *  Parameters:
- *      1: bVk - A virtual-key code. The code must be a value in the range 1 to 254.
- *      2: bScan - A hardware scan code for the key.
- *      3: dwFlags - Controls various aspects of function operation. This parameter can be certain combinations of the following values:
- *                   KEYEVENTF_EXTENDEDKEY   0x0001  If specified, the scan code was preceded by a prefix byte that has the value 0xE0 (224).
- *                   KEYEVENTF_KEYUP         0x0002  If specified, the key is being released. If not specified, the key is being pressed.
- *                   KEYEVENTF_SCANCODE      0x0008  If specified, wScan identifies the key and bVk is ignored.
- *                   KEYEVENTF_UNICODE       0x0004  Windows 2000/XP: If specified, the system synthesizes a WM_UNICODE character event. The wScan parameter must contain a Unicode character code.
- *      4: dwExtraInfo - An application-defined value that is associated with the key stroke.
+ *      1: <bVk> - The virtual-key code (e.g., VK_A for 'A').
+ *      2: <bScan> - The hardware scan code for the key.
+ *      3: <dwFlags> - Flags controlling the event (KEYEVENTF_KEYUP, KEYEVENTF_SCANCODE, etc.).
+ *      4: <dwExtraInfo> - Application-defined extra information.
  *
  *  Returns:
  *      None.
- *
- *  Purpose:
- *      This function is used to simulate keyboard input, which can be useful for automating tasks
- *      or for testing purposes.
  */
 HB_FUNC( KEYBD_EVENT )
 {
-   keybd_event( hmg_par_BYTE( 1 ), ( BYTE ) MapVirtualKey( hmg_par_UINT( 1 ), 0 ), hb_parl( 2 ) ? KEYEVENTF_KEYUP : 0, 0 );
+   UINT  scan = MapVirtualKey( hmg_par_UINT( 1 ), 0 );
+
+   keybd_event( hmg_par_BYTE( 1 ), ( BYTE ) scan, hb_parl( 2 ) ? KEYEVENTF_KEYUP : 0, 0 );
 }
 
 /*
  *  HB_FUNC( INSERTVKEY )
  *
- *  Inserts a single virtual key press event into the input stream.
+ *  Inserts a virtual key press event.
  *
  *  Parameters:
- *      1: bVk - The virtual-key code of the key to be pressed.
+ *      1: <bVk> - The virtual-key code of the key to press.
  *
  *  Returns:
  *      None.
- *
- *  Purpose:
- *      This function provides a simple way to simulate a single key press, which can be useful
- *      for triggering specific actions or commands within an application.
  */
 HB_FUNC( INSERTVKEY )
 {
@@ -346,18 +296,14 @@ HB_FUNC( INSERTVKEY )
 /*
  *  HB_FUNC( _HMG_SETVSCROLLVALUE )
  *
- *  Sets the position of the vertical scroll bar in a window.
+ *  Sets the vertical scroll bar position.
  *
  *  Parameters:
- *      1: hWnd - The handle of the window whose scroll bar is to be set.
- *      2: nPos - The new position of the scroll box.
+ *      1: <hWnd> - The handle of the window.
+ *      2: <nPos> - The new scroll position.
  *
  *  Returns:
  *      None.
- *
- *  Purpose:
- *      This function allows you to programmatically control the position of the vertical scroll
- *      bar, which is useful for synchronizing the scroll bar with the content being displayed.
  */
 HB_FUNC( _HMG_SETVSCROLLVALUE )
 {
@@ -367,18 +313,14 @@ HB_FUNC( _HMG_SETVSCROLLVALUE )
 /*
  *  HB_FUNC( _HMG_SETHSCROLLVALUE )
  *
- *  Sets the position of the horizontal scroll bar in a window.
+ *  Sets the horizontal scroll bar position.
  *
  *  Parameters:
- *      1: hWnd - The handle of the window whose scroll bar is to be set.
- *      2: nPos - The new position of the scroll box.
+ *      1: <hWnd> - The handle of the window.
+ *      2: <nPos> - The new scroll position.
  *
  *  Returns:
  *      None.
- *
- *  Purpose:
- *      This function allows you to programmatically control the position of the horizontal scroll
- *      bar, which is useful for synchronizing the scroll bar with the content being displayed.
  */
 HB_FUNC( _HMG_SETHSCROLLVALUE )
 {
@@ -391,13 +333,10 @@ HB_FUNC( _HMG_SETHSCROLLVALUE )
  *  Displays the caret (cursor) in a window.
  *
  *  Parameters:
- *      1: hWnd - The handle of the window in which the caret is to be displayed.
+ *      1: <hWnd> - The handle of the window.
  *
  *  Returns:
- *      .T. (TRUE) if the caret was successfully displayed; otherwise, .F. (FALSE).
- *
- *  Purpose:
- *      This function makes the caret visible, allowing the user to see where text will be inserted.
+ *      .T. (TRUE) on success, .F. (FALSE) on failure.
  */
 HB_FUNC( SHOWCARET )
 {
@@ -410,13 +349,10 @@ HB_FUNC( SHOWCARET )
  *  Hides the caret (cursor) in a window.
  *
  *  Parameters:
- *      1: hWnd - The handle of the window in which the caret is to be hidden.
+ *      1: <hWnd> - The handle of the window.
  *
  *  Returns:
- *      .T. (TRUE) if the caret was successfully hidden; otherwise, .F. (FALSE).
- *
- *  Purpose:
- *      This function makes the caret invisible, preventing it from being displayed in the window.
+ *      .T. (TRUE) on success, .F. (FALSE) on failure.
  */
 HB_FUNC( HIDECARET )
 {
@@ -426,16 +362,13 @@ HB_FUNC( HIDECARET )
 /*
  *  HB_FUNC( DESTROYCARET )
  *
- *  Destroys the current caret and releases any system resources associated with it.
+ *  Destroys the caret.
  *
  *  Parameters:
  *      None.
  *
  *  Returns:
- *      .T. (TRUE) if the caret was successfully destroyed; otherwise, .F. (FALSE).
- *
- *  Purpose:
- *      This function should be called when the caret is no longer needed to free up system resources.
+ *      .T. (TRUE) on success, .F. (FALSE) on failure.
  */
 HB_FUNC( DESTROYCARET )
 {
@@ -445,19 +378,16 @@ HB_FUNC( DESTROYCARET )
 /*
  *  HB_FUNC( CREATECARET )
  *
- *  Creates a new caret with the specified dimensions and bitmap (optional).
+ *  Creates a caret.
  *
  *  Parameters:
- *      1: hWnd - The handle of the window in which the caret is to be created.
- *      2: hBitmap - The handle of the bitmap to be used for the caret. If NULL, a solid block caret is created.
- *      3: nWidth - The width of the caret, in logical units.
- *      4: nHeight - The height of the caret, in logical units.
+ *      1: <hWnd> - The handle of the window.
+ *      2: <hBitmap> - The handle of the bitmap for the caret (or NULL for a solid block).
+ *      3: <nWidth> - The width of the caret.
+ *      4: <nHeight> - The height of the caret.
  *
  *  Returns:
- *      .T. (TRUE) if the caret was successfully created; otherwise, .F. (FALSE).
- *
- *  Purpose:
- *      This function allows you to create a custom caret with specific dimensions and appearance.
+ *      .T. (TRUE) on success, .F. (FALSE) on failure.
  */
 HB_FUNC( CREATECARET )
 {
@@ -467,21 +397,16 @@ HB_FUNC( CREATECARET )
 /*
  *  HB_FUNC( CHANGESTYLE )
  *
- *  Modifies the style of a window by adding and removing style bits.
+ *  Changes the style of a window.
  *
  *  Parameters:
- *      1: hWnd - The handle of the window whose style is to be modified.
- *      2: dwAdd - The style bits to be added to the window's style.
- *      3: dwRemove - The style bits to be removed from the window's style.
- *      4: lExStyle - A logical value indicating whether to modify the extended style (TRUE) or the normal style (FALSE).
+ *      1: <hWnd> - The handle of the window.
+ *      2: <dwAdd> - Style bits to add.
+ *      3: <dwRemove> - Style bits to remove.
+ *      4: <lExStyle> - .T. (TRUE) for extended style, .F. (FALSE) for normal style.
  *
  *  Returns:
  *      The previous style of the window.
- *
- *  Purpose:
- *      This function allows you to dynamically change the appearance and behavior of a window
- *      by modifying its style bits.  This can be useful for enabling or disabling features,
- *      changing the window's appearance, or responding to user actions.
  */
 HB_FUNC( CHANGESTYLE )
 {
@@ -500,24 +425,19 @@ HB_FUNC( CHANGESTYLE )
 /*
  *  HB_FUNC( MOVEBTNTEXTBOX )
  *
- *  Repositions and resizes a text box and associated buttons to fit within a specified area.
+ *  Repositions and resizes a text box and associated buttons.
  *
  *  Parameters:
- *      1: hEdit - The handle of the text box window.
- *      2: hBtn1 - The handle of the first button window.
- *      3: hBtn2 - The handle of the second button window (optional).
- *      4: fBtn2 - A logical value indicating whether a second button is present (TRUE) or not (FALSE).
- *      5: BtnWidth - The desired width of the buttons.
- *      6: width - The total width of the area to be occupied by the text box and buttons.
- *      7: height - The height of the area to be occupied by the text box and buttons.
+ *      1: <hEdit> - The handle of the text box.
+ *      2: <hBtn1> - The handle of the first button.
+ *      3: <hBtn2> - The handle of the second button (optional).
+ *      4: <fBtn2> - .T. (TRUE) if a second button is present, .F. (FALSE) otherwise.
+ *      5: <BtnWidth> - The desired width of the buttons.
+ *      6: <width> - The total width of the area.
+ *      7: <height> - The total height of the area.
  *
  *  Returns:
  *      None.
- *
- *  Purpose:
- *      This function is used to arrange a text box and its associated buttons in a consistent
- *      and visually appealing manner.  It ensures that the controls are properly sized and
- *      positioned, regardless of the size of the available area.
  */
 HB_FUNC( MOVEBTNTEXTBOX )
 {
@@ -525,10 +445,10 @@ HB_FUNC( MOVEBTNTEXTBOX )
    HWND  hBtn1 = hmg_par_raw_HWND( 2 );
    HWND  hBtn2 = hmg_par_raw_HWND( 3 );
    BOOL  fBtn2 = hb_parl( 4 );   // Flag indicating if a second button is used
-   int   BtnWidth = ( int ) hb_parni( 5 );
+   int   BtnWidth = hb_parni( 5 );
    int   BtnWidth2;
-   int   width = ( int ) hb_parni( 6 );
-   int   height = ( int ) hb_parni( 7 );
+   int   width = hb_parni( 6 );
+   int   height = hb_parni( 7 );
    BOOL  fBtns = ( hb_parnl( 2 ) > 0 );
 
    BtnWidth = ( BtnWidth >= GetSystemMetrics( SM_CYSIZE ) ? BtnWidth : GetSystemMetrics( SM_CYSIZE ) - 1 );          // Minimum button width
@@ -555,19 +475,15 @@ HB_FUNC( MOVEBTNTEXTBOX )
 /*
  *  HB_FUNC( HB_DATE )
  *
- *  Creates a Harbour date value from year, month, and day integers.
+ *  Creates a Harbour date value from year, month, and day.
  *
  *  Parameters:
- *      1: nYear - The year (e.g., 2023).
- *      2: nMonth - The month (1-12).
- *      3: nDay - The day of the month (1-31).
+ *      1: <nYear> - The year.
+ *      2: <nMonth> - The month (1-12).
+ *      3: <nDay> - The day (1-31).
  *
  *  Returns:
- *      A Harbour date value representing the specified date.
- *
- *  Purpose:
- *      This function provides a way to create Harbour date values from individual year, month,
- *      and day components.  It is used for compatibility with older Harbour versions.
+ *      A Harbour date value.
  */
 HB_FUNC( HB_DATE )
 {
@@ -581,19 +497,14 @@ HB_FUNC( HB_DATE )
 /*
  *  HB_FUNC( HB_LEFTEQI )
  *
- *  Performs a case-insensitive comparison of the left portion of two strings.
+ *  Case-insensitive comparison of the left portion of two strings.
  *
  *  Parameters:
- *      1: pItem1 - The first string to compare.
- *      2: pItem2 - The second string to compare.
+ *      1: <pItem1> - The first string.
+ *      2: <pItem2> - The second string.
  *
  *  Returns:
- *      .T. (TRUE) if the left portion of the first string is equal to the second string, ignoring case;
- *      otherwise, .F. (FALSE).
- *
- *  Purpose:
- *      This function is used to perform a case-insensitive comparison of strings, which is useful
- *      for tasks such as searching and filtering data. It is used for compatibility with older Harbour versions.
+ *      .T. (TRUE) if the left portion of the first string equals the second string (case-insensitive), .F. (FALSE) otherwise.
  */
 HB_FUNC( HB_LEFTEQI )
 {

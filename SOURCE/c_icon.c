@@ -1,4 +1,5 @@
-/* MINIGUI - Harbour Win32 GUI library source code
+/*
+   MINIGUI - Harbour Win32 GUI library source code
 
    Copyright 2002-2010 Roberto Lopez <harbourminigui@gmail.com>
    http://harbourminigui.googlepages.com/
@@ -44,9 +45,10 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   Parts  of  this  code  is contributed and used here under permission of his
+   Parts of this code are contributed and used here under permission of the
    author: Copyright 2016 (C) P.Chornyj <myorg63@mail.ru>
  */
+
 #include <mgdefs.h>
 #include <shellapi.h>
 
@@ -66,7 +68,25 @@ void        RegisterResource( HANDLE hResource, LPCSTR szType );
 // Deletes or releases a registered resource
 void pascal DelResource( HANDLE hResource );
 
-// Function to duplicate an icon handle
+/*
+ * FUNCTION COPYICON( hIcon )
+ *
+ * Creates a duplicate of an existing icon.
+ *
+ * Parameters:
+ *   hIcon : HICON - The handle of the icon to duplicate.
+ *
+ * Returns:
+ *   HICON - The handle of the newly created duplicate icon.
+ *
+ * Purpose:
+ *   This function is used to create a copy of an icon. This is useful when you need to use the same icon in multiple places
+ *   but want to avoid potential issues with resource sharing or ownership.  For example, you might copy an icon to use it in
+ *   both a main window and a system tray icon.
+ *
+ * Notes:
+ *   The function registers the duplicated icon as a resource within the MiniGUI framework, ensuring proper resource management.
+ */
 HB_FUNC( COPYICON )
 {
    HICON hIcon;
@@ -81,7 +101,24 @@ HB_FUNC( COPYICON )
    hmg_ret_raw_HANDLE( hIcon );
 }
 
-// Function to destroy an icon handle and release its resources
+/*
+ * FUNCTION DESTROYICON( hIcon )
+ *
+ * Destroys an icon and releases its associated resources.
+ *
+ * Parameters:
+ *   hIcon : HICON - The handle of the icon to destroy.
+ *
+ * Returns:
+ *   LOGICAL - .T. if the icon was successfully destroyed, .F. otherwise.
+ *
+ * Purpose:
+ *   This function is used to free the memory and system resources associated with an icon. It's crucial to call this function
+ *   when an icon is no longer needed to prevent memory leaks and ensure proper application behavior.
+ *
+ * Notes:
+ *   The function first unregisters the icon from the MiniGUI resource management system before destroying it.
+ */
 HB_FUNC( DESTROYICON )
 {
    HICON hIcon = hmg_par_raw_HICON( 1 );
@@ -93,7 +130,25 @@ HB_FUNC( DESTROYICON )
    hb_retl( DestroyIcon( hIcon ) );
 }
 
-// Function to create a duplicate of an icon from an HINSTANCE
+/*
+ * FUNCTION DUPLICATEICON( hIcon )
+ *
+ * Creates a duplicate of an existing icon using DuplicateIcon API.
+ *
+ * Parameters:
+ *   hIcon : HICON - The handle of the icon to duplicate.
+ *
+ * Returns:
+ *   HICON - The handle of the newly created duplicate icon.
+ *
+ * Purpose:
+ *   This function is similar to COPYICON, but uses the DuplicateIcon API.  This API might be useful in specific scenarios where
+ *   a simple copy is not sufficient, or when dealing with specific types of icons.
+ *
+ * Notes:
+ *   The source instance is set to NULL, indicating that the icon is not associated with a specific module.
+ *   The function registers the duplicated icon as a resource within the MiniGUI framework.
+ */
 HB_FUNC( DUPLICATEICON )
 {
    HICON hIcon;
@@ -108,7 +163,27 @@ HB_FUNC( DUPLICATEICON )
    hmg_ret_raw_HANDLE( hIcon );
 }
 
-// Function to load an icon from a resource or file
+/*
+ * FUNCTION LOADICON( hInstance, cIconNameOrID )
+ *
+ * Loads an icon from a resource or file.
+ *
+ * Parameters:
+ *   hInstance : HINSTANCE - The instance handle of the module containing the icon resource. If NIL, the function uses the system's default icon set.
+ *   cIconNameOrID : STRING or NUMERIC - The name of the icon resource (string) or its resource ID (numeric).
+ *
+ * Returns:
+ *   HICON - The handle of the loaded icon. Returns NULL if the icon could not be loaded.
+ *
+ * Purpose:
+ *   This function allows loading icons from various sources, including application resources and system-defined icons. It provides a flexible way to
+ *   incorporate icons into the application's user interface.  For example, you can load an icon from your application's resource file to use as the
+ *   application's main icon.
+ *
+ * Notes:
+ *   The function handles both ANSI and UNICODE environments. In UNICODE environments, it converts the icon name to a wide string before loading the icon.
+ *   The loaded icon is registered as a resource within the MiniGUI framework.
+ */
 HB_FUNC( LOADICON )
 {
    // Retrieve the instance to load the icon from; if none provided, set to NULL
@@ -135,7 +210,27 @@ HB_FUNC( LOADICON )
 #endif
 }
 
-// Function to extract an icon from an executable file at a specific index
+/*
+ * FUNCTION EXTRACTICON( cFileName, nIconIndex )
+ *
+ * Extracts an icon from an executable file at a specified index.
+ *
+ * Parameters:
+ *   cFileName : STRING - The name of the executable file from which to extract the icon.
+ *   nIconIndex : NUMERIC - The index of the icon to extract.  Use -1 to extract the application icon.
+ *
+ * Returns:
+ *   HICON - The handle of the extracted icon. Returns NULL if the icon could not be extracted.
+ *
+ * Purpose:
+ *   This function allows extracting icons from executable files, such as .exe or .dll files. This is useful for displaying icons associated with other
+ *   applications or libraries within your application's user interface.  For example, you might extract the icon from a .dll file to display it in a
+ *   file browser.
+ *
+ * Notes:
+ *   The function handles both ANSI and UNICODE environments. In UNICODE environments, it converts the file name to a wide string before extracting the icon.
+ *   The extracted icon is registered as a resource within the MiniGUI framework.
+ */
 HB_FUNC( EXTRACTICON )
 {
 #ifndef UNICODE
@@ -166,7 +261,35 @@ HB_FUNC( EXTRACTICON )
 #endif
 }
 
-// Function to extract multiple icons with custom sizes from a file
+/*
+ * FUNCTION EXTRACTICONEX( cFileName, nIconIndex, nWidth, nHeight )
+ *
+ * Extracts multiple icons with custom sizes from a file.
+ *
+ * Parameters:
+ *   cFileName : STRING - The name of the executable file from which to extract the icon.
+ *   nIconIndex : NUMERIC - The index of the icon to extract. Use -1 to get the total number of icons.
+ *   nWidth : NUMERIC (Optional) - The desired width of the extracted icon. If omitted, the system default icon width is used.
+ *   nHeight : NUMERIC (Optional) - The desired height of the extracted icon. If omitted, the system default icon height is used.
+ *
+ * Returns:
+ *   If nIconIndex is -1:
+ *     NUMERIC - The total number of icons in the file.
+ *   Otherwise:
+ *     ARRAY - An array containing two elements:
+ *       [1] : HICON - The handle of the extracted icon.
+ *       [2] : NUMERIC - The ID of the extracted icon.
+ *
+ * Purpose:
+ *   This function provides more advanced icon extraction capabilities, allowing you to extract icons with specific dimensions. This is useful when you need
+ *   to display icons at different sizes within your application's user interface.  For example, you might extract icons with different sizes for use in
+ *   a toolbar and a list view.
+ *
+ * Notes:
+ *   The function handles both ANSI and UNICODE environments. In UNICODE environments, it converts the file name to a wide string before extracting the icon.
+ *   The extracted icon is registered as a resource within the MiniGUI framework.
+ *   The function uses different APIs (ExtractIconEx or PrivateExtractIcons) depending on the compiler being used.
+ */
 HB_FUNC( EXTRACTICONEX )
 {
 #ifndef UNICODE
@@ -219,7 +342,25 @@ HB_FUNC( EXTRACTICONEX )
 #endif
 }
 
-// Function to check if a handle is an icon
+/*
+ * FUNCTION ISHICON( hIcon )
+ *
+ * Checks if a given handle is a valid icon handle.
+ *
+ * Parameters:
+ *   hIcon : HANDLE - The handle to check.
+ *
+ * Returns:
+ *   LOGICAL - .T. if the handle is a valid icon handle, .F. otherwise.
+ *
+ * Purpose:
+ *   This function is used to validate a handle before attempting to use it as an icon. This can prevent errors and improve the robustness of the application.
+ *   For example, you might use this function to check if a handle returned by another function is a valid icon before attempting to draw it.
+ *
+ * Notes:
+ *   The function retrieves icon information using GetIconInfo and checks the fIcon member to determine if it's an icon.
+ *   The function deletes any associated bitmaps to release memory.
+ */
 HB_FUNC( ISHICON )
 {
    ICONINFO iconinfo;
@@ -248,7 +389,30 @@ HB_FUNC( ISHICON )
    hb_retl( bTrue );
 }
 
-// Function to load an icon by name from resources or file
+/*
+ * FUNCTION LOADICONBYNAME( cIconName, nWidth, nHeight, hInstance )
+ *
+ * Loads an icon by name from resources or a file, allowing custom icon sizes.
+ *
+ * Parameters:
+ *   cIconName : STRING - The name of the icon resource or the path to the icon file.
+ *   nWidth : NUMERIC - The desired width of the icon.
+ *   nHeight : NUMERIC - The desired height of the icon.
+ *   hInstance : HINSTANCE (Optional) - The instance handle of the module containing the icon resource. If omitted, the function uses the application's resource handle.
+ *
+ * Returns:
+ *   HICON - The handle of the loaded icon. Returns NULL if the icon could not be loaded.
+ *
+ * Purpose:
+ *   This function provides a flexible way to load icons from either resources or files, with the ability to specify the desired icon size. This is useful
+ *   when you need to load icons dynamically and adjust their size to fit different UI elements.  For example, you might use this function to load icons
+ *   from a configuration file and display them in a toolbar with a specific size.
+ *
+ * Notes:
+ *   The function first attempts to load the icon from resources. If that fails, it attempts to load it from a file.
+ *   The function handles both ANSI and UNICODE environments. In UNICODE environments, it converts the icon name to a wide string before loading the icon.
+ *   The loaded icon is registered as a resource within the MiniGUI framework.
+ */
 HB_FUNC( LOADICONBYNAME )
 {
    HICON hIcon = NULL;
@@ -287,7 +451,33 @@ HB_FUNC( LOADICONBYNAME )
    hmg_ret_raw_HANDLE( hIcon );              // Return icon handle
 }
 
-// Function to draw an icon on a window with a background brush to reduce flickering
+/*
+ * FUNCTION DRAWICONEX( hWnd, nX, nY, hIcon, nWidth, nHeight, crBackColor, lDestroy )
+ *
+ * Draws an icon on a window with a specified background color to reduce flickering.
+ *
+ * Parameters:
+ *   hWnd : HWND - The handle of the window on which to draw the icon.
+ *   nX : NUMERIC - The x-coordinate of the upper-left corner of the icon.
+ *   nY : NUMERIC - The y-coordinate of the upper-left corner of the icon.
+ *   hIcon : HICON - The handle of the icon to draw.
+ *   nWidth : NUMERIC - The width of the icon.
+ *   nHeight : NUMERIC - The height of the icon.
+ *   crBackColor : COLORREF - The background color to use for flicker-free drawing.
+ *   lDestroy : LOGICAL (Optional) - .T. if the icon should be destroyed after drawing; otherwise, .F.. Defaults to .T..
+ *
+ * Returns:
+ *   LOGICAL - .T. if the icon was successfully drawn, .F. otherwise.
+ *
+ * Purpose:
+ *   This function provides a flicker-free way to draw icons on a window. It creates a solid brush with the specified background color and uses it to
+ *   draw the icon, which helps to reduce flickering, especially when drawing icons frequently.  For example, you might use this function to draw icons
+ *   in a custom control that is updated frequently.
+ *
+ * Notes:
+ *   The function creates a solid brush for the background color and deletes it after drawing the icon.
+ *   The function optionally destroys the icon after drawing it, which is useful when the icon is no longer needed.
+ */
 HB_FUNC( DRAWICONEX )
 {
    HWND  hwnd = hmg_par_raw_HWND( 1 );

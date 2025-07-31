@@ -53,13 +53,13 @@ CLASS TCDOMail
    CLASSDATA bEmail
 
    // DATA - Instance variables to store email properties.
-   DATA cSubject, cTextBody  // Subject and body of the email.
-   DATA cServer, nPort, cUser, cPass  // SMTP server details: server address, port, username, and password.
-   DATA lReceipt, nPriority  // Flags for requesting a read receipt and setting email priority.
-   DATA aOrigin, aRecipients, aFiles  // Arrays to store sender information, recipient lists, and file attachments.
+   DATA cSubject, cTextBody          // Subject and body of the email.
+   DATA cServer, nPort, cUser, cPass // SMTP server details: server address, port, username, and password.
+   DATA lReceipt, nPriority          // Flags for requesting a read receipt and setting email priority.
+   DATA aOrigin, aRecipients, aFiles // Arrays to store sender information, recipient lists, and file attachments.
 
    // DATA - Optional email properties with default values.
-   DATA CCopy AS CHARACTER INIT ""  // Carbon Copy recipients (optional).
+   DATA CCopy AS CHARACTER INIT ""   // Carbon Copy recipients (optional).
    DATA nTimeout AS NUMERIC INIT 30  // Connection timeout in seconds (default: 30 seconds).
 
    // VAR -  A variable to store the success status of the email sending operation.
@@ -70,27 +70,41 @@ CLASS TCDOMail
       cSubject, cText, nPriority, lReceipt, aOrigin, aRecipients, ;
       aFiles ) CONSTRUCTOR
 
-   METHOD Activate()  // Method to send the email.
+   METHOD Activate()                 // Method to send the email.
 
 ENDCLASS
 
-/* ---------------------------------------------------------------------------
-// CONSTRUCTOR - TCDOMail:New()
-// Initializes a new instance of the TCDOMail class.
-//
-// Parameters:
-//   cServer     - SMTP server address (e.g., "smtp.example.com").
-//   nPort       - SMTP server port (e.g., 465 for SSL).
-//   cUser       - SMTP username.
-//   cPass       - SMTP password.
-//   cSubject    - Email subject.
-//   cText       - Email body text.
-//   nPriority   - Email priority (CDO_LOW_PRIORITY, CDO_NORMAL_PRIORITY, CDO_HIGH_PRIORITY).
-//   lReceipt    - Logical flag indicating whether to request a read receipt.
-//   aOrigin     - Array containing sender information: { "Sender Name", "sender@example.com" }.
-//   aRecipients - Array of recipient arrays: { { "Recipient Name", "recipient@example.com" }, ... }.
-//   aFiles      - Array of file attachment paths: { { "C:\path\to\attachment.txt" }, ... }.
-   -------------------------------------------------------------------------*/
+/*
+ * METHOD TCDOMail:New( cServer, nPort, cUser, cPass, cSubject, cText, nPriority, lReceipt, aOrigin, aRecipients, aFiles ) CONSTRUCTOR
+ *
+ * Initializes a new instance of the TCDOMail class with the provided email parameters.
+ *
+ * Parameters:
+ *   cServer     (STRING): The SMTP server address (e.g., "smtp.example.com").
+ *   nPort       (NUMERIC): The SMTP server port number (e.g., 465 for SSL).
+ *   cUser       (STRING): The SMTP username for authentication.
+ *   cPass       (STRING): The SMTP password for authentication.
+ *   cSubject    (STRING): The subject of the email.
+ *   cText       (STRING): The body text of the email.
+ *   nPriority   (NUMERIC): The email priority, using CDO constants (CDO_LOW_PRIORITY, CDO_NORMAL_PRIORITY, CDO_HIGH_PRIORITY).
+ *   lReceipt    (LOGICAL): A flag indicating whether to request a read receipt.
+ *   aOrigin     (ARRAY): An array containing the sender's name and email address: { "Sender Name", "sender@example.com" }.
+ *   aRecipients (ARRAY): An array of recipient arrays, each containing a recipient's name and email address: { { "Recipient Name", "recipient@example.com" }, ... }.
+ *   aFiles      (ARRAY): An array of file attachment paths: { { "C:\path\to\attachment.txt" }, ... }.
+ *
+ * Return Value:
+ *   OBJECT: Returns the newly created TCDOMail object (Self).
+ *
+ * Purpose:
+ *   This constructor initializes the TCDOMail object with the necessary information to send an email.
+ *   It assigns the provided parameters to the corresponding data members of the class, preparing the
+ *   object for the Activate() method, which handles the actual email sending process.  It also sets
+ *   default values for optional parameters if they are not provided.
+ *
+ * Notes:
+ *   The aOrigin, aRecipients, and aFiles parameters are expected to be arrays with specific structures.
+ *   Incorrectly formatted arrays may lead to errors during the email sending process.
+ */
 METHOD New( cServer, nPort, cUser, cPass, ;
       cSubject, cText, nPriority, lReceipt, aOrigin, aRecipients, ;
       aFiles ) CLASS TCDOMail
@@ -117,14 +131,32 @@ METHOD New( cServer, nPort, cUser, cPass, ;
 RETURN Self  // Return the newly created object.
 
 
-/* --------------------------------------------------------------------------
-// METHOD - TCDOMail:Activate()
-// Sends the email using the CDO library.
-//
-// This method creates the CDO objects, sets the email properties,
-// configures the SMTP server settings, adds attachments, and sends the email.
-// It also includes error handling to catch any exceptions during the process.
-   -------------------------------------------------------------------------*/
+/*
+ * METHOD TCDOMail:Activate()
+ *
+ * Sends the email using the CDO library.
+ *
+ * Side Effects:
+ *   Sets the ::lSuccess property to .T. if the email is sent successfully, otherwise it remains .F.
+ *   Displays an error message using MsgStop() if an error occurs during the email sending process.
+ *
+ * Purpose:
+ *   This method is the core of the TCDOMail class. It performs the following steps:
+ *     1. Creates the necessary CDO objects (CDO.Message).
+ *     2. Sets the email properties (sender, recipients, subject, body, attachments).
+ *     3. Configures the SMTP server settings (server address, port, authentication).
+ *     4. Sends the email using the CDO library.
+ *     5. Handles potential errors using a TRY...CATCH block, displaying an error message if necessary.
+ *   The method encapsulates the complex logic of interacting with the CDO library, providing a simple
+ *   interface for sending emails from Harbour/MiniGUI applications.
+ *
+ * Notes:
+ *   The method relies on the CDO library being properly installed and configured on the system.
+ *   The error handling provides detailed information about the error, including the error code, subcode,
+ *   OS code, subsystem, and description.
+ *   The method checks for a bEmail block and evaluates it if it exists, allowing for dynamic modification
+ *   of email properties before sending.
+ */
 METHOD Activate() CLASS TCDOMail
 
    LOCAL oEmailMsg, oError  // CDO objects for email message and error handling.
@@ -140,7 +172,7 @@ METHOD Activate() CLASS TCDOMail
    TRY  // Use a TRY...CATCH block to handle potential errors during the email sending process.
 
       // Create the CDO.Message object.
-      oEmailMsg := CREATEOBJECT ( "CDO.Message" )
+      oEmailMsg := CreateObject( "CDO.Message" )
 
       WITH OBJECT oEmailMsg  // Use a WITH OBJECT block to simplify access to the CDO object's properties and methods.
 
@@ -172,7 +204,7 @@ METHOD Activate() CLASS TCDOMail
          ENDIF
 
          :CC := ::CCopy  // Set the carbon copy recipients.
-         :BCC := ""       // Set the blind carbon copy recipients (currently empty).
+         :BCC := ""   // Set the blind carbon copy recipients (currently empty).
          :Subject := ::cSubject  // Set the email subject.
 
          // Determine whether to send the email as HTML or plain text.
@@ -238,6 +270,8 @@ METHOD Activate() CLASS TCDOMail
          "OSCode:    " + cValToChar( oError:OsCode ) + CRLF + ;
          "SubSystem: " + cValToChar( oError:SubSystem ) + CRLF + ;
          "Description:      " + oError:Description )
+
+      oEmailMsg := NIL
 
    END  // End of TRY...CATCH block
 

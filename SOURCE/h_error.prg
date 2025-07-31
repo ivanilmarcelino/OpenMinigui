@@ -52,6 +52,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #include "error.ch"
 #include "hbver.ch"
 
+//#define TRACE
 /*-----------------------------------------------------------------------------*
 * PROCEDURE ClipInit()
 *
@@ -72,7 +73,10 @@ INIT PROCEDURE ClipInit()
 
    ENDIF
 
-
+#ifdef TRACE
+   __TRACEPRGCALLS( .T. )
+   HB_TRACESTATE( .T. )
+#endif
    Init()
 
 RETURN
@@ -107,7 +111,7 @@ RETURN
 #endif
 
 /*-----------------------------------------------------------------------------*
-* FUNCTION MsgMiniGuiError( cMessage, lAddText )
+* FUNCTION MsgMiniGuiError( cErrorMessage, lAddText )
 *
 * Description:
 *   This function displays an error message using the MiniGUI framework.
@@ -120,19 +124,19 @@ RETURN
 *   ensure that errors are reported consistently and can be handled gracefully.
 *
 * Parameters:
-*   cMessage: The error message to display.
+*   cErrorMessage: The error message to display.
 *   lAddText: Optional. If .T. (default), appends " Program terminated." to the message.
 *
 * Return Value:
-*   The return value of Eval( ErrorBlock(), HMG_GenError( cMessage ) ).  This is typically NIL, but depends on the ErrorBlock() implementation.
+*   The return value depends on the ErrorBlock() implementation.
 *-----------------------------------------------------------------------------*/
-FUNCTION MsgMiniGuiError( cMessage, lAddText )
+FUNCTION MsgMiniGuiError( cErrorMessage, lAddText )
 
    IF hb_defaultValue( lAddText, .T. )
-      cMessage += " Program terminated."
+      cErrorMessage += " Program terminated."
    ENDIF
 
-RETURN Eval( ErrorBlock(), HMG_GenError( cMessage ) )
+RETURN Eval( ErrorBlock(), HMG_GenError( cErrorMessage ) )
 
 /*-----------------------------------------------------------------------------*
 * STATIC FUNCTION HMG_GenError( cMsg )
@@ -165,10 +169,10 @@ STATIC FUNCTION HMG_GenError( cMsg )
 
 RETURN oError
 
-#define MG_VERSION "Open Minigui v1.0.0 ("
+#define MG_VERSION "Harbour MiniGUI Extended Edition 25.08 ("
 
 /*-----------------------------------------------------------------------------*
-* FUNCTION MiniGuiVersion(  )
+* FUNCTION MiniGuiVersion( nVer )
 *
 * Description:
 *   This function returns the version string of the Harbour MiniGUI Extended Edition.
@@ -180,15 +184,34 @@ RETURN oError
 *   This can be useful for debugging, logging, or displaying the version information
 *   to the user. The different levels of version information allow for flexibility
 *   in how the version is displayed.
+*
+* Parameters:
+*   nVer: Optional. Specifies the level of version information to return.
+*                   0 (default): Returns the full version string.
+*                   1: Returns a shorter version string (38 characters).
+*                   2: Returns an even shorter version string (15 characters).
+*
+* Return Value:
+*   cVer: The version string of the Harbour MiniGUI Extended Edition, truncated based on nVer.
 *-----------------------------------------------------------------------------*/
-FUNCTION MiniGuiVersion()
+FUNCTION MiniGuiVersion( nVer )
 #ifndef __XHARBOUR__
    LOCAL cVer := MG_VERSION + hb_ntos( hb_Version( HB_VERSION_BITWIDTH ) ) + "-bit) "
 #else
    LOCAL cVer := MG_VERSION + iif( IsExe64(), "64", "32" ) + "-bit) "
 #endif
+   LOCAL anOfs
+   LOCAL nIndex
+
+   hb_default( @nVer, 0 )
+
    cVer += HMG_CharsetName()
+
    IF Set( _SET_DEBUG )
       cVer += " (DEBUG)"
    ENDIF
-Return cVer
+
+   anOfs := { Len( cVer ), 38, 15 }
+   nIndex := Max( 0, Min( nVer, 2 ) ) + 1
+
+RETURN Left( cVer, anOfs[ nIndex ] )

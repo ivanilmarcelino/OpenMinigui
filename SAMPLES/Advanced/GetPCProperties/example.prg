@@ -9,6 +9,40 @@
 
 #pragma TEXTHIDDEN(1)       /* obfuscating strings in an executable file */
 
+/*
+ * FUNCTION Main ( xMode )
+ *
+ * This is the main entry point of the application. It retrieves PC properties,
+ * generates a unique PC ID, and checks if the application is activated on the
+ * current computer.
+ *
+ * Parameters:
+ *   xMode : An optional string parameter. If equal to "/ActivationByLicensor",
+ *           it activates the application by writing the PC ID to an INI file.
+ *           If omitted, the application checks for existing activation.
+ *
+ * Returns:
+ *   None. This function does not return a value. It either continues the
+ *   application execution or terminates it if the activation check fails.
+ *
+ * Purpose:
+ *   This function implements a simple software protection mechanism. It aims to
+ *   prevent unauthorized use of the application by tying it to a specific
+ *   computer. The function retrieves hardware and software properties of the
+ *   computer, generates a unique ID based on these properties, and stores this
+ *   ID in an INI file. Upon subsequent runs, the function compares the current
+ *   PC ID with the stored ID. If they match, the application proceeds; otherwise,
+ *   it displays an error message and terminates.
+ *
+ * Notes:
+ *   - The INI file "example.ini" is created in the application's current working
+ *     directory.
+ *   - The PC ID is generated using the SHA384 hashing algorithm.
+ *   - The function uses the GetPCProperties() function to retrieve PC properties.
+ *   - The effectiveness of this protection mechanism depends on the properties
+ *     selected by GetPCProperties() and the robustness of the SHA384 hashing algorithm.
+ *   - This is a basic protection scheme and can be bypassed by determined users.
+ */
 FUNCTION Main ( xMode )
 
    LOCAL cPC_Properties := GetPCProperties ( .F. )
@@ -44,7 +78,31 @@ FUNCTION Main ( xMode )
 
 RETURN
 
-// ***********************************
+/*
+ * FUNCTION WMIService()
+ *
+ * Creates and returns a WMI (Windows Management Instrumentation) object for
+ * accessing system information.
+ *
+ * Parameters:
+ *   None.
+ *
+ * Returns:
+ *   A WMI object connected to the "root\cimv2" namespace. This object can be
+ *   used to query various system properties and settings.
+ *
+ * Purpose:
+ *   This function simplifies the process of accessing WMI data by encapsulating
+ *   the object creation and connection steps. It provides a reusable way to
+ *   obtain a WMI object for querying system information, such as CPU, disk,
+ *   and network adapter details.
+ *
+ * Notes:
+ *   - This function relies on the win_oleCreateObject function to create the
+ *     WMI object.
+ *   - The function connects to the "root\cimv2" namespace, which is the standard
+ *     namespace for accessing system information.
+ */
 FUNCTION WMIService()
 
    LOCAL oWMI, oLocator
@@ -53,7 +111,43 @@ FUNCTION WMIService()
    oWMI := oLocator:ConnectServer( , "root\cimv2" )
 
 RETURN oWMI
-// ***********************************
+
+/*
+ * FUNCTION GetPCProperties ( lAll )
+ *
+ * Retrieves various properties of the PC, including CPU, disk drive, and
+ * network adapter information, using WMI (Windows Management Instrumentation).
+ *
+ * Parameters:
+ *   lAll : A logical value indicating whether to retrieve all available
+ *          properties or only a subset of essential properties.
+ *          .T. retrieves all properties.
+ *          .F. (default) retrieves a limited set of properties.
+ *
+ * Returns:
+ *   A string containing the collected PC properties, formatted as
+ *   "Property: Value" pairs, separated by carriage return and line feed
+ *   characters (CRLF).
+ *
+ * Purpose:
+ *   This function is designed to gather information about the computer's
+ *   hardware and software configuration. The collected properties can be used
+ *   for various purposes, such as generating a unique PC ID for software
+ *   licensing, system inventory, or troubleshooting. The lAll parameter
+ *   allows controlling the level of detail retrieved, balancing the need for
+ *   comprehensive information with performance considerations.
+ *
+ * Notes:
+ *   - This function uses the WMIService() function to obtain a WMI object.
+ *   - The function queries the Win32_Processor, Win32_DiskDrive,
+ *     Win32_NetworkAdapter, Win32_NetworkAdapterConfiguration, and
+ *     Win32_ComputerSystemProduct WMI classes.
+ *   - The function uses hb_ValToExp() to convert property values to strings.
+ *   - The function filters the Win32_NetworkAdapter query to retrieve only
+ *     physical adapters (PhysicalAdapter = TRUE).
+ *   - The function filters the Win32_NetworkAdapterConfiguration query to
+ *     retrieve only configurations where IP is enabled (IPEnabled = TRUE).
+ */
 FUNCTION GetPCProperties ( lAll )
 
    LOCAL oWMI, objItem

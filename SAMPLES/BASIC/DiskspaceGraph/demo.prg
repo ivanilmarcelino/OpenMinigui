@@ -12,15 +12,22 @@ ANNOUNCE RDDSYS
 #include "minigui.ch"
 #include "fileio.ch"
 
-PROCEDURE Main
 /*
- *  This procedure is the main entry point of the application.
- *  It defines and activates a main window that displays a pie chart
- *  representing disk space usage.
+ * PROCEDURE Main
  *
- *  Input parameters: None
- *  Return Value: None
+ * Creates and displays a main window containing a pie chart that visualizes disk space usage.
+ *
+ * Purpose:
+ *   This is the main entry point of the application. It performs the following steps:
+ *     1. Determines the current drive.
+ *     2. Defines the main window with a title showing the drive letter and an icon.
+ *     3. Sets the window to be non-maximizable and non-resizable.
+ *     4. Attaches the ShowPie() procedure to the ON INIT event of the window, so the pie chart is drawn when the window is initialized.
+ *     5. Attaches an action to the ESCAPE key to close the window.
+ *     6. Centers the window on the screen.
+ *     7. Activates the window, making it visible.
  */
+PROCEDURE Main
 
    LOCAL cDisk := CurDrive() + ":\"
 
@@ -28,11 +35,11 @@ PROCEDURE Main
    SET FONT TO "Arial", 10
 
    DEFINE WINDOW Win_1 ;
-         AT 0, 0 WIDTH 220 HEIGHT 240 ;
-         TITLE cDisk ;
-         ICON "HARD" ;
-         MAIN NOMAXIMIZE NOSIZE ;
-         ON INIT ShowPie( cDisk )
+      AT 0, 0 WIDTH 220 HEIGHT 240 ;
+      TITLE cDisk ;
+      ICON "HARD" ;
+      MAIN NOMAXIMIZE NOSIZE ;
+      ON INIT ShowPie( cDisk )
 
       ON KEY ESCAPE ACTION ThisWindow.Release()
 
@@ -44,15 +51,29 @@ PROCEDURE Main
 RETURN
 
 
-PROCEDURE ShowPie( cDisk )
 /*
- *  This procedure creates and displays a pie chart within a specified window,
- *  showing the used and free space of a given disk drive.
+ * PROCEDURE ShowPie( cDisk )
  *
- *  Input parameters:
- *      cDisk: A character string representing the disk drive (e.g., "C:\").
- *  Return Value: None
+ * Creates and displays a pie chart within the specified window, visualizing the used and free space of a given disk drive.
+ *
+ * Input parameters:
+ *   cDisk: A character string representing the disk drive (e.g., "C:\").
+ *
+ * Return Value: None
+ *
+ * Purpose:
+ *   This procedure calculates the used and free space of a disk drive and displays it as a pie chart.
+ *   It performs the following steps:
+ *     1. Calculates the free space in megabytes using hb_DiskSpace() with the HB_DISK_FREE flag.
+ *     2. Calculates the total space in megabytes using hb_DiskSpace() with the HB_DISK_TOTAL flag.
+ *     3. Calculates the used space by subtracting the free space from the total space.
+ *     4. Determines if the used space is greater than the free space.
+ *     5. Draws a pie chart using the DRAW GRAPH command, showing the used and free space.
+ *     6. Adds a title, series names, colors, and 3D view to the chart.
+ *     7. Displays a legend for the chart.
+ *     8. Draws text indicating the percentage of free space.
  */
+PROCEDURE ShowPie( cDisk )
 
    LOCAL iFree := hb_DiskSpace( cDisk, HB_DISK_FREE ) / ( 1024 * 1024 )
    LOCAL iTotal := hb_DiskSpace( cDisk, HB_DISK_TOTAL ) / ( 1024 * 1024 )

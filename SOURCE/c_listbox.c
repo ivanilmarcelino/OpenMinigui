@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------
+/*
    MINIGUI - Harbour Win32 GUI library source code
 
    Copyright 2002-2010 Roberto Lopez <harbourminigui@gmail.com>
@@ -42,14 +42,14 @@
 
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
-
-   ---------------------------------------------------------------------------*/
+*/
 #include <mgdefs.h>                             // Include for Harbour GUI definitions
 #include <windowsx.h>                           // Include for extended Windows API functions
 #include <commctrl.h>                           // Include for common controls like list boxes and buttons
 
 // Compatibility macro for Borland C++ 5.5 compiler
 #if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 )
+
 // Defining listbox class name for compatibility
 #define WC_LISTBOX   "ListBox"
 #endif
@@ -64,7 +64,25 @@ LPSTR       WideToAnsi( LPWSTR );
 // Function prototype to retrieve the instance handle of the application
 HINSTANCE   GetInstance( void );
 
-// Function to initialize a list box control with various optional styles
+/*
+ * FUNCTION: INITLISTBOX
+ *
+ * Initializes a list box control with various optional styles.
+ *
+ * Parameters:
+ *   hWnd: Handle to the parent window.
+ *   hMenu: Handle to the menu or control ID.
+ *   x, y: Position coordinates.
+ *   width, height: Dimensions of the list box.
+ *   visible: Visibility flag.
+ *   tabStop: Tab stop flag.
+ *   sort: Sorting flag.
+ *   dragDrop: Drag-and-drop flag.
+ *   multiColumn: Multi-column flag.
+ *
+ * Returns:
+ *   The handle to the created list box control.
+ */
 HB_FUNC( INITLISTBOX )
 {
    HWND  hbutton;
@@ -129,7 +147,18 @@ HB_FUNC( INITLISTBOX )
    hmg_ret_raw_HWND( hbutton );
 }
 
-// Function to add a string to a list box
+/*
+ * FUNCTION: LISTBOXADDSTRING
+ *
+ * Adds a string to a list box.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list box.
+ *   string: The string to add.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( LISTBOXADDSTRING )
 {
 #ifndef UNICODE
@@ -146,7 +175,19 @@ HB_FUNC( LISTBOXADDSTRING )
 #endif
 }
 
-// Function to insert a string at a specific position in a list box
+/*
+ * FUNCTION: LISTBOXINSERTSTRING
+ *
+ * Inserts a string at a specific position in a list box.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list box.
+ *   string: The string to insert.
+ *   index: The position at which to insert the string.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( LISTBOXINSERTSTRING )
 {
 #ifndef UNICODE
@@ -163,9 +204,18 @@ HB_FUNC( LISTBOXINSERTSTRING )
 #endif
 }
 
-/* Modified by P.Ch. 16.10. */
-
-// Function to get a string from a specific position in a list box
+/*
+ * FUNCTION: LISTBOXGETSTRING
+ *
+ * Gets a string from a specific position in a list box.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list box.
+ *   index: The position from which to get the string.
+ *
+ * Returns:
+ *   The string at the specified position.
+ */
 HB_FUNC( LISTBOXGETSTRING )
 {
 #ifdef UNICODE
@@ -192,7 +242,25 @@ HB_FUNC( LISTBOXGETSTRING )
    }
 }
 
-// Function to initialize a multi-selection list box
+/*
+ * FUNCTION: INITMULTILISTBOX
+ *
+ * Initializes a multi-selection list box control with various optional styles.
+ *
+ * Parameters:
+ *   hWnd: Handle to the parent window.
+ *   hMenu: Handle to the menu or control ID.
+ *   x, y: Position coordinates.
+ *   width, height: Dimensions of the list box.
+ *   visible: Visibility flag.
+ *   tabStop: Tab stop flag.
+ *   sort: Sorting flag.
+ *   dragDrop: Drag-and-drop flag.
+ *   multiColumn: Multi-column flag.
+ *
+ * Returns:
+ *   The handle to the created list box control.
+ */
 HB_FUNC( INITMULTILISTBOX )
 {
    HWND  hbutton;
@@ -250,7 +318,17 @@ HB_FUNC( INITMULTILISTBOX )
    hmg_ret_raw_HWND( hbutton );        // Return the handle of created list box
 }
 
-// Function to get multiple selections from a list box
+/*
+ * FUNCTION: LISTBOXGETMULTISEL
+ *
+ * Gets multiple selections from a list box.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list box.
+ *
+ * Returns:
+ *   An array of selected item indexes.
+ */
 HB_FUNC( LISTBOXGETMULTISEL )
 {
    HWND  hwnd = hmg_par_raw_HWND( 1 ); // List box handle
@@ -260,7 +338,6 @@ HB_FUNC( LISTBOXGETMULTISEL )
 
    n = ( int ) SendMessage( hwnd, LB_GETSELCOUNT, 0, 0 );                  // Get count of selected items
    SendMessage( hwnd, LB_GETSELITEMS, ( WPARAM ) n, ( LPARAM ) buffer );   // Retrieve selected items
-
    hb_reta( n );  // Return an array of selected items
    for( i = 0; i < n; i++ )
    {
@@ -268,7 +345,18 @@ HB_FUNC( LISTBOXGETMULTISEL )
    }
 }
 
-// Function to set multiple selections in a list box
+/*
+ * FUNCTION: LISTBOXSETMULTISEL
+ *
+ * Sets multiple selections in a list box.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list box.
+ *   array: An array of item indexes to select.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( LISTBOXSETMULTISEL )
 {
    PHB_ITEM wArray;
@@ -292,7 +380,18 @@ HB_FUNC( LISTBOXSETMULTISEL )
    }
 }
 
-// Function to set tab stops for a multi-tab list box
+/*
+ * FUNCTION: LISTBOXSETMULTITAB
+ *
+ * Sets tab stops for a multi-tab list box.
+ *
+ * Parameters:
+ *   hWnd: Handle to the list box.
+ *   array: An array of tab stop positions.
+ *
+ * Returns:
+ *   TRUE if successful, FALSE otherwise.
+ */
 HB_FUNC( LISTBOXSETMULTITAB )
 {
    PHB_ITEM wArray;
@@ -313,7 +412,17 @@ HB_FUNC( LISTBOXSETMULTITAB )
    hb_retl( ListBox_SetTabStops( hmg_par_raw_HWND( 1 ), l, nTabStops ) );  // Apply tab stops
 }
 
-// Register a unique message identifier for drag-and-drop operations
+/*
+ * FUNCTION: _GETDDLMESSAGE
+ *
+ * Registers a unique message identifier for drag-and-drop operations.
+ *
+ * Parameters:
+ *   None.
+ *
+ * Returns:
+ *   The registered message identifier.
+ */
 HB_FUNC( _GETDDLMESSAGE )
 {
    UINT  g_dDLMessage;
@@ -322,7 +431,17 @@ HB_FUNC( _GETDDLMESSAGE )
    hmg_ret_UINT( g_dDLMessage );          // Return the registered message identifier
 }
 
-// Get the notification code for a drag-and-drop operation in list box
+/*
+ * FUNCTION: GET_DRAG_LIST_NOTIFICATION_CODE
+ *
+ * Gets the notification code for a drag-and-drop operation in a list box.
+ *
+ * Parameters:
+ *   lParam: The LPARAM value containing the drag list information.
+ *
+ * Returns:
+ *   The notification code.
+ */
 HB_FUNC( GET_DRAG_LIST_NOTIFICATION_CODE )
 {
    LPARAM         lParam = hmg_par_raw_LPARAM( 1 );
@@ -331,7 +450,17 @@ HB_FUNC( GET_DRAG_LIST_NOTIFICATION_CODE )
    hmg_ret_UINT( lpdli->uNotification );  // Return the notification code
 }
 
-// Get the index of the item being dragged in list box
+/*
+ * FUNCTION: GET_DRAG_LIST_DRAGITEM
+ *
+ * Gets the index of the item being dragged in a list box.
+ *
+ * Parameters:
+ *   lParam: The LPARAM value containing the drag list information.
+ *
+ * Returns:
+ *   The index of the item being dragged.
+ */
 HB_FUNC( GET_DRAG_LIST_DRAGITEM )
 {
    LPARAM         lParam = hmg_par_raw_LPARAM( 1 );
@@ -340,7 +469,19 @@ HB_FUNC( GET_DRAG_LIST_DRAGITEM )
    hmg_ret_NINT( LBItemFromPt( lpdli->hWnd, lpdli->ptCursor, TRUE ) );     // Return item index under cursor
 }
 
-// Draw insertion indicator for drag-and-drop operation in list box
+/*
+ * FUNCTION: DRAG_LIST_DRAWINSERT
+ *
+ * Draws the insertion indicator for a drag-and-drop operation in a list box.
+ *
+ * Parameters:
+ *   hwnd: Handle to the list box.
+ *   lParam: The LPARAM value containing the drag list information.
+ *   nItem: The item index where to draw the insertion indicator.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( DRAG_LIST_DRAWINSERT )
 {
    HWND           hwnd = hmg_par_raw_HWND( 1 );
@@ -353,7 +494,19 @@ HB_FUNC( DRAG_LIST_DRAWINSERT )
    DrawInsert( hwnd, lpdli->hWnd, ( nItem < nItemCount ) ? nItem : -1 );   // Draw insert marker at position
 }
 
-// Function to move items within a list box during a drag-and-drop operation
+/*
+ * FUNCTION: DRAG_LIST_MOVE_ITEMS
+ *
+ * Moves items within a list box during a drag-and-drop operation.
+ *
+ * Parameters:
+ *   lParam: The LPARAM value containing the drag list information.
+ *   nOldIndex: The index of the item to move.
+ *   nNewIndex: The new index for the item.
+ *
+ * Returns:
+ *   TRUE if the operation was successful, FALSE otherwise.
+ */
 HB_FUNC( DRAG_LIST_MOVE_ITEMS )
 {
    LPARAM         lParam = hmg_par_raw_LPARAM( 1 );

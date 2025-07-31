@@ -190,7 +190,7 @@ HB_FUNC( INITPAGER )       // InitPager ( ParentForm, hRebar, nWidth, nHeight, v
    hmg_ret_raw_HWND( hPager );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpText );
+   hb_xfree( lpText );
 #endif
 }
 

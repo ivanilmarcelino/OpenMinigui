@@ -9,14 +9,25 @@
 #define SRCCOPY  0x00CC0020 // Defines a raster operation code (ROP code) used in BitBlt and StretchBlt functions.
                             // SRCCOPY means that the source is copied directly to the destination.
 
+/*
+ * PROCEDURE Main
+ *
+ * Initializes the main window, defines its controls (labels), menu, and a timer for image zooming.
+ *
+ * Purpose:
+ *   This is the entry point of the application. It performs the following tasks:
+ *     1. Defines the main window with its properties (title, size, etc.).
+ *     2. Creates two labels: one to display the color under the cursor and another to display the RGB values.
+ *     3. Defines a main menu with zoom factor options and an exit option.
+ *     4. Sets up a timer that calls the ZoomImage() function periodically to update the zoomed image.
+ *     5. Centers the main window on the screen.
+ *     6. Activates the main window, making it visible to the user.
+ *
+ *   The application demonstrates how to capture a portion of the screen around the cursor, zoom it, and display it in a window.
+ *   It also shows how to use a timer to periodically update the display.
+ */
 PROCEDURE Main
-  /*
-   *  PROCEDURE Main
-   *  -------------------------------------------------------------------------------------------------
-   *  Purpose: This is the main procedure of the application. It defines and activates the main window,
-   *           including its controls (labels) and menu. It also sets up a timer to periodically zoom the image
-   *           under the cursor.
-   */
+
    DEFINE WINDOW Form_1 ;
       MAIN ;
       CLIENTAREA 550, 350 ;
@@ -75,20 +86,23 @@ PROCEDURE Main
 
 RETURN
 
-
+/*
+ * STATIC FUNCTION check_menu( nFactor )
+ *
+ * Updates the checked state of zoom factor menu items to ensure only one is selected at a time.
+ *
+ * Parameters:
+ *   nFactor - The zoom factor that was selected (1 to 5).
+ *
+ * Return Value:
+ *   NIL
+ *
+ * Purpose:
+ *   This function is called when a zoom factor menu item is selected. It iterates through all zoom factor menu items
+ *   and sets their "Checked" property to .T. only for the selected factor (nFactor), and .F. for all others.
+ *   This ensures that only one zoom factor is active at any given time, providing a mutually exclusive selection.
+ */
 STATIC FUNCTION check_menu( nFactor )
-  /*
-   *  STATIC FUNCTION check_menu( nFactor )
-   *  -------------------------------------------------------------------------------------------------
-   *  Purpose: This function is called when a zoom factor menu item is selected. It updates the checked
-   *           state of all zoom factor menu items to ensure that only one is checked at a time, providing
-   *           a mutually exclusive selection of zoom factors.
-   *
-   *  Parameters:
-   *      nFactor - The zoom factor that was selected (1 to 5).
-   *
-   *  Return Value: NIL
-   */
    LOCAL n
 
    FOR n := 1 TO 5
@@ -97,20 +111,23 @@ STATIC FUNCTION check_menu( nFactor )
 
 RETURN NIL
 
-
+/*
+ * STATIC FUNCTION GetZoom()
+ *
+ * Determines the currently selected zoom factor based on which menu item is checked.
+ *
+ * Parameters:
+ *   None
+ *
+ * Return Value:
+ *   nZoom - The currently selected zoom factor (1 to 5). Defaults to 3 if none are checked.
+ *
+ * Purpose:
+ *   This function iterates through the zoom factor menu items and checks their "Checked" property.
+ *   It returns the corresponding zoom factor if a menu item is checked. If no zoom factor is explicitly selected,
+ *   it defaults to a zoom factor of 3. This function is used by ZoomImage() to determine the zoom level.
+ */
 STATIC FUNCTION GetZoom()
-  /*
-   *  STATIC FUNCTION GetZoom()
-   *  -------------------------------------------------------------------------------------------------
-   *  Purpose: This function determines the currently selected zoom factor based on which menu item is checked.
-   *           It iterates through the zoom factor menu items and returns the corresponding zoom level.
-   *           If no zoom factor is explicitly selected, it defaults to a zoom factor of 3.
-   *
-   *  Parameters: None
-   *
-   *  Return Value:
-   *      nZoom - The currently selected zoom factor (1 to 5).  Defaults to 3 if none are checked.
-   */
    LOCAL n
    LOCAL nZoom := 3
 
@@ -123,21 +140,33 @@ STATIC FUNCTION GetZoom()
 
 RETURN nZoom
 
-
+/*
+ * STATIC FUNCTION ZoomImage()
+ *
+ * Captures a portion of the screen around the cursor, zooms it, and displays it in the main window.
+ *
+ * Parameters:
+ *   None
+ *
+ * Return Value:
+ *   NIL
+ *
+ * Purpose:
+ *   This function is called by the timer to periodically update the zoomed image. It performs the following tasks:
+ *     1. Gets the current zoom factor using GetZoom().
+ *     2. Gets the device context for the entire screen (desktop).
+ *     3. Gets the current cursor position.
+ *     4. Gets the color of the pixel under the cursor and displays it in Label_1 and Label_2.
+ *     5. Gets the device context for the main window.
+ *     6. Creates a pen for drawing the crosshairs.
+ *     7. Calculates the position and size of the zoomed image in the main window.
+ *     8. Uses StretchBlt() to stretch a portion of the screen around the cursor into the main window.
+ *     9. Draws crosshairs in the center of the zoomed image.
+ *     10. Releases the device contexts and deletes the pen.
+ *
+ *   This function demonstrates how to capture screen content, zoom it, and display it in a window using Windows API calls.
+ */
 STATIC FUNCTION ZoomImage()
-  /*
-   *  STATIC FUNCTION ZoomImage()
-   *  -------------------------------------------------------------------------------------------------
-   *  Purpose: This function is called by the timer to periodically zoom the image under the cursor.
-   *           It retrieves the current zoom factor, captures a portion of the screen around the cursor,
-   *           and displays it in a zoomed-in view within the main window.  It also displays the color
-   *           of the pixel under the cursor in two labels. The function uses Windows API calls to capture
-   *           the screen content and draw the zoomed image.
-   *
-   *  Parameters: None
-   *
-   *  Return Value: NIL
-   */
    LOCAL nZoom
    LOCAL hDeskTop
    LOCAL aPos
@@ -197,33 +226,35 @@ RETURN NIL
 
 #include "mgdefs.h"
 
+/*
+ * HB_FUNC( STRETCHBLT )
+ *
+ * Harbour wrapper for the Windows API StretchBlt function.
+ *
+ * Parameters:
+ *   1: hDC - Handle to the destination device context (HDC).
+ *   2: nX - X-coordinate of the upper-left corner of the destination rectangle.
+ *   3: nY - Y-coordinate of the upper-left corner of the destination rectangle.
+ *   4: nWidth - Width of the destination rectangle.
+ *   5: nHeight - Height of the destination rectangle.
+ *   6: hDC - Handle to the source device context (HDC).
+ *   7: nX1 - X-coordinate of the upper-left corner of the source rectangle.
+ *   8: nY1 - Y-coordinate of the upper-left corner of the source rectangle.
+ *   9: nWidth1 - Width of the source rectangle.
+ *  10: nHeight1 - Height of the source rectangle.
+ *  11: nROP - Raster operation code (ROP code) specifying how the source color data is to be combined with the destination color data.
+ *
+ * Return Value:
+ *   .T. (TRUE) if the function succeeds, .F. (FALSE) otherwise.
+ *
+ * Purpose:
+ *   This function provides a way to call the Windows API StretchBlt function from Harbour code.
+ *   StretchBlt performs a bit-block transfer (bitblt) from a source device context to a destination device context,
+ *   stretching or compressing the bitmap to fit the destination rectangle, if necessary. This is essential for zooming
+ *   the image captured from the screen.
+ */
 HB_FUNC( STRETCHBLT )
 {
-   /*
-    * HB_FUNC( STRETCHBLT )
-    * -------------------------------------------------------------------------------------------------
-    * Purpose: This function is a Harbour wrapper for the Windows API StretchBlt function. It allows
-    *          Harbour code to call the StretchBlt function, which performs a bit-block transfer (bitblt)
-    *          from a source device context to a destination device context, stretching or compressing
-    *          the bitmap to fit the destination rectangle, if necessary. This is essential for zooming
-    *          the image captured from the screen.
-    *
-    * Parameters:
-    *   1: hDC - Handle to the destination device context.
-    *   2: nX - X-coordinate of the upper-left corner of the destination rectangle.
-    *   3: nY - Y-coordinate of the upper-left corner of the destination rectangle.
-    *   4: nWidth - Width of the destination rectangle.
-    *   5: nHeight - Height of the destination rectangle.
-    *   6: hDC - Handle to the source device context.
-    *   7: nX1 - X-coordinate of the upper-left corner of the source rectangle.
-    *   8: nY1 - Y-coordinate of the upper-left corner of the source rectangle.
-    *   9: nWidth1 - Width of the source rectangle.
-    *  10: nHeight1 - Height of the source rectangle.
-    *  11: nROP - Raster operation code (ROP code).  Specifies how the source color data is to be combined with the destination color data.
-    *
-    * Return Value:
-    *   Returns .T. (TRUE) if the function succeeds, .F. (FALSE) otherwise.
-    */
    hb_retl( StretchBlt( ( HDC ) HB_PARNL( 1 ) ,
                         hb_parni( 2 ) ,
                         hb_parni( 3 ) ,

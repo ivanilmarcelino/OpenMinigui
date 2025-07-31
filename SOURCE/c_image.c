@@ -45,9 +45,9 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   Parts  of  this  code  is contributed and used here under permission of his
+   Parts of this code are contributed and used here under permission of the
    author: Copyright 2016 (C) P.Chornyj <myorg63@mail.ru>
- */
+*/
 
 // Define `CINTERFACE` if it is not already defined; this flag controls interface definitions in C code
 #ifndef CINTERFACE
@@ -92,14 +92,11 @@
 // Conversion macros for units from HIMETRIC to pixels and vice versa based on pixels-per-inch (PPI)
 #define LOGHIMETRIC_TO_PIXEL( hm, ppli )  MulDiv( ( hm ), ( ppli ), 2540 )
 #define PIXEL_TO_LOGHIMETRIC( px, ppli )  MulDiv( ( px ), 2540, ( ppli ) )
-
-// Function declarations for resource handling, image loading, and conversions
-LRESULT APIENTRY     ImageSubClassFunc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam );
-
+   // Function declarations for resource handling, image loading, and conversions
+   LRESULT APIENTRY  ImageSubClassFunc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam );
 HB_EXPORT IStream    *HMG_CreateMemStreamFromResource( HINSTANCE instance, const char *res_type, const char *res_name );
 HB_EXPORT IStream    *HMG_CreateMemStream( const BYTE *pInit, UINT cbInitSize );
 HB_EXPORT HBITMAP    HMG_GdiCreateHBITMAP( HDC hDC_mem, int width, int height, WORD iBitCount );
-
 HB_EXPORT HBITMAP    HMG_LoadImage( const char *pszImageName, const char *pszTypeOfRes );
 HB_EXPORT HBITMAP    HMG_LoadPicture
                      (
@@ -112,28 +109,42 @@ HB_EXPORT HBITMAP    HMG_LoadPicture
                         long        BackgroundColor,
                         int         AdjustImage,
                         HB_BOOL     bAlphaFormat,
-                        int         iAlpfaConstant
+                        int         iAlphaConstant
                      );
-
 HB_EXPORT HBITMAP    HMG_OleLoadPicturePath( const char *pszURLorPath );
 
 // Function to convert ANSI strings to wide-character (Unicode) strings
 #ifdef UNICODE
-LPWSTR         AnsiToWide( LPCSTR );
+LPWSTR               AnsiToWide( LPCSTR );
 #endif
 
 // Function to retrieve MiniGUI resources
-HINSTANCE      GetResources( void );
+HINSTANCE            GetResources( void );
 
 // Resource management function to register handles of MiniGUI resources
-void           RegisterResource( HANDLE hResource, LPCSTR szType );
+void                 RegisterResource( HANDLE hResource, LPCSTR szType );
 
 // Static variables for image subclassing
-static WNDPROC s_Image_WNDPROC;
-static char    *MimeTypeOld;
-static int     s_nWidth, s_nHeight;
+static WNDPROC       s_Image_WNDPROC;
+static char          *MimeTypeOld;
+static int           s_nWidth, s_nHeight;
 
-// Function to create a memory stream from a resource file within an application
+/*
+ * HMG_CreateMemStreamFromResource
+ *
+ * Creates a memory stream from a resource file within an application.
+ *
+ * Parameters:
+ *   hinstance: Handle to the instance containing the resource.
+ *   res_name: Name of the resource.
+ *   res_type: Type of the resource.
+ *
+ * Return Value:
+ *   Returns a pointer to the created IStream object.
+ *
+ * Purpose:
+ *   This function creates a memory stream from a resource file within an application.
+ */
 HB_EXPORT IStream *HMG_CreateMemStreamFromResource( HINSTANCE hinstance, const char *res_name, const char *res_type )
 {
    HRSRC    resource;               // Resource handle
@@ -159,6 +170,7 @@ HB_EXPORT IStream *HMG_CreateMemStreamFromResource( HINSTANCE hinstance, const c
    // Free converted strings and check if resource was found
    hb_xfree( res_nameW );
    hb_xfree( res_typeW );
+
    if( NULL == resource )
    {
       return NULL;
@@ -167,12 +179,14 @@ HB_EXPORT IStream *HMG_CreateMemStreamFromResource( HINSTANCE hinstance, const c
    // Load the resource and obtain a pointer to its data
    res_size = SizeofResource( hinstance, resource );
    res_global = LoadResource( hinstance, resource );
+
    if( NULL == res_global )
    {
       return NULL;
    }
 
    res_data = LockResource( res_global );
+
    if( NULL == res_data )
    {
       return NULL;
@@ -180,11 +194,24 @@ HB_EXPORT IStream *HMG_CreateMemStreamFromResource( HINSTANCE hinstance, const c
 
    // Create a memory stream from the resource data
    stream = HMG_CreateMemStream( ( const BYTE * ) res_data, ( UINT ) res_size );
-
    return stream;
 }
 
-// Function to create a memory stream from byte data
+/*
+ * HMG_CreateMemStream
+ *
+ * Creates a memory stream from byte data.
+ *
+ * Parameters:
+ *   pInit: Pointer to the initial data.
+ *   cbInitSize: Size of the initial data.
+ *
+ * Return Value:
+ *   Returns a pointer to the created IStream object.
+ *
+ * Purpose:
+ *   This function creates a memory stream from byte data.
+ */
 HB_EXPORT IStream *HMG_CreateMemStream( const BYTE *pInit, UINT cbInitSize )
 {
    HMODULE  hShlDll = LoadLibrary( TEXT( "shlwapi.dll" ) ); // Load shell DLL for memory stream function
@@ -208,7 +235,23 @@ HB_EXPORT IStream *HMG_CreateMemStream( const BYTE *pInit, UINT cbInitSize )
    return stream;                         // Return created memory stream
 }
 
-// Function to create a DIB section (bitmap) with specified dimensions and bit count
+/*
+ * HMG_GdiCreateHBITMAP
+ *
+ * Creates a DIB section (bitmap) with specified dimensions and bit count.
+ *
+ * Parameters:
+ *   hDC_mem: Handle to the device context.
+ *   width: Width of the bitmap.
+ *   height: Height of the bitmap.
+ *   iBitCount: Bit count of the bitmap.
+ *
+ * Return Value:
+ *   Returns a handle to the created bitmap.
+ *
+ * Purpose:
+ *   This function creates a DIB section (bitmap) with specified dimensions and bit count.
+ */
 HB_EXPORT HBITMAP HMG_GdiCreateHBITMAP( HDC hDC_mem, int width, int height, WORD iBitCount )
 {
    LPBYTE      pBits;                     // Pointer to bitmap bits
@@ -230,10 +273,24 @@ HB_EXPORT HBITMAP HMG_GdiCreateHBITMAP( HDC hDC_mem, int width, int height, WORD
 
    // Create a DIB section and return the bitmap handle
    hBitmap = CreateDIBSection( hDC_mem, ( BITMAPINFO * ) &BI, DIB_RGB_COLORS, ( VOID ** ) &pBits, NULL, 0 );
-
    return hBitmap;
 }
 
+/*
+ * HMG_GdipLoadBitmap
+ *
+ * Loads a bitmap from a resource or file using GDI+.
+ *
+ * Parameters:
+ *   res_name: Name of the resource.
+ *   res_type: Type of the resource.
+ *
+ * Return Value:
+ *   Returns a handle to the loaded bitmap.
+ *
+ * Purpose:
+ *   This function loads a bitmap from a resource or file using GDI+.
+ */
 static HBITMAP HMG_GdipLoadBitmap( const char *res_name, const char *res_type )
 {
    HBITMAP  hBitmap = ( HBITMAP ) NULL;
@@ -256,7 +313,6 @@ static HBITMAP HMG_GdipLoadBitmap( const char *res_name, const char *res_type )
    if( Ok != status && NULL != res_type )
    {
       IStream  *stream;
-
       stream = HMG_CreateMemStreamFromResource( GetResources(), res_name, res_type );
 
       if( NULL != stream )
@@ -290,11 +346,26 @@ static HBITMAP HMG_GdipLoadBitmap( const char *res_name, const char *res_type )
    }
 
    hb_xfree( res_nameW );
-
    return hBitmap;
 }
 
-// Image subclass function for handling image control events
+/*
+ * ImageSubClassFunc
+ *
+ * Subclass function for handling image control events.
+ *
+ * Parameters:
+ *   hwnd: Handle to the window.
+ *   Msg: Message to handle.
+ *   wParam: Additional message information.
+ *   lParam: Additional message information.
+ *
+ * Return Value:
+ *   Returns the result of the message handling.
+ *
+ * Purpose:
+ *   This function is a subclass function for handling image control events.
+ */
 LRESULT APIENTRY ImageSubClassFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
    static BOOL bMouseTracking = FALSE;    // Mouse tracking state
@@ -325,7 +396,7 @@ LRESULT APIENTRY ImageSubClassFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM l
          bMouseTracking = FALSE;          // Stop tracking on mouse leave
       }
 
-      // Retrieve and execute custom "OLABELEVENTS" symbol (if defined) for event handling
+      // Retrieve and execute custom "OLABELEVENTS" function (if defined) for event handling
       if( !pSymbol )
       {
          pSymbol = hb_dynsymSymbol( hb_dynsymGet( "OLABELEVENTS" ) );
@@ -340,7 +411,6 @@ LRESULT APIENTRY ImageSubClassFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM l
          hb_vmPushNumInt( wParam );
          hb_vmPushNumInt( lParam );
          hb_vmDo( 4 );
-
          r = hmg_par_LRESULT( -1 );
          hb_vmRequestRestore();
       }
@@ -350,11 +420,29 @@ LRESULT APIENTRY ImageSubClassFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM l
    }
 
    bMouseTracking = FALSE;
-
    return CallWindowProc( s_Image_WNDPROC, hWnd, Msg, wParam, lParam );
 }
 
-// Function to initialize and create an image control
+/*
+ * INITIMAGE
+ *
+ * Initializes and creates an image control.
+ *
+ * Parameters:
+ *   1. hWndParent: Handle to the parent window.
+ *   2. hMenu: Handle to the menu.
+ *   3. nX: X-coordinate of the image control.
+ *   4. nY: Y-coordinate of the image control.
+ *   5. lVisible: Flag to indicate if the image control is visible.
+ *   6. lNotify: Flag to indicate if the image control should send notifications.
+ *   7. lSubclass: Flag to indicate if the image control should be subclassed.
+ *
+ * Return Value:
+ *   Returns the handle to the created image control.
+ *
+ * Purpose:
+ *   This function initializes and creates an image control with the specified parameters.
+ */
 HB_FUNC( INITIMAGE )
 {
    HWND  hWnd; // Handle for the image window
@@ -385,7 +473,29 @@ HB_FUNC( INITIMAGE )
    hmg_ret_raw_HWND( hWnd );
 }
 
-// Function to set a picture to an image control
+/*
+ * C_SETPICTURE
+ *
+ * Sets a picture to an image control.
+ *
+ * Parameters:
+ *   1. hWnd: Handle to the image control.
+ *   2. pszImageName: Name of the image file or resource.
+ *   3. width: Width of the image.
+ *   4. height: Height of the image.
+ *   5. ScaleStretch: Scale factor for resizing.
+ *   6. Transparent: Transparency option.
+ *   7. BackgroundColor: Background color for transparency.
+ *   8. AdjustImage: Adjustment factor for image display.
+ *   9. bAlphaFormat: Alpha channel option for transparency.
+ *   10. iAlphaConstant: Alpha transparency level.
+ *
+ * Return Value:
+ *   Returns the handle to the loaded bitmap.
+ *
+ * Purpose:
+ *   This function sets a picture to an image control with the specified parameters.
+ */
 HB_FUNC( C_SETPICTURE )
 {
    HWND     hWnd = hmg_par_raw_HWND( 1 ); // Get the window handle for the image control
@@ -428,7 +538,29 @@ HB_FUNC( C_SETPICTURE )
    hmg_ret_raw_HANDLE( hBitmap );
 }
 
-// Function to load and display an image in a specified or active window
+/*
+ * LOADIMAGE
+ *
+ * Loads and displays an image in a specified or active window.
+ *
+ * Parameters:
+ *   1. pszImageName: Name of the image file or resource.
+ *   2. hWnd: Handle to the window (optional).
+ *   3. width: Width of the image (optional).
+ *   4. height: Height of the image (optional).
+ *   5. ScaleStretch: Scale factor for resizing (optional).
+ *   6. Transparent: Transparency option (optional).
+ *   7. BackgroundColor: Background color for transparency (optional).
+ *   8. AdjustImage: Adjustment factor for image display (optional).
+ *   9. bAlphaFormat: Alpha channel option for transparency (optional).
+ *   10. iAlphaConstant: Alpha transparency level (optional).
+ *
+ * Return Value:
+ *   Returns the handle to the loaded bitmap.
+ *
+ * Purpose:
+ *   This function loads and displays an image in a specified or active window with the specified parameters.
+ */
 HB_FUNC( LOADIMAGE )
 {
    // Get the handle of the specified window or the active window if not provided
@@ -464,7 +596,21 @@ HB_FUNC( LOADIMAGE )
    hmg_ret_raw_HANDLE( hBitmap );
 }
 
-// Function to get a picture from a specified resource and load it
+/*
+ * C_GETRESPICTURE
+ *
+ * Gets a picture from a specified resource and loads it.
+ *
+ * Parameters:
+ *   1. pszImageName: Name of the resource.
+ *   2. pszTypeOfRes: Type of the resource.
+ *
+ * Return Value:
+ *   Returns the handle to the loaded bitmap.
+ *
+ * Purpose:
+ *   This function gets a picture from a specified resource and loads it.
+ */
 HB_FUNC( C_GETRESPICTURE )
 {
    HBITMAP  hBitmap;
@@ -482,43 +628,55 @@ HB_FUNC( C_GETRESPICTURE )
    hmg_ret_raw_HANDLE( hBitmap );
 }
 
-//****************************************************************************************************************
-// HMG_LoadImage (const char *FileName) -> hBitmap (Load: JPG, GIF, ICO, TIF, PNG, WMF)
-//****************************************************************************************************************
+/*
+ * HMG_LoadImage
+ *
+ * Loads an image from a file or resource.
+ *
+ * Parameters:
+ *   pszImageName: Name of the image file or resource.
+ *   pszTypeOfRes: Type of the resource.
+ *
+ * Return Value:
+ *   Returns the handle to the loaded bitmap.
+ *
+ * Purpose:
+ *   This function loads an image from a file or resource.
+ */
 HB_EXPORT HBITMAP HMG_LoadImage( const char *pszImageName, const char *pszTypeOfRes )
 {
    HBITMAP  hBitmap;
 
    HB_SYMBOL_UNUSED( pszTypeOfRes );
 
-   // Find PNG Image in resourses
+   // Find PNG Image in resources
    hBitmap = HMG_GdipLoadBitmap( pszImageName, "PNG" );
 
-   // If fail: find JPG Image in resourses
+   // If fail: find JPG Image in resources
    if( hBitmap == NULL )
    {
       hBitmap = HMG_GdipLoadBitmap( pszImageName, "JPG" );
    }
 
-   // If fail: find GIF Image in resourses
+   // If fail: find GIF Image in resources
    if( hBitmap == NULL )
    {
       hBitmap = HMG_GdipLoadBitmap( pszImageName, "GIF" );
    }
 
-   // If fail: find ICON Image in resourses
+   // If fail: find ICON Image in resources
    if( hBitmap == NULL )
    {
       hBitmap = HMG_GdipLoadBitmap( pszImageName, "ICO" );
    }
 
-   // If fail: find TIF Image in resourses
+   // If fail: find TIF Image in resources
    if( hBitmap == NULL )
    {
       hBitmap = HMG_GdipLoadBitmap( pszImageName, "TIF" );
    }
 
-   // If fail: find WMF Image in resourses
+   // If fail: find WMF Image in resources
    if( hBitmap == NULL )
    {
       hBitmap = HMG_GdipLoadBitmap( pszImageName, "WMF" );
@@ -533,9 +691,29 @@ HB_EXPORT HBITMAP HMG_LoadImage( const char *pszImageName, const char *pszTypeOf
    return hBitmap;
 }
 
-//****************************************************************************************************************
-// HMG_LoadPicture (Name, width, height, ...) -> hBitmap (Load: BMP, GIF, JPG, TIF, WMF, EMF, PNG)
-//****************************************************************************************************************
+/*
+ * HMG_LoadPicture
+ *
+ * Loads a picture from a file, resource, or URL.
+ *
+ * Parameters:
+ *   pszName: Name of the image file, resource, or URL.
+ *   width: Width of the image.
+ *   height: Height of the image.
+ *   hWnd: Handle to the window.
+ *   ScaleStretch: Scale factor for resizing.
+ *   Transparent: Transparency option.
+ *   BackgroundColor: Background color for transparency.
+ *   AdjustImage: Adjustment factor for image display.
+ *   bAlphaFormat: Alpha channel option for transparency.
+ *   iAlphaConstant: Alpha transparency level.
+ *
+ * Return Value:
+ *   Returns the handle to the loaded bitmap.
+ *
+ * Purpose:
+ *   This function loads a picture from a file, resource, or URL with the specified parameters.
+ */
 HB_EXPORT HBITMAP HMG_LoadPicture
 (
    const char  *pszName,
@@ -562,7 +740,7 @@ HB_EXPORT HBITMAP HMG_LoadPicture
       return NULL;
    }
 
-   if( bAlphaFormat == HB_FALSE )      // Firstly find BMP image in resourses (.EXE file)
+   if( bAlphaFormat == HB_FALSE )      // Firstly find BMP image in resources (.EXE file)
    {
 #ifndef UNICODE
       LPCSTR   lpImageName = pszName;
@@ -626,11 +804,9 @@ HB_EXPORT HBITMAP HMG_LoadPicture
    }
 
    SetRect( &rect2, 0, 0, rect.right, rect.bottom );
-
    hDC = GetDC( hWnd );
    memDC1 = CreateCompatibleDC( hDC );
    memDC2 = CreateCompatibleDC( hDC );
-
    if( ScaleStretch == 0 )
    {
       if( ( int ) bmWidth * rect.bottom / bmHeight <= rect.right )
@@ -665,7 +841,6 @@ HB_EXPORT HBITMAP HMG_LoadPicture
    else
    {
       HBRUSH   hBrush = CreateSolidBrush( BackgroundColor );
-
       FillRect( memDC2, &rect2, hBrush );
       DeleteObject( hBrush );
    }
@@ -677,7 +852,6 @@ HB_EXPORT HBITMAP HMG_LoadPicture
    else
    {
       POINT Point;
-
       GetBrushOrgEx( memDC2, &Point );
       SetStretchBltMode( memDC2, HALFTONE );
       SetBrushOrgEx( memDC2, Point.x, Point.y, NULL );
@@ -692,12 +866,10 @@ HB_EXPORT HBITMAP HMG_LoadPicture
       // TransparentBlt is supported for source bitmaps of 4 bits per pixel and 8 bits per pixel.
       // Use AlphaBlend to specify 32 bits-per-pixel bitmaps with transparency.
       BLENDFUNCTION  ftn;
-
       ftn.AlphaFormat = ( BYTE ) ( bAlphaFormat ? AC_SRC_ALPHA : 0 );
       ftn.BlendOp = AC_SRC_OVER;
       ftn.BlendFlags = 0;
       ftn.SourceConstantAlpha = ( BYTE ) iAlphaConstant;
-
       AlphaBlend( memDC2, rect.left, rect.top, rect.right, rect.bottom, memDC1, 0, 0, bmWidth, bmHeight, ftn );
    }
    else
@@ -711,16 +883,24 @@ HB_EXPORT HBITMAP HMG_LoadPicture
    DeleteDC( memDC1 );
    DeleteDC( memDC2 );
    ReleaseDC( hWnd, hDC );
-
    DeleteObject( hBitmap_new );
-
    return new_hBitmap;
 }
 
-//*************************************************************************************************
-// HMG_OleLoadPicturePath( pszURLorPath ) -> hBitmap
-// (stream must be in BMP (bitmap), JPEG, WMF (metafile), ICO (icon), or GIF format)
-//*************************************************************************************************
+/*
+ * HMG_OleLoadPicturePath
+ *
+ * Loads a picture from a URL or file path using OLE.
+ *
+ * Parameters:
+ *   pszURLorPath: URL or file path of the image.
+ *
+ * Return Value:
+ *   Returns the handle to the loaded bitmap.
+ *
+ * Purpose:
+ *   This function loads a picture from a URL or file path using OLE.
+ */
 HB_EXPORT HBITMAP HMG_OleLoadPicturePath( const char *pszURLorPath )
 {
    IPicture *iPicture = NULL;
@@ -731,7 +911,6 @@ HB_EXPORT HBITMAP HMG_OleLoadPicturePath( const char *pszURLorPath )
    if( NULL != pszURLorPath )
    {
       LPOLESTR lpURLorPath = ( LPOLESTR ) ( LPCTSTR ) hb_mbtowc( pszURLorPath );
-
       hres = OleLoadPicturePath( lpURLorPath, NULL, 0, 0, &IID_IPicture, ( LPVOID * ) &iPicture );
       hb_xfree( lpURLorPath );
    }
@@ -755,13 +934,10 @@ HB_EXPORT HBITMAP HMG_OleLoadPicturePath( const char *pszURLorPath )
       // Convert HiMetric to Pixel
       pxWidth = LOGHIMETRIC_TO_PIXEL( hmWidth, GetDeviceCaps( memDC, LOGPIXELSX ) );
       pxHeight = LOGHIMETRIC_TO_PIXEL( hmHeight, GetDeviceCaps( memDC, LOGPIXELSY ) );
-
       hBitmap = HMG_GdiCreateHBITMAP( memDC, pxWidth, pxHeight, 32 );
       SelectObject( memDC, hBitmap );
-
       iPicture->lpVtbl->Render( iPicture, memDC, 0, 0, pxWidth, pxHeight, 0, hmHeight, hmWidth, -hmHeight, NULL );
       iPicture->lpVtbl->Release( iPicture );
-
       DeleteDC( memDC );
    }
    else
@@ -773,27 +949,63 @@ HB_EXPORT HBITMAP HMG_OleLoadPicturePath( const char *pszURLorPath )
 }
 
 /*
- * Get encoders
+ * GPLUSGETENCODERSNUM
+ *
+ * Gets the number of image encoders.
+ *
+ * Parameters:
+ *   None.
+ *
+ * Return Value:
+ *   Returns the number of image encoders.
+ *
+ * Purpose:
+ *   This function gets the number of image encoders.
  */
 HB_FUNC( GPLUSGETENCODERSNUM )
 {
    UINT  num = 0;                               // number of image encoders
    UINT  size = 0;                              // size of the image encoder array in bytes
    fn_GdipGetImageEncodersSize( &num, &size );
-
    hmg_ret_UINT( num );
 }
 
+/*
+ * GPLUSGETENCODERSSIZE
+ *
+ * Gets the size of the image encoders array.
+ *
+ * Parameters:
+ *   None.
+ *
+ * Return Value:
+ *   Returns the size of the image encoders array.
+ *
+ * Purpose:
+ *   This function gets the size of the image encoders array.
+ */
 HB_FUNC( GPLUSGETENCODERSSIZE )
 {
    UINT  num = 0;
    UINT  size = 0;
-
    fn_GdipGetImageEncodersSize( &num, &size );
-
    hmg_ret_UINT( size );
 }
 
+/*
+ * GPLUSGETENCODERSMIMETYPE
+ *
+ * Gets the MIME types of the image encoders.
+ *
+ * Parameters:
+ *   None.
+ *
+ * Return Value:
+ *   Returns an array of MIME types of the image encoders.
+ *
+ * Purpose:
+ *   This function gets the MIME types of the image encoders.
+ */
 HB_FUNC( GPLUSGETENCODERSMIMETYPE )
 {
    UINT           num = 0;
@@ -830,28 +1042,39 @@ HB_FUNC( GPLUSGETENCODERSMIMETYPE )
    }
 
    fn_GdipGetImageEncoders( num, size, pImageCodecInfo );
-
    pItem = hb_itemNew( NULL );
 
    for( i = 0; i < num; ++i )
    {
       WideCharToMultiByte( CP_ACP, 0, pImageCodecInfo[i].MimeType, -1, RecvMimeType, size, NULL, NULL );
-
       pItem = hb_itemPutC( NULL, RecvMimeType );
-
       hb_arrayAdd( pResult, pItem );
    }
 
    // free resource
    LocalFree( RecvMimeType );
    hb_xfree( pImageCodecInfo );
-
    hb_itemRelease( pItem );
 
    // return a result array
    hb_itemReturnRelease( pResult );
 }
 
+/*
+ * GetEnCodecClsid
+ *
+ * Gets the CLSID of an image encoder based on its MIME type.
+ *
+ * Parameters:
+ *   MimeType: MIME type of the image encoder.
+ *   Clsid: Pointer to the CLSID structure to be filled.
+ *
+ * Return Value:
+ *   Returns TRUE if the CLSID was found, otherwise FALSE.
+ *
+ * Purpose:
+ *   This function gets the CLSID of an image encoder based on its MIME type.
+ */
 static BOOL GetEnCodecClsid( const char *MimeType, CLSID *Clsid )
 {
    UINT           num = 0;
@@ -883,14 +1106,12 @@ static BOOL GetEnCodecClsid( const char *MimeType, CLSID *Clsid )
    if( fn_GdipGetImageEncoders( num, size, pImageCodecInfo ) || ( pImageCodecInfo == NULL ) )
    {
       hb_xfree( pImageCodecInfo );
-
       return FALSE;
    }
 
    if( ( RecvMimeType = LocalAlloc( LPTR, size ) ) == NULL )
    {
       hb_xfree( pImageCodecInfo );
-
       return FALSE;
    }
 
@@ -916,6 +1137,25 @@ static BOOL GetEnCodecClsid( const char *MimeType, CLSID *Clsid )
    return bFounded ? TRUE : FALSE;
 }
 
+/*
+ * SaveHBitmapToFile
+ *
+ * Saves an HBITMAP to a file.
+ *
+ * Parameters:
+ *   HBitmap: Handle to the bitmap.
+ *   FileName: Name of the file to save the bitmap to.
+ *   Width: Width of the bitmap.
+ *   Height: Height of the bitmap.
+ *   MimeType: MIME type of the image.
+ *   JpgQuality: Quality of the JPEG image.
+ *
+ * Return Value:
+ *   Returns TRUE if the bitmap was saved successfully, otherwise FALSE.
+ *
+ * Purpose:
+ *   This function saves an HBITMAP to a file.
+ */
 BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width, unsigned int Height, const char *MimeType, ULONG JpgQuality )
 {
    GpBitmap          *GBitmap;
@@ -923,6 +1163,7 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
    LPWSTR            WFileName;
    static CLSID      Clsid;
    EncoderParameters EncoderParameters;
+   int               iLen;
 
    if( ( HBitmap == NULL ) || ( FileName == NULL ) || ( MimeType == NULL ) || ( g_GpModule == NULL ) )
    {
@@ -997,7 +1238,8 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
       return FALSE;
    }
 
-   WFileName = LocalAlloc( LPTR, ( strlen( FileName ) * sizeof( WCHAR ) ) + 1 );
+   iLen = MultiByteToWideChar( CP_ACP, 0, FileName, -1, NULL, 0 );
+   WFileName = LocalAlloc( LPTR, iLen * sizeof( WCHAR ) );
 
    if( WFileName == NULL )
    {
@@ -1005,7 +1247,7 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
       return FALSE;
    }
 
-   MultiByteToWideChar( CP_ACP, 0, FileName, -1, WFileName, ( int ) ( strlen( FileName ) * sizeof( WCHAR ) ) - 1 );
+   MultiByteToWideChar( CP_ACP, 0, FileName, -1, WFileName, iLen );
 
    if( ( Width > 0 ) && ( Height > 0 ) )
    {
@@ -1033,27 +1275,47 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
 
    fn_GdipDisposeImage( GBitmap );
    LocalFree( WFileName );
-
    return TRUE;
 }
 
+/*
+ * C_SAVEHBITMAPTOFILE
+ *
+ * Saves an HBITMAP to a file.
+ *
+ * Parameters:
+ *   1. hbmp: Handle to the bitmap.
+ *   2. FileName: Name of the file to save the bitmap to.
+ *   3. Width: Width of the bitmap.
+ *   4. Height: Height of the bitmap.
+ *   5. MimeType: MIME type of the image.
+ *   6. JpgQuality: Quality of the JPEG image.
+ *
+ * Return Value:
+ *   Returns TRUE if the bitmap was saved successfully, otherwise FALSE.
+ *
+ * Purpose:
+ *   This function saves an HBITMAP to a file.
+ */
 HB_FUNC( C_SAVEHBITMAPTOFILE )
 {
    HBITMAP  hbmp = hmg_par_raw_HBITMAP( 1 );
-
    hb_retl( SaveHBitmapToFile( ( void * ) hbmp, hb_parc( 2 ), hmg_par_UINT( 3 ), hmg_par_UINT( 4 ), hb_parc( 5 ), ( ULONG ) hb_parnl( 6 ) ) );
 }
 
-//*************************************************************************************************
-// ICONS (.ICO type 1) are structured like this:
-//
-// ICONHEADER              (just 1)
-// ICONDIR                 [1...n]  (an array, 1 for each image)
-// [BITMAPINFOHEADER+COLOR_BITS+MASK_BITS]      [1...n]   (1 after the other, for each image)
-//
-// CURSORS (.ICO type 2) are identical in structure, but use
-// two monochrome bitmaps (real XOR and AND masks, this time).
-//*************************************************************************************************
+/*
+ * ICONHEADER
+ *
+ * Structure for the header of an icon or cursor file.
+ *
+ * Members:
+ *   idReserved: Reserved, must be 0.
+ *   idType: Type of the image (1 for icon, 2 for cursor).
+ *   idCount: Number of images.
+ *
+ * Purpose:
+ *   This structure defines the header of an icon or cursor file.
+ */
 typedef struct
 {
    WORD  idReserved;                            // must be 0
@@ -1061,9 +1323,24 @@ typedef struct
    WORD  idCount;                               // number of images (and ICONDIRs)
 } ICONHEADER;
 
-//*************************************************************************************************
-// An array of ICONDIRs immediately follow the ICONHEADER
-//*************************************************************************************************
+/*
+ * ICONDIR
+ *
+ * Structure for the directory entry of an icon or cursor file.
+ *
+ * Members:
+ *   bWidth: Width of the image.
+ *   bHeight: Height of the image.
+ *   bColorCount: Number of colors.
+ *   bReserved: Reserved.
+ *   wPlanes: Number of planes (for cursors, this field is wXHotSpot).
+ *   wBitCount: Number of bits per pixel (for cursors, this field is wYHotSpot).
+ *   dwBytesInRes: Number of bytes in the resource.
+ *   dwImageOffset: File offset to the start of the image.
+ *
+ * Purpose:
+ *   This structure defines the directory entry of an icon or cursor file.
+ */
 typedef struct
 {
    BYTE  bWidth;
@@ -1076,19 +1353,37 @@ typedef struct
    DWORD dwImageOffset;                         // file-offset to the start of ICONIMAGE
 } ICONDIR;
 
-//*************************************************************************************************
-// After the ICONDIRs follow the ICONIMAGE structures -
-// consisting of a BITMAPINFOHEADER, (optional) RGBQUAD array, then
-// the color and mask bitmap bits (all packed together).
-//*************************************************************************************************
+/*
+ * ICONIMAGE
+ *
+ * Structure for the image data of an icon or cursor file.
+ *
+ * Members:
+ *   biHeader: Header for the color bitmap (no mask header).
+ *
+ * Purpose:
+ *   This structure defines the image data of an icon or cursor file.
+ */
 typedef struct
 {
    BITMAPINFOHEADER  biHeader;                  // header for color bitmap (no mask header)
 } ICONIMAGE;
 
-//*************************************************************************************************
-// Write the ICO header to disk
-//*************************************************************************************************
+/*
+ * WriteIconHeader
+ *
+ * Writes the header of an icon file to disk.
+ *
+ * Parameters:
+ *   hFile: Handle to the file.
+ *   nImages: Number of images.
+ *
+ * Return Value:
+ *   Returns the number of bytes written.
+ *
+ * Purpose:
+ *   This function writes the header of an icon file to disk.
+ */
 static UINT WriteIconHeader( HANDLE hFile, int nImages )
 {
    ICONHEADER  iconheader;
@@ -1096,19 +1391,30 @@ static UINT WriteIconHeader( HANDLE hFile, int nImages )
 
    // Setup the icon header
    iconheader.idReserved = 0;                   // Must be 0
-   iconheader.idType = 1;                       // Type 1 = ICON  (type 2 = CURSOR)
+   iconheader.idType = 1;                       // Type 1 = ICON (type 2 = CURSOR)
    iconheader.idCount = ( WORD ) nImages;       // number of ICONDIRs
 
    // Write the header to disk
-   WriteFile( hFile, ( LPVOID ) &iconheader, sizeof( iconheader ), ( LPDWORD ) &nWritten, NULL );
+   WriteFile( hFile, ( LPVOID ) & iconheader, sizeof( iconheader ), ( LPDWORD ) & nWritten, NULL );
 
    // following ICONHEADER is a series of ICONDIR structures (idCount of them, in fact)
    return nWritten;
 }
 
-//*************************************************************************************************
-// Return the number of BYTES the bitmap will take ON DISK
-//*************************************************************************************************
+/*
+ * NumBitmapBytes
+ *
+ * Calculates the number of bytes a bitmap will take on disk.
+ *
+ * Parameters:
+ *   pBitmap: Pointer to the bitmap.
+ *
+ * Return Value:
+ *   Returns the number of bytes the bitmap will take on disk.
+ *
+ * Purpose:
+ *   This function calculates the number of bytes a bitmap will take on disk.
+ */
 static UINT NumBitmapBytes( BITMAP *pBitmap )
 {
    int   nWidthBytes = pBitmap->bmWidthBytes;
@@ -1123,9 +1429,22 @@ static UINT NumBitmapBytes( BITMAP *pBitmap )
    return nWidthBytes * pBitmap->bmHeight;
 }
 
-//*************************************************************************************************
-// Return number of bytes written
-//*************************************************************************************************
+/*
+ * WriteIconImageHeader
+ *
+ * Writes the image header of an icon file to disk.
+ *
+ * Parameters:
+ *   hFile: Handle to the file.
+ *   pbmpColor: Pointer to the color bitmap.
+ *   pbmpMask: Pointer to the mask bitmap.
+ *
+ * Return Value:
+ *   Returns the number of bytes written.
+ *
+ * Purpose:
+ *   This function writes the image header of an icon file to disk.
+ */
 static UINT WriteIconImageHeader( HANDLE hFile, BITMAP *pbmpColor, BITMAP *pbmpMask )
 {
    BITMAPINFOHEADER  biHeader;
@@ -1147,14 +1466,28 @@ static UINT WriteIconImageHeader( HANDLE hFile, BITMAP *pbmpColor, BITMAP *pbmpM
    biHeader.biSizeImage = nImageBytes;
 
    // write the BITMAPINFOHEADER
-   WriteFile( hFile, ( LPVOID ) &biHeader, sizeof( biHeader ), ( LPDWORD ) &nWritten, NULL );
+   WriteFile( hFile, ( LPVOID ) & biHeader, sizeof( biHeader ), ( LPDWORD ) & nWritten, NULL );
 
    return nWritten;
 }
 
-//*************************************************************************************************
-// Wrapper around GetIconInfo and GetObject(BITMAP)
-//*************************************************************************************************
+/*
+ * GetIconBitmapInfo
+ *
+ * Gets information about an icon's bitmaps.
+ *
+ * Parameters:
+ *   hIcon: Handle to the icon.
+ *   pIconInfo: Pointer to the ICONINFO structure.
+ *   pbmpColor: Pointer to the color bitmap.
+ *   pbmpMask: Pointer to the mask bitmap.
+ *
+ * Return Value:
+ *   Returns TRUE if the information was retrieved successfully, otherwise FALSE.
+ *
+ * Purpose:
+ *   This function gets information about an icon's bitmaps.
+ */
 static BOOL GetIconBitmapInfo( HICON hIcon, ICONINFO *pIconInfo, BITMAP *pbmpColor, BITMAP *pbmpMask )
 {
    if( !GetIconInfo( hIcon, pIconInfo ) )
@@ -1175,23 +1508,33 @@ static BOOL GetIconBitmapInfo( HICON hIcon, ICONINFO *pIconInfo, BITMAP *pbmpCol
    return TRUE;
 }
 
-//*************************************************************************************************
-// Write one icon directory entry - specify the index of the image
-//*************************************************************************************************
+/*
+ * WriteIconDirectoryEntry
+ *
+ * Writes a directory entry of an icon file to disk.
+ *
+ * Parameters:
+ *   hFile: Handle to the file.
+ *   hIcon: Handle to the icon.
+ *   nImageOffset: Offset of the image.
+ *
+ * Return Value:
+ *   Returns the number of bytes written.
+ *
+ * Purpose:
+ *   This function writes a directory entry of an icon file to disk.
+ */
 static UINT WriteIconDirectoryEntry( HANDLE hFile, HICON hIcon, UINT nImageOffset )
 {
    ICONINFO iconInfo;
    ICONDIR  iconDir;
-
    BITMAP   bmpColor;
    BITMAP   bmpMask;
-
    UINT     nWritten;
    UINT     nColorCount;
    UINT     nImageBytes;
 
    GetIconBitmapInfo( hIcon, &iconInfo, &bmpColor, &bmpMask );
-
    nImageBytes = NumBitmapBytes( &bmpColor ) + NumBitmapBytes( &bmpMask );
 
    if( bmpColor.bmBitsPixel >= 8 )
@@ -1214,7 +1557,7 @@ static UINT WriteIconDirectoryEntry( HANDLE hFile, HICON hIcon, UINT nImageOffse
    iconDir.dwImageOffset = nImageOffset;
 
    // Write to disk
-   WriteFile( hFile, ( LPVOID ) &iconDir, sizeof( iconDir ), ( LPDWORD ) &nWritten, NULL );
+   WriteFile( hFile, ( LPVOID ) & iconDir, sizeof( iconDir ), ( LPDWORD ) & nWritten, NULL );
 
    // Free resources
    DeleteObject( iconInfo.hbmColor );
@@ -1223,24 +1566,35 @@ static UINT WriteIconDirectoryEntry( HANDLE hFile, HICON hIcon, UINT nImageOffse
    return nWritten;
 }
 
+/*
+ * WriteIconData
+ *
+ * Writes the image data of an icon file to disk.
+ *
+ * Parameters:
+ *   hFile: Handle to the file.
+ *   hBitmap: Handle to the bitmap.
+ *
+ * Return Value:
+ *   Returns the number of bytes written.
+ *
+ * Purpose:
+ *   This function writes the image data of an icon file to disk.
+ */
 static UINT WriteIconData( HANDLE hFile, HBITMAP hBitmap )
 {
    BITMAP   bmp;
    int      i;
    BYTE     *pIconData;
-
    UINT     nBitmapBytes;
    UINT     nWritten;
 
    GetObject( hBitmap, sizeof( BITMAP ), &bmp );
-
    nBitmapBytes = NumBitmapBytes( &bmp );
-
    pIconData = ( BYTE * ) malloc( nBitmapBytes );
-
    GetBitmapBits( hBitmap, nBitmapBytes, pIconData );
 
-   // bitmaps are stored inverted (vertically) when on disk..
+   // bitmaps are stored inverted (vertically) when on disk
    // so write out each line in turn, starting at the bottom + working
    // towards the top of the bitmap. Also, the bitmaps are stored in packed
    // in memory - scanlines are NOT 32bit aligned, just 1-after-the-other
@@ -1252,7 +1606,7 @@ static UINT WriteIconData( HANDLE hFile, HBITMAP hBitmap )
          hFile,
          pIconData + ( i * bmp.bmWidthBytes ),  // calculate offset to the line
          bmp.bmWidthBytes, // 1 line of BYTES
-         ( LPDWORD ) &nWritten,
+         ( LPDWORD ) & nWritten,
          NULL
       );
 
@@ -1260,18 +1614,30 @@ static UINT WriteIconData( HANDLE hFile, HBITMAP hBitmap )
       if( bmp.bmWidthBytes & 3 )
       {
          DWORD padding = 0;
-         WriteFile( hFile, ( LPVOID ) &padding, 4 - bmp.bmWidthBytes, ( LPDWORD ) &nWritten, NULL );
+         WriteFile( hFile, ( LPVOID ) & padding, 4 - bmp.bmWidthBytes, ( LPDWORD ) & nWritten, NULL );
       }
    }
 
    free( pIconData );
-
    return nBitmapBytes;
 }
 
-//*************************************************************************************************
-// Create a .ICO file, using the specified array of HICON images
-//*************************************************************************************************
+/*
+ * SaveIconToFile
+ *
+ * Saves an icon to a file.
+ *
+ * Parameters:
+ *   szIconFile: Name of the file to save the icon to.
+ *   hIcon: Array of handles to the icons.
+ *   nNumIcons: Number of icons.
+ *
+ * Return Value:
+ *   Returns TRUE if the icon was saved successfully, otherwise FALSE.
+ *
+ * Purpose:
+ *   This function saves an icon to a file.
+ */
 BOOL SaveIconToFile( TCHAR *szIconFile, HICON hIcon[], int nNumIcons )
 {
    HANDLE   hFile;
@@ -1300,7 +1666,6 @@ BOOL SaveIconToFile( TCHAR *szIconFile, HICON hIcon[], int nNumIcons )
    // Leave space for the IconDir entries
    //
    SetFilePointer( hFile, sizeof( ICONDIR ) * nNumIcons, 0, FILE_CURRENT );
-
    pImageOffset = ( int * ) malloc( nNumIcons * sizeof( int ) );
 
    //
@@ -1341,23 +1706,35 @@ BOOL SaveIconToFile( TCHAR *szIconFile, HICON hIcon[], int nNumIcons )
 
    // finished
    CloseHandle( hFile );
-
    return TRUE;
 }
 
-//*************************************************************************************************
-// Save the icon resources to disk
-//*************************************************************************************************
+/*
+ * C_SAVEHICONTOFILE
+ *
+ * Saves an icon to a file.
+ *
+ * Parameters:
+ *   1. szIconFile: Name of the file to save the icon to.
+ *   2. pArray: Array of handles to the icons.
+ *   3. nLen: Number of icons.
+ *
+ * Return Value:
+ *   Returns TRUE if the icon was saved successfully, otherwise FALSE.
+ *
+ * Purpose:
+ *   This function saves an icon to a file.
+ */
 HB_FUNC( C_SAVEHICONTOFILE )
 {
 #ifndef UNICODE
-   TCHAR    *szIconFile = ( TCHAR * ) hb_parc( 1 );
+   const char  *szIconFile = hb_parc( 1 );
 #else
-   TCHAR    *szIconFile = ( TCHAR * ) AnsiToWide( ( char * ) hb_parc( 1 ) );
+   TCHAR       *szIconFile = AnsiToWide( hb_parc( 1 ) );
 #endif
-   HICON    hIcon[9];
-   PHB_ITEM pArray = hb_param( 2, HB_IT_ARRAY );
-   int      nLen;
+   HICON       hIcon[9];
+   PHB_ITEM    pArray = hb_param( 2, HB_IT_ARRAY );
+   int         nLen;
 
    if( pArray && ( ( nLen = ( int ) hb_arrayLen( pArray ) ) > 0 ) )
    {
@@ -1368,7 +1745,7 @@ HB_FUNC( C_SAVEHICONTOFILE )
          hIcon[i] = ( HICON ) ( LONG_PTR ) hb_arrayGetNL( pArray, i + 1 );
       }
 
-      hmg_ret_L( SaveIconToFile( szIconFile, hIcon, hb_parnidef( 3, nLen ) ) );
+      hmg_ret_L( SaveIconToFile( ( TCHAR * ) szIconFile, hIcon, hb_parnidef( 3, nLen ) ) );
 
       // clean up
       for( i = 0; i < nLen; i++ )
@@ -1386,6 +1763,21 @@ HB_FUNC( C_SAVEHICONTOFILE )
 #endif
 }
 
+/*
+ * bmp_SaveFile
+ *
+ * Saves a bitmap to a file.
+ *
+ * Parameters:
+ *   hBitmap: Handle to the bitmap.
+ *   FileName: Name of the file to save the bitmap to.
+ *
+ * Return Value:
+ *   Returns TRUE if the bitmap was saved successfully, otherwise FALSE.
+ *
+ * Purpose:
+ *   This function saves a bitmap to a file.
+ */
 BOOL bmp_SaveFile( HBITMAP hBitmap, TCHAR *FileName )
 {
    HGLOBAL           hBits;
@@ -1400,18 +1792,15 @@ BOOL bmp_SaveFile( HBITMAP hBitmap, TCHAR *FileName )
 
    memDC = CreateCompatibleDC( NULL );
    SelectObject( memDC, hBitmap );
-   GetObject( hBitmap, sizeof( BITMAP ), ( LPBYTE ) &bm );
-
+   GetObject( hBitmap, sizeof( BITMAP ), ( LPBYTE ) & bm );
    bm.bmBitsPixel = 24;
    bm.bmWidthBytes = ( bm.bmWidth * bm.bmBitsPixel + 31 ) / 32 * 4;
    nBytes_Bits = ( DWORD ) ( bm.bmWidthBytes * labs( bm.bmHeight ) );
-
    BIFH.bfType = ( 'M' << 8 ) + 'B';
    BIFH.bfSize = sizeof( BITMAPFILEHEADER ) + sizeof( BITMAPINFOHEADER ) + nBytes_Bits;
    BIFH.bfReserved1 = 0;
    BIFH.bfReserved2 = 0;
    BIFH.bfOffBits = sizeof( BITMAPFILEHEADER ) + sizeof( BITMAPINFOHEADER );
-
    Bitmap_Info.bmiHeader.biSize = sizeof( BITMAPINFOHEADER );
    Bitmap_Info.bmiHeader.biWidth = bm.bmWidth;
    Bitmap_Info.bmiHeader.biHeight = bm.bmHeight;
@@ -1425,21 +1814,21 @@ BOOL bmp_SaveFile( HBITMAP hBitmap, TCHAR *FileName )
    Bitmap_Info.bmiHeader.biClrImportant = 0;
 
    hBits = GlobalAlloc( GHND, ( DWORD ) nBytes_Bits );
+
    if( hBits == NULL )
    {
       return FALSE;
    }
 
    lp_hBits = ( LPBYTE ) GlobalLock( hBits );
-
    GetDIBits( memDC, hBitmap, 0, Bitmap_Info.bmiHeader.biHeight, ( LPVOID ) lp_hBits, &Bitmap_Info, DIB_RGB_COLORS );
 
    hFile = CreateFile( FileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL );
 
    if( hFile != INVALID_HANDLE_VALUE )
    {
-      WriteFile( hFile, ( LPBYTE ) &BIFH, sizeof( BITMAPFILEHEADER ), &nBytes_Written, NULL );
-      WriteFile( hFile, ( LPBYTE ) &Bitmap_Info.bmiHeader, sizeof( BITMAPINFOHEADER ), &nBytes_Written, NULL );
+      WriteFile( hFile, ( LPBYTE ) & BIFH, sizeof( BITMAPFILEHEADER ), &nBytes_Written, NULL );
+      WriteFile( hFile, ( LPBYTE ) & Bitmap_Info.bmiHeader, sizeof( BITMAPINFOHEADER ), &nBytes_Written, NULL );
       WriteFile( hFile, ( LPBYTE ) lp_hBits, nBytes_Bits, &nBytes_Written, NULL );
       CloseHandle( hFile );
       ret = TRUE;
@@ -1451,16 +1840,35 @@ BOOL bmp_SaveFile( HBITMAP hBitmap, TCHAR *FileName )
 
    GlobalUnlock( hBits );
    GlobalFree( hBits );
-
    DeleteDC( memDC );
+
    return ret;
 }
 
+/*
+ * HMG_ImageListLoadFirst
+ *
+ * Loads the first image from a file into an image list.
+ *
+ * Parameters:
+ *   FileName: Name of the file to load the image from.
+ *   cGrow: Number of images to grow the image list by.
+ *   Transparent: Transparency option.
+ *   nWidth: Pointer to the width of the image.
+ *   nHeight: Pointer to the height of the image.
+ *
+ * Return Value:
+ *   Returns the handle to the created image list.
+ *
+ * Purpose:
+ *   This function loads the first image from a file into an image list.
+ */
 HIMAGELIST HMG_ImageListLoadFirst( const char *FileName, int cGrow, int Transparent, int *nWidth, int *nHeight )
 {
    HIMAGELIST  hImageList;
    HBITMAP     hBitmap;
    BITMAP      Bmp;
+   TCHAR       TempPath[MAX_PATH];
    TCHAR       TempPathFileName[MAX_PATH];
 
    s_nWidth = *nWidth;
@@ -1485,8 +1893,9 @@ HIMAGELIST HMG_ImageListLoadFirst( const char *FileName, int cGrow, int Transpar
       *nHeight = Bmp.bmHeight;
    }
 
-   GetTempPath( MAX_PATH, TempPathFileName );
-   lstrcat( TempPathFileName, TEXT( "_MG_temp.BMP" ) );
+   GetTempPath( MAX_PATH, TempPath );
+   GetTempFileName( TempPath, TEXT( "HMG" ), 0, TempPathFileName );
+
    bmp_SaveFile( hBitmap, TempPathFileName );
    DeleteObject( hBitmap );
 
@@ -1518,10 +1927,25 @@ HIMAGELIST HMG_ImageListLoadFirst( const char *FileName, int cGrow, int Transpar
    }
 
    DeleteFile( TempPathFileName );
-
    return hImageList;
 }
 
+/*
+ * HMG_ImageListAdd
+ *
+ * Adds an image to an image list.
+ *
+ * Parameters:
+ *   hImageList: Handle to the image list.
+ *   FileName: Name of the file to load the image from.
+ *   Transparent: Transparency option.
+ *
+ * Return Value:
+ *   None.
+ *
+ * Purpose:
+ *   This function adds an image to an image list.
+ */
 void HMG_ImageListAdd( HIMAGELIST hImageList, char *FileName, int Transparent )
 {
    HBITMAP  hBitmap;

@@ -1,5 +1,5 @@
 ﻿/*
-   HotKey Demo - HMG internal hotkeys processing
+   HotKeys Demo - HMG internal hotkeys processing
    Author: Pablo César Arrascaeta
    Date: March 28, 2017
    Version: 1.0
@@ -11,6 +11,17 @@
 
 MEMVAR aOriginalKeys
 
+/*
+ * FUNCTION Main()
+ *
+ * Initializes the application, loads the demo window, defines hotkeys, and activates the window.
+ *
+ * Purpose:
+ *   This is the main entry point of the application. It demonstrates the use of HMG Extended's internal hotkey processing.
+ *   It loads a pre-defined window named "Demo", assigns actions to specific hotkey combinations (F2, ALT+C, ALT+D),
+ *   stores the original hotkey actions, centers the window on the screen, and activates it to make it visible.
+ *   The storing of original hotkey actions is important to be able to restore them later.
+ */
 FUNCTION Main()
 
    Load Window Demo
@@ -26,7 +37,27 @@ FUNCTION Main()
 
 RETURN NIL
 
-
+/*
+ * FUNCTION ShowAllActiveHotKeys( cParentForm )
+ *
+ * Retrieves and formats a list of all active hotkeys associated with a given form.
+ *
+ * Parameters:
+ *   cParentForm (STRING): The name of the form for which to retrieve the hotkeys.
+ *
+ * Returns:
+ *   aRet (ARRAY): An array of strings, where each string represents a formatted hotkey combination (e.g., "Alt+C", "F2").
+ *                 Returns an empty array if no hotkeys are found for the specified form.
+ *
+ * Purpose:
+ *   This function is used to display the currently active hotkeys for a specific form. It iterates through the internal
+ *   HMG Extended control handles, identifies HOTKEY controls associated with the given form, and formats the hotkey
+ *   combinations into human-readable strings. This is useful for debugging or displaying available hotkeys to the user.
+ *
+ * Notes:
+ *   The aMods and acKeys arrays provide mappings between modifier keys and key codes to their string representations.
+ *   If a key code is not found in the anKeys array, an error message is displayed.
+ */
 FUNCTION ShowAllActiveHotKeys( cParentForm )
 
    LOCAL i, n, nParentFormHandle, nControlCount, aRet := {}, cTemp := ""
@@ -70,7 +101,22 @@ FUNCTION ShowAllActiveHotKeys( cParentForm )
 
 RETURN aRet
 
-
+/*
+ * FUNCTION ReleaseAllActiveHotKeys( cParentForm )
+ *
+ * Releases (erases) all active hotkeys associated with a given form.
+ *
+ * Parameters:
+ *   cParentForm (STRING): The name of the form for which to release the hotkeys.
+ *
+ * Returns:
+ *   NIL
+ *
+ * Purpose:
+ *   This function is used to remove all hotkey definitions from a specific form. It iterates through the internal
+ *   HMG Extended control handles, identifies HOTKEY controls associated with the given form, and calls the _EraseControl
+ *   function to remove them. This is useful for dynamically changing hotkey assignments or cleaning up hotkeys when a form is closed.
+ */
 FUNCTION ReleaseAllActiveHotKeys( cParentForm )
 
    LOCAL i, nParentFormHandle, nControlCount, z
@@ -89,7 +135,25 @@ FUNCTION ReleaseAllActiveHotKeys( cParentForm )
 
 RETURN NIL
 
-
+/*
+ * FUNCTION GetAllHotKeysActions()
+ *
+ * Retrieves information about all defined hotkeys in the application.
+ *
+ * Parameters:
+ *   None
+ *
+ * Returns:
+ *   aRet (ARRAY): An array of arrays. Each inner array contains information about a single hotkey, including:
+ *     - Parent Form Handle (NUMERIC): The handle of the form to which the hotkey is assigned.
+ *     - Modifier Key (NUMERIC): A numeric code representing the modifier key (e.g., ALT, CTRL, SHIFT).
+ *     - Key Code (NUMERIC): The numeric code of the key associated with the hotkey.
+ *     - Action Procedure (CODEBLOCK): The codeblock to execute when the hotkey is pressed.
+ *
+ * Purpose:
+ *   This function is used to create a snapshot of all currently defined hotkeys. This is useful for saving the hotkey
+ *   configuration, restoring it later, or performing other operations on the hotkey definitions.  This function is used to save the original hotkey settings before defining new ones.
+ */
 FUNCTION GetAllHotKeysActions()
 
    LOCAL i, aRet := {}
@@ -105,7 +169,20 @@ FUNCTION GetAllHotKeysActions()
 
 RETURN aRet
 
-
+/*
+ * FUNCTION RestoreAllHotKeysActions()
+ *
+ * Restores hotkey definitions based on a previously saved configuration.
+ *
+ * Purpose:
+ *   This function is used to restore hotkey definitions from a previously saved configuration, typically stored in the aOriginalKeys variable.
+ *   It iterates through the saved hotkey information and re-defines the hotkeys using the _DefineHotKey function. This is useful for restoring
+ *   the original hotkey configuration after temporary modifications or when the application is restarted.
+ *
+ * Notes:
+ *   The function relies on the aOriginalKeys MEMVAR, which should contain an array of hotkey information as returned by the GetAllHotKeysActions function.
+ *   The GetFormIndexByHandle and GetFormNameByIndex functions are used to retrieve the form name based on its handle.
+ */
 FUNCTION RestoreAllHotKeysActions()
 
    LOCAL i, cFName, nIndexForm

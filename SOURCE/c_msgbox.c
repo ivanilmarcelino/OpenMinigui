@@ -46,29 +46,38 @@
  ---------------------------------------------------------------------------*/
 #include <mgdefs.h>                 // Include Minigui framework definitions
 
-/* Undocumented Windows API function prototype */
-// MessageBoxTimeout is a Windows function that shows a message box with a timeout parameter
+// Displays a message box that automatically closes after a specified timeout period
 int WINAPI        MessageBoxTimeout( HWND, LPCTSTR, LPCTSTR, UINT, WORD, DWORD );
 
 // Declaration of external functions to retrieve the HINSTANCE and function addresses dynamically
 HINSTANCE         GetInstance( void );
 extern HB_PTRUINT wapi_GetProcAddress( HMODULE hModule, LPCSTR lpProcName );
 
-// Function: MESSAGEBOXINDIRECT
-// Purpose: This function provides a flexible way to display message boxes with various customization options. It allows specifying the owner window, text, caption, icon, style, help context ID, and language ID. It leverages the Windows API function MessageBoxIndirect.
-// Parameters:
-//   - hWnd: Handle to the owner window. If not provided or invalid, the active window is used.
-//   - cText: Text to display in the message box. Can be a string or a resource ID.
-//   - cCaption: Caption of the message box. Can be a string or a resource ID.
-//   - nStyle: Style of the message box (e.g., MB_OK, MB_YESNO).
-//   - xIcon: Icon to display in the message box. Can be a string or a resource ID.
-//   - hInst: Instance handle of the application. If not provided, the default instance is used.
-//   - nHelpId: Help context ID for the message box.
-//   - nProc: Not used. Reserved for future use.
-//   - nLang: Language ID for the message box.
-// Return Value:
-//   - Returns the ID of the button pressed by the user (e.g., IDOK, IDCANCEL, IDYES, IDNO).
-// Contributed by Andy Wos <andywos@unwired.com.au>
+/*
+ * FUNCTION: MESSAGEBOXINDIRECT
+ *
+ * Displays a message box using the MSGBOXPARAMS structure, allowing for greater control over the message box's appearance and behavior.
+ *
+ * Parameters:
+ *   hWnd: (Optional) Handle of the owner window. If omitted or invalid, the active window is used. Type: HWND.
+ *   cText: Text to display in the message box. Can be a string or a resource ID. Type: STRING or NUMERIC.
+ *   cCaption: Caption of the message box. Can be a string or a resource ID. Type: STRING or NUMERIC.
+ *   nStyle: Style of the message box (e.g., MB_OK, MB_YESNO, MB_ICONERROR). Type: NUMERIC.
+ *   xIcon: (Optional) Icon to display in the message box. Can be a string (icon name) or a resource ID. Type: STRING or NUMERIC.
+ *   hInst: (Optional) Instance handle of the application. If omitted, the default instance is used. Type: HINSTANCE.
+ *   nHelpId: (Optional) Help context ID for the message box. Type: NUMERIC.
+ *   nProc: (Not used) Reserved for future use.
+ *   nLang: (Optional) Language ID for the message box. Type: NUMERIC.
+ *
+ * Returns:
+ *   The ID of the button pressed by the user (e.g., IDOK, IDCANCEL, IDYES, IDNO). Type: NUMERIC.
+ *
+ * Purpose:
+ *   This function provides a flexible way to display message boxes with various customization options.
+ *   It allows specifying the owner window, text, caption, icon, style, help context ID, and language ID.
+ *   It leverages the Windows API function MessageBoxIndirect. This is useful for creating visually appealing
+ *   and informative message boxes tailored to the specific needs of the application.
+ */
 HB_FUNC( MESSAGEBOXINDIRECT )
 {
    // Initialize the MSGBOXPARAMS structure with default values
@@ -101,15 +110,24 @@ HB_FUNC( MESSAGEBOXINDIRECT )
    hmg_ret_NINT( MessageBoxIndirect( &mbp ) );
 }
 
-// Function: MESSAGEBOXTIMEOUT
-// Purpose: This function displays a message box with a specified timeout. If the user doesn't interact with the message box within the timeout period, the function returns. It uses the Windows API function MessageBoxTimeout.
-// Parameters:
-//   - Text: Text to display in the message box.
-//   - Caption: Caption of the message box.
-//   - nTypeButton: Type of buttons to display in the message box (e.g., MB_OK, MB_YESNO). Defaults to MB_OK.
-//   - nMilliseconds: Timeout duration in milliseconds. If not provided, the message box will not timeout.
-// Return Value:
-//   - Returns the ID of the button pressed by the user (e.g., IDOK, IDCANCEL, IDYES, IDNO). If the message box times out, it may return a value indicating timeout (typically 0).
+/*
+ * FUNCTION: MESSAGEBOXTIMEOUT
+ *
+ * Displays a message box with a specified timeout period. If the user does not interact with the message box within the timeout, the function returns.
+ *
+ * Parameters:
+ *   Text: The text to display in the message box. Type: STRING.
+ *   Caption: The caption of the message box. Type: STRING.
+ *   nTypeButton: (Optional) The type of buttons to display in the message box (e.g., MB_OK, MB_YESNO). Defaults to MB_OK. Type: NUMERIC.
+ *   nMilliseconds: (Optional) The timeout duration in milliseconds. If omitted, the message box will not timeout. Type: NUMERIC.
+ *
+ * Returns:
+ *   The ID of the button pressed by the user (e.g., IDOK, IDCANCEL, IDYES, IDNO). If the message box times out, it may return a value indicating timeout (typically 0). Type: NUMERIC.
+ *
+ * Purpose:
+ *   This function allows displaying message boxes that automatically close after a specified period of time.
+ *   This is useful for displaying informational messages that do not require user interaction, or for preventing the application from being blocked indefinitely if the user does not respond to a message box.
+ */
 HB_FUNC( MESSAGEBOXTIMEOUT )
 {
    HWND        hWnd = GetActiveWindow();                    // Use the active window as the message box owner
@@ -124,23 +142,33 @@ HB_FUNC( MESSAGEBOXTIMEOUT )
    // Message box type and timeout duration (default to MB_OK button and no timeout if not specified)
    UINT        uType = hmg_par_UINT_def( 3, MB_OK );
    WORD        wLanguageId = MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL );
-   DWORD       dwMilliseconds = HB_ISNUM( 4 ) ? hmg_par_DWORD( 4 ) : ( DWORD ) 0xFFFFFFFF; // Timeout duration
+   DWORD       dwMilliseconds = HB_ISNUM( 4 ) ? hmg_par_DWORD( 4 ) : ( DWORD ) 0xFFFFFFFF;   // Timeout duration
 
    // Display the message box with a timeout and return the selected button ID
    hmg_ret_NINT( MessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds ) );
 }
 
-// Function: MessageBoxTimeout
-// Purpose: This function is a wrapper around the Windows API function MessageBoxTimeout. It dynamically loads the MessageBoxTimeout function from User32.dll at runtime. This allows the application to run on systems where MessageBoxTimeout is not available (older Windows versions) without causing a crash. If the function is not found, it returns 0.
-// Parameters:
-//   - hWnd (HWND): Handle to the owner window.
-//   - lpText (LPCTSTR): Text to display in the message box.
-//   - lpCaption (LPCTSTR): Caption of the message box.
-//   - uType (UINT): Type of buttons to display in the message box (e.g., MB_OK, MB_YESNO).
-//   - wLanguageId (WORD): Language ID for the message box.
-//   - dwMilliseconds (DWORD): Timeout duration in milliseconds.
-// Return Value:
-//   - Returns the ID of the button pressed by the user (e.g., IDOK, IDCANCEL, IDYES, IDNO). If the message box times out or the function is not found, it returns 0.
+/*
+ * FUNCTION: MessageBoxTimeout
+ *
+ * A wrapper function for the Windows API function MessageBoxTimeout. It dynamically loads the MessageBoxTimeout function from User32.dll at runtime.
+ *
+ * Parameters:
+ *   hWnd: Handle to the owner window. Type: HWND.
+ *   lpText: Text to display in the message box. Type: LPCTSTR.
+ *   lpCaption: Caption of the message box. Type: LPCTSTR.
+ *   uType: Type of buttons to display in the message box (e.g., MB_OK, MB_YESNO). Type: UINT.
+ *   wLanguageId: Language ID for the message box. Type: WORD.
+ *   dwMilliseconds: Timeout duration in milliseconds. Type: DWORD.
+ *
+ * Returns:
+ *   The ID of the button pressed by the user (e.g., IDOK, IDCANCEL, IDYES, IDNO). If the message box times out or the function is not found, it returns 0. Type: INTEGER.
+ *
+ * Purpose:
+ *   This function provides a way to use the MessageBoxTimeout API even on systems where it is not natively available (older Windows versions).
+ *   It dynamically loads the function from User32.dll at runtime, allowing the application to run without crashing on older systems.
+ *   If the function is not found, it gracefully returns 0, indicating that the message box timed out or that the timeout functionality is not available.
+ */
 int WINAPI MessageBoxTimeout( HWND hWnd, LPCTSTR lpText, LPCTSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds )
 {
    // Define a pointer to the MessageBoxTimeout function type

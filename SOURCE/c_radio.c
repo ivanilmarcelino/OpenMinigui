@@ -123,7 +123,7 @@ HB_FUNC( INITRADIOGROUP )
    );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpWindowName );  // Free allocated memory if Unicode conversion was used
+   hb_xfree( lpWindowName );  // Free allocated memory if Unicode conversion was used
 #endif
 }
 
@@ -182,6 +182,6 @@ HB_FUNC( INITRADIOBUTTON )
    );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpWindowName );  // Free allocated memory if Unicode conversion was used
+   hb_xfree( lpWindowName );  // Free allocated memory if Unicode conversion was used
 #endif
 }

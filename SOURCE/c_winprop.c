@@ -297,7 +297,7 @@ HB_FUNC( REMOVEPROP )
 #else
    lpString = AnsiToWide( ( char * ) hb_parc( 2 ) );
    hMem = RemovePropW( hwnd, lpString );
-   hb_xfree( ( TCHAR * ) lpString );
+   hb_xfree( lpString );
 #endif
    if( ( NULL != hMem ) && ( !hb_parldef( 3, HB_FALSE ) ) )
    {

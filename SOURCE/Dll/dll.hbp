@@ -1,0 +1,16 @@
+#
+# debugger.hbp
+#
+
+-hblib
+-inc
+-o../../lib/dll
+
+-I../../include
+
+-w -es2 -ko -q0
+
+#-hbx=../../include/debugger.hbx
+
+_wincall.c
+_windll.c

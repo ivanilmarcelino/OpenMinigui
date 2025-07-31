@@ -43,7 +43,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
    "HWGUI"
    Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
----------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 
 #include "minigui.ch"
 
@@ -318,6 +318,11 @@ FUNCTION _DefineItemMessage ( ControlName, ParentControl, x, y, caption, Procedu
       Eval ( _HMG_bOnControlInit, k, mVar )
    ENDIF
 
+   IF _HMG_aControlSpacing[ k ] > 0 .AND. _HMG_aControlFontColor[ k ] == NIL
+      fontcolor := BLACK
+      _HMG_aControlFontColor[ k ] := fontcolor
+   ENDIF
+
    IF IsArrayRGB( backcolor ) .OR. IsArrayRGB( fontcolor )
       SendMessage( ParentForm, SB_SETTEXT, hb_bitOr( _HMG_StatusItemCount - 1, SBT_OWNERDRAW ), 0 )
    ENDIF
@@ -340,7 +345,6 @@ FUNCTION _SetStatusClock ( BarName, FormName, width, tooltip, action, lAMPM, bac
    IF ! _HMG_BeginWindowActive
       FormName := GetParentFormName( GetControlIndexByHandle ( _HMG_ActiveStatusHandle ) )
    ENDIF
-
 #endif
 
    _DefineTimer ( 'StatusTimer', FormName, 1000, {|| _SetItem ( BarName, FormName, nrItem, iif( lAMPM, AMPM( Time() ), Time() ) ) } )
@@ -348,37 +352,53 @@ FUNCTION _SetStatusClock ( BarName, FormName, width, tooltip, action, lAMPM, bac
 RETURN NIL
 
 *-----------------------------------------------------------------------------*
-FUNCTION _SetStatusKeybrd ( BarName, FormName, width, tooltip, action )
+FUNCTION _SetStatusKeybrd ( BarName, FormName, Width, Tooltip, Action )
 *-----------------------------------------------------------------------------*
-   LOCAL nrItem1, nrItem2, nrItem3
+   LOCAL nNumLockItem, nCapsLockItem, nInsertItem
+   LOCAL bKeyAction
 
    __defaultNIL( @Width, 75 )
    __defaultNIL( @ToolTip, "" )
    __defaultNIL( @Action, "" )
 
-   nrItem1 := _DefineItemMessage( "TimerNum", BarName, 0, 0, "NumLock", ;
-      iif( Empty( Action ), {|| iif( _HMG_IsXPorLater, KeyToggleNT( VK_NUMLOCK ), KeyToggle( VK_NUMLOCK ) ) }, Action ), WIDTH + 20, 0, ;
-      iif( IsNumLockActive(), "zzz_led_on", "zzz_led_off" ), "", ToolTip )
+   bKeyAction := iif( Empty( Action ), {|| KeyTogglePlatform( VK_NUMLOCK ) }, Action )
 
-   nrItem2 := _DefineItemMessage( "TimerCaps", BarName, 0, 0, "CapsLock", ;
-      iif( Empty( Action ), {|| iif( _HMG_IsXPorLater, KeyToggleNT( VK_CAPITAL ), KeyToggle( VK_CAPITAL ) ) }, Action ), WIDTH + 25, 0, ;
-      iif( IsCapsLockActive(), "zzz_led_on", "zzz_led_off" ), "", ToolTip )
+   nNumLockItem := _DefineItemMessage( "TimerNum", BarName, 0, 0, "NumLock", ;
+      bKeyAction, Width + 20, 0, iif( IsNumLockActive(), "zzz_led_on", "zzz_led_off" ), "", ToolTip )
 
-   nrItem3 := _DefineItemMessage( "TimerInsert", BarName, 0, 0, "Insert", ;
-      iif( Empty( Action ), {|| iif( _HMG_IsXPorLater, KeyToggleNT( VK_INSERT ), KeyToggle( VK_INSERT ) ) }, Action ), WIDTH, 0, ;
-      iif( IsInsertActive(), "zzz_led_on", "zzz_led_off" ), "", ToolTip )
+   bKeyAction := iif( Empty( Action ), {|| KeyTogglePlatform( VK_CAPITAL ) }, Action )
+
+   nCapsLockItem := _DefineItemMessage( "TimerCaps", BarName, 0, 0, "CapsLock", ;
+      bKeyAction, Width + 25, 0, iif( IsCapsLockActive(), "zzz_led_on", "zzz_led_off" ), "", ToolTip )
+
+   bKeyAction := iif( Empty( Action ), {|| KeyTogglePlatform( VK_INSERT ) }, Action )
+
+   nInsertItem := _DefineItemMessage( "TimerInsert", BarName, 0, 0, "Insert", ;
+      bKeyAction, Width, 0, iif( IsInsertActive(), "zzz_led_on", "zzz_led_off" ), "", ToolTip )
 
 #ifdef _HMG_COMPAT_
    IF ! _HMG_BeginWindowActive
       FormName := GetParentFormName( GetControlIndexByHandle ( _HMG_ActiveStatusHandle ) )
    ENDIF
-
 #endif
 
    _DefineTimer ( 'StatusKeyBrd', FormName, 250, ;
-      {|| _SetStatusIcon ( BarName, FormName, nrItem1, iif ( IsNumLockActive(), "zzz_led_on", "zzz_led_off" ) ), ;
-      _SetStatusIcon ( BarName, FormName, nrItem2, iif ( IsCapsLockActive(), "zzz_led_on", "zzz_led_off" ) ), ;
-      _SetStatusIcon ( BarName, FormName, nrItem3, iif ( IsInsertActive(), "zzz_led_on", "zzz_led_off" ) ) } )
+      {|| ;
+         _SetStatusIcon ( BarName, FormName, nNumLockItem, iif( IsNumLockActive(), "zzz_led_on", "zzz_led_off" ) ), ;
+         _SetStatusIcon ( BarName, FormName, nCapsLockItem, iif( IsCapsLockActive(), "zzz_led_on", "zzz_led_off" ) ), ;
+         _SetStatusIcon ( BarName, FormName, nInsertItem, iif( IsInsertActive(), "zzz_led_on", "zzz_led_off" ) ) ;
+      } )
+
+RETURN NIL
+
+*-----------------------------------------------------------------------------*
+FUNCTION KeyTogglePlatform( nKeyCode )
+*-----------------------------------------------------------------------------*
+   IF _HMG_IsXPorLater
+      KeyToggleNT( nKeyCode )
+   ELSE
+      KeyToggle( nKeyCode )
+   ENDIF
 
 RETURN NIL
 
@@ -442,24 +462,30 @@ STATIC FUNCTION AMPM( cTime )
 RETURN cTime
 
 // (GF) HMG 1.2 Extended Build 30
+#define KBD_CAPS_WIDTH    38
+#define KBD_NUMLOCK_WIDTH 42
+#define KBD_SCROLL_WIDTH  44
 *-----------------------------------------------------------------------------*
 FUNCTION _SetStatusBarKbd ( BarName, FormName )
 *-----------------------------------------------------------------------------*
    LOCAL i := GetControlIndex ( BarName, FormName )
+   LOCAL hWnd := GetFormHandle( FormName )
 
    _DefineItemMessage ( ITEMNAME, BarName, 0, 0, ;
       hb_defaultValue( _HMG_aControlValue[ i ], GetProperty ( FormName, "Title" ) ), , , 0, , "RAISED" )
 
-   _DefineItemMessage ( ITEMNAME, BarName, 0, 0, "CAP", , iif( _HMG_IsThemed, 38, 36 ), 0, , , , , , SILVER )
+   _DefineItemMessage ( ITEMNAME, BarName, 0, 0, "CAP", , iif( _HMG_IsThemed, KBD_CAPS_WIDTH, KBD_CAPS_WIDTH - 2 ), 0, , , , , , SILVER )
 
-   _DefineItemMessage ( ITEMNAME, BarName, 0, 0, "NUM", , 42, 0, , , , , , SILVER )
+   _DefineItemMessage ( ITEMNAME, BarName, 0, 0, "NUM", , KBD_NUMLOCK_WIDTH, 0, , , , , , SILVER )
 
-   _DefineItemMessage ( ITEMNAME, BarName, 0, 0, "SCRL", , 44, 0, , , , , , SILVER )
+   _DefineItemMessage ( ITEMNAME, BarName, 0, 0, "SCRL", , KBD_SCROLL_WIDTH, 0, , , , , , SILVER )
 
    _DefineTimer ( "StatusBarKbd", FormName, 250, ;
-      {|| _SetStatusItemProperty( 2, iif( IsCapsLockActive(), BLACK, SILVER ), GetFormHandle( FormName ), STATUS_ITEM_FONTCOLOR ), ;
-      _SetStatusItemProperty( 3, iif( IsNumLockActive(), BLACK, SILVER ), GetFormHandle( FormName ), STATUS_ITEM_FONTCOLOR ), ;
-      _SetStatusItemProperty( 4, iif( IsScrollLockActive(), BLACK, SILVER ), GetFormHandle( FormName ), STATUS_ITEM_FONTCOLOR ) } )
+      {|| ;
+         _SetStatusItemProperty( 2, iif( IsCapsLockActive(), BLACK, SILVER ), hWnd, STATUS_ITEM_FONTCOLOR ), ;
+         _SetStatusItemProperty( 3, iif( IsNumLockActive(), BLACK, SILVER ), hWnd, STATUS_ITEM_FONTCOLOR ), ;
+         _SetStatusItemProperty( 4, iif( IsScrollLockActive(), BLACK, SILVER ), hWnd, STATUS_ITEM_FONTCOLOR ) ;
+      } )
 
 RETURN NIL
 
@@ -480,7 +506,7 @@ FUNCTION _GetStatusItemWidth( hWnd, nItem )
 
    NEXT
 
-RETURN iif( ! Empty( nItem ), aItemWidth[ nItem ], aItemWidth )
+RETURN iif( nItem == NIL, aItemWidth, aItemWidth[ hb_defaultValue( nItem, 1 ) ] )
 
 *-----------------------------------------------------------------------------*
 FUNCTION _SetStatusItemProperty( nItem, Value, hWnd, nType )

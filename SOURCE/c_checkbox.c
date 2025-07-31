@@ -137,7 +137,7 @@ HB_FUNC( INITCHECKBOX )
    );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpWindowName );
+   hb_xfree( lpWindowName );
 #endif
 }
 
@@ -190,7 +190,7 @@ HB_FUNC( INITCHECKBUTTON )
    );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpWindowName );
+   hb_xfree( lpWindowName );
 #endif
 }
 
@@ -263,6 +263,6 @@ HB_FUNC( INITIMAGECHECKBUTTON )
    }
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpWindowName );
+   hb_xfree( lpWindowName );
 #endif
 }

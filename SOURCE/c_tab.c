@@ -95,9 +95,16 @@ void        RegisterResource( HANDLE hResource, LPCSTR szType );
  * Returns:
  *   - Handle to the created tab control window (HWND).
  *
- * This function creates a tab control, sets its styles based on the provided parameters,
- * and populates it with tab items from the given array of captions. It handles both
- * ANSI and Unicode environments by converting the captions appropriately.
+ * Purpose:
+ *   This function creates a tab control, sets its styles based on the provided parameters,
+ *   and populates it with tab items from the given array of captions. It handles both
+ *   ANSI and Unicode environments by converting the captions appropriately.
+ *   The tab control allows users to switch between different views or panels within a window.
+ *
+ * Notes:
+ *   The function iterates through the tab captions array in reverse order to ensure that the tabs
+ *   are displayed in the correct order in the tab control. This is due to the way TabCtrl_InsertItem
+ *   inserts items at a specific index, shifting existing items.
  */
 HB_FUNC( INITTABCONTROL )
 {
@@ -188,7 +195,7 @@ HB_FUNC( INITTABCONTROL )
 
       TabCtrl_InsertItem( hbutton, 0, &tie );         // Insert tab item at position 0.
 #ifdef UNICODE
-      hb_xfree( ( TCHAR * ) lpText );                 // Free allocated memory for Unicode strings.
+      hb_xfree( lpText );                 // Free allocated memory for Unicode strings.
 #endif
    }
 
@@ -209,7 +216,9 @@ HB_FUNC( INITTABCONTROL )
  * Returns:
  *   - The index of the previously selected tab, or -1 if there was no previously selected tab.
  *
- * This function allows you to programmatically change the active tab in a tab control.
+ * Purpose:
+ *   This function allows you to programmatically change the active tab in a tab control.
+ *   This is useful for responding to events or programmatically navigating the user interface.
  */
 HB_FUNC( TABCTRL_SETCURSEL )
 {
@@ -227,7 +236,9 @@ HB_FUNC( TABCTRL_SETCURSEL )
  * Returns:
  *   - The index of the currently selected tab (1-based). Returns 1 if no tab is selected.
  *
- * This function is useful for determining which tab is currently active in the tab control.
+ * Purpose:
+ *   This function is useful for determining which tab is currently active in the tab control.
+ *   This allows the application to display the correct content or perform actions based on the selected tab.
  */
 HB_FUNC( TABCTRL_GETCURSEL )
 {
@@ -247,8 +258,10 @@ HB_FUNC( TABCTRL_GETCURSEL )
  * Returns:
  *   - None.
  *
- * This function adds a new tab to the tab control with the specified text.
- * The new tab is inserted at the given position, shifting existing tabs if necessary.
+ * Purpose:
+ *   This function adds a new tab to the tab control with the specified text.
+ *   The new tab is inserted at the given position, shifting existing tabs if necessary.
+ *   This allows for dynamic modification of the tab control's structure.
  */
 HB_FUNC( TABCTRL_INSERTITEM )
 {
@@ -265,7 +278,7 @@ HB_FUNC( TABCTRL_INSERTITEM )
    TabCtrl_InsertItem( hmg_par_raw_HWND( 1 ), hb_parni( 2 ), &tie ); // Insert item.
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpText );           // Free memory for Unicode strings.
+   hb_xfree( lpText );           // Free memory for Unicode strings.
 #endif
 }
 
@@ -281,8 +294,10 @@ HB_FUNC( TABCTRL_INSERTITEM )
  * Returns:
  *   - None.
  *
- * This function removes a tab from the tab control at the given position.
- * Subsequent tabs are shifted to fill the gap.
+ * Purpose:
+ *   This function removes a tab from the tab control at the given position.
+ *   Subsequent tabs are shifted to fill the gap. This allows for dynamic modification
+ *   of the tab control's structure, such as removing tabs that are no longer needed.
  */
 HB_FUNC( TABCTRL_DELETEITEM )
 {
@@ -302,7 +317,9 @@ HB_FUNC( TABCTRL_DELETEITEM )
  * Returns:
  *   - None.
  *
- * This function allows you to change the text displayed on a tab in the tab control.
+ * Purpose:
+ *   This function allows you to change the text displayed on a tab in the tab control.
+ *   This is useful for dynamically updating the tab captions based on application state or user input.
  */
 HB_FUNC( SETTABCAPTION )
 {
@@ -319,7 +336,7 @@ HB_FUNC( SETTABCAPTION )
    TabCtrl_SetItem( hmg_par_raw_HWND( 1 ), hb_parni( 2 ) - 1, &tie );   // Set tab caption.
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpText );              // Free memory for Unicode strings.
+   hb_xfree( lpText );              // Free memory for Unicode strings.
 #endif
 }
 
@@ -338,8 +355,16 @@ HB_FUNC( SETTABCAPTION )
  * Returns:
  *   - Handle to the created image list (HIMAGELIST).
  *
- * This function loads images from the specified files, creates an image list,
- * associates the image list with the tab control, and assigns an image to each tab.
+ * Purpose:
+ *   This function loads images from the specified files, creates an image list,
+ *   associates the image list with the tab control, and assigns an image to each tab.
+ *   This allows for visually enhancing the tab control with icons or other images,
+ *   improving the user experience.
+ *
+ * Notes:
+ *   The function uses HMG_ImageListLoadFirst to load the first image and determine the image dimensions.
+ *   Subsequent images are added using HMG_ImageListAdd. The image list is registered as a resource
+ *   to ensure proper memory management.
  */
 HB_FUNC( ADDTABBITMAP )
 {
@@ -401,8 +426,10 @@ HB_FUNC( ADDTABBITMAP )
  * Returns:
  *   - Handle to the window at the specified point (HWND).
  *
- * This function is useful for determining which window is located at a particular
- * screen coordinate.
+ * Purpose:
+ *   This function is useful for determining which window is located at a particular
+ *   screen coordinate. This can be used for tasks such as identifying the window
+ *   under the mouse cursor or implementing drag-and-drop functionality.
  */
 HB_FUNC( WINDOWFROMPOINT )
 {
@@ -424,7 +451,13 @@ HB_FUNC( WINDOWFROMPOINT )
  *   - A DWORD value containing the X and Y coordinates of the cursor. The X coordinate is the low-order word,
  *     and the Y coordinate is the high-order word.
  *
- * This function is useful for determining the cursor position when handling window messages.
+ * Purpose:
+ *   This function is useful for determining the cursor position when handling window messages.
+ *   This can be used to track mouse movements, handle click events, or implement custom input handling.
+ *
+ * Notes:
+ *   The return value is a DWORD where the low-order word contains the X coordinate and the high-order word
+ *   contains the Y coordinate. These values can be extracted using bitwise operations or helper functions.
  */
 HB_FUNC( GETMESSAGEPOS )
 {

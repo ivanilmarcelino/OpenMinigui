@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------
+/*
    MINIGUI - Harbour Win32 GUI library source code
 
    Copyright 2002-2010 Roberto Lopez <harbourminigui@gmail.com>
@@ -45,65 +45,94 @@
 
    TOOLBAREX and TOOLBUTTONEX controls source code
    (C)2005 Janusz Pora <januszpora@onet.eu>
+*/
 
- --------------------------------------------------------------------------*/
-#define _WIN32_IE    0x0501   // Define minimum Internet Explorer version
-#define _WIN32_WINNT 0x0502   // Define minimum Windows version as Windows Server 2003
+// Define minimum supported versions for Internet Explorer and Windows
+#define _WIN32_IE    0x0501
+#define _WIN32_WINNT 0x0502
 
-#include <mgdefs.h>           // Include MiniGUI definitions
+#include <mgdefs.h>     // Include MiniGUI definitions
 
-// Disable deprecation warnings in Microsoft compilers
+// Disable deprecation warnings for Microsoft compilers
 #if defined( _MSC_VER )
 #pragma warning( disable : 4996 )
 #endif
-
-#include <commctrl.h>         // Include necessary Windows control definitions
+#include <commctrl.h>   // Include necessary Windows control definitions
 
 // Define the number of toolbar buttons
 #define NUM_TOOLBAR_BUTTONS   10
 
-// Load a bitmap image with custom specifications and scaling
-extern HBITMAP HMG_LoadPicture
-               (
-                  const char  *FileName,
-                  int         New_Width,
-                  int         New_Height,
-                  HWND        hWnd,
-                  int         ScaleStretch,
-                  int         Transparent,
-                  long        BackgroundColor,
-                  int         AdjustImage,
-                  HB_BOOL     bAlphaFormat,
-                  int         iAlpfaConstant
-               );
+// External function to load a bitmap image with custom specifications and scaling
+extern HBITMAP    HMG_LoadPicture
+                  (
+                     const char  *FileName,
+                     int         New_Width,
+                     int         New_Height,
+                     HWND        hWnd,
+                     int         ScaleStretch,
+                     int         Transparent,
+                     long        BackgroundColor,
+                     int         AdjustImage,
+                     HB_BOOL     bAlphaFormat,
+                     int         iAlpfaConstant
+                  );
 
+// Function to convert ANSI string to wide string in UNICODE mode
 #ifdef UNICODE
-// Convert ANSI string to wide string in UNICODE mode
 LPWSTR            AnsiToWide( LPCSTR );
 #endif
 
-// Get the instance handle of the current application
+// Function to get the instance handle of the current application
 HINSTANCE         GetInstance( void );
 
-// Get handle to resources for the application
+// Function to get handle to resources for the application
 HINSTANCE         GetResources( void );
 
-// MiniGUI resources control
+// Functions for managing resources
 void              RegisterResource( HANDLE hResource, LPCSTR szType );
 void pascal       DelResource( HANDLE hResource ); // Deletes a specified resource
 
 // Global pointers and counters for managing toolbar buttons
-static LPTBBUTTON lpSaveButtons;                // Pointer to save button states
-static int        nResetCount, buttonCount;     // Reset and button counters
-static int        isInSizeMsg = 0;              // Tracks if a size message is in process
+static LPTBBUTTON lpSaveButtons;                   // Pointer to save button states
+static int        nResetCount, buttonCount;        // Reset and button counters
+static int        isInSizeMsg = 0;                 // Tracks if a size message is in process
 
-// Initializes a toolbar with customizable styles and appearance
+/*
+ * FUNCTION: INITTOOLBAR
+ *
+ * Creates and initializes a toolbar control with specified styles and properties.
+ *
+ * Parameters:
+ *   1  : HWND (Parent Window Handle) - The handle of the parent window to which the toolbar will be attached.
+ *   2  : Unused.
+ *   3  : HMENU (Menu Handle) - The menu handle associated with the toolbar.  This is often used for command routing.
+ *   4  : Unused.
+ *   5  : Unused.
+ *   6  : NUMERIC (Button Width) - The desired width of the toolbar buttons. If 0, the default width is used.
+ *   7  : NUMERIC (Button Height) - The desired height of the toolbar buttons. If 0, the default height is used.
+ *   8  : Unused.
+ *   9  : Unused.
+ *   10 : LOGICAL (Flat Style) - .T. to create a flat toolbar; .F. for a standard toolbar.
+ *   11 : LOGICAL (Bottom Alignment) - .T. to align the toolbar to the bottom of the parent window; .F. for top alignment.
+ *   12 : LOGICAL (List Style) - .T. to create a list-style toolbar (text on the right of the icon); .F. for a standard toolbar.
+ *   13 : LOGICAL (No Parent Alignment) - .T. to prevent the toolbar from automatically aligning with the parent window; .F. for automatic alignment.
+ *   14 : LOGICAL (Client Edge) - .T. to add a client edge border to the toolbar; .F. for no border.
+ *   15 : LOGICAL (Wrapable) - .T. to allow the toolbar to wrap its buttons onto multiple lines if it's too wide; .F. to prevent wrapping.
+ *   16 : LOGICAL (Adjustable) - .T. to make the toolbar adjustable (e.g., allow users to customize it); .F. for a fixed toolbar.
+ *
+ * Returns:
+ *   HWND (Toolbar Window Handle) - The handle of the newly created toolbar window.  Returns NULL if the toolbar creation fails.
+ *
+ * Purpose:
+ *   This function provides a flexible way to create toolbar controls with various styles and appearances.
+ *   It allows developers to customize the toolbar's look and feel to match the application's design.
+ */
 HB_FUNC( INITTOOLBAR )
 {
    HWND  hwndTB;
-   DWORD Style = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | TBSTYLE_TOOLTIPS; // Basic toolbar style
-   DWORD ExStyle = 0;                           // Extended styles (initially none)
-   DWORD TbExStyle = TBSTYLE_EX_DRAWDDARROWS;   // Toolbar extended style for dropdown arrows
+   DWORD Style = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | TBSTYLE_TOOLTIPS;  // Basic toolbar style
+   DWORD ExStyle = 0;                          // Extended styles (initially none)
+   DWORD TbExStyle = TBSTYLE_EX_DRAWDDARROWS;  // Toolbar extended style for dropdown arrows
 
    // Apply extended style if specified
    if( hb_parl( 14 ) )
@@ -162,20 +191,51 @@ HB_FUNC( INITTOOLBAR )
    hmg_ret_raw_HWND( hwndTB );
 }
 
-// Adds a button to the toolbar with an optional image and styles
+/*
+ * FUNCTION: INITTOOLBUTTON
+ *
+ * Adds a button to an existing toolbar control, allowing customization of its appearance,
+ * command ID, and associated image.
+ *
+ * Parameters:
+ *   1  : HWND (Toolbar Window Handle) - The handle of the toolbar window to which the button will be added.
+ *   2  : STRING (Button Text) - The text to display on the button.  If empty, no text is displayed.
+ *   3  : NUMERIC (Command ID) - The command ID associated with the button.  This ID is sent to the parent window when the button is clicked.
+ *   4  : Unused.
+ *   5  : Unused.
+ *   6  : NUMERIC (Button Width) - The width of the button.  This parameter is used in conjunction with parameter 7 and 16 to scale the image.
+ *   7  : NUMERIC (Button Height) - The height of the button. This parameter is used in conjunction with parameter 6 and 16 to scale the image.
+ *   8  : STRING (Image File Path) - The path to the image file to use as the button's icon. If empty, no icon is displayed.
+ *   9  : LOGICAL (Transparent Image) - .T. to make the image background transparent; .F. for an opaque background.
+ *   10 : LOGICAL (Add Separator) - .T. to add a separator after the button; .F. for no separator.
+ *   11 : LOGICAL (AutoSize) - .T. to allow the button to automatically adjust its size to fit its content; .F. for a fixed size.
+ *   12 : LOGICAL (Checkable) - .T. to make the button checkable (toggle state); .F. for a standard button.
+ *   13 : LOGICAL (Group) - .T. to make the button part of a group (mutually exclusive selection); .F. for an independent button.
+ *   14 : LOGICAL (Dropdown) - .T. to make the button a dropdown button (displays a menu when clicked); .F. for a standard button.
+ *   15 : LOGICAL (Whole Dropdown) - .T. to make the entire button area act as a dropdown trigger; .F. for only the dropdown arrow.
+ *   16 : LOGICAL (Scale Image) - .T. to scale the image to fit the button size specified by parameters 6 and 7; .F. for no scaling.
+ *
+ * Returns:
+ *   HANDLE (Image Handle) - The handle of the image used in the button.  This handle can be used to manage the image resource.
+ *
+ * Purpose:
+ *   This function allows developers to add buttons to a toolbar control with a high degree of customization.
+ *   It supports various button styles, including checkable buttons, dropdown buttons, and buttons with custom images.
+ *   The function simplifies the process of creating complex toolbars with a variety of interactive elements.
+ */
 HB_FUNC( INITTOOLBUTTON )
 {
    HWND        hwndTB = hmg_par_raw_HWND( 1 );  // Toolbar window handle
    HWND        himage = NULL;                   // Image handle (initially NULL)
-   TBADDBITMAP tbab;                            // Structure for adding bitmap to the toolbar
-   TBBUTTON    tbb[NUM_TOOLBAR_BUTTONS];        // Array of toolbar buttons
-   DWORD       tSize;                           // Holds toolbar padding
-   int         index, nPoz, nBtn;               // Indices and button count
-   int         Style = TBSTYLE_BUTTON;          // Initial button style
+   TBADDBITMAP tbab;                      // Structure for adding bitmap to the toolbar
+   TBBUTTON    tbb[NUM_TOOLBAR_BUTTONS];  // Array of toolbar buttons
+   DWORD       tSize;                     // Holds toolbar padding
+   int         index, nPoz, nBtn;         // Indices and button count
+   int         Style = TBSTYLE_BUTTON;    // Initial button style
 #ifndef UNICODE
-   LPCSTR      lpText;                          // ANSI text pointer for non-UNICODE
+   LPCSTR      lpText;                    // ANSI text pointer for non-UNICODE
 #else
-   LPWSTR      lpText;                          // Wide text pointer for UNICODE
+   LPWSTR      lpText;                    // Wide text pointer for UNICODE
 #endif
 
    // Set button image if image path is provided
@@ -208,7 +268,7 @@ HB_FUNC( INITTOOLBUTTON )
          );
    }
 
-   memset( tbb, 0, sizeof tbb );            // Zero out button structure
+   memset( tbb, 0, sizeof tbb );          // Zero out button structure
 
    // Set button style as autosize if specified
    if( hb_parl( 11 ) )
@@ -217,22 +277,22 @@ HB_FUNC( INITTOOLBUTTON )
    }
 
    nBtn = 0;
-   tbab.hInst = NULL;                       // Use custom image handle
+   tbab.hInst = NULL;                     // Use custom image handle
    tbab.nID = ( UINT_PTR ) himage;
-   nPoz = ( int ) SendMessage( hwndTB, TB_ADDBITMAP, ( WPARAM ) 1, ( LPARAM ) &tbab );  // Add bitmap to toolbar
+   nPoz = ( int ) SendMessage( hwndTB, TB_ADDBITMAP, ( WPARAM ) 1, ( LPARAM ) & tbab );   // Add bitmap to toolbar
 
    // Set button text if specified
    if( hb_parclen( 2 ) > 0 )
    {
 #ifndef UNICODE
-      lpText = hb_parc( 2 );                // Get ANSI text
+      lpText = hb_parc( 2 );  // Get ANSI text
 #else
       lpText = AnsiToWide( ( char * ) hb_parc( 2 ) ); // Convert to wide text if UNICODE
 #endif
       index = ( int ) SendMessage( hwndTB, TB_ADDSTRING, ( WPARAM ) 0, ( LPARAM ) lpText );
       tbb[nBtn].iString = index;
 #ifdef UNICODE
-      hb_xfree( lpText );                   // Free allocated memory in UNICODE
+      hb_xfree( lpText );                    // Free allocated memory in UNICODE
 #endif
    }
 
@@ -280,10 +340,22 @@ HB_FUNC( INITTOOLBUTTON )
    // Add buttons to the toolbar
    SendMessage( hwndTB, TB_ADDBUTTONS, ( WPARAM ) nBtn, ( LPARAM ) tbb );
 
-   ShowWindow( hwndTB, SW_SHOW );           // Display the toolbar
-   hmg_ret_raw_HANDLE( himage );            // Return image handle
+   ShowWindow( hwndTB, SW_SHOW );            // Display the toolbar
+   hmg_ret_raw_HANDLE( himage );             // Return image handle
 }
 
+/*
+ * FUNCTION: WidestBtn
+ *
+ * Calculates the width and height of the text string using the specified font.
+ *
+ * Parameters:
+ *   pszStr: The text string to measure.
+ *   hwnd: The window handle for the device context.
+ *
+ * Returns:
+ *   A LONG value containing the width and height of the text.
+ */
 LONG WidestBtn( LPCTSTR pszStr, HWND hwnd )
 {
    SIZE     sz;
@@ -313,7 +385,17 @@ LONG WidestBtn( LPCTSTR pszStr, HWND hwnd )
    return MAKELONG( sz.cx, sz.cy );
 }
 
-// Function to initialize an extended toolbar.
+/*
+ * FUNCTION: INITTOOLBAREX
+ *
+ * Initializes an extended toolbar with customizable styles and appearance.
+ *
+ * Parameters:
+ *   Various parameters to customize the toolbar's appearance and behavior.
+ *
+ * Returns:
+ *   The handle to the created toolbar window.
+ */
 HB_FUNC( INITTOOLBAREX )
 {
    HWND                 hwndTB;
@@ -322,10 +404,10 @@ HB_FUNC( INITTOOLBAREX )
    DWORD                TbExStyle = TBSTYLE_EX_DRAWDDARROWS;
    DWORD                nPadd;
 
-   // Structure to initialize common controls.
+   // Structure to initialize common controls
    INITCOMMONCONTROLSEX icex;
 
-   // Initialize common controls for toolbar creation.
+   // Initialize common controls for toolbar creation
    icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
    icex.dwICC = ICC_BAR_CLASSES;
    InitCommonControlsEx( &icex );
@@ -374,10 +456,10 @@ HB_FUNC( INITTOOLBAREX )
       Style |= CCS_ADJUSTABLE;
    }
 
-   // Create the toolbar window with the specified styles.
+   // Create the toolbar window with the specified styles
    hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, NULL, Style, 0, 0, 0, 0, hmg_par_raw_HWND( 1 ), hmg_par_raw_HMENU( 3 ), GetInstance(), NULL );
 
-   // Configure button and bitmap sizes based on parameters.
+   // Configure button and bitmap sizes based on parameters
    if( hb_parni( 6 ) && hb_parni( 7 ) )
    {
       SendMessage( hwndTB, TB_SETBUTTONSIZE, hb_parni( 6 ), hb_parni( 7 ) );
@@ -385,17 +467,27 @@ HB_FUNC( INITTOOLBAREX )
       SendMessage( hwndTB, TB_SETBITMAPSIZE, 0, ( LPARAM ) MAKELONG( hb_parni( 6 ) - LOWORD( nPadd ), hb_parni( 7 ) - HIWORD( nPadd ) ) );
    }
 
-   // Set extended toolbar styles and display the toolbar.
+   // Set extended toolbar styles and display the toolbar
    SendMessage( hwndTB, TB_SETBUTTONWIDTH, 0, ( LPARAM ) MAKELONG( hb_parni( 6 ), hb_parni( 6 ) ) );
    SendMessage( hwndTB, TB_SETEXTENDEDSTYLE, 0, ( LPARAM ) TbExStyle );
 
    ShowWindow( hwndTB, SW_SHOW );
 
-   // Return the toolbar handle.
+   // Return the toolbar handle
    hmg_ret_raw_HWND( hwndTB );
 }
 
-// Function to initialize toolbar buttons with optional images and styles.
+/*
+ * FUNCTION: INITTOOLBUTTONEX
+ *
+ * Initializes toolbar buttons with optional images and styles.
+ *
+ * Parameters:
+ *   Various parameters to customize the button's appearance and behavior.
+ *
+ * Returns:
+ *   The handle to the image used in the button.
+ */
 HB_FUNC( INITTOOLBUTTONEX )
 {
    HWND           hwndTB;
@@ -454,7 +546,7 @@ HB_FUNC( INITTOOLBUTTONEX )
       tmax = HIWORD( tSize );
       for( i = 0; i < xBtn; i++ )
       {
-         SendMessage( hwndTB, TB_GETBUTTON, i, ( LPARAM ) &lpBtn );
+         SendMessage( hwndTB, TB_GETBUTTON, i, ( LPARAM ) & lpBtn );
          SendMessage( hwndTB, TB_GETBUTTONTEXT, lpBtn.idCommand, ( LPARAM ) ( LPCTSTR ) cBuff );
          tSize = WidestBtn( cBuff, hwndTB );
          if( tmax < HIWORD( tSize ) )
@@ -539,7 +631,7 @@ HB_FUNC( INITTOOLBUTTONEX )
       }
    }
 
-   // Add the bitmap containing button images to the toolbar.
+   // Add the bitmap containing button images to the toolbar
    if( hb_parl( 11 ) )
    {
       Style |= TBSTYLE_AUTOSIZE;
@@ -564,7 +656,7 @@ HB_FUNC( INITTOOLBUTTONEX )
          {
             tbab.hInst = HINST_COMMCTRL;
             tbab.nID = hb_parni( 18 );
-            SendMessage( hwndTB, TB_ADDBITMAP, ( WPARAM ) 1, ( LPARAM ) &tbab );
+            SendMessage( hwndTB, TB_ADDBITMAP, ( WPARAM ) 1, ( LPARAM ) & tbab );
          }
       }
 
@@ -574,7 +666,7 @@ HB_FUNC( INITTOOLBUTTONEX )
    {
       tbab.hInst = NULL;
       tbab.nID = ( UINT_PTR ) ( HBITMAP ) himage;
-      nPoz = ( int ) SendMessage( hwndTB, TB_ADDBITMAP, ( WPARAM ) 1, ( LPARAM ) &tbab );
+      nPoz = ( int ) SendMessage( hwndTB, TB_ADDBITMAP, ( WPARAM ) 1, ( LPARAM ) & tbab );
    }
 
    if( hb_parl( 12 ) )
@@ -622,7 +714,17 @@ HB_FUNC( INITTOOLBUTTONEX )
    hmg_ret_raw_HANDLE( himage );
 }
 
-// Function to get the size of the toolbar including adjustments for button spacing and styles.
+/*
+ * FUNCTION: GETSIZETOOLBAR
+ *
+ * Gets the size of the toolbar including adjustments for button spacing and styles.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *
+ * Returns:
+ *   The size of the toolbar as a packed LONG value.
+ */
 HB_FUNC( GETSIZETOOLBAR )
 {
    SIZE           lpSize;
@@ -633,16 +735,16 @@ HB_FUNC( GETSIZETOOLBAR )
 
    hwndTB = hmg_par_raw_HWND( 1 );
 
-   // Get the maximum size of the toolbar.
-   SendMessage( hwndTB, TB_GETMAXSIZE, 0, ( LPARAM ) &lpSize );
+   // Get the maximum size of the toolbar
+   SendMessage( hwndTB, TB_GETMAXSIZE, 0, ( LPARAM ) & lpSize );
 
-   // Adjust size based on button styles and OS version.
+   // Adjust size based on button styles and OS version
    osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
    GetVersionEx( &osvi );
    nBtn = ( int ) SendMessage( hwndTB, TB_BUTTONCOUNT, 0, 0 );
    for( i = 0; i < nBtn; i++ )
    {
-      SendMessage( hwndTB, TB_GETBUTTON, i, ( LPARAM ) &lpBtn );
+      SendMessage( hwndTB, TB_GETBUTTON, i, ( LPARAM ) & lpBtn );
       if( osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && osvi.dwMajorVersion <= 4 )
       {
          if( lpBtn.fsStyle & TBSTYLE_SEP )
@@ -657,11 +759,21 @@ HB_FUNC( GETSIZETOOLBAR )
       }
    }
 
-   // Return the size of the toolbar as a packed LONG value.
+   // Return the size of the toolbar as a packed LONG value
    hb_retnl( MAKELONG( lpSize.cy, lpSize.cx ) );
 }
 
-// Function to calculate and set the maximum text size for toolbar buttons.
+/*
+ * FUNCTION: MAXTEXTBTNTOOLBAR
+ *
+ * Calculates and sets the maximum text size for toolbar buttons.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( MAXTEXTBTNTOOLBAR )
 {
    TCHAR    cString[255] = { 0 };
@@ -678,7 +790,7 @@ HB_FUNC( MAXTEXTBTNTOOLBAR )
    nBtn = ( int ) SendMessage( hwndTB, TB_BUTTONCOUNT, 0, 0 );
    for( i = 0; i < nBtn; i++ )
    {
-      SendMessage( hwndTB, TB_GETBUTTON, i, ( LPARAM ) &lpBtn );
+      SendMessage( hwndTB, TB_GETBUTTON, i, ( LPARAM ) & lpBtn );
       SendMessage( hwndTB, TB_GETBUTTONTEXT, lpBtn.idCommand, ( LPARAM ) ( LPCTSTR ) cString );
 
       tSize = WidestBtn( cString, hwndTB );
@@ -715,43 +827,115 @@ HB_FUNC( MAXTEXTBTNTOOLBAR )
    SendMessage( hwndTB, TB_AUTOSIZE, 0, 0 );
 }
 
+/*
+ * FUNCTION: ISBUTTONBARCHECKED
+ *
+ * Checks if a toolbar button is checked.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Button index: The index of the button to check.
+ *
+ * Returns:
+ *   TRUE if the button is checked, FALSE otherwise.
+ */
 HB_FUNC( ISBUTTONBARCHECKED )
 {
    TBBUTTON lpBtn;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTON, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &lpBtn );
+   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTON, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & lpBtn );
    hb_retl( ( int ) SendMessage( hmg_par_raw_HWND( 1 ), TB_ISBUTTONCHECKED, lpBtn.idCommand, 0 ) );
 }
 
+/*
+ * FUNCTION: CHECKBUTTONBAR
+ *
+ * Checks or unchecks a toolbar button.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Button index: The index of the button to check or uncheck.
+ *   Check state: TRUE to check, FALSE to uncheck.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( CHECKBUTTONBAR )
 {
    TBBUTTON lpBtn;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTON, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &lpBtn );
+   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTON, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & lpBtn );
    SendMessage( hmg_par_raw_HWND( 1 ), TB_CHECKBUTTON, lpBtn.idCommand, hb_parl( 3 ) );
 }
 
+/*
+ * FUNCTION: ISBUTTONENABLED
+ *
+ * Checks if a toolbar button is enabled.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Button index: The index of the button to check.
+ *
+ * Returns:
+ *   TRUE if the button is enabled, FALSE otherwise.
+ */
 HB_FUNC( ISBUTTONENABLED )
 {
    TBBUTTON lpBtn;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTON, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &lpBtn );
+   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTON, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & lpBtn );
    hb_retl( ( int ) SendMessage( hmg_par_raw_HWND( 1 ), TB_ISBUTTONENABLED, lpBtn.idCommand, 0 ) );
 }
 
+/*
+ * FUNCTION: GETBUTTONBARRECT
+ *
+ * Gets the rectangle of a toolbar button.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Button index: The index of the button.
+ *
+ * Returns:
+ *   A LONG value containing the left and bottom coordinates of the button rectangle.
+ */
 HB_FUNC( GETBUTTONBARRECT )
 {
    RECT  rc;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETITEMRECT, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &rc );
+   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETITEMRECT, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & rc );
    hmg_ret_LONG( MAKELONG( rc.left, rc.bottom ) );
 }
 
+/*
+ * FUNCTION: GETBUTTONPOS
+ *
+ * Gets the position of a toolbar button.
+ *
+ * Parameters:
+ *   lParam: The LPARAM value containing the button position.
+ *
+ * Returns:
+ *   The position of the button.
+ */
 HB_FUNC( GETBUTTONPOS )
 {
    hmg_ret_NINT( ( ( NMTOOLBAR FAR * ) HB_PARNL( 1 ) )->iItem );
 }
 
+/*
+ * FUNCTION: SETBUTTONTIP
+ *
+ * Sets the tooltip text for a toolbar button.
+ *
+ * Parameters:
+ *   lParam: The LPARAM value containing the tooltip information.
+ *   Text: The tooltip text.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( SETBUTTONTIP )
 {
 #ifndef UNICODE
@@ -766,6 +950,19 @@ HB_FUNC( SETBUTTONTIP )
    lpttt->lpszText = lpText;
 }
 
+/*
+ * FUNCTION: SETTOOLBUTTONCAPTION
+ *
+ * Sets the caption for a toolbar button.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Button index: The index of the button.
+ *   Text: The caption text.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( SETTOOLBUTTONCAPTION )
 {
 #ifndef UNICODE
@@ -779,25 +976,53 @@ HB_FUNC( SETTOOLBUTTONCAPTION )
    tbinfo.dwMask = TBIF_TEXT;
    tbinfo.pszText = lpText;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), TB_SETBUTTONINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &tbinfo );
+   SendMessage( hmg_par_raw_HWND( 1 ), TB_SETBUTTONINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & tbinfo );
 
 #ifdef UNICODE
    hb_xfree( lpText );
 #endif
 }
 
+/*
+ * FUNCTION: SETTOOLBUTTONIMAGE
+ *
+ * Sets the image for a toolbar button.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Button index: The index of the button.
+ *   Image index: The index of the image.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( SETTOOLBUTTONIMAGE )
 {
    TBBUTTONINFO   tbinfo;
 
    tbinfo.cbSize = sizeof( tbinfo );
    tbinfo.dwMask = TBIF_IMAGE;
-   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTONINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &tbinfo );
+   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTONINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & tbinfo );
 
    tbinfo.iImage = hb_parni( 3 );
-   SendMessage( hmg_par_raw_HWND( 1 ), TB_SETBUTTONINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &tbinfo );
+   SendMessage( hmg_par_raw_HWND( 1 ), TB_SETBUTTONINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & tbinfo );
 }
 
+/*
+ * FUNCTION: REPLACETOOLBUTTONIMAGE
+ *
+ * Replaces the image of a toolbar button.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Old bitmap handle: The handle to the old bitmap.
+ *   Image file: The file name of the new image.
+ *   Use callback: TRUE to use a callback for the image.
+ *   Button index: The index of the button.
+ *
+ * Returns:
+ *   The handle to the new bitmap.
+ */
 HB_FUNC( REPLACETOOLBUTTONIMAGE )
 {
    HWND     hwndTB = hmg_par_raw_HWND( 1 );
@@ -816,7 +1041,7 @@ HB_FUNC( REPLACETOOLBUTTONIMAGE )
       tbrb.hInstNew = NULL;
       tbrb.nIDNew = ( UINT_PTR ) hBitmapNew;
       tbrb.nButtons = 1;
-      SendMessage( hwndTB, TB_REPLACEBITMAP, 0, ( LPARAM ) &tbrb );
+      SendMessage( hwndTB, TB_REPLACEBITMAP, 0, ( LPARAM ) & tbrb );
    }
    else
    {
@@ -828,7 +1053,7 @@ HB_FUNC( REPLACETOOLBUTTONIMAGE )
          TBADDBITMAP tbab;
          tbab.hInst = NULL;
          tbab.nID = ( UINT_PTR ) hBitmapNew;
-         iBitMapIndex = ( int ) SendMessage( hwndTB, TB_ADDBITMAP, ( WPARAM ) 1, ( LPARAM ) &tbab );
+         iBitMapIndex = ( int ) SendMessage( hwndTB, TB_ADDBITMAP, ( WPARAM ) 1, ( LPARAM ) & tbab );
       }
       else
       {
@@ -837,27 +1062,55 @@ HB_FUNC( REPLACETOOLBUTTONIMAGE )
 
       tbinfo.cbSize = sizeof( tbinfo );
       tbinfo.dwMask = TBIF_IMAGE;
-      SendMessage( hwndTB, TB_GETBUTTONINFO, ( WPARAM ) nButtonID, ( LPARAM ) &tbinfo );
+      SendMessage( hwndTB, TB_GETBUTTONINFO, ( WPARAM ) nButtonID, ( LPARAM ) & tbinfo );
 
       tbinfo.iImage = iBitMapIndex;
-      SendMessage( hwndTB, TB_SETBUTTONINFO, ( WPARAM ) nButtonID, ( LPARAM ) &tbinfo );
+      SendMessage( hwndTB, TB_SETBUTTONINFO, ( WPARAM ) nButtonID, ( LPARAM ) & tbinfo );
    }
 
    RegisterResource( hBitmapNew, "BMP" );
    hmg_ret_raw_HWND( hBitmapNew );
 }
 
+/*
+ * FUNCTION: SETROWSBUTTON
+ *
+ * Sets the number of rows for a toolbar.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Rows: The number of rows.
+ *   Vertical: TRUE if the toolbar is vertical.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( SETROWSBUTTON )
 {
    RECT  rc;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), TB_SETROWS, ( WPARAM ) MAKEWPARAM( hb_parni( 2 ), hb_parl( 3 ) ), ( LPARAM ) &rc );
+   SendMessage( hmg_par_raw_HWND( 1 ), TB_SETROWS, ( WPARAM ) MAKEWPARAM( hb_parni( 2 ), hb_parl( 3 ) ), ( LPARAM ) & rc );
 
    hb_reta( 2 );
    HB_STORVNL( rc.right - rc.left, -1, 1 );
    HB_STORVNL( rc.bottom - rc.top, -1, 2 );
 }
 
+/*
+ * FUNCTION: RESIZESPLITBOXITEM
+ *
+ * Resizes a split box item.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Index: The index of the item.
+ *   Min width: The minimum width.
+ *   Min height: The minimum height.
+ *   Ideal width: The ideal width.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( RESIZESPLITBOXITEM )
 {
    REBARBANDINFO  rbBand;
@@ -865,7 +1118,7 @@ HB_FUNC( RESIZESPLITBOXITEM )
    rbBand.cbSize = sizeof( REBARBANDINFO );
    rbBand.fMask = RBBIM_CHILDSIZE | RBBIM_IDEALSIZE;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), RB_GETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &rbBand );
+   SendMessage( hmg_par_raw_HWND( 1 ), RB_GETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & rbBand );
 
    rbBand.fStyle = rbBand.fStyle | RBBS_USECHEVRON;
    rbBand.cxMinChild = hb_parni( 3 );
@@ -873,9 +1126,22 @@ HB_FUNC( RESIZESPLITBOXITEM )
    rbBand.cxIdeal = hb_parni( 5 );
    rbBand.cx = hb_parni( 5 );
 
-   SendMessage( hmg_par_raw_HWND( 1 ), RB_SETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &rbBand );
+   SendMessage( hmg_par_raw_HWND( 1 ), RB_SETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & rbBand );
 }
 
+/*
+ * FUNCTION: SETCHEVRONSTYLESPLITBOXITEM
+ *
+ * Sets the chevron style for a split box item.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Index: The index of the item.
+ *   Ideal width: The ideal width.
+ *
+ * Returns:
+ *   TRUE if successful, FALSE otherwise.
+ */
 HB_FUNC( SETCHEVRONSTYLESPLITBOXITEM )
 {
    REBARBANDINFO  rbBand;
@@ -883,14 +1149,27 @@ HB_FUNC( SETCHEVRONSTYLESPLITBOXITEM )
    rbBand.cbSize = sizeof( REBARBANDINFO );
    rbBand.fMask = RBBIM_STYLE | RBBIM_IDEALSIZE;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), RB_GETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &rbBand );
+   SendMessage( hmg_par_raw_HWND( 1 ), RB_GETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & rbBand );
 
    rbBand.fStyle = rbBand.fStyle | RBBS_USECHEVRON;
    rbBand.cxIdeal = hb_parni( 3 ) + 50;
 
-   hb_retl( ( int ) SendMessage( hmg_par_raw_HWND( 1 ), RB_SETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &rbBand ) );
+   hb_retl( ( int ) SendMessage( hmg_par_raw_HWND( 1 ), RB_SETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & rbBand ) );
 }
 
+/*
+ * FUNCTION: SETCAPTIONSPLITBOXITEM
+ *
+ * Sets the caption for a split box item.
+ *
+ * Parameters:
+ *   hwndTB: The handle to the toolbar window.
+ *   Index: The index of the item.
+ *   Text: The caption text.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( SETCAPTIONSPLITBOXITEM )
 {
 #ifndef UNICODE
@@ -904,13 +1183,27 @@ HB_FUNC( SETCAPTIONSPLITBOXITEM )
    rbBand.fMask = RBBIM_TEXT;
    rbBand.lpText = lpText;
 
-   SendMessage( hmg_par_raw_HWND( 1 ), RB_SETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &rbBand );
+   SendMessage( hmg_par_raw_HWND( 1 ), RB_SETBANDINFO, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & rbBand );
 
 #ifdef UNICODE
    hb_xfree( lpText );
 #endif
 }
 
+/*
+ * FUNCTION: TestHidenBtn
+ *
+ * Tests if a toolbar button is hidden.
+ *
+ * Parameters:
+ *   tbHwnd: The handle to the toolbar window.
+ *   rcRb: The rectangle of the rebar.
+ *   dv: The delta value.
+ *   nBtn: The number of buttons.
+ *
+ * Returns:
+ *   The number of hidden buttons.
+ */
 int TestHidenBtn( HWND tbHwnd, RECT rcRb, INT dv, INT nBtn )
 {
    RECT  rcDst, rcBt;
@@ -919,7 +1212,7 @@ int TestHidenBtn( HWND tbHwnd, RECT rcRb, INT dv, INT nBtn )
 
    for( i = 0; i < nBtn; i++ )
    {
-      SendMessage( ( HWND ) tbHwnd, TB_GETITEMRECT, ( WPARAM ) ( UINT ) i, ( LPARAM ) &rcBt );
+      SendMessage( ( HWND ) tbHwnd, TB_GETITEMRECT, ( WPARAM ) ( UINT ) i, ( LPARAM ) & rcBt );
 
       rcBt.left += dv;
       rcBt.top += rcRb.top;
@@ -936,145 +1229,317 @@ int TestHidenBtn( HWND tbHwnd, RECT rcRb, INT dv, INT nBtn )
    return nBtnV;
 }
 
+/*
+ * FUNCTION: CREATEPOPUPCHEVRON
+ *
+ * Creates a popup chevron for a rebar control.
+ *
+ * This function calculates the position and dimensions of a popup chevron for a rebar control.
+ * It retrieves information about the specified band in the rebar control and determines
+ * the number of hidden buttons in the toolbar within that band. The function then returns
+ * an array containing the coordinates of the chevron and other relevant information.
+ *
+ * Parameters:
+ *   hwnd: Handle to the rebar control.
+ *   lParam: LPARAM value containing a pointer to an NMREBARCHEVRON structure with chevron information.
+ *
+ * Returns:
+ *   An array containing the following elements:
+ *   1. Left coordinate of the chevron rectangle.
+ *   2. Top coordinate of the chevron rectangle.
+ *   3. Right coordinate of the chevron rectangle.
+ *   4. Bottom coordinate of the chevron rectangle.
+ *   5. Handle to the toolbar window within the specified rebar band.
+ *   6. Number of hidden buttons in the toolbar.
+ *   7. Total number of buttons in the toolbar.
+ */
 HB_FUNC( CREATEPOPUPCHEVRON )
 {
-   HWND              hwnd = hmg_par_raw_HWND( 1 );
-   HWND              tbHwnd;
-   RECT              rcRb;
-   RECT              rcTB;
-   RECT              rcRR;
-   RECT              rcCvr;
-   int               uBand;
-   int               tx;
-   int               dv;
-   int               nBtn;
-   LPNMREBARCHEVRON  lpRB;
-   REBARBANDINFO     rbbi;
+   HWND              hwnd = hmg_par_raw_HWND( 1 ); // Handle to the rebar control
+   HWND              tbHwnd;              // Handle to the toolbar window
+   RECT              rcRb;                // Rectangle structure for the rebar band
+   RECT              rcTB;                // Rectangle structure for the toolbar
+   RECT              rcRR;                // Rectangle structure for the rebar control
+   RECT              rcCvr;               // Rectangle structure for the chevron
+   int               uBand;               // Index of the rebar band
+   int               tx;                  // Number of hidden buttons in the toolbar
+   int               dv;                  // Horizontal offset for window coordinates
+   int               nBtn;                // Total number of buttons in the toolbar
+   LPNMREBARCHEVRON  lpRB;                // Pointer to the NMREBARCHEVRON structure
+   REBARBANDINFO     rbbi;                // Structure for rebar band information
 
+   // Get the window rectangle of the rebar control
    GetWindowRect( hwnd, &rcRR );
 
+   // Retrieve the NMREBARCHEVRON structure from the lParam
    lpRB = ( LPNMREBARCHEVRON ) HB_PARNL( 2 );
-   uBand = lpRB->uBand;
-   rcCvr = lpRB->rc;
+   uBand = lpRB->uBand;                   // Get the band index
+   rcCvr = lpRB->rc;                      // Get the chevron rectangle
 
-   SendMessage( hwnd, RB_GETRECT, ( WPARAM ) uBand, ( LPARAM ) &rcRb );
+   // Retrieve the rectangle of the specified rebar band
+   SendMessage( hwnd, RB_GETRECT, ( WPARAM ) uBand, ( LPARAM ) & rcRb );
 
+   // Adjust the right edge of the band rectangle to exclude the chevron area
    rcRb.right -= ( rcCvr.right - rcCvr.left );
+
+   // Initialize the REBARBANDINFO structure to get information about the band
    rbbi.cbSize = sizeof( REBARBANDINFO );
    rbbi.fMask = RBBIM_SIZE | RBBIM_CHILD | RBBIM_CHILDSIZE;
 
-   SendMessage( hwnd, RB_GETBANDINFO, ( WPARAM ) uBand, ( LPARAM ) ( LPREBARBANDINFO ) &rbbi );
+   // Retrieve information about the specified rebar band
+   SendMessage( hwnd, RB_GETBANDINFO, ( WPARAM ) uBand, ( LPARAM ) ( LPREBARBANDINFO ) & rbbi );
 
+   // Get the handle to the toolbar window within the rebar band
    tbHwnd = ( HWND ) rbbi.hwndChild;
+
+   // Get the window rectangle of the toolbar
    GetWindowRect( ( HWND ) tbHwnd, &rcTB );
+
+   // Calculate the horizontal offset for converting between screen and client coordinates
    dv = rcTB.left - rcRR.left + 1;
+
+   // Get the total number of buttons in the toolbar
    nBtn = ( INT ) SendMessage( ( HWND ) tbHwnd, TB_BUTTONCOUNT, 0, 0 );
 
+   // Determine the number of hidden buttons in the toolbar
    tx = TestHidenBtn( ( HWND ) tbHwnd, rcRb, dv, nBtn );
 
+   // Prepare to return an array with 7 elements
    hb_reta( 7 );
-   HB_STORVNL( rcCvr.left, -1, 1 );
-   HB_STORVNL( rcCvr.top, -1, 2 );
-   HB_STORVNL( rcCvr.right, -1, 3 );
-   HB_STORVNL( rcCvr.bottom, -1, 4 );
-   hmg_storvnl_HANDLE( tbHwnd, -1, 5 );
-   HB_STORNI( tx, -1, 6 );
-   HB_STORNI( nBtn, -1, 7 );
+
+   // Store the coordinates of the chevron rectangle and other information in the array
+   HB_STORVNL( rcCvr.left, -1, 1 );       // Left coordinate of the chevron rectangle
+   HB_STORVNL( rcCvr.top, -1, 2 );        // Top coordinate of the chevron rectangle
+   HB_STORVNL( rcCvr.right, -1, 3 );      // Right coordinate of the chevron rectangle
+   HB_STORVNL( rcCvr.bottom, -1, 4 );     // Bottom coordinate of the chevron rectangle
+   hmg_storvnl_HANDLE( tbHwnd, -1, 5 );   // Handle to the toolbar window
+   HB_STORNI( tx, -1, 6 );                // Number of hidden buttons in the toolbar
+   HB_STORNI( nBtn, -1, 7 );              // Total number of buttons in the toolbar
 }
 
+/*
+ * FUNCTION: GETBUTTONBAR
+ *
+ * Retrieves information about a specific button in a toolbar.
+ *
+ * This function gets the details of a button in a toolbar, such as its bitmap index,
+ * command ID, and whether it is a separator or enabled. The information is returned
+ * in an array.
+ *
+ * Parameters:
+ *   hwndTB: Handle to the toolbar.
+ *   index: Index of the button to retrieve information about.
+ *
+ * Returns:
+ *   An array containing the following elements:
+ *   1. The bitmap index of the button.
+ *   2. The command ID of the button.
+ *   3. A logical value indicating if the button is a separator.
+ *   4. A logical value indicating if the button is enabled.
+ */
 HB_FUNC( GETBUTTONBAR )
 {
-   TBBUTTON lpBtn;
-   BOOL     lSep;
-   BOOL     lEnable;
+   TBBUTTON lpBtn;                     // Structure to receive button information
+   BOOL     lSep;                      // Flag indicating if the button is a separator
+   BOOL     lEnable;                   // Flag indicating if the button is enabled
 
-   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTON, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) &lpBtn );
+   // Retrieve information about the specified button
+   SendMessage( hmg_par_raw_HWND( 1 ), TB_GETBUTTON, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) & lpBtn );
 
+   // Determine if the button is a separator
    lSep = ( lpBtn.fsStyle & TBSTYLE_SEP ) ? TRUE : FALSE;
+
+   // Determine if the button is enabled
    lEnable = ( lpBtn.fsState & TBSTATE_ENABLED ) ? TRUE : FALSE;
 
+   // Prepare to return an array with 4 elements
    hb_reta( 4 );
-   HB_STORNI( lpBtn.iBitmap, -1, 1 );
-   HB_STORNI( lpBtn.idCommand, -1, 2 );
-   HB_STORL( lSep, -1, 3 );
-   HB_STORL( lEnable, -1, 4 );
+
+   // Store the button information in the array
+   HB_STORNI( lpBtn.iBitmap, -1, 1 );  // Bitmap index of the button
+   HB_STORNI( lpBtn.idCommand, -1, 2 );   // Command ID of the button
+   HB_STORL( lSep, -1, 3 );               // Logical value indicating if the button is a separator
+   HB_STORL( lEnable, -1, 4 );            // Logical value indicating if the button is enabled
 }
 
+/*
+ * FUNCTION: GETIMAGELIST
+ *
+ * Retrieves an image from an image list associated with a toolbar.
+ *
+ * This function gets a specific image from the image list of a toolbar and registers
+ * the image as a resource. The handle to the image is then returned.
+ *
+ * Parameters:
+ *   hwndTB: Handle to the toolbar.
+ *   index: Index of the image to retrieve.
+ *
+ * Returns:
+ *   The handle to the retrieved image.
+ */
 HB_FUNC( GETIMAGELIST )
 {
-   HIMAGELIST  himl;
-   HBITMAP     himage;
-   IMAGEINFO   ImageInfo;
+   HIMAGELIST  himl;       // Handle to the image list
+   HBITMAP     himage;     // Handle to the image
+   IMAGEINFO   ImageInfo;  // Structure to receive image information
 
+   // Get the handle to the image list associated with the toolbar
    himl = ( HIMAGELIST ) SendMessage( hmg_par_raw_HWND( 1 ), TB_GETIMAGELIST, 0, 0 );
+
+   // Retrieve information about the specified image
    ImageList_GetImageInfo( himl, hmg_par_INT( 2 ), &ImageInfo );
 
+   // Get the handle to the image
    himage = ImageInfo.hbmImage;
 
+   // Register the image as a resource
    RegisterResource( himage, "BMP" );
+
+   // Return the handle to the image
    hmg_ret_raw_HANDLE( himage );
 }
 
+/*
+ * FUNCTION: SETCHEVRONIMAGE
+ *
+ * Sets the bitmaps for a menu item in a menu.
+ *
+ * This function sets both the normal and selected bitmaps for a specified menu item.
+ *
+ * Parameters:
+ *   hMenu: Handle to the menu.
+ *   item: Identifier of the menu item.
+ *   himage: Handle to the bitmap to set.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( SETCHEVRONIMAGE )
 {
-   HBITMAP  himage = hmg_par_raw_HBITMAP( 3 );
+   HBITMAP  himage = hmg_par_raw_HBITMAP( 3 );  // Handle to the bitmap
 
+   // Set the bitmaps for the specified menu item
    SetMenuItemBitmaps( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND, himage, himage );
 }
 
+/*
+ * FUNCTION: DESTROYMENU
+ *
+ * Destroys a specified menu and frees any memory that the menu occupies.
+ *
+ * Parameters:
+ *   hMenu: Handle to the menu to destroy.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( DESTROYMENU )
 {
+   // Destroy the specified menu
    DestroyMenu( hmg_par_raw_HMENU( 1 ) );
 }
 
+/*
+ * FUNCTION: ADJUSTFLOATTOOLBAR
+ *
+ * Adjusts the size and position of a floating toolbar.
+ *
+ * This function calculates the appropriate size and position for a floating toolbar
+ * and moves it to the calculated position.
+ *
+ * Parameters:
+ *   hwndParent: Handle to the parent window.
+ *   hwndTB: Handle to the toolbar window.
+ *   hwndFloatTB: Handle to the floating toolbar window.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( ADJUSTFLOATTOOLBAR )
 {
-   HWND  hwndTB;
-   RECT  rc;
-   int   nbuttons, height, width;
-   POINT pt;
+   HWND  hwndTB;                                   // Handle to the toolbar window
+   RECT  rc;                                       // Rectangle structure for button dimensions
+   int   nbuttons;                                 // Number of buttons in the toolbar
+   int   height;                                   // Calculated height for the toolbar window
+   int   width;                                    // Calculated width for the toolbar window
+   POINT pt;                                       // Point structure for initial position
 
+   // Get the handle to the toolbar window
    hwndTB = hmg_par_raw_HWND( 3 );
 
-   SendMessage( hwndTB, TB_GETITEMRECT, 0, ( LPARAM ) &rc );
+   // Retrieve the dimensions of a button in the toolbar
+   SendMessage( hwndTB, TB_GETITEMRECT, 0, ( LPARAM ) & rc );
+
+   // Get the number of buttons in the toolbar
    nbuttons = ( int ) SendMessage( hwndTB, TB_BUTTONCOUNT, 0, 0 );
 
+   // Calculate the height of the toolbar window
    height = rc.bottom + GetSystemMetrics( SM_CYCAPTION ) + GetSystemMetrics( SM_CYFRAME ) + 2 * GetSystemMetrics( SM_CYDLGFRAME );
    height += 2 * GetSystemMetrics( SM_CYBORDER );
+
+   // Calculate the width of the toolbar window
    width = ( nbuttons ) * rc.right;
    width += 2 * GetSystemMetrics( SM_CXDLGFRAME );
+
+   // Set the initial position for the toolbar window
    pt.x = pt.y = 50;
 
-   MapWindowPoints( hmg_par_raw_HWND( 1 ), HWND_DESKTOP, ( LPPOINT ) &pt, 1 );
+   // Convert the initial position from parent window coordinates to screen coordinates
+   MapWindowPoints( hmg_par_raw_HWND( 1 ), HWND_DESKTOP, ( LPPOINT ) & pt, 1 );
+
+   // Move the toolbar window to the calculated position and size
    MoveWindow( hmg_par_raw_HWND( 2 ), pt.x, pt.y, width, height, TRUE );
 }
 
+/*
+ * FUNCTION: ResizeToolbar
+ *
+ * Resizes a toolbar to fit within a specified width.
+ *
+ * This function calculates the number of rows needed for the toolbar buttons to fit
+ * within the specified width and adjusts the toolbar accordingly.
+ *
+ * Parameters:
+ *   hwndTB: Handle to the toolbar window.
+ *   widthTb: The width within which the toolbar should fit.
+ *
+ * Returns:
+ *   1 if the toolbar was successfully resized, 0 otherwise.
+ */
 int ResizeToolbar( HWND hwndTB, int widthTb )
 {
-   RECT  rcb, rc;
-   int   n, width, height, nrow;
-   HWND  hwndParent;
-   DWORD style;
-   int   nButtons, bwidth, nBtnRow;
-   int   heightTB;
+   RECT  rcb, rc;                                  // Rectangle structures for window dimensions
+   int   n, width, height, nrow;                   // Variables for calculations
+   HWND  hwndParent;                               // Handle to the parent window
+   DWORD style;                                    // Window style
+   int   nButtons, bwidth, nBtnRow;                // Variables for button calculations
+   int   heightTB;                                 // Current height of the toolbar
 
+   // Retrieve the handle to the toolbar window and the target width
    hwndTB = hmg_par_raw_HWND( 1 );
    widthTb = hb_parni( 2 );
 
-   SendMessage( hwndTB, TB_GETITEMRECT, 0, ( LPARAM ) &rc );
+   // Get the dimensions of a button in the toolbar
+   SendMessage( hwndTB, TB_GETITEMRECT, 0, ( LPARAM ) & rc );
    bwidth = rc.right;
+
+   // Check if the target width is less than the button width
    if( widthTb < bwidth )
    {
       return 0;
    }
 
+   // Get the current window rectangle of the toolbar
    GetWindowRect( hwndTB, &rc );
    heightTB = rc.bottom - rc.top;
 
+   // Get the number of buttons in the toolbar
    nButtons = ( int ) SendMessage( hwndTB, TB_BUTTONCOUNT, 0, 0 );
 
+   // Initialize the rectangle structure for calculations
    memset( &rcb, 0, sizeof( RECT ) );
 
+   // Calculate the number of buttons that can fit in a single row
    if( bwidth > 0 )
    {
       n = widthTb / ( bwidth );
@@ -1084,6 +1549,7 @@ int ResizeToolbar( HWND hwndTB, int widthTb )
       return 0;
    }
 
+   // Calculate the number of rows needed
    if( nButtons % n == 0 )
    {
       nrow = nButtons / n;
@@ -1093,25 +1559,35 @@ int ResizeToolbar( HWND hwndTB, int widthTb )
       nrow = nButtons / n + 1;
    }
 
-   SendMessage( hwndTB, TB_SETROWS, ( WPARAM ) MAKEWPARAM( nrow, TRUE ), ( LPARAM ) &rcb );
+   // Set the number of rows and adjust the toolbar size
+   SendMessage( hwndTB, TB_SETROWS, ( WPARAM ) MAKEWPARAM( nrow, TRUE ), ( LPARAM ) & rcb );
    SendMessage( hwndTB, TB_AUTOSIZE, 0, 0 );
 
+   // Get the handle to the parent window and its style
    hwndParent = GetParent( hwndTB );
    style = GetWindowLong( hwndParent, GWL_STYLE );
-   AdjustWindowRect( &rcb, style, 0 );
-   MapWindowPoints( hwndParent, HWND_DESKTOP, ( LPPOINT ) &rcb, 2 );
 
+   // Adjust the window rectangle for the parent window style
+   AdjustWindowRect( &rcb, style, 0 );
+
+   // Convert the rectangle coordinates from parent window coordinates to screen coordinates
+   MapWindowPoints( hwndParent, HWND_DESKTOP, ( LPPOINT ) & rcb, 2 );
+
+   // Calculate the number of buttons per row
    nBtnRow = nButtons / ( nrow );
    if( nrow > 1 )
    {
       nBtnRow += nButtons & 1;
    }
 
+   // Calculate the new width and height for the parent window
    width = nBtnRow * bwidth;
    width += 2 * GetSystemMetrics( SM_CXDLGFRAME );
    width += 2 * GetSystemMetrics( SM_CXBORDER );
    height = rcb.bottom - rcb.top;
    height += 2 * GetSystemMetrics( SM_CYBORDER );
+
+   // Move the parent window if the size has changed
    if( !( width == widthTb ) || !( height == heightTB ) )
    {
       MoveWindow( hwndParent, rcb.left, rcb.top, width, height, TRUE );
@@ -1120,47 +1596,86 @@ int ResizeToolbar( HWND hwndTB, int widthTb )
    return 1;
 }
 
+/*
+ * FUNCTION: RESIZEFLOATTOOLBAR
+ *
+ * Resizes a floating toolbar if it is not already in the process of being resized.
+ *
+ * This function checks if the toolbar is already being resized to avoid recursive calls
+ * and then calls the ResizeToolbar function to resize the toolbar.
+ *
+ * Parameters:
+ *   hwndTB: Handle to the toolbar window.
+ *   widthTb: The width within which the toolbar should fit.
+ *
+ * Returns:
+ *   HB_TRUE if the toolbar was successfully resized, HB_FALSE otherwise.
+ */
 HB_FUNC( RESIZEFLOATTOOLBAR )
 {
-   HWND  hwndTB = hmg_par_raw_HWND( 1 );
-   int   widthTb = hb_parni( 2 );
+   HWND  hwndTB = hmg_par_raw_HWND( 1 );           // Handle to the toolbar window
+   int   widthTb = hb_parni( 2 );                  // Target width for the toolbar
 
+   // Check if the toolbar is already being resized
    if( isInSizeMsg )
    {
       hb_retl( HB_FALSE );
       return;
    }
 
+   // Set the flag to indicate that the toolbar is being resized
    isInSizeMsg = 1;
 
+   // Resize the toolbar if the handle is valid
    if( hwndTB )
    {
       ResizeToolbar( hwndTB, widthTb );
    }
 
+   // Reset the flag to indicate that the toolbar is no longer being resized
    isInSizeMsg = 0;
 
+   // Return success status
    hb_retl( HB_TRUE );
 }
 
+/*
+ * FUNCTION: TOOLBAREXCUSTFUNC
+ *
+ * Handles customization notifications for a toolbar.
+ *
+ * This function processes various notifications related to toolbar customization,
+ * such as beginning and ending adjustments, getting button information, and resetting the toolbar.
+ *
+ * Parameters:
+ *   Msg: The message being processed.
+ *   lParam: LPARAM value containing additional message information.
+ *
+ * Returns:
+ *   HB_TRUE if the notification was handled successfully, HB_FALSE otherwise.
+ */
 HB_FUNC( TOOLBAREXCUSTFUNC )
 {
-   TBBUTTON    lpBtn;
-   UINT        Msg = hmg_par_UINT( 2 );
-   LPARAM      lParam = hmg_par_raw_LPARAM( 4 );
-   LPTBNOTIFY  lpTB = ( LPTBNOTIFY ) lParam;
-   int         i;
+   TBBUTTON    lpBtn;                              // Structure for button information
+   UINT        Msg = hmg_par_UINT( 2 );            // Message being processed
+   LPARAM      lParam = hmg_par_raw_LPARAM( 4 );   // Additional message information
+   LPTBNOTIFY  lpTB = ( LPTBNOTIFY ) lParam;       // Pointer to the TBNOTIFY structure
+   int         i;                                  // Loop counter
 
+   // Process the message based on its type
    switch( Msg )
    {
       case WM_NOTIFY:
+         // Handle different notification codes
          switch( ( ( LPNMHDR ) lParam )->code )
          {
-            case TBN_BEGINADJUST:            // Start customizing the toolbar.
+            case TBN_BEGINADJUST:
+               // Start customizing the toolbar: save the current button count and button information
                nResetCount = ( int ) SendMessage( lpTB->hdr.hwndFrom, TB_BUTTONCOUNT, 0, 0 );
                buttonCount = nResetCount;
-
                lpSaveButtons = ( LPTBBUTTON ) GlobalAlloc( GPTR, sizeof( TBBUTTON ) * nResetCount );
+
+               // Save information for each button
                for( i = 0; i < nResetCount; i++ )
                {
                   SendMessage( lpTB->hdr.hwndFrom, TB_GETBUTTON, i, ( LPARAM ) ( lpSaveButtons + i ) );
@@ -1170,6 +1685,7 @@ HB_FUNC( TOOLBAREXCUSTFUNC )
                break;
 
             case TBN_GETBUTTONINFO:
+               // Retrieve information for a specific button
                {
                   LPTBNOTIFY  lpTbNotify = ( LPTBNOTIFY ) lParam;
 
@@ -1179,36 +1695,40 @@ HB_FUNC( TOOLBAREXCUSTFUNC )
                   }
                   else
                   {
-                     SendMessage( lpTB->hdr.hwndFrom, TB_GETBUTTON, lpTbNotify->iItem, ( LPARAM ) &lpBtn );
+                     SendMessage( lpTB->hdr.hwndFrom, TB_GETBUTTON, lpTbNotify->iItem, ( LPARAM ) & lpBtn );
                      lpTbNotify->tbButton = lpSaveButtons[lpTbNotify->iItem];
-
                      hb_retl( HB_TRUE );
                   }
                }
                break;
 
             case TBN_RESET:
+               // Reset the toolbar to its original state
                {
                   int   nCount;
 
                   nCount = ( int ) SendMessage( lpTB->hdr.hwndFrom, TB_BUTTONCOUNT, 0, 0 );
+
+                  // Remove all buttons
                   for( i = nCount - 1; i >= 0; i-- )
                   {
                      SendMessage( lpTB->hdr.hwndFrom, TB_DELETEBUTTON, i, 0 );
                   }
 
+                  // Restore the original buttons
                   SendMessage( lpTB->hdr.hwndFrom, TB_ADDBUTTONS, ( WPARAM ) nResetCount, ( LPARAM ) lpSaveButtons );
-
                   hb_retl( HB_TRUE );
                }
                break;
 
             case TBN_ENDADJUST:
+               // End customizing the toolbar: free the allocated memory for saved buttons
                GlobalFree( ( HGLOBAL ) lpSaveButtons );
                hb_retl( HB_TRUE );
                break;
 
             default:
+               // Notification code not handled
                hb_retl( HB_FALSE );
          }
    }

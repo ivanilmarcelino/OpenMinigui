@@ -277,6 +277,7 @@ RETURN PadL( AllTrim( cTxt ), nLen, cSim )
 *----------------------------------------------------------------------------*
 FUNCTION _wPost( nEvent, nIndex, xParam )
 *----------------------------------------------------------------------------*
+#ifdef _OBJECT_
    LOCAL oWnd, cForm
 
    IF HB_ISOBJECT( nIndex )
@@ -284,9 +285,7 @@ FUNCTION _wPost( nEvent, nIndex, xParam )
          cForm := nIndex:cParentWnd
          nIndex := GetControlIndex( cForm, nIndex:cControlName )
       ELSE
-         cForm := _HMG_THISFORMNAME
-         IF __objHasData( nIndex, "Name" ) ; cForm := nIndex:Name
-         ENDIF
+         cForm := nIndex:Name
          nIndex := NIL
       ENDIF
    ELSEIF HB_ISCHAR( nIndex )
@@ -297,8 +296,6 @@ FUNCTION _wPost( nEvent, nIndex, xParam )
    ENDIF
 
    IF _HMG_lOOPEnabled
-
-#ifdef _OBJECT_
       IF ! Empty( cForm ) .AND. HB_ISCHAR( cForm )
          oWnd := _WindowObj( cForm )
          IF HB_ISOBJECT( oWnd )
@@ -310,20 +307,19 @@ FUNCTION _wPost( nEvent, nIndex, xParam )
             ENDIF
          ENDIF
       ENDIF
-#else
-      HB_SYMBOL_UNUSED( nEvent )
-      HB_SYMBOL_UNUSED( nIndex )
-      HB_SYMBOL_UNUSED( xParam )
-      HB_SYMBOL_UNUSED( cForm )
-      HB_SYMBOL_UNUSED( oWnd )
-#endif
    ENDIF
+#else
+   HB_SYMBOL_UNUSED( nEvent )
+   HB_SYMBOL_UNUSED( nIndex )
+   HB_SYMBOL_UNUSED( xParam )
+#endif
 
 RETURN NIL
 
 *----------------------------------------------------------------------------*
 FUNCTION _wSend( nEvent, nIndex, xParam )
 *----------------------------------------------------------------------------*
+#ifdef _OBJECT_
    LOCAL oWnd, cForm
 
    IF HB_ISOBJECT( nIndex )
@@ -331,9 +327,7 @@ FUNCTION _wSend( nEvent, nIndex, xParam )
          cForm := nIndex:cParentWnd
          nIndex := GetControlIndex( cForm, nIndex:cControlName )
       ELSE
-         cForm := _HMG_THISFORMNAME
-         IF __objHasData( nIndex, "Name" ) ; cForm := nIndex:Name
-         ENDIF
+         cForm := nIndex:Name
          nIndex := NIL
       ENDIF
    ELSEIF HB_ISCHAR( nIndex )
@@ -344,8 +338,6 @@ FUNCTION _wSend( nEvent, nIndex, xParam )
    ENDIF
 
    IF _HMG_lOOPEnabled
-
-#ifdef _OBJECT_
       IF ! Empty( cForm ) .AND. HB_ISCHAR( cForm )
          oWnd := _WindowObj( cForm )
          IF HB_ISOBJECT( oWnd )
@@ -357,14 +349,12 @@ FUNCTION _wSend( nEvent, nIndex, xParam )
             ENDIF
          ENDIF
       ENDIF
-#else
-      HB_SYMBOL_UNUSED( nEvent )
-      HB_SYMBOL_UNUSED( nIndex )
-      HB_SYMBOL_UNUSED( xParam )
-      HB_SYMBOL_UNUSED( cForm )
-      HB_SYMBOL_UNUSED( oWnd )
-#endif
    ENDIF
+#else
+   HB_SYMBOL_UNUSED( nEvent )
+   HB_SYMBOL_UNUSED( nIndex )
+   HB_SYMBOL_UNUSED( xParam )
+#endif
 
 RETURN NIL
 

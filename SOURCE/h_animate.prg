@@ -324,7 +324,7 @@ HB_FUNC( INITANIMATERES )
    HB_STORNL( ( LONG_PTR ) avi, 2 );
 
    // Return the animation control handle to the caller
-   hmg_ret_raw_HWND( AnimationCtrl );
+   hmg_ret_raw_HANDLE( AnimationCtrl );
 }
 
 // Harbour function to unload the library associated with an animation control

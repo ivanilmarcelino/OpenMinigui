@@ -2,22 +2,22 @@
 # splitter.hbp
 #
 
-{bcc}-env:DEBUG=yes
-
 -hblib
 -inc
--workdir=../../lib/hbmk/obj
-
--w3 -es2 -ko -ql
-
--warn=max 
+-o../../harbour/lib/splitter
 
 -I../../include
--o../../lib/splitter
 
-{!DEBUG&bcc|mingw}-l
+-warn=yes
 
-{bcc|mingw}-hbx=../../include/splitter.hbx
+-w2 -es2 -ko -q0
+
+-cflag=-D_WINSOCK_DEPRECATED_NO_WARNINGS
+{bcc}-cflag=-w-8057
+{bcc}-cflag=-w-8008
+{bcc}-cflag=-w-8066
+
+-hbx=../../include/splitter.hbx
 
 h_splitter.prg
 c_splitter.c

@@ -44,12 +44,11 @@
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
 ---------------------------------------------------------------------------*/
-
 #define _WIN32_IE 0x0501      // Define the minimum required Internet Explorer version for the application
 #include <mgdefs.h>           // Include application-specific definitions
 #include <commctrl.h>         // Include common control definitions and structures for UI elements
 
-// Functions to load and add images to an ImageList for use with the TreeView control
+// Function prototypes for loading and adding images to an ImageList for use with the TreeView control
 HIMAGELIST  HMG_ImageListLoadFirst( const char *FileName, int cGrow, int Transparent, int *nWidth, int *nHeight );
 void        HMG_ImageListAdd( HIMAGELIST himl, char *FileName, int Transparent );
 
@@ -57,7 +56,21 @@ void        HMG_ImageListAdd( HIMAGELIST himl, char *FileName, int Transparent )
 HINSTANCE   GetInstance( void );
 HINSTANCE   GetResources( void );
 
-// Initialize a TreeView control with specific settings
+/*
+ * FUNCTION: INITTREE
+ *
+ * Initializes a TreeView control with specific settings.
+ *
+ * Parameters:
+ *   hWnd: Handle to the parent window.
+ *   x, y: Position coordinates.
+ *   width, height: Dimensions of the TreeView control.
+ *   hMenu: Handle to the menu or control ID.
+ *   mask: Additional style flags.
+ *
+ * Returns:
+ *   The handle to the created TreeView control window.
+ */
 HB_FUNC( INITTREE )
 {
    INITCOMMONCONTROLSEX icex; // Structure for common control initialization
@@ -96,7 +109,19 @@ HB_FUNC( INITTREE )
    );
 }
 
-// Initialize and load a TreeView control's bitmap image list
+/*
+ * FUNCTION: INITTREEVIEWBITMAP
+ *
+ * Initializes and loads a TreeView control's bitmap image list.
+ *
+ * Parameters:
+ *   hWnd: Handle to the TreeView control.
+ *   Array: Array of image file names.
+ *   Transparent: Flag indicating if images should be transparent.
+ *
+ * Returns:
+ *   The number of images loaded.
+ */
 HB_FUNC( INITTREEVIEWBITMAP )
 {
    HIMAGELIST  himl = ( HIMAGELIST ) NULL;   // Image list handle for TreeView bitmaps
@@ -142,7 +167,19 @@ HB_FUNC( INITTREEVIEWBITMAP )
    hb_retni( ic );   // Return the number of images loaded
 }
 
-// Add a bitmap image to an existing TreeView control's image list
+/*
+ * FUNCTION: ADDTREEVIEWBITMAP
+ *
+ * Adds a bitmap image to an existing TreeView control's image list.
+ *
+ * Parameters:
+ *   hWnd: Handle to the TreeView control.
+ *   FileName: Name of the image file to add.
+ *   Transparent: Flag indicating if the image should be transparent.
+ *
+ * Returns:
+ *   The number of images in the image list after addition.
+ */
 HB_FUNC( ADDTREEVIEWBITMAP )
 {
    HWND        hbutton = hmg_par_raw_HWND( 1 );             // Handle to the TreeView control
@@ -175,7 +212,20 @@ typedef struct
    BOOL        IsNodeFlag;    // Flag indicating if the item is a node
 } HMG_StructTreeItemLPARAM;
 
-// Function to associate custom data with a TreeView item
+/*
+ * FUNCTION: AddTreeItemLPARAM
+ *
+ * Associates custom data with a TreeView item.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the TreeView item.
+ *   nID: Item ID.
+ *   IsNodeFlag: Flag indicating if the item is a node.
+ *
+ * Returns:
+ *   None.
+ */
 void AddTreeItemLPARAM( HWND hWndTV, HTREEITEM ItemHandle, LONG nID, BOOL IsNodeFlag )
 {
    TV_ITEM  TV_Item;
@@ -194,7 +244,23 @@ void AddTreeItemLPARAM( HWND hWndTV, HTREEITEM ItemHandle, LONG nID, BOOL IsNode
    }
 }
 
-// Function to add an item to the TreeView
+/*
+ * FUNCTION: ADDTREEITEM
+ *
+ * Adds an item to the TreeView.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   hPrev: Handle to the parent item.
+ *   Text: Text for the item.
+ *   iImage: Index of the image for the item.
+ *   iSelectedImage: Index of the selected image for the item.
+ *   nID: Unique ID for the item.
+ *   IsNodeFlag: Flag indicating if the item is a node.
+ *
+ * Returns:
+ *   The handle to the added item.
+ */
 HB_FUNC( ADDTREEITEM )
 {
    HWND              hWndTV = hmg_par_raw_HWND( 1 );     // Handle of the TreeView control
@@ -243,7 +309,17 @@ HB_FUNC( ADDTREEITEM )
 #endif
 }
 
-// Function to get the currently selected item in a TreeView control
+/*
+ * FUNCTION: TREEVIEW_GETSELECTION
+ *
+ * Gets the currently selected item in a TreeView control.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *
+ * Returns:
+ *   The handle to the currently selected TreeView item.
+ */
 HB_FUNC( TREEVIEW_GETSELECTION )
 {
    HTREEITEM   ItemHandle;
@@ -259,13 +335,35 @@ HB_FUNC( TREEVIEW_GETSELECTION )
    hmg_ret_raw_HANDLE( ItemHandle );         // Return the handle of the selected item
 }
 
-// Function to select a specific item in a TreeView control
+/*
+ * FUNCTION: TREEVIEW_SELECTITEM
+ *
+ * Selects a specific item in a TreeView control.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item to select.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( TREEVIEW_SELECTITEM )
 {
    TreeView_SelectItem( hmg_par_raw_HWND( 1 ), hmg_par_raw_TREEITEM( 2 ) );
 }
 
-// Recursive function to free memory associated with TreeView items
+/*
+ * FUNCTION: TreeView_FreeMemoryLPARAMRecursive
+ *
+ * Recursively frees memory associated with TreeView items.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the TreeView item.
+ *
+ * Returns:
+ *   None.
+ */
 void TreeView_FreeMemoryLPARAMRecursive( HWND hWndTV, HTREEITEM ItemHandle )
 {
    HMG_StructTreeItemLPARAM   *TreeItemLPARAM;
@@ -298,7 +396,18 @@ void TreeView_FreeMemoryLPARAMRecursive( HWND hWndTV, HTREEITEM ItemHandle )
    }
 }
 
-// Function to delete a specific item from a TreeView control
+/*
+ * FUNCTION: TREEVIEW_DELETEITEM
+ *
+ * Deletes a specific item from a TreeView control.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item to delete.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( TREEVIEW_DELETEITEM )
 {
    HWND        TreeHandle = hmg_par_raw_HWND( 1 );
@@ -311,7 +420,18 @@ HB_FUNC( TREEVIEW_DELETEITEM )
    TreeView_DeleteItem( TreeHandle, ItemHandle );
 }
 
-// Function to delete all items from a TreeView control
+/*
+ * FUNCTION: TREEVIEW_DELETEALLITEMS
+ *
+ * Deletes all items from a TreeView control.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *   Array: Array of item handles.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( TREEVIEW_DELETEALLITEMS )
 {
    HWND                       TreeHandle = hmg_par_raw_HWND( 1 );
@@ -340,13 +460,34 @@ HB_FUNC( TREEVIEW_DELETEALLITEMS )
    TreeView_DeleteAllItems( TreeHandle );
 }
 
-// Function to get the count of items in a TreeView control
+/*
+ * FUNCTION: TREEVIEW_GETCOUNT
+ *
+ * Gets the count of items in a TreeView control.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *
+ * Returns:
+ *   The number of items in the TreeView control.
+ */
 HB_FUNC( TREEVIEW_GETCOUNT )
 {
    hmg_ret_UINT( TreeView_GetCount( hmg_par_raw_HWND( 1 ) ) ); // Return the item count
 }
 
-// Function to get the previous sibling of a specified TreeView item
+/*
+ * FUNCTION: TREEVIEW_GETPREVSIBLING
+ *
+ * Gets the previous sibling of a specified TreeView item.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *
+ * Returns:
+ *   The handle to the previous sibling.
+ */
 HB_FUNC( TREEVIEW_GETPREVSIBLING )
 {
    HWND        TreeHandle = hmg_par_raw_HWND( 1 );
@@ -359,7 +500,18 @@ HB_FUNC( TREEVIEW_GETPREVSIBLING )
    hmg_ret_raw_HANDLE( PrevItemHandle );  // Return the handle of the previous sibling
 }
 
-// Function to get information about a specified TreeView item
+/*
+ * FUNCTION: TREEVIEW_GETITEM
+ *
+ * Gets information about a specified TreeView item.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *   TreeItemHandle: Handle to the item.
+ *
+ * Returns:
+ *   The text of the specified TreeView item.
+ */
 HB_FUNC( TREEVIEW_GETITEM )
 {
    HWND        TreeHandle;
@@ -393,7 +545,19 @@ HB_FUNC( TREEVIEW_GETITEM )
 #endif
 }
 
-// Function to set the text of a specified TreeView item
+/*
+ * FUNCTION: TREEVIEW_SETITEM
+ *
+ * Sets the text of a specified TreeView item.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *   TreeItemHandle: Handle to the item.
+ *   Text: The new text for the item.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( TREEVIEW_SETITEM )
 {
    HWND        TreeHandle;
@@ -425,7 +589,20 @@ HB_FUNC( TREEVIEW_SETITEM )
 #endif
 }
 
-// TreeItem_GetImageIndex ( hWndTV, ItemHandle , @iUnSel , @iSelectedImage ) --> Return { iUnSel , iSelectedImage }
+/*
+ * FUNCTION: TREEITEM_GETIMAGEINDEX
+ *
+ * Gets the image indices of a specified TreeView item.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *   iUnSel: Reference to store the unselected image index.
+ *   iSelectedImage: Reference to store the selected image index.
+ *
+ * Returns:
+ *   An array containing the unselected and selected image indices.
+ */
 HB_FUNC( TREEITEM_GETIMAGEINDEX )
 {
    HWND        hWndTV = hmg_par_raw_HWND( 1 );
@@ -434,6 +611,7 @@ HB_FUNC( TREEITEM_GETIMAGEINDEX )
    INT         iUnSel;
    INT         iSelectedImage;
    TV_ITEM     TreeItem;
+
    TreeItem.mask = TVIF_IMAGE | TVIF_SELECTEDIMAGE;
    TreeItem.hItem = ItemHandle;
    TreeItem.iImage = 0;
@@ -458,7 +636,20 @@ HB_FUNC( TREEITEM_GETIMAGEINDEX )
    HB_STORNI( iSelectedImage, -1, 2 );
 }
 
-// Function to set the image index of a TreeView item
+/*
+ * FUNCTION: TREEITEM_SETIMAGEINDEX
+ *
+ * Sets the image index of a TreeView item.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *   iImage: Index of the image for the item.
+ *   iSelectedImage: Index of the selected image for the item.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( TREEITEM_SETIMAGEINDEX )
 {
    HWND        TreeHandle = hmg_par_raw_HWND( 1 );       // Get the TreeView handle
@@ -472,7 +663,17 @@ HB_FUNC( TREEITEM_SETIMAGEINDEX )
    TreeView_SetItem( TreeHandle, &TreeItem );         // Update the item with new images
 }
 
-// Function to get the ID of the currently selected item in a TreeView
+/*
+ * FUNCTION: TREEVIEW_GETSELECTIONID
+ *
+ * Gets the ID of the currently selected item in a TreeView.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *
+ * Returns:
+ *   The ID of the currently selected item.
+ */
 HB_FUNC( TREEVIEW_GETSELECTIONID )
 {
    HWND                       TreeHandle;
@@ -494,7 +695,18 @@ HB_FUNC( TREEVIEW_GETSELECTIONID )
    }
 }
 
-// Function to get the next sibling of a specified TreeView item
+/*
+ * FUNCTION: TREEVIEW_GETNEXTSIBLING
+ *
+ * Gets the next sibling of a specified TreeView item.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *
+ * Returns:
+ *   The handle to the next sibling.
+ */
 HB_FUNC( TREEVIEW_GETNEXTSIBLING )
 {
    HWND        TreeHandle = hmg_par_raw_HWND( 1 );    // Get the TreeView handle
@@ -505,7 +717,18 @@ HB_FUNC( TREEVIEW_GETNEXTSIBLING )
    hmg_ret_raw_HANDLE( NextItemHandle );                 // Return the next sibling's handle
 }
 
-// Function to get the first child of a specified TreeView item
+/*
+ * FUNCTION: TREEVIEW_GETCHILD
+ *
+ * Gets the first child of a specified TreeView item.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *   ItemHandle: Handle to the parent item.
+ *
+ * Returns:
+ *   The handle to the first child.
+ */
 HB_FUNC( TREEVIEW_GETCHILD )
 {
    HWND        TreeHandle = hmg_par_raw_HWND( 1 );       // Get the TreeView handle
@@ -516,7 +739,18 @@ HB_FUNC( TREEVIEW_GETCHILD )
    hmg_ret_raw_HANDLE( ChildItemHandle );                // Return the child's handle
 }
 
-// Function to get the parent item of a specified TreeView item
+/*
+ * FUNCTION: TREEVIEW_GETPARENT
+ *
+ * Gets the parent item of a specified TreeView item.
+ *
+ * Parameters:
+ *   TreeHandle: Handle to the TreeView control.
+ *   ItemHandle: Handle to the child item.
+ *
+ * Returns:
+ *   The handle to the parent item.
+ */
 HB_FUNC( TREEVIEW_GETPARENT )
 {
    HWND        TreeHandle = hmg_par_raw_HWND( 1 );       // Get the TreeView handle
@@ -527,10 +761,19 @@ HB_FUNC( TREEVIEW_GETPARENT )
    hmg_ret_raw_HANDLE( ParentItemHandle );               // Return the parent's handle
 }
 
-//**************************************************
-//    by  Dr. Claudio Soto  (November 2013)
-//**************************************************
-// Function to retrieve the state of a TreeView item
+/*
+ * FUNCTION: TREEVIEW_GETITEMSTATE
+ *
+ * Retrieves the state of a TreeView item.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *   StateMask: State mask to check.
+ *
+ * Returns:
+ *   The state of the item.
+ */
 HB_FUNC( TREEVIEW_GETITEMSTATE )
 {
    HWND        hWndTV = hmg_par_raw_HWND( 1 );           // Get the TreeView handle
@@ -539,7 +782,18 @@ HB_FUNC( TREEVIEW_GETITEMSTATE )
    hmg_ret_UINT( TreeView_GetItemState( hWndTV, ItemHandle, StateMask ) ); // Return item state
 }
 
-// Helper function to check if a TreeView item has child nodes
+/*
+ * FUNCTION: TreeView_IsNode
+ *
+ * Checks if a TreeView item has child nodes.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *
+ * Returns:
+ *   TRUE if the item has at least one child, FALSE otherwise.
+ */
 BOOL TreeView_IsNode( HWND hWndTV, HTREEITEM ItemHandle )
 {
    if( TreeView_GetChild( hWndTV, ItemHandle ) != NULL )
@@ -552,9 +806,19 @@ BOOL TreeView_IsNode( HWND hWndTV, HTREEITEM ItemHandle )
    }
 }
 
-//--------------------------------------------------------------------------------------------------------
-//   TreeView_ExpandChildrenRecursive ( hWndTV, ItemHandle, nExpand, fRecurse )
-//--------------------------------------------------------------------------------------------------------
+/*
+ * FUNCTION: TreeView_ExpandChildrenRecursive
+ *
+ * Recursively expands or collapses children of a TreeView item.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *   nExpand: Flag indicating whether to expand or collapse.
+ *
+ * Returns:
+ *   None.
+ */
 void TreeView_ExpandChildrenRecursive( HWND hWndTV, HTREEITEM ItemHandle, UINT nExpand )
 {
    HTREEITEM   ChildItem;
@@ -565,6 +829,7 @@ void TreeView_ExpandChildrenRecursive( HWND hWndTV, HTREEITEM ItemHandle, UINT n
    {
       // Expand or collapse the current item
       TreeView_Expand( hWndTV, ItemHandle, nExpand );
+
       // Get the first child item of the current node
       ChildItem = TreeView_GetChild( hWndTV, ItemHandle );
 
@@ -581,8 +846,20 @@ void TreeView_ExpandChildrenRecursive( HWND hWndTV, HTREEITEM ItemHandle, UINT n
    }
 }
 
-// Function: TREEVIEW_EXPANDCHILDRENRECURSIVE
-// HMG function to expand/collapse TreeView items with optional recursion
+/*
+ * FUNCTION: TREEVIEW_EXPANDCHILDRENRECURSIVE
+ *
+ * Expands or collapses TreeView items with optional recursion.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *   nExpand: Flag indicating whether to expand or collapse.
+ *   fRecurse: Flag indicating whether to recurse.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( TREEVIEW_EXPANDCHILDRENRECURSIVE )
 {
    HWND        hWndTV = hmg_par_raw_HWND( 1 );
@@ -613,7 +890,6 @@ HB_FUNC( TREEVIEW_EXPANDCHILDRENRECURSIVE )
    }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
 #define SORTTREENODE_FIRST 0
 #define SORTTREENODE_LAST  1
 #define SORTTREENODE_MIX   2
@@ -626,12 +902,19 @@ typedef struct
    int   NodePosition;
 } HMG_StructTreeViewCompareInfo;
 
-// Function: TreeViewCompareFunc
-// Custom comparison function for sorting TreeView nodes
-// Parameters:
-//   LPARAM lParam1 - Item data for the first node
-//   LPARAM lParam2 - Item data for the second node
-//   LPARAM lParamSort - Additional sorting information
+/*
+ * FUNCTION: TreeViewCompareFunc
+ *
+ * Custom comparison function for sorting TreeView nodes.
+ *
+ * Parameters:
+ *   lParam1: Item data for the first node.
+ *   lParam2: Item data for the second node.
+ *   lParamSort: Additional sorting information.
+ *
+ * Returns:
+ *   The comparison result.
+ */
 int CALLBACK TreeViewCompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
 {
    // Extract TreeView item data
@@ -686,21 +969,45 @@ int CALLBACK TreeViewCompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamS
    // Handle special node position sorting
    if( TreeViewCompareInfo->NodePosition == SORTTREENODE_FIRST )
    {
-      if( IsTreeNode1 && !IsTreeNode2 ) return -1; // Nodes first
-      if( !IsTreeNode1 && IsTreeNode2 ) return +1; // Non-nodes after
+      if( IsTreeNode1 && !IsTreeNode2 )
+      {
+         return -1;  // Nodes first
+      }
 
+      if( !IsTreeNode1 && IsTreeNode2 )
+      {
+         return +1;  // Non-nodes after
+      }
    }
 
    if( TreeViewCompareInfo->NodePosition == SORTTREENODE_LAST )
    {
-      if( IsTreeNode1 && !IsTreeNode2 ) return +1; // Nodes last
-      if( !IsTreeNode1 && IsTreeNode2 ) return -1; // Non-nodes first
+      if( IsTreeNode1 && !IsTreeNode2 )
+      {
+         return +1;  // Nodes last
+      }
 
+      if( !IsTreeNode1 && IsTreeNode2 )
+      {
+         return -1;  // Non-nodes first
+      }
    }
 
    return CmpValue;
 }
 
+/*
+ * FUNCTION: TreeView_SortChildrenRecursiveCB
+ *
+ * Recursively sorts children of a TreeView item using a callback function.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   TVSortCB: Sort callback structure.
+ *
+ * Returns:
+ *   None.
+ */
 void TreeView_SortChildrenRecursiveCB( HWND hWndTV, TVSORTCB TVSortCB )
 {
    HTREEITEM   ChildItem;
@@ -722,9 +1029,22 @@ void TreeView_SortChildrenRecursiveCB( HWND hWndTV, TVSORTCB TVSortCB )
    }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-// TreeView_SortChildrenRecursiveCB ( hWndTV, ItemHandle, fRecurse, lCaseSensitive, lAscendingOrder, nNodePosition )
-//---------------------------------------------------------------------------------------------------------------------
+/*
+ * FUNCTION: TREEVIEW_SORTCHILDRENRECURSIVECB
+ *
+ * Sorts children of a TreeView item recursively using a callback function.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *   fRecurse: Flag indicating whether to recurse.
+ *   lCaseSensitive: Flag indicating case sensitivity.
+ *   lAscendingOrder: Flag indicating sort order.
+ *   nNodePosition: Node position flag.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( TREEVIEW_SORTCHILDRENRECURSIVECB )
 {
    HWND                          hWndTV = hmg_par_raw_HWND( 1 );
@@ -765,6 +1085,17 @@ HB_FUNC( TREEVIEW_SORTCHILDRENRECURSIVECB )
    }
 }
 
+/*
+ * FUNCTION: TREEVIEW_GETROOT
+ *
+ * Gets the root item of a TreeView control.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *
+ * Returns:
+ *   The handle to the root item.
+ */
 HB_FUNC( TREEVIEW_GETROOT )
 {
    HTREEITEM   RootItemHandle = TreeView_GetRoot( hmg_par_raw_HWND( 1 ) );
@@ -772,8 +1103,18 @@ HB_FUNC( TREEVIEW_GETROOT )
    hmg_ret_raw_HANDLE( RootItemHandle );
 }
 
-// Function: TREEITEM_GETID
-// Retrieves the ID associated with a TreeView item
+/*
+ * FUNCTION: TREEITEM_GETID
+ *
+ * Retrieves the ID associated with a TreeView item.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *
+ * Returns:
+ *   The ID of the item.
+ */
 HB_FUNC( TREEITEM_GETID )
 {
    HWND        hWndTV = hmg_par_raw_HWND( 1 );
@@ -792,8 +1133,19 @@ HB_FUNC( TREEITEM_GETID )
    }
 }
 
-// Function: TREEITEM_SETNODEFLAG
-// Sets the IsNodeFlag for a TreeView item
+/*
+ * FUNCTION: TREEITEM_SETNODEFLAG
+ *
+ * Sets the IsNodeFlag for a TreeView item.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *   IsNodeFlag: Flag indicating if the item is a node.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( TREEITEM_SETNODEFLAG )
 {
    HWND                       hWndTV = hmg_par_raw_HWND( 1 );
@@ -815,8 +1167,18 @@ HB_FUNC( TREEITEM_SETNODEFLAG )
    TreeView_SetItem( hWndTV, &TreeItem );
 }
 
-// Function: TREEITEM_GETNODEFLAG
-// Retrieves the IsNodeFlag for a TreeView item
+/*
+ * FUNCTION: TREEITEM_GETNODEFLAG
+ *
+ * Retrieves the IsNodeFlag for a TreeView item.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *
+ * Returns:
+ *   The IsNodeFlag of the item.
+ */
 HB_FUNC( TREEITEM_GETNODEFLAG )
 {
    HWND                       hWndTV = hmg_par_raw_HWND( 1 );
@@ -835,7 +1197,19 @@ HB_FUNC( TREEITEM_GETNODEFLAG )
    hb_retl( TreeItemLPARAM->IsNodeFlag );
 }
 
-//        TreeView_SetImageList ( hWnd , hImageList , [iImageList] )
+/*
+ * FUNCTION: TREEVIEW_SETIMAGELIST
+ *
+ * Sets the image list for a TreeView control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the TreeView control.
+ *   hImageList: Handle to the image list.
+ *   iImageList: Type of image list.
+ *
+ * Returns:
+ *   The handle to the previous image list.
+ */
 HB_FUNC( TREEVIEW_SETIMAGELIST )
 {
    HWND        hWnd = hmg_par_raw_HWND( 1 );
@@ -845,7 +1219,18 @@ HB_FUNC( TREEVIEW_SETIMAGELIST )
    hmg_ret_raw_HANDLE( hImageListPrevious );
 }
 
-//        TreeView_GetImageList ( hWnd , [iImageList] ) --> hImageList
+/*
+ * FUNCTION: TREEVIEW_GETIMAGELIST
+ *
+ * Gets the image list for a TreeView control.
+ *
+ * Parameters:
+ *   hWnd: Handle to the TreeView control.
+ *   iImageList: Type of image list.
+ *
+ * Returns:
+ *   The handle to the image list.
+ */
 HB_FUNC( TREEVIEW_GETIMAGELIST )
 {
    HWND        hWnd = hmg_par_raw_HWND( 1 );
@@ -854,6 +1239,19 @@ HB_FUNC( TREEVIEW_GETIMAGELIST )
    hmg_ret_raw_HANDLE( hImageList );
 }
 
+/*
+ * FUNCTION: TREEVIEW_SETHASBUTTON
+ *
+ * Sets whether a TreeView item has a button.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *   lHasButton: Flag indicating if the item has a button.
+ *
+ * Returns:
+ *   None.
+ */
 HB_FUNC( TREEVIEW_SETHASBUTTON )
 {
    HWND        hWndTV = hmg_par_raw_HWND( 1 );
@@ -867,6 +1265,18 @@ HB_FUNC( TREEVIEW_SETHASBUTTON )
    TreeView_SetItem( hWndTV, &TreeItem );
 }
 
+/*
+ * FUNCTION: TREEVIEW_GETHASBUTTON
+ *
+ * Gets whether a TreeView item has a button.
+ *
+ * Parameters:
+ *   hWndTV: Handle to the TreeView control.
+ *   ItemHandle: Handle to the item.
+ *
+ * Returns:
+ *   TRUE if the item has a button, FALSE otherwise.
+ */
 HB_FUNC( TREEVIEW_GETHASBUTTON )
 {
    HWND        hWndTV = hmg_par_raw_HWND( 1 );

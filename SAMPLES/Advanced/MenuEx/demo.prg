@@ -15,7 +15,7 @@ PROCEDURE Main
 	SET MENUSTYLE EXTENDED
 //	SET MENUSTYLE STANDARD
 
- 	SetMenuBitmapHeight( 32 ) 
+//  	SetMenuBitmapHeight( 16 ) 
 //  	SetMenuBitmapHeight( BmpSize( "NEW" )[ 1 ] ) 
 
 	DEFINE WINDOW Form_1 ;

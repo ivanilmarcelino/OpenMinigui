@@ -47,15 +47,16 @@
 #include <mgdefs.h>                       // MiniGUI definitions for window elements and styles
 #include <commctrl.h>                     // Common Windows controls, necessary for GUI elements
 
+// Define static class name for older Borland compilers
 #if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 )
-   // Define static class name for older Borland compilers
    #define WC_STATIC "Static"
 #endif
 #include "hbvm.h"                         // Harbour Virtual Machine (VM) definitions for handling VM functions
 
+static WNDPROC    LabelOldWndProc;        // Stores the original window procedure for subclassing
+
 // Function prototypes
 LRESULT APIENTRY  LabelSubClassFunc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam );
-static WNDPROC    LabelOldWndProc;        // Stores the original window procedure for subclassing
 #ifdef UNICODE
 LPWSTR            AnsiToWide( LPCSTR );   // Converts ANSI strings to Wide strings for Unicode
 #endif
@@ -63,8 +64,42 @@ LPWSTR            AnsiToWide( LPCSTR );   // Converts ANSI strings to Wide strin
 // Retrieves the application instance handle
 HINSTANCE         GetInstance( void );
 
-// Function: INITLABEL
-// Initializes a static label with various customizable styles and options.
+/*
+ * FUNCTION INITLABEL( hWndParent, cCaption, nX, nY, nWidth, nHeight, cFontName, nFontSize, lNotify, lSubClass, lBorder, lClientEdge, lHScroll, lVScroll, lTransparent, lVisible, lRight, lCenter, lCenterImage, lNoPrefix )
+ *
+ * Creates a static label control with specified properties and styles.
+ *
+ * Parameters:
+ *   hWndParent  : HWND - Handle of the parent window.
+ *   cCaption    : STRING - Text to be displayed in the label.
+ *   nX          : INT - X coordinate of the label's top-left corner relative to the parent window.
+ *   nY          : INT - Y coordinate of the label's top-left corner relative to the parent window.
+ *   nWidth      : INT - Width of the label control.
+ *   nHeight     : INT - Height of the label control.
+ *   cFontName   : STRING - Name of the font to use for the label text (optional).
+ *   nFontSize   : INT - Size of the font to use for the label text (optional).
+ *   lNotify     : LOGICAL - .T. to enable mouse notifications (WM_LBUTTONDOWN, WM_RBUTTONDOWN, etc.), .F. otherwise.
+ *   lSubClass   : LOGICAL - .T. to subclass the label for custom event handling, .F. otherwise.
+ *   lBorder     : LOGICAL - .T. to add a border to the label, .F. otherwise.
+ *   lClientEdge : LOGICAL - .T. to add a client edge style to the label, .F. otherwise.
+ *   lHScroll    : LOGICAL - .T. to enable horizontal scrolling, .F. otherwise.
+ *   lVScroll    : LOGICAL - .T. to enable vertical scrolling, .F. otherwise.
+ *   lTransparent: LOGICAL - .T. to make the label transparent, .F. otherwise.
+ *   lVisible    : LOGICAL - .T. to make the label visible, .F. otherwise.
+ *   lRight      : LOGICAL - .T. to right-align the text, .F. otherwise.
+ *   lCenter     : LOGICAL - .T. to center-align the text, .F. otherwise.
+ *   lCenterImage: LOGICAL - .T. to center the image vertically, .F. otherwise.
+ *   lNoPrefix   : LOGICAL - .T. to suppress the interpretation of '&' as a mnemonic prefix, .F. otherwise.
+ *
+ * Returns:
+ *   HWND - Handle of the created static label control.
+ *
+ * Purpose:
+ *   This function creates a static label control, allowing developers to display text
+ *   on a window. It provides extensive customization options for appearance and behavior,
+ *   including font, alignment, borders, scrolling, and event handling.  It is used to
+ *   display static information to the user, such as titles, instructions, or status messages.
+ */
 HB_FUNC( INITLABEL )
 {
    HWND     hWnd;
@@ -159,7 +194,35 @@ HB_FUNC( INITLABEL )
 // Define _OLD_STYLE if old event calling style is required
 #define _OLD_STYLE   0
 
-// Subclass procedure for handling mouse events on the label
+/*
+ * FUNCTION LabelSubClassFunc( hWnd, Msg, wParam, lParam )
+ *
+ * Subclass procedure for handling specific messages, primarily mouse events, for a label control.
+ *
+ * Parameters:
+ *   hWnd   : HWND - Handle of the label window.
+ *   Msg    : UINT - The message being processed.
+ *   wParam : WPARAM - Additional message-specific information.
+ *   lParam : LPARAM - Additional message-specific information.
+ *
+ * Returns:
+ *   LRESULT - The result of the message processing.  This is either the result of the user-defined
+ *             function (UDF) if called, or the result of the original window procedure.
+ *
+ * Purpose:
+ *   This function intercepts Windows messages sent to the label control, allowing custom handling
+ *   of events such as mouse movements and mouse leaving the control's area.  It's used to trigger
+ *   user-defined functions (UDFs) in response to these events, enabling interactive label behavior.
+ *   The function uses TrackMouseEvent to detect when the mouse leaves the label, even if the mouse
+ *   is moving quickly.
+ *
+ * Notes:
+ *   - The function checks for WM_MOUSEMOVE and WM_MOUSELEAVE messages.
+ *   - It uses TrackMouseEvent to track when the mouse leaves the label area.
+ *   - It calls a user-defined function (UDF) named "OLABELEVENTS" if it exists.
+ *   - The _OLD_STYLE macro controls whether the UDF is called on both WM_MOUSEMOVE and WM_MOUSELEAVE, or only on WM_MOUSELEAVE.
+ *   - The function ensures that the Harbour Virtual Machine (VM) is properly re-entered and restored when calling the UDF.
+ */
 LRESULT APIENTRY LabelSubClassFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
    TRACKMOUSEEVENT   tme;                             // Struct for tracking mouse events

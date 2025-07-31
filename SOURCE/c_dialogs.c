@@ -50,7 +50,6 @@
 #else
 #define _WIN32_WINNT 0x0400
 #endif
-
 #include <mgdefs.h>
 #include <commdlg.h>
 #include <shlobj.h>
@@ -102,6 +101,7 @@ HB_FUNC( CHOOSEFONT )
    long        PointSize;
    HDC         hdc;
    HWND        hwnd;
+   int         dpiY;
 
 #ifdef UNICODE
    LPSTR       pStr;
@@ -113,9 +113,10 @@ HB_FUNC( CHOOSEFONT )
 #endif
    hwnd = GetActiveWindow();
    hdc = GetDC( hwnd );
+   dpiY = GetDeviceCaps( hdc, LOGPIXELSY );
 
    // Calculate font height in pixels
-   lf.lfHeight = -MulDiv( hb_parnl( 2 ), GetDeviceCaps( hdc, LOGPIXELSY ), 72 );
+   lf.lfHeight = -MulDiv( hb_parnl( 2 ), dpiY, 72 );
 
    // Set font style: Bold or normal weight
    lf.lfWeight = hb_parl( 3 ) ? FW_BOLD : FW_NORMAL;
@@ -146,7 +147,7 @@ HB_FUNC( CHOOSEFONT )
 
    if( !ChooseFont( &cf ) )
    {
-      hb_reta( 8 );                 // Return an empty array if dialog fails or is canceled
+      hb_reta( 8 );                     // Return an empty array if dialog fails or is canceled
       HB_STORC( "", -1, 1 );
       HB_STORVNL( ( LONG ) 0, -1, 2 );
       HB_STORL( 0, -1, 3 );
@@ -160,7 +161,7 @@ HB_FUNC( CHOOSEFONT )
    }
 
    // Convert font height back to point size
-   PointSize = -MulDiv( lf.lfHeight, 72, GetDeviceCaps( hdc, LOGPIXELSY ) );
+   PointSize = -MulDiv( lf.lfHeight, 72, dpiY );
 
    // Populate return array with selected font details
    hb_reta( 8 );
@@ -261,7 +262,7 @@ HB_FUNC( C_BROWSEFORFOLDER )
    HWND           hWnd = HB_ISNIL( 1 ) ? GetActiveWindow() : hmg_par_raw_HWND( 1 );
    BROWSEINFO     BrowseInfo;
    TCHAR          lpBuffer[MAX_PATH];
-   LPITEMIDLIST   pidlBrowse;
+   LPITEMIDLIST   pidlRoot, pidlResult;
 
 #ifdef UNICODE
    LPWSTR         pW, pW2;
@@ -277,11 +278,11 @@ HB_FUNC( C_BROWSEFORFOLDER )
    }
 
    // Get special folder location to start the browse dialog
-   SHGetSpecialFolderLocation( hWnd, HB_ISNIL( 4 ) ? CSIDL_DRIVES : hb_parni( 4 ), &pidlBrowse );
+   SHGetSpecialFolderLocation( hWnd, HB_ISNIL( 4 ) ? CSIDL_DRIVES : hb_parni( 4 ), &pidlRoot );
 
    // Setup browse dialog info
    BrowseInfo.hwndOwner = hWnd;
-   BrowseInfo.pidlRoot = pidlBrowse;
+   BrowseInfo.pidlRoot = pidlRoot;
    BrowseInfo.pszDisplayName = lpBuffer;
 #ifndef UNICODE
    BrowseInfo.lpszTitle = HB_ISNIL( 2 ) ? "Select a Folder" : hb_parc( 2 );
@@ -299,12 +300,12 @@ HB_FUNC( C_BROWSEFORFOLDER )
 #endif
    BrowseInfo.iImage = 0;
 
-   pidlBrowse = SHBrowseForFolder( &BrowseInfo );
+   pidlResult = SHBrowseForFolder( &BrowseInfo );
 
    // If folder selected, retrieve path
-   if( pidlBrowse )
+   if( pidlResult )
    {
-      SHGetPathFromIDList( pidlBrowse, lpBuffer );
+      SHGetPathFromIDList( pidlResult, lpBuffer );
 #ifndef UNICODE
       hb_retc( lpBuffer );
 #else
@@ -312,18 +313,28 @@ HB_FUNC( C_BROWSEFORFOLDER )
       hb_retc( pStr );
       hb_xfree( pStr );
 #endif
+      if( pidlResult )
+      {
+         CoTaskMemFree( pidlResult );  // Free memory allocated by SHBrowseForFolder
+      }
    }
    else
    {
       hb_retc( "" );
    }
 
-   CoTaskMemFree( pidlBrowse );     // Free memory allocated by SHBrowseForFolder
+   if( pidlRoot )
+   {
+      CoTaskMemFree( pidlRoot );       // Free memory allocated by SHGetSpecialFolderLocation
+   }
+
 #ifdef UNICODE
    hb_xfree( pW );
    hb_xfree( pW2 );
 #endif
 }
+
+#define CUSTOM_COLOR_COUNT 16
 
 /**
  * Function: CHOOSECOLOR
@@ -349,17 +360,16 @@ HB_FUNC( C_BROWSEFORFOLDER )
 HB_FUNC( CHOOSECOLOR )
 {
    CHOOSECOLOR cc;
-   COLORREF    crCustClr[16];
+   COLORREF    crCustClr[CUSTOM_COLOR_COUNT];
    int         i;
 
    // Populate custom color array or default system color
-   for( i = 0; i < 16; i++ )
+   for( i = 0; i < CUSTOM_COLOR_COUNT; i++ )
    {
       crCustClr[i] = ( HB_ISARRAY( 3 ) ? hmg_parv_COLORREF( 3, i + 1 ) : GetSysColor( COLOR_BTNFACE ) );
    }
 
-   memset( &cc, 0, sizeof( cc ) );  // Zero out CHOOSECOLOR structure
-
+   memset( &cc, 0, sizeof( cc ) );     // Zero out CHOOSECOLOR structure
    cc.lStructSize = sizeof( CHOOSECOLOR );
    cc.hwndOwner = HB_ISNIL( 1 ) ? GetActiveWindow() : hmg_par_raw_HWND( 1 );
    cc.rgbResult = hmg_par_COLORREF( 2 );  // Set initial color
@@ -382,9 +392,9 @@ HB_FUNC( CHOOSECOLOR )
       PHB_ITEM pArray = hb_param( 3, HB_IT_ANY );
       PHB_ITEM pSubarray = hb_itemNew( NULL );
 
-      hb_arrayNew( pArray, 16 );
+      hb_arrayNew( pArray, CUSTOM_COLOR_COUNT );
 
-      for( i = 0; i < 16; i++ )
+      for( i = 0; i < CUSTOM_COLOR_COUNT; i++ )
       {
          hb_arrayNew( pSubarray, 3 );
          hb_arraySetNL( pSubarray, 1, GetRValue( crCustClr[i] ) );

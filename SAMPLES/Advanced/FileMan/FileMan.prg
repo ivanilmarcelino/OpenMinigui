@@ -71,6 +71,7 @@ LOCAL aDriveBmps := { "FLOPPY", "REMOVE", "HARD", "REMOTE", "CDROM", "RAMDISK" }
       TITLE IF(nWnd > 1, "[" + Ltrim(Str(nWnd)) + "] ", "") + PROGRAM + " v." + Ltrim(VERSION) ;
       ICON 'MAIN' ;
       MAIN ;
+      NOMAXIMIZE NOSIZE ;
       ON INIT ( GetDirectory(aSubDirectory[1][1] + '\*.*', 1), ;
 		GetDirectory(aSubDirectory[2][1] + '\*.*', 2), lfirst := .f. ) ;
       FONT 'MS Sans Serif' ;

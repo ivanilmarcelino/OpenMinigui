@@ -48,45 +48,48 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #include 'minigui.ch'
 
 *-----------------------------------------------------------------------------*
-FUNCTION _DefineHotKey ( cParentForm , nMod , nKey , bAction )
+FUNCTION _DefineHotKey ( cParentForm, nMod, nKey, bAction )
 *-----------------------------------------------------------------------------*
    LOCAL nParentForm
    LOCAL nId
    LOCAL k
    LOCAL lSuccess
    // BK 22-Apr-2012
-   IF _HMG_BeginWindowMDIActive .AND. Empty( _HMG_ActiveFormName )  //JP MDI HotKey
+   IF _HMG_BeginWindowMDIActive .AND. Empty( _HMG_ActiveFormName )
       nParentForm := GetActiveMdiHandle()
       IF nParentForm == 0
          cParentForm := _HMG_MainClientMDIName
       ELSE
          cParentForm := _GetWindowProperty ( nParentForm, "PROP_FORMNAME" )
-      ENDIF                                                         //End JP
+      ENDIF
    ELSEIF _HMG_BeginWindowActive
       cParentForm := _HMG_ActiveFormName
    ENDIF
 
-   IF ValType ( cParentForm ) == 'U'
+   IF HB_ISNIL ( cParentForm )
       MsgMiniGuiError ( "ON KEY: Parent Window is Not specified." )
    ENDIF
 
    // Check if the window/form is defined.
-   IF .NOT. _IsWindowDefined( cParentForm )
-      MsgMiniGuiError( "Window " + cParentForm + " is not defined." )
+   IF .NOT. _IsWindowDefined ( cParentForm )
+      MsgMiniGuiError ( "Window " + cParentForm + " is not defined." )
    ENDIF
 
-   _ReleaseHotKey ( cParentForm, nMod , nKey )
+   IF _GetHotKeyBlock ( cParentForm, nMod , nKey ) != NIL
+      _ReleaseHotKey ( cParentForm, nMod , nKey )
+   ENDIF
    // BK 22-Apr-2012
-   IF _HMG_BeginWindowMDIActive .AND. Empty( _HMG_ActiveFormName )  //JP MDI HotKey
+   IF _HMG_BeginWindowMDIActive .AND. Empty( _HMG_ActiveFormName )
       nParentForm := GetActiveMdiHandle()
       IF nParentForm == 0
          nParentForm := GetFormHandle ( cParentForm )
-      ENDIF                                                         //End JP
+      ENDIF
    ELSE
       nParentForm := GetFormHandle ( cParentForm )
    ENDIF
 
-   nId := _GetId( 49151 )
+   #define HOTKEY_ID_MAX  49151
+   nId := _GetId( HOTKEY_ID_MAX )
 
    lSuccess := InitHotKey ( nParentForm , nMod , nKey , nId )
 
@@ -183,19 +186,21 @@ RETURN
 FUNCTION HMG_PressKey( ... )  // by Dr. Claudio Soto, April 2016
 *-----------------------------------------------------------------------------*
    LOCAL aVK := {}
+   LOCAL nVK
    LOCAL i
 
    FOR i := 1 TO PCount()
-      IF ISNUMERIC( PValue( i ) )
-         AADD( aVK, PValue( i ) )
+      nVK := PValue( i )
+      IF ISNUMERIC( nVK )
+         AADD( aVK, nVK )
+         Keybd_Event( nVK, .F. )    // KeyDown
       ELSE
-         LOOP
+         MsgMiniGuiError ( "HMG_PressKey: Invalid parameter." )
       ENDIF
-      Keybd_Event( aVK[ i ], .F. )   // KeyDown
    NEXT
 
    FOR i := Len( aVK ) TO 1 STEP -1
-      Keybd_Event( aVK[ i ], .T. )   // KeyUp
+      Keybd_Event( aVK[ i ], .T. )  // KeyUp
    NEXT
 
 RETURN aVK
@@ -216,12 +221,12 @@ FUNCTION _SetHotKeyByName ( cParentForm, cKey, bAction )
    IF ! Empty ( cKey ) .AND. ISCHARACTER ( cKey )
       aKey := _DetermineKey ( cKey )
       IF aKey [1] != 0
-         IF ValType ( _GetHotKeyBlock ( cParentForm, aKey [2], aKey [1] ) ) == "B"
-            MsgMiniGuiError ( "Hotkey " + cKey + " Already defined." )
+         IF ! HB_ISNIL ( _GetHotKeyBlock ( cParentForm, aKey [2], aKey [1] ) )
+            MsgMiniGuiError ( "The hotkey " + cKey + " is Already defined." )
          ENDIF
          lSuccess := _DefineHotKey ( cParentForm, aKey [2], aKey [1], bAction )
       ELSE
-         MsgMiniGuiError ( "Hotkey " + cKey + " is not valid." )
+         MsgMiniGuiError ( "The hotkey " + cKey + " is not valid." )
       ENDIF
    ENDIF
 
@@ -261,14 +266,17 @@ FUNCTION _DetermineKey ( cKey )
 
    DO WHILE ! Empty ( cKey2 )
 
-      IF ( nPos := At( "+", cKey2 ) ) == 0
+      IF ( nPos := At ( "+", cKey2 ) ) == 0
+
          cKey2 := AllTrim ( cKey2 )
          nPos := AScan ( _SetGetGlobal( "_HMG_aKeyTables" ), { |c| cKey2 == c } )
          cKey2 := ""
          IF nPos != 0
             aKey := { nPos, nAlt + nCtrl + nShift + nWin }
          ENDIF
+
       ELSE
+
          cText := AllTrim ( Left( cKey2, nPos - 1 ) )
          cKey2 := SubStr ( cKey2, nPos + 1 )
 
@@ -290,6 +298,7 @@ FUNCTION _DetermineKey ( cKey )
          OTHERWISE
             cKey2 := ""  // Invalid keyword
          ENDCASE
+
       ENDIF
 
    ENDDO

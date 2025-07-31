@@ -51,6 +51,8 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #include "minigui.ch"
 #include "i_winuser.ch"
 
+#define MB_DEFAULT_ICON  0
+
 * Constants for default button values
 #define DEFAULT_BUTTON_1 1
 #define DEFAULT_BUTTON_2 2
@@ -129,7 +131,7 @@ RETURN MessageBoxIndirect( NIL, cMessage, cTitle, nStyle, nIcon )
 FUNCTION MsgYesNo ( Message, Title, RevertDefault, nIcon, lSysModal, lTopMost )
    LOCAL nStyle := MB_YESNO
 
-   nStyle += iif( Empty( hb_defaultValue( nIcon, 0 ) ), MB_ICONQUESTION, MB_USERICON )
+   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONQUESTION, MB_USERICON )
 
    IF hb_defaultValue( RevertDefault, .F. )
       nStyle += MB_DEFBUTTON2
@@ -162,7 +164,7 @@ RETURN ( _MsgBox( Message, Title, nStyle, nIcon, lSysModal, lTopMost ) == IDYES 
 FUNCTION MsgYesNoCancel ( Message, Title, nIcon, lSysModal, nDefaultButton, lTopMost )
    LOCAL nStyle := MB_YESNOCANCEL
 
-   nStyle += iif( Empty( hb_defaultValue( nIcon, 0 ) ), MB_ICONQUESTION, MB_USERICON )
+   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONQUESTION, MB_USERICON )
 
    SWITCH hb_defaultValue( nDefaultButton, DEFAULT_BUTTON_1 )
 
@@ -207,7 +209,7 @@ RETURN ( MESSAGE_CANCEL )
 FUNCTION MsgRetryCancel ( Message, Title, nIcon, lSysModal, nDefaultButton, lTopMost )
    LOCAL nStyle := MB_RETRYCANCEL
 
-   nStyle += iif( Empty( hb_defaultValue( nIcon, 0 ) ), MB_ICONQUESTION, MB_USERICON )
+   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONQUESTION, MB_USERICON )
 
    IF hb_defaultValue( nDefaultButton, DEFAULT_BUTTON_1 ) == DEFAULT_BUTTON_2
       nStyle += MB_DEFBUTTON2
@@ -237,7 +239,7 @@ RETURN ( _MsgBox( Message, Title, nStyle, nIcon, lSysModal, lTopMost ) == IDRETR
 FUNCTION MsgOkCancel ( Message, Title, nIcon, lSysModal, nDefaultButton, lTopMost )
    LOCAL nStyle := MB_OKCANCEL
 
-   nStyle += iif( Empty( hb_defaultValue( nIcon, 0 ) ), MB_ICONQUESTION, MB_USERICON )
+   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONQUESTION, MB_USERICON )
 
    IF hb_defaultValue( nDefaultButton, DEFAULT_BUTTON_1 ) == DEFAULT_BUTTON_2
       nStyle += MB_DEFBUTTON2
@@ -264,7 +266,7 @@ RETURN ( _MsgBox( Message, Title, nStyle, nIcon, lSysModal, lTopMost ) == IDOK )
 FUNCTION MsgExclamation ( Message, Title, nIcon, lSysModal, lTopMost )
    LOCAL nStyle := MB_OK
 
-   nStyle += iif( Empty( hb_defaultValue( nIcon, 0 ) ), MB_ICONEXCLAMATION, MB_USERICON )
+   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONEXCLAMATION, MB_USERICON )
 
 RETURN _MsgBox( Message, hb_defaultValue( Title, _HMG_MESSAGE [10] ), nStyle, nIcon, lSysModal, lTopMost )
 
@@ -287,7 +289,7 @@ RETURN _MsgBox( Message, hb_defaultValue( Title, _HMG_MESSAGE [10] ), nStyle, nI
 FUNCTION MsgInfo ( Message, Title, nIcon, lSysModal, lTopMost )
    LOCAL nStyle := MB_OK
 
-   nStyle += iif( Empty( hb_defaultValue( nIcon, 0 ) ), MB_ICONINFORMATION, MB_USERICON )
+   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONINFORMATION, MB_USERICON )
 
 RETURN _MsgBox( Message, hb_defaultValue( Title, _HMG_MESSAGE [11] ), nStyle, nIcon, lSysModal, lTopMost )
 
@@ -310,7 +312,7 @@ RETURN _MsgBox( Message, hb_defaultValue( Title, _HMG_MESSAGE [11] ), nStyle, nI
 FUNCTION MsgStop ( Message, Title, nIcon, lSysModal, lTopMost )
    LOCAL nStyle := MB_OK
 
-   nStyle += iif( Empty( hb_defaultValue( nIcon, 0 ) ), MB_ICONSTOP, MB_USERICON )
+   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONSTOP, MB_USERICON )
 
 RETURN _MsgBox( Message, hb_defaultValue( Title, _HMG_MESSAGE [12] ), nStyle, nIcon, lSysModal, lTopMost )
 

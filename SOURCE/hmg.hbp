@@ -2,14 +2,12 @@
 # hmg.hbp
 #
 
-#{bcc}-env:DEBUG=yes
+{bcc}-env:DEBUG=yes
 #-env:UNICODE=yes
 
 -hblib
 
 -inc
-
--jobs=%NUMBER_OF_PROCESSORS%
 
 -workdir=../lib/hbmk/obj
 
@@ -19,7 +17,7 @@
 
 -w3 -es2 -ko -q0
 
-{!DEBUG&bcc|bcc64|mingw|mingw64|msvc|msvc64}-l
+{!DEBUG&(allbcc|allmingw)|msvc|msvc64}-l
 
 -warn=max
 
@@ -155,7 +153,7 @@ h_owntab.prg
 h_pager.prg
 h_progressbar.prg
 h_progresswheel.prg
-h_pubfunc.prg
+{DEBUG}h_pubfunc.prg
 h_radio.prg
 h_rating.prg
 {!UNICODE}h_registry.prg
@@ -182,11 +180,3 @@ h_winapimisc.prg
 h_windows.prg
 h_windowsMDI.prg
 h_winprop.prg
-
-
-#temp
-.\h_cdomail.prg
-.\statics.prg
-.\tget\tget.prg
-.\tget\tgetint.prg
-.\alerts.prg

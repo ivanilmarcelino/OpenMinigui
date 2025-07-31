@@ -313,6 +313,8 @@ RETURN _Alert( cMessage, nWaitSec, hb_defaultValue( cTitle, _HMG_MESSAGE[ 12 ] )
  *  This function is the core implementation for displaying alert dialogs. It takes all the necessary parameters and calls the HMG_Alert function to create and display the dialog.
  *-----------------------------------------------------------------------------*/
 STATIC FUNCTION _Alert( cMessage, aOptions, cTitle, nIconType, nDefault, xIcon, nSize, aColors, lAlwaysOnTop, bInit, lClosable )
+   LOCAL bOldInit
+
    __defaultNIL( @cMessage, "" )
    hb_default( @nDefault, 0 )
 
@@ -320,8 +322,13 @@ STATIC FUNCTION _Alert( cMessage, aOptions, cTitle, nIconType, nDefault, xIcon, 
       _HMG_ModalDialogReturn := nDefault
    ENDIF
 
-   IF hb_defaultValue( lAlwaysOnTop, .T. ) .AND. Empty( bInit )
-      bInit := {|| This.TopMost := .T. }
+   IF hb_defaultValue( lAlwaysOnTop, .T. )
+      IF Empty( bInit )
+         bInit := {|| This.TopMost := .T. }
+      ELSE
+         bOldInit := bInit
+         bInit := {|| Eval( bOldInit ), This.TopMost := .T. }
+      ENDIF
    ENDIF
 
    IF AScan( _HMG_aFormType, 'A' ) == 0

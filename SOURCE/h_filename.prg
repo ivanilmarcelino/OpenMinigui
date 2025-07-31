@@ -43,12 +43,13 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
    "HWGUI"
    Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
----------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 
 #ifdef __XHARBOUR__
 #define __SYSDATA__
 #xtranslate hb_StrShrink( <char> ) => Left( <char>, Len( <char> ) - 1 )
 #endif
+
 #include "minigui.ch"
 
 /*-----------------------------------------------------------------------------*
@@ -72,7 +73,7 @@ FUNCTION cFilePath ( cPathMask )
 FUNCTION cFilePath ( cPathMask )
    LOCAL cPath
 
-   hb_FNameSplit ( cPathMask, @cPath )
+   hb_FNameSplit( cPathMask, @cPath )
 
 RETURN hb_StrShrink( cPath )
 
@@ -98,7 +99,7 @@ FUNCTION cFileNoPath ( cPathMask )
 FUNCTION cFileNoPath ( cPathMask )
    LOCAL cName, cExt
 
-   hb_FNameSplit ( cPathMask, , @cName, @cExt )
+   hb_FNameSplit( cPathMask, , @cName, @cExt )
 
 RETURN ( cName + cExt )
 
@@ -123,7 +124,7 @@ FUNCTION cFileNoExt ( cPathMask )
 FUNCTION cFileNoExt ( cPathMask )
    LOCAL cName
 
-   hb_FNameSplit ( cPathMask, , @cName )
+   hb_FNameSplit( cPathMask, , @cName )
 
 RETURN cName
 
@@ -149,9 +150,12 @@ FUNCTION _GetCompactPath ( cFile, nMax )
 *
 */
 FUNCTION _GetCompactPath ( cFile, nMax )
-   LOCAL cShort := Space( IFNUMERIC( nMax, nMax + 1, 64 ) )
+   LOCAL cShort
 
-RETURN iif( GetCompactPath( @cShort, cFile, IFNUMERIC( nMax, nMax, 63 ), NIL ) > 0, cShort, cFile )
+   hb_default( @nMax, 64 )
+   cShort := Space( nMax )
+   
+RETURN iif( GetCompactPath( @cShort, cFile, nMax, NIL ) > 0, cShort, cFile )
 
 /*-----------------------------------------------------------------------------*
 FUNCTION _GetShortPathName ( cPath )

@@ -43,13 +43,12 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   ---------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 #include <mgdefs.h>
-
 #include <commctrl.h>
-#if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 )
 
 // Static Class Name
+#if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 )
 #define WC_STATIC "Static"
 #endif
 #include "hbapiitm.h"
@@ -342,7 +341,7 @@ HB_FUNC( INITCHKLABEL )
    hmg_ret_raw_HWND( hbutton );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpWindowName );
+   hb_xfree( lpWindowName );
 #endif
 }
 
@@ -398,9 +397,29 @@ HB_FUNC( REPLACECHECKIMAGE )
    InsertCheck( ( HWND ) HB_PARNL( 1 ), himage, himage2, hb_parni( 4 ), hb_parl( 5 ), hb_parl( 6 ) );
 }
 
-LRESULT APIENTRY ChkLabelFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
+static void CallLabelEvent( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
    static PHB_SYMB   pSymbol = NULL;
+
+   if( !pSymbol )
+   {
+      pSymbol = hb_dynsymSymbol( hb_dynsymGet( "OLABELEVENTS" ) );
+   }
+
+   if( pSymbol )
+   {
+      hb_vmPushSymbol( pSymbol );
+      hb_vmPushNil();
+      hb_vmPushNumInt( ( HB_PTRUINT ) hWnd );
+      hb_vmPushLong( Msg );
+      hb_vmPushNumInt( wParam );
+      hb_vmPushNumInt( lParam );
+      hb_vmDo( 4 );
+   }
+}
+
+LRESULT APIENTRY ChkLabelFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
+{
    LRESULT           r;
    RECT              *prect;
    RECT              oldrect;
@@ -477,42 +496,14 @@ LRESULT APIENTRY ChkLabelFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
          tme.dwHoverTime = HOVER_DEFAULT;
          _TrackMouseEvent( &tme );
 
-         if( !pSymbol )
-         {
-            pSymbol = hb_dynsymSymbol( hb_dynsymGet( "OLABELEVENTS" ) );
-         }
-
-         if( pSymbol )
-         {
-            hb_vmPushSymbol( pSymbol );
-            hb_vmPushNil();
-            hb_vmPushNumInt( ( HB_PTRUINT ) hWnd );
-            hb_vmPushLong( Msg );
-            hb_vmPushNumInt( wParam );
-            hb_vmPushNumInt( lParam );
-            hb_vmDo( 4 );
-         }
+         CallLabelEvent( hWnd, Msg, wParam, lParam );
 
          r = hmg_par_LRESULT( -1 );
 
          return( r != 0 ) ? r : CallWindowProc( LabelOldWndProc, hWnd, 0, 0, 0 );
 
       case WM_MOUSELEAVE:
-         if( !pSymbol )
-         {
-            pSymbol = hb_dynsymSymbol( hb_dynsymGet( "OLABELEVENTS" ) );
-         }
-
-         if( pSymbol )
-         {
-            hb_vmPushSymbol( pSymbol );
-            hb_vmPushNil();
-            hb_vmPushNumInt( ( HB_PTRUINT ) hWnd );
-            hb_vmPushLong( Msg );
-            hb_vmPushNumInt( wParam );
-            hb_vmPushNumInt( lParam );
-            hb_vmDo( 4 );
-         }
+         CallLabelEvent( hWnd, Msg, wParam, lParam );
 
          r = hmg_par_LRESULT( -1 );
 

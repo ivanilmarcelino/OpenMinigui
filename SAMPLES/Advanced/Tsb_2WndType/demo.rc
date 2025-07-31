@@ -1,0 +1,14 @@
+//
+// Resource      Resource        Resource
+// Name           Type            FileName
+//              
+1MG            ICON          res\1MG.ico  
+
+zmk01          ICON          res\zmk01.ico
+zmk02          ICON          res\zmk02.ico
+zmk03          ICON          res\zmk03.ico
+zmk04          ICON          res\zmk04.ico
+zmk05          ICON          res\zmk05.ico
+zmk06          ICON          res\zmk06.ico
+zmk07          ICON          res\zmk07.ico
+zmk08          ICON          res\zmk08.ico

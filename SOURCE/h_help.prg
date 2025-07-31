@@ -43,7 +43,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
    "HWGUI"
    Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
----------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 
 #include "minigui.ch"
 #include "fileio.ch"
@@ -73,19 +73,20 @@ PROCEDURE SetHelpFile( cFile )
 *     It uses the HMG MsgAlert function to display error messages.
 */
 PROCEDURE SetHelpFile( cFile )
-   LOCAL hFile
+   LOCAL nFileHandle
 
-   IF File( cFile )
+   IF hb_FileExists( cFile )
 
-      hFile := FOpen( cFile, FO_READ + FO_SHARED )
-
-      _HMG_ActiveHelpFile := iif( FError() == 0, cFile, "" )
-
-      IF Empty( _HMG_ActiveHelpFile )
-         MsgAlert( "Error opening of help file. Error: " + Str( FError(), 2, 0 ), "Alert" )
+      nFileHandle := FOpen( cFile, FO_READ + FO_SHARED )
+      IF FError() == 0
+         _HMG_ActiveHelpFile := cFile
+         IF nFileHandle != F_ERROR
+            FClose( nFileHandle )
+         ENDIF
+      ELSE
+         _HMG_ActiveHelpFile := ""
+         MsgAlert( "Error opening of help file. Error: " + hb_ntos( FError() ), "Alert" )
       ENDIF
-
-      FClose( hFile )
 
    ELSE
 
@@ -119,12 +120,11 @@ PROCEDURE DisplayHelpTopic( xTopic , nMet )
 *
 *  Note:
 *     This procedure assumes that the global variables _HMG_ActiveHelpFile and _HMG_MainHandle are defined elsewhere.
-*     It uses the Harbour functions ValType, hb_ntos, AllTrim, Upper, and _Execute.
 *     It uses the Windows API function WinHelp.
 *     The _Execute function is assumed to be a custom function for executing external programs.
 */
 PROCEDURE DisplayHelpTopic( xTopic , nMet )
-   LOCAL cParam := ""
+   LOCAL cHelpCommand := ""
 
    IF Empty( _HMG_ActiveHelpFile )
       RETURN
@@ -133,27 +133,25 @@ PROCEDURE DisplayHelpTopic( xTopic , nMet )
    _HMG_nTopic := xTopic
    _HMG_nMet   := nMet
 
-   __defaultNIL( @nMet, 0 )
-
-   IF Right( AllTrim( Upper( _HMG_ActiveHelpFile ) ) , 4 ) == '.CHM'
+   IF Upper( hb_FNameExt( _HMG_ActiveHelpFile ) ) == '.CHM'
 
       SWITCH ValType( xTopic )
       CASE 'N'
-         cParam := '-mapid ' + hb_ntos( xTopic ) + ' ' + _HMG_ActiveHelpFile
+         cHelpCommand := '-mapid ' + hb_ntos( xTopic ) + ' ' + _HMG_ActiveHelpFile
          EXIT
       CASE 'C'
-         cParam := '"' + _HMG_ActiveHelpFile + '::/' + AllTrim( xTopic ) + '"'
+         cHelpCommand := '"' + _HMG_ActiveHelpFile + '::/' + AllTrim( xTopic ) + '"'
          EXIT
       CASE 'U'
-         cParam := '"' + _HMG_ActiveHelpFile + '"'
+         cHelpCommand := '"' + _HMG_ActiveHelpFile + '"'
       ENDSWITCH
 
-      _Execute( _HMG_MainHandle , "open" , "hh.exe" , cParam , , SW_SHOW )
+      _Execute( _HMG_MainHandle , "open" , "hh.exe" , cHelpCommand , , SW_SHOW )
 
    ELSE
 
+      __defaultNIL( @nMet, 0 )
       __defaultNIL( @xTopic, 0 )
-
       WinHelp( _HMG_MainHandle , _HMG_ActiveHelpFile , nMet , xTopic )
 
    ENDIF

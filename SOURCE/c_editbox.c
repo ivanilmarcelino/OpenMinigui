@@ -47,37 +47,52 @@
 #include <mgdefs.h>
 #include <commctrl.h>
 
+// Edit Class Name for compatibility with older Borland compilers
 #if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 )
-   // Edit Class Name for compatibility with older Borland compilers
-   #define WC_EDIT   "Edit"
+#define WC_EDIT   "Edit"
 #endif
+
 extern LRESULT CALLBACK OwnEditProc( HWND hbutton, UINT msg, WPARAM wParam, LPARAM lParam );
 
 HINSTANCE               GetInstance( void );
 
-// INITEDITBOX
-// Creates and initializes an edit box control with various styles based on input parameters.
-// Parameters:
-//   1. hwnd - Parent window handle.
-//   2. hmenu - Menu handle or unique control ID for the edit box.
-//   3. x - X-coordinate for the edit box position.
-//   4. y - Y-coordinate for the edit box position.
-//   5. width - Width of the edit box.
-//   6. height - Height of the edit box.
-//   7. placeholder (not used).
-//   8. edgeStyle - Logical (TRUE/FALSE) to specify if the client edge style is applied.
-//   9. maxChars - Maximum number of characters allowed in the edit box.
-//   10. readOnly - Logical to set the edit box as read-only.
-//   11. visible - Logical to control visibility of the edit box.
-//   12. tabStop - Logical to determine if the control should be part of tab order.
-//   13. vScroll - Logical to enable vertical scrolling.
-//   14. hScroll - Logical to enable horizontal scrolling.
-// Returns:
-//   Handle to the created edit box control.
+/*
+ * FUNCTION INITEDITBOX( hwnd, hmenu, x, y, width, height, placeholder, edgeStyle, maxChars, readOnly, visible, tabStop, vScroll, hScroll )
+ *
+ * Creates and initializes an edit box control with specified styles and properties.
+ *
+ * Parameters:
+ *   hwnd      : HWND - Handle of the parent window for the edit box.
+ *   hmenu     : HMENU - Menu handle or unique control ID for the edit box.  This is used to identify the control.
+ *   x         : NUMERIC - X-coordinate of the top-left corner of the edit box, relative to the parent window.
+ *   y         : NUMERIC - Y-coordinate of the top-left corner of the edit box, relative to the parent window.
+ *   width     : NUMERIC - Width of the edit box in pixels.
+ *   height    : NUMERIC - Height of the edit box in pixels.
+ *   placeholder: CHARACTER - Placeholder text (NOT USED in this implementation).
+ *   edgeStyle : LOGICAL - Determines whether the edit box has a client edge (sunken border). .T. for no edge, .F. for edge.
+ *   maxChars  : NUMERIC - Maximum number of characters that can be entered into the edit box.
+ *   readOnly  : LOGICAL - Determines whether the edit box is read-only. .T. for read-only, .F. for editable.
+ *   visible   : LOGICAL - Determines whether the edit box is initially visible. .T. for visible, .F. for hidden.
+ *   tabStop   : LOGICAL - Determines whether the edit box can be reached using the Tab key. .T. for tab stop, .F. for no tab stop.
+ *   vScroll   : LOGICAL - Determines whether vertical scrolling is enabled. .T. for no vertical scroll, .F. for vertical scroll.
+ *   hScroll   : LOGICAL - Determines whether horizontal scrolling is enabled. .T. for no horizontal scroll, .F. for horizontal scroll.
+ *
+ * Returns:
+ *   HWND - Handle to the newly created edit box control.  This handle is used to interact with the control later.
+ *
+ * Purpose:
+ *   This function provides a convenient way to create and configure an edit box control within a Harbour MiniGUI application.
+ *   It encapsulates the Windows API calls required to create the control and set its initial properties, simplifying the process
+ *   for the developer.  It allows for customization of the edit box's appearance and behavior through various parameters.
+ *   For example, it can be used to create a multi-line text editor with scrollbars, or a single-line input field with a character limit.
+ *
+ * Notes:
+ *   The function subclasses the edit box's window procedure with a custom procedure (OwnEditProc) to handle specific events.
+ */
 HB_FUNC( INITEDITBOX )
 {
    HWND  hbutton;
-   DWORD Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD;   // Default styles
+   DWORD Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD;   // Default styles: multi-line, allow return key, child window
    DWORD ExStyle = hb_parl( 8 ) ? 0 : WS_EX_CLIENTEDGE;     // Client edge based on edgeStyle parameter
 
    if( hb_parl( 10 ) )

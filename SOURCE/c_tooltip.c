@@ -44,9 +44,9 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   Parts of this code  is contributed and used here under permission of his
+   Parts of this code are contributed and used here under permission of the
    author: Copyright 2016 (C) P.Chornyj <myorg63@mail.ru>
-   ----------------------------------------------------------------------*/
+ ----------------------------------------------------------------------*/
 #define _WIN32_IE    0x0501
 #define _WIN32_WINNT 0x0600
 
@@ -292,7 +292,7 @@ HB_FUNC( SETTOOLTIP )
 
          SendMessage( hwndToolTip, TTM_ACTIVATE, ( WPARAM ) ( BOOL ) g_bIsToolTipActive, 0 );
 #ifdef UNICODE
-         hb_xfree( ( TCHAR * ) lpText );
+         hb_xfree( lpText );
 #endif
       }
    }
@@ -513,12 +513,12 @@ HB_FUNC( INITTOOLTIPEX )
 #ifdef UNICODE
       if( lpszText != NULL )
       {
-         hb_xfree( ( TCHAR * ) lpszText );
+         hb_xfree( lpszText );
       }
 
       if( lpszTitle != NULL )
       {
-         hb_xfree( ( TCHAR * ) lpszTitle );
+         hb_xfree( lpszTitle );
       }
 #endif
    }
@@ -1184,7 +1184,7 @@ HB_FUNC( TTM_UPDATETIPTEXT )
 #ifdef UNICODE
          if( lpszText != NULL )
          {
-            hb_xfree( ( TCHAR * ) lpszText );
+            hb_xfree( lpszText );
          }
 #endif
       }

@@ -22,7 +22,53 @@
 *                          Public Functions
 *=============================================================================*
 
-
+/*
+ * FUNCTION HMG_Graph( nWidth, nHeight, aData, cTitle, aYVals, nBarD, nWideB, nSep, aTitleColor, nXRanges, ;
+ *      l3D, lGrid, lxGrid, lyGrid, lxVal, lyVal, lLegends, aSeries, aColors, nType, lViewVal, cPicture, nLegendsWidth, lNoborder )
+ *
+ * Draws a graph onto a bitmap using the provided data and parameters.
+ *
+ * Parameters:
+ *   nWidth        : The width of the graph area in pixels.
+ *   nHeight       : The height of the graph area in pixels.
+ *   aData         : A two-dimensional array containing the data to be plotted. Each row represents a series, and each column represents a data point.
+ *   cTitle        : The title of the graph (optional, defaults to "").
+ *   aYVals        : An array of labels for the Y-axis (optional).
+ *   nBarD         : The depth of the bars in 3D mode (optional, defaults to a reasonable value).
+ *   nWideB        : The width of the bars in bar graph mode (optional, defaults to a reasonable value).
+ *   nSep          : The separation between bars in bar graph mode (optional, defaults to 0).
+ *   aTitleColor   : The color of the graph title (optional, defaults to the system window text color).
+ *   nXRanges      : The number of ranges to display on the X-axis (optional).
+ *   l3D           : A logical value indicating whether to draw the graph in 3D mode (.T.) or not (.F.).
+ *   lGrid         : A logical value indicating whether to draw grid lines (.T.) or not (.F.).
+ *   lxGrid        : A logical value indicating whether to draw X-axis grid lines (.T.) or not (.F.).
+ *   lyGrid        : A logical value indicating whether to draw Y-axis grid lines (.T.) or not (.F.).
+ *   lxVal         : A logical value indicating whether to display X-axis values (.T.) or not (.F.).
+ *   lyVal         : A logical value indicating whether to display Y-axis values (.T.) or not (.F.).
+ *   lLegends      : A logical value indicating whether to display legends (.T.) or not (.F.).
+ *   aSeries       : An array of strings containing the names of the data series.
+ *   aColors       : An array of colors to use for each data series.
+ *   nType         : The type of graph to draw (BARS, LINES, or POINTS).
+ *   lViewVal      : A logical value indicating whether to display the values on the graph (.T.) or not (.F.).
+ *   cPicture      : A picture string used to format the values displayed on the graph (optional, defaults to "999,999.99").
+ *   nLegendsWidth : The width of the legends area in pixels (optional, defaults to 50).
+ *   lNoborder     : A logical value indicating whether to draw a border around the graph (.F.) or not (.T.).
+ *
+ * Returns:
+ *   hBitmap       : A handle to the bitmap containing the drawn graph.
+ *
+ * Purpose:
+ *   This function provides a flexible way to generate various types of graphs (bar, line, point) directly onto a bitmap.
+ *   It's used to visually represent data in a graphical format within HMG applications, allowing for customization
+ *   of appearance through various parameters like colors, titles, legends, and 3D effects.  For example, it can be used to
+ *   display sales trends, performance metrics, or any other data that benefits from visual representation.
+ *
+ * Notes:
+ *   - The lengths of the aSeries and aData arrays must match.
+ *   - The length of the aColors array should be greater than or equal to the length of the aSeries array.
+ *   - The function relies on several auxiliary functions (DrawWindowBoxInBitmap, DrawRectInBitmap, etc.) to perform the actual drawing operations.
+ *   - The function uses GetSysColor to determine the default colors for window text and button faces.
+ */
 FUNCTION HMG_Graph( nWidth, nHeight, aData, cTitle, aYVals, nBarD, nWideB, nSep, aTitleColor, nXRanges, ;
       l3D, lGrid, lxGrid, lyGrid, lxVal, lyVal, lLegends, aSeries, aColors, nType, lViewVal, cPicture, nLegendsWidth, lNoborder )
                  
@@ -335,7 +381,41 @@ FUNCTION HMG_Graph( nWidth, nHeight, aData, cTitle, aYVals, nBarD, nWideB, nSep,
 
 RETURN hBitmap
 
-
+/*
+ * FUNCTION HMG_PieGraph( nWidth, nHeight, series, aname, colors, ctitle, aTitleColor, depth, l3d, lxval, lsleg, lNoborder, cPicture, placement )
+ *
+ * Draws a pie chart onto a bitmap using the provided data and parameters.
+ *
+ * Parameters:
+ *   nWidth      : The width of the pie chart area in pixels.
+ *   nHeight     : The height of the pie chart area in pixels.
+ *   series      : An array of numerical values representing the data for each slice of the pie chart.
+ *   aname       : An array of strings containing the names of each slice in the pie chart.
+ *   colors      : An array of colors to use for each slice of the pie chart.
+ *   ctitle      : The title of the pie chart (optional).
+ *   aTitleColor : The color of the pie chart title (optional).
+ *   depth       : The depth of the pie chart in 3D mode (optional).
+ *   l3d         : A logical value indicating whether to draw the pie chart in 3D mode (.T.) or not (.F.).
+ *   lxval       : A logical value indicating whether to display the values in the legends (.T.) or not (.F.).
+ *   lsleg       : A logical value indicating whether to display the legends (.T.) or not (.F.).
+ *   lNoborder   : A logical value indicating whether to draw a border around the pie chart (.F.) or not (.T.).
+ *   cPicture    : A picture string used to format the values displayed in the legends (optional, defaults to "999,999.99").
+ *   placement   : The placement of the legends ("bottom" or "right", optional, defaults to "bottom").
+ *
+ * Returns:
+ *   hBitmap     : A handle to the bitmap containing the drawn pie chart.
+ *
+ * Purpose:
+ *   This function generates a pie chart on a bitmap, providing a visual representation of data as proportions of a whole.
+ *   It's used to display data where the relative size of each category is important.  For example, it can be used to
+ *   show market share, budget allocation, or survey results. The function allows for customization of the chart's
+ *   appearance, including 3D effects, legends, and value display.
+ *
+ * Notes:
+ *   - The lengths of the series, aname, and colors arrays should match.
+ *   - The placement parameter determines the location of the legends.
+ *   - The function uses several auxiliary functions (DrawWindowBoxInBitmap, DrawRectInBitmap, drawpieInBitmap, etc.) to perform the actual drawing operations.
+ */
 FUNCTION HMG_PieGraph( nWidth, nHeight, series, aname, colors, ctitle, aTitleColor, depth, l3d, lxval, lsleg, lNoborder, cPicture, placement )
 
    LOCAL fromrow := 0
@@ -551,28 +631,125 @@ RETURN hBitmap
 *                          Auxiliary Functions
 *=============================================================================*
 
-
+/*
+ * PROCEDURE DrawWindowBoxInBitmap( hDC, row, col, rowr, colr, nPenWidth )
+ *
+ * Draws a rectangle (window box) on a bitmap using the specified parameters.
+ *
+ * Parameters:
+ *   hDC       : The handle to the device context of the bitmap.
+ *   row       : The top row coordinate of the rectangle.
+ *   col       : The left column coordinate of the rectangle.
+ *   rowr      : The bottom row coordinate of the rectangle.
+ *   colr      : The right column coordinate of the rectangle.
+ *   nPenWidth : The width of the pen used to draw the rectangle's border.
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a simple way to draw a rectangular outline on a bitmap.
+ *   It's used to visually represent window boundaries or other rectangular elements
+ *   within a graphical representation. It leverages the BT_DrawRectangle function
+ *   from the HMG Extended Bitmap Tools library for the actual drawing operation.
+ *
+ * Notes:
+ *   The color of the rectangle is hardcoded to BLACK.
+ */
 STATIC PROCEDURE DrawWindowBoxInBitmap( hDC, row, col, rowr, colr, nPenWidth )
 
    BT_DrawRectangle ( hDC, Row, Col, Colr - col, rowr - row, BLACK, nPenWidth )
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawRectInBitmap( hDC, row, col, row1, col1, aColor, nPenWidth )
+ *
+ * Draws a filled rectangle on a bitmap using the specified parameters.
+ *
+ * Parameters:
+ *   hDC       : The handle to the device context of the bitmap.
+ *   row       : The top row coordinate of the rectangle.
+ *   col       : The left column coordinate of the rectangle.
+ *   row1      : The bottom row coordinate of the rectangle.
+ *   col1      : The right column coordinate of the rectangle.
+ *   aColor    : An array representing the RGB color of the rectangle (e.g., {Red, Green, Blue}).
+ *   nPenWidth : The width of the pen used to draw the rectangle's border.
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw a filled rectangle on a bitmap with a specified color.
+ *   It's used to create solid color blocks or to fill areas within a graphical representation.
+ *   It leverages the BT_DrawFillRectangle function from the HMG Extended Bitmap Tools library
+ *   for the actual drawing operation.
+ */
 STATIC PROCEDURE DrawRectInBitmap( hDC, row, col, row1, col1, aColor, nPenWidth )
 
    BT_DrawFillRectangle ( hDC, Row, Col, col1 - col, row1 - row, aColor, aColor, nPenWidth )
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawLineInBitmap( hDC, Row1, Col1, Row2, Col2, aColor, nPenWidth )
+ *
+ * Draws a line on a bitmap using the specified parameters.
+ *
+ * Parameters:
+ *   hDC       : The handle to the device context of the bitmap.
+ *   Row1      : The row coordinate of the starting point of the line.
+ *   Col1      : The column coordinate of the starting point of the line.
+ *   Row2      : The row coordinate of the ending point of the line.
+ *   Col2      : The column coordinate of the ending point of the line.
+ *   aColor    : An array representing the RGB color of the line (e.g., {Red, Green, Blue}).
+ *   nPenWidth : The width of the pen used to draw the line.
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw a line on a bitmap with a specified color and thickness.
+ *   It's used to create lines, borders, or other linear elements within a graphical representation.
+ *   It leverages the BT_DrawLine function from the HMG Extended Bitmap Tools library
+ *   for the actual drawing operation.
+ */
 STATIC PROCEDURE DrawLineInBitmap( hDC, Row1, Col1, Row2, Col2, aColor, nPenWidth )
 
    BT_DrawLine ( hDC, Row1, Col1, Row2, Col2, aColor, nPenWidth )
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawTextInBitmap( hDC, Row, Col, cText, cFontName, nFontSize, aColor, nAlign )
+ *
+ * Draws text on a bitmap using the specified parameters.
+ *
+ * Parameters:
+ *   hDC       : The handle to the device context of the bitmap.
+ *   Row       : The row coordinate of the top-left corner of the text.
+ *   Col       : The column coordinate of the top-left corner of the text.
+ *   cText     : The text string to be drawn.
+ *   cFontName : The name of the font to use (e.g., "Arial").
+ *   nFontSize : The size of the font in points.
+ *   aColor    : An array representing the RGB color of the text (e.g., {Red, Green, Blue}).
+ *   nAlign    : (Optional) An integer representing the text alignment.
+ *               0: Left alignment (default).
+ *               1: Right alignment.
+ *               2: Center alignment.
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw text on a bitmap with a specified font, size, color, and alignment.
+ *   It's used to add labels, annotations, or other textual information to a graphical representation.
+ *   It leverages the BT_DrawText function from the HMG Extended Bitmap Tools library
+ *   for the actual drawing operation.
+ *
+ * Notes:
+ *   The text background is set to transparent.
+ */
 STATIC PROCEDURE DrawTextInBitmap( hDC, Row, Col, cText, cFontName, nFontSize, aColor, nAlign )
 
    DEFAULT nAlign := 0
@@ -590,7 +767,32 @@ STATIC PROCEDURE DrawTextInBitmap( hDC, Row, Col, cText, cFontName, nFontSize, a
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawPointInBitmap( hDC, nGraphType, nY, nX, nHigh, aColor )
+ *
+ * Draws a point or a small circle on a bitmap, depending on the graph type.
+ *
+ * Parameters:
+ *   hDC        : The handle to the device context of the bitmap.
+ *   nGraphType : An integer representing the graph type.  It determines whether to draw a point or a circle.
+ *                Assumes POINTS and LINES are constants defined elsewhere.
+ *   nY         : The Y coordinate of the point.
+ *   nX         : The X coordinate of the point.
+ *   nHigh      : A size parameter used to adjust the size and position of the point/circle.
+ *   aColor     : An array representing the RGB color of the point/circle (e.g., {Red, Green, Blue}).
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw data points on a bitmap, typically as part of a graph or chart.
+ *   The nGraphType parameter allows for different visual representations of the points (e.g., small circles for lines, larger circles for individual points).
+ *   It uses the DrawCircleInBitmap procedure to draw the circles.
+ *
+ * Notes:
+ *   The exact meaning of nGraphType, POINTS, and LINES depends on the context of the larger application.
+ *   The offsets and sizes used in the DrawCircleInBitmap calls are hardcoded and may need adjustment depending on the desired visual appearance.
+ */
 STATIC PROCEDURE DrawPointInBitmap( hDC, nGraphType, nY, nX, nHigh, aColor )
 
    IF nGraphType == POINTS
@@ -601,14 +803,61 @@ STATIC PROCEDURE DrawPointInBitmap( hDC, nGraphType, nY, nX, nHigh, aColor )
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawCircleInBitmap( hDC, nCol, nRow, nWidth, aColor, nPenWidth )
+ *
+ * Draws a filled circle (ellipse) on a bitmap using the specified parameters.
+ *
+ * Parameters:
+ *   hDC       : The handle to the device context of the bitmap.
+ *   nCol      : The column coordinate of the top-left corner of the bounding rectangle of the circle.
+ *   nRow      : The row coordinate of the top-left corner of the bounding rectangle of the circle.
+ *   nWidth    : The width (and height, since it's a circle) of the bounding rectangle of the circle.
+ *   aColor    : An array representing the RGB color of the circle (e.g., {Red, Green, Blue}).
+ *   nPenWidth : (Optional) The width of the pen used to draw the circle's border. If omitted, the default pen width is used.
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw a filled circle on a bitmap with a specified color.
+ *   It's used to represent data points, markers, or other circular elements within a graphical representation.
+ *   It leverages the BT_DrawFillEllipse function from the HMG Extended Bitmap Tools library
+ *   for the actual drawing operation.
+ */
 STATIC PROCEDURE DrawCircleInBitmap( hDC, nCol, nRow, nWidth, aColor, nPenWidth )
 
    BT_DrawFillEllipse( hDC, nCol, nRow, nWidth, nWidth, aColor, aColor, nPenWidth )
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawBarInBitmap( hDC, nY, nX, nHigh, nWidth, l3DView, nDeep, aColor )
+ *
+ * Draws a bar (rectangle) on a bitmap, optionally with a 3D effect, using the specified parameters.
+ *
+ * Parameters:
+ *   hDC     : The handle to the device context of the bitmap.
+ *   nY      : The Y coordinate of the top of the bar.
+ *   nX      : The X coordinate of the left side of the bar.
+ *   nHigh   : The height of the bar.
+ *   nWidth  : The width of the bar.
+ *   l3DView : A logical value indicating whether to draw the bar with a 3D effect (.T.) or not (.F.).
+ *   nDeep   : The depth of the 3D effect (if l3DView is .T.).
+ *   aColor  : An array representing the RGB color of the bar (e.g., {Red, Green, Blue}).
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw bars on a bitmap, typically as part of a bar chart or histogram.
+ *   The optional 3D effect adds visual depth to the bars.
+ *   It uses BT_DrawGradientFillVertical for the main bar fill and DrawPolygonInBitmap and DrawBoxInBitmap for the 3D effect.
+ *
+ * Notes:
+ *   The color shading for the 3D effect is hardcoded and may need adjustment depending on the desired visual appearance.
+ *   The ClrShadow function is assumed to be defined elsewhere and used to calculate shadow colors.
+ */
 STATIC PROCEDURE DrawBarInBitmap( hDC, nY, nX, nHigh, nWidth, l3DView, nDeep, aColor )
 
    LOCAL nColTop, nShadow, nShadow2, nH := nHigh
@@ -636,7 +885,32 @@ STATIC PROCEDURE DrawBarInBitmap( hDC, nY, nX, nHigh, nWidth, l3DView, nDeep, aC
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawArcInBitmap( hDC, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth )
+ *
+ * Draws an arc on a bitmap using the specified parameters.
+ *
+ * Parameters:
+ *   hDC       : The handle to the device context of the bitmap.
+ *   row       : The row coordinate of the top-left corner of the bounding rectangle.
+ *   col       : The column coordinate of the top-left corner of the bounding rectangle.
+ *   row1      : The row coordinate of the bottom-right corner of the bounding rectangle.
+ *   col1      : The column coordinate of the bottom-right corner of the bounding rectangle.
+ *   rowr      : The row coordinate of the start angle of the arc.
+ *   colr      : The column coordinate of the start angle of the arc.
+ *   rowr1     : The row coordinate of the end angle of the arc.
+ *   colr1     : The column coordinate of the end angle of the arc.
+ *   penrgb    : (Optional) An array representing the RGB color of the arc's pen (e.g., {Red, Green, Blue}). Defaults to BLACK if NIL.
+ *   penwidth  : (Optional) The width of the pen used to draw the arc. Defaults to 1 if NIL.
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw an arc on a bitmap with a specified color and thickness.
+ *   It leverages the BT_DrawArc function from the HMG Extended Bitmap Tools library
+ *   for the actual drawing operation.
+ */
 STATIC PROCEDURE DrawArcInBitmap( hDC, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth )
 
    IF penrgb == NIL
@@ -650,7 +924,33 @@ STATIC PROCEDURE DrawArcInBitmap( hDC, row, col, row1, col1, rowr, colr, rowr1, 
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawPieInBitmap( hDC, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth, fillrgb )
+ *
+ * Draws a pie slice on a bitmap using the specified parameters.
+ *
+ * Parameters:
+ *   hDC       : The handle to the device context of the bitmap.
+ *   row       : The row coordinate of the top-left corner of the bounding rectangle.
+ *   col       : The column coordinate of the top-left corner of the bounding rectangle.
+ *   row1      : The row coordinate of the bottom-right corner of the bounding rectangle.
+ *   col1      : The column coordinate of the bottom-right corner of the bounding rectangle.
+ *   rowr      : The row coordinate of the start angle of the pie slice.
+ *   colr      : The column coordinate of the start angle of the pie slice.
+ *   rowr1     : The row coordinate of the end angle of the pie slice.
+ *   colr1     : The column coordinate of the end angle of the pie slice.
+ *   penrgb    : (Optional) An array representing the RGB color of the pie slice's pen (e.g., {Red, Green, Blue}). Defaults to BLACK if NIL.
+ *   penwidth  : (Optional) The width of the pen used to draw the pie slice's border. Defaults to 1 if NIL.
+ *   fillrgb   : (Optional) An array representing the RGB color used to fill the pie slice (e.g., {Red, Green, Blue}). Defaults to WHITE if NIL.
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw a pie slice on a bitmap with a specified color and thickness.
+ *   It leverages the BT_DrawPie function from the HMG Extended Bitmap Tools library
+ *   for the actual drawing operation.
+ */
 STATIC PROCEDURE DrawPieInBitmap( hDC, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth, fillrgb )
 
    IF penrgb == NIL
@@ -667,7 +967,27 @@ STATIC PROCEDURE DrawPieInBitmap( hDC, row, col, row1, col1, rowr, colr, rowr1, 
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawPolygonInBitmap( hDC, apoints, penrgb, penwidth, fillrgb )
+ *
+ * Draws a polygon on a bitmap using the specified parameters.
+ *
+ * Parameters:
+ *   hDC       : The handle to the device context of the bitmap.
+ *   apoints   : An array of arrays, where each inner array represents a point (row, column) of the polygon.
+ *               For example: { {row1, col1}, {row2, col2}, {row3, col3} }.
+ *   penrgb    : (Optional) An array representing the RGB color of the polygon's pen (e.g., {Red, Green, Blue}). Defaults to BLACK if NIL.
+ *   penwidth  : (Optional) The width of the pen used to draw the polygon's border. Defaults to 1 if NIL.
+ *   fillrgb   : (Optional) An array representing the RGB color used to fill the polygon (e.g., {Red, Green, Blue}). Defaults to WHITE if NIL.
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw a polygon on a bitmap with a specified color and thickness.
+ *   It leverages the BT_DrawPolygon function from the HMG Extended Bitmap Tools library
+ *   for the actual drawing operation.
+ */
 STATIC PROCEDURE DrawPolygonInBitmap( hDC, apoints, penrgb, penwidth, fillrgb )
 
    LOCAL xarr := {}
@@ -692,7 +1012,32 @@ STATIC PROCEDURE DrawPolygonInBitmap( hDC, apoints, penrgb, penwidth, fillrgb )
 
 RETURN
 
-
+/*
+ * PROCEDURE DrawBoxInBitmap( hDC, nY, nX, nHigh, nWidth, l3DView, nDeep )
+ *
+ * Draws a box (rectangle) on a bitmap, optionally with a 3D effect, using the specified parameters.
+ *
+ * Parameters:
+ *   hDC     : The handle to the device context of the bitmap.
+ *   nY      : The Y coordinate of the top of the box.
+ *   nX      : The X coordinate of the left side of the box.
+ *   nHigh   : The height of the box (used for 3D effect).
+ *   nWidth  : The width of the box.
+ *   l3DView : A logical value indicating whether to draw the box with a 3D effect (.T.) or not (.F.).
+ *   nDeep   : The depth of the 3D effect (if l3DView is .T.).
+ *
+ * Returns:
+ *   None. This procedure draws directly onto the bitmap associated with the hDC.
+ *
+ * Purpose:
+ *   This procedure provides a way to draw a box on a bitmap, optionally with a 3D effect.
+ *   It's used to create visual containers or to highlight areas within a graphical representation.
+ *   It uses DrawLineInBitmap to draw the lines that make up the box and its 3D effect.
+ *
+ * Notes:
+ *   The color of the box and its shadow are hardcoded to BLACK.
+ *   The 3D effect is achieved by drawing additional lines to simulate depth.
+ */
 STATIC PROCEDURE DrawBoxInBitmap( hDC, nY, nX, nHigh, nWidth, l3DView, nDeep )
 
    // Set Border

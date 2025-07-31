@@ -726,6 +726,9 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
       :SetAppendMode( .F. )
       :SetDeleteMode( .F. )
 
+      IF HB_ISBLOCK( bInit ) ; Eval( bInit, oBrw, oParam )               // 1. call your Init function
+      ENDIF
+
       IF oParam:lNoPicture                          // clear oCol:cPicture
          j := iif( :lIsDbf, "ORDKEYNO", "ARRAYNO" )
          FOR EACH i IN :aColumns
@@ -735,14 +738,11 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
          NEXT
       ENDIF
 
-      IF HB_ISBLOCK( bInit ) ; Eval( bInit, oBrw, oParam ) // 1. call your customization functions
-      ENDIF
-
       IF :lDrawSpecHd .AND. ! Empty( oParam:aNumber ) .AND. HB_ISBLOCK( oParam:bSpecHdEnum ) // renumbering SpecHeader
          Eval( oParam:bSpecHdEnum, oBrw, oParam )
       ENDIF
 
-      IF HB_ISBLOCK( oParam:bBody ) ; Eval( oParam:bBody, oBrw, oParam ) // 2. call your customization functions
+      IF HB_ISBLOCK( oParam:bBody ) ; Eval( oParam:bBody, oBrw, oParam ) // 2. call your Body function
       ENDIF
 
       IF ! :lDrawSuperHd .AND. lSuperHd
@@ -822,10 +822,10 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
       oBrw:bChange := oParam:bChange         // :bChange := {|ob| ... }
    ENDIF
 
-   IF HB_ISBLOCK( oParam:bAfter ) ; EVal( oParam:bAfter, oBrw, oParam )
+   IF HB_ISBLOCK( oParam:bAfter ) ; EVal( oParam:bAfter, oBrw, oParam ) // 3. call your After function
    ENDIF
 
-   IF HB_ISBLOCK( bEnd ) ; Eval( bEnd, oBrw, oParam )
+   IF HB_ISBLOCK( bEnd ) ; Eval( bEnd, oBrw, oParam )                   // 4. call default End function if this is not redefined
    ENDIF
 
    IF HB_ISARRAY( oParam:aEvents )

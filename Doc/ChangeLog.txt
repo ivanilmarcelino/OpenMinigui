@@ -1,4 +1,236 @@
+2025/07/30: HMG Extended Edition version 25.08.
+  * Updated: The following network functions have been refactored to improve
+           the readability, performance, and maintainability:
+           - NetRecLock( nTimeout );
+           - NetFileLock( nTimeout );
+           - NetAppend( nTimeout, lReleaseLocks );
+           - NetDelete();
+           - NetRecall().
+           Updated comments describing the purpose and parameters of each
+           function.
+           Contributed by Grigory Filatov
+           (see demo2.prg in folder \samples\Basic\DATA_BOUND)
+  * Updated: The databases conversion auxiliary functions:
+           - added comments describing the purpose and parameters of each
+             function.
+           Contributed by Grigory Filatov
+           (see demo2.prg in folder \samples\Basic\Grid_8)
+  * Updated: The following modules have been internally refactored:
+           - create PDF management;
+           - set help file management;
+           - create hot keys management;
+           - statusbar keyboard management;
+           - Windows registry management;
+           - auxiliary DBF functions ( HMG_DbfToArray(), HMG_ArrayToDbf() ).
+           Contributed by Grigory Filatov
+  * Enhanced: Added the ability to set CenterAlign and RightAlign properties
+           for status items without using color properties.
+           Requested by Ivanil Marcelino.
+           Contributed by Grigory Filatov
+           (see demo4.prg in folder \samples\Basic\Status)
+  * Modified: The Harbour RegCreateKey() C-function has been improved to use
+           the recommended WinAPI RegCreateKeyEx() function instead of the
+           deprecated RegCreateKey() function.
+           Contributed by Grigory Filatov
+  * Modified: The _Alert() internal function has been improved to properly
+           handle the AlwaysOnTop parameter.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\AlertBoxes)
+  * Modified: Added error message "Invalid parameter" in HMG_PressKey( ... )
+           function.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\HotKeyBox)
+  * Updated: The Report Generator by Roberto Lopez was revised with detailed,
+           consistent comments. The code includes comprehensive comments
+           explaining the purpose and functionality of each function.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\REPORT_GENERATOR).
+  * Updated: Shell32 library source code has been refactored.
+           Contributed by Grigory Filatov
+           (see in folder \Source\Shell32)
+  * Updated: HbVpdf library:
+           - added comments describing the purpose and parameters of each
+             function.
+           Contributed by Grigory Filatov
+           (see source in folder \Source\HbVpdf)
+  * Updated: HbSQLite3 library:
+           - update for using SQLITE3 version 3.50.3 (from 3.50.2).
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\SQLITE_2)
+  * Updated: Harbour's SQLRDD library binary has been updated with the latest
+           modifications: removed unneeded HB_SYMBOL_UNUSED() macros.
+           Revised for Minigui Extended by Grigory Filatov
+           (see SQLRDD Manual in folder \Doc) [PRO VERSION]
+  * Updated: Harbour Compiler 3.2.0dev (SVN 2025-07-19 19:44).
+           Contributed by Grigory Filatov
+           (look at ReadMe.txt in folder \harbour) [PRO VERSION]
+  * New: 'Custom Progress Bar Control using OOP' sample.
+           Based upon a contribution of Jose Quintas.
+           Adapted for Minigui Extended by Grigory Filatov
+           (see in folder \samples\Basic\MyProgressbar)
+  * New: 'Registry Wrapper Test' sample.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\REGISTRY_4)
+  * New: 'Two memory tables based on the selection criteria' samples.
+           Contributed by Sergej Kiselev
+           (see demo8.prg and demo9.prg in folder \samples\Advanced\Tsb_2tsb)
+  * Updated: 'Fast Find' sample:
+           - updated comments describing the purpose of each function.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\FastFind)
+  * Updated: 'HotkeyBox Control Demo' sample:
+           - added comments describing the purpose of each function.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\HotKeyBox)
+  * Updated: 'HMG internal hotkeys processing' sample:
+           - added comments describing the purpose of each function.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\HotKeys)
+  * Updated: 'EZ Lines v.1.2.3' sample:
+           - added detailed comments to the code.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Applications\EZ_Lines) [PRO VERSION]
+  * Updated: 'Tetris game' sample by Claudio Soto:
+           - added detailed comments to the code.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Applications\HMG_Tetris) [PRO VERSION]
+  * Updated: 'Minesweeper game' sample:
+           - added detailed comments to the code.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Applications\MineSweeper) [PRO VERSION]
+  * Updated: 'Sudoku game' sample by S.Rathinagiri:
+           - updated detailed comments of the code.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Applications\Sudoku) [PRO VERSION]
 
+2025/07/07: HMG Extended Edition version 25.07 (Update 1).
+  * Fixed: Issue with GetItemBar() function (introduced in build 25.07).
+           Bug was reported by Henry Herrera.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\TSBrowse)
+  * Enhanced: Added the useful IsINISectionExists() and IsINIKeyExists()
+           functions to manage INI files.
+           Syntax:
+             IsINISectionExists( cSection, cIniFile )   -> .T. / .F.
+             IsINIKeyExists( cSection, cKey, cIniFile ) -> .T. / .F.
+           These functions allows the application to determine whether a specific
+           configuration setting is present in an INI file before attempting to
+           read its contents.
+           Contributed by Grigory Filatov
+           (see demo3.prg in folder \samples\Basic\ini)
+  * Updated: Internal OOP: fixed _wPost() and _wSend() functions.
+           Suggested and contributed by Sergej Kiselev
+           (see demo in folder \samples\Advanced\Tsb_DemoMDI)
+  * Updated: The core C code was revised with detailed, consistent comments in
+           the following modules:
+           - windows events management;
+           - resources management;
+           - image management;
+           - control misc funcs;
+           - save PDF handling;
+           - own TAB control;
+           - richeditEX control.
+           Contributed by Grigory Filatov
+  * Updated: Harbour Compiler 3.2.0dev (SVN 2025-03-25 13:54):
+           * Updated libpng library to 1.6.50 (from 1.6.49).
+           Contributed by Grigory Filatov
+           (look at ReadMe.txt in folder \harbour) [PRO VERSION]
+  * New: 'HMG_LISTTIMERS() Function Test' sample.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\ListTimers)
+  * Updated: 'BmpViewer' sample:
+           - added detailed comments to the code.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\BmpViewer)
+  * Updated: 'Rendering multi-colored text on the form' sample:
+           - updated comments describing the purpose of each function.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\COLORFUL_TEXT)
+
+2025/07/01: HMG Extended Edition version 25.07.
+  * Fixed: Corrections in the MiniGUI core C code based on an analysis of
+           potential issues related to the return values of WinAPI functions,
+           focusing on correctness, error handling, and type consistency.
+           For example, after this analysis, the C_BrowseForFolder() function,
+           which could lead to a memory leak, was fixed.
+           This was a postponed major modification.
+           Contributed by Grigory Filatov
+           (see c_winapimisc.c in folder \Source)
+  * New: Added useful function HMG_ListTimers() to get an array of currently
+           active timers for debugging and introspection. This can be useful
+           for identifying and resolving timer-related issues.
+           Sample code:
+             HMG_ListTimers() -> array with timers data as a three-dimensional
+                                 array { hParentWnd, nTimerID, nInterval }
+           Contributed by Grigory Filatov
+  * Modified: WAIT WINDOW form uses REGION command in Windows 11.
+           Contributed by Pierpaolo Martinello
+           (see demo in folder \samples\Basic\WAIT_WINDOW)
+  * Enhanced: INI file - added error handling to GetPrivateProfileString(),
+           WritePrivateProfileString() and _GetPrivateProfileSectionNames()
+           functions.
+           Contributed by Grigory Filatov
+           (see demo2.prg in folder \samples\Basic\ini)
+  * Updated: Implementation of UNICODE support in the MiniGUI core:
+           - fixed memory leaks when processing INI files.
+           Contributed by Grigory Filatov
+  * Updated: STATUSBAR control - added error handling to GetItemBar() function.
+           Contributed by Grigory Filatov
+           (see demo3.prg in folder \samples\Basic\Status)
+  * Updated: The core C code was revised with detailed, consistent comments
+           (introduced in build 24.12).
+           The code is well-structured and includes comprehensive comments
+           explaining the purpose and functionality of each function.
+           Contributed by Grigory Filatov
+  * Updated: GraphPlus library:
+           - added comments describing the purpose of each method in
+             the GraphPlus class.
+           Contributed by Grigory Filatov
+           (see source in folder \Source\GraphPlus)
+  * Updated: Selector library (see in folder \Source\SELECTOR):
+           - fixed bug in the one-to-many relationships code;
+           - added unit tests developed to verify SQL-like data selection logic.
+           Contributed by Grigory Filatov
+           (see tests in folder \samples\Basic\TestSelector)
+  * Updated: HbSQLite3 library:
+           - update for using SQLITE3 version 3.50.2 (from 3.49.2).
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\SQLITE_2)
+  * Updated: Harbour Compiler 3.2.0dev (SVN 2025-03-25 13:54):
+           * Updated libpng library to 1.6.49 (from 1.6.47).
+           Contributed by Grigory Filatov
+           (look at ReadMe.txt in folder \harbour) [PRO VERSION]
+  * New: 'Minigui Basic examples generated by ChatGPT AI' sample:
+           - added 'Task Tracker Pro' - databases, grid, add/edit/delete tasks,
+             Light/Dark mode toggle via GUI theme.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\ChatGPT)
+  * Updated: 'Create Desktop Shortcut' sample:
+           - added comments describing the purpose of each function.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\CreateLink)
+  * Updated: 'Center Image From Resource and Image Overlay' samples:
+           - added comments describing the purpose of each function.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\IMAGE)
+  * Updated: 'Labels as buttons' sample:
+           - added detailed comments to the code.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\LABEL_5)
+  * Updated: 'Making an animation in windows' sample:
+           - optimized C code;
+           - added detailed comments to the code.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\ANIMATION)
+  * Updated: 'Program protection' sample.
+           - added comments describing the purpose of each function.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\GetPCProperties)
+  * Updated: 'TSBrowse Load Fields with ordered data' sample:
+           - added TBROWSE font management;
+           - added detailed comments to the code.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\Tsb_LoadFields)
 
 2025/06/05: HMG Extended Edition version 25.06.
   * Fixed: Corrections in the MiniGUI core C code based on an analysis of
@@ -5411,7 +5643,7 @@
            - update for using SQLITE3 latest version 3.32.3.
            Contributed by Grigory Filatov <gfilatov@inbox.ru>.
   * Updated: Modified the application manifest for compatibility with a recent
-           heap implementation in Windows 10 ( heapType  element).
+           heap implementation in Windows 10 (‘heapType’ element).
            This feature is supported in Windows 10, version 2004, and later.
            Contributed by Grigory Filatov <gfilatov@inbox.ru>
            (see Windows10.Manifest in folder \Resources)
@@ -5700,7 +5932,7 @@
            Based upon a contribution of HMG user Jimmy.
            Adapted for Minigui Extended by Grigory Filatov <gfilatov@inbox.ru>
            (see in folder \samples\Basic\Zip_4)
-  * New: 'TsBrowse SetArray for  lipboard' sample.
+  * New: 'TsBrowse SetArray for Ñlipboard' sample.
            Contributed by Sergej Kiselev and Verchenko Andrey
            (see demo4.prg in folder \samples\Advanced\Tsb_Array_2)
   * Updated: 'Cas_dbf' sample: added an enhanced demo with Tsbrowse search.
@@ -21699,7 +21931,7 @@
            Reported and explained by Janusz Pora <soft_design@poczta.onet.pl>
   * Changed: Window's ON RESTORE event operates on NOSIZE window only for avoid conflict with ON RESIZE event.
            Reported by Janusz Pora <soft_design@poczta.onet.pl>
-  * Fixed: RicheditEx sample resize problem on WinXP. Reported by Ren  Koot <rene@plantenkennis.com>.
+  * Fixed: RicheditEx sample resize problem on WinXP. Reported by René Koot <rene@plantenkennis.com>.
   * Changed: Sample Grid_1 for get and set column value of selected row in Grid. Contributed by Grigory Filatov <gfilatov@freemail.ru>
            (see \samples\basic\Grid_1\demo.prg)
 
@@ -21765,7 +21997,7 @@
      + SET ERRORLOG TO <cFile> - set new errorlog file (default {APPDIR>}\ErrorLog.htm)
      + SET ERRORLOG TO         - reset errorlog file to default value  
      ! Default errorlog dir is always set to *.exe dir, and not modified by other HMG functions.
-     Thanks to Ren  Koot <rene@plantenkennis.com> for report! ( see /samples/basic/errorlog/demo.prg )
+     Thanks to René Koot <rene@plantenkennis.com> for report! ( see /samples/basic/errorlog/demo.prg )
 
   * New: useful additions in GRID & BROWSE controls. Contributed by Jacek Kubica <kubica@wssk.wroc.pl>
      + ColumnWidth(n) property added 

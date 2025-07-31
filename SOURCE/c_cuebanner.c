@@ -64,10 +64,27 @@ typedef wchar_t HB_WCHAR;
 #define EM_GETCUEBANNER (ECM_FIRST + 2) // Define EM_GETCUEBANNER as a message ID for retrieving cue banner text
 #endif
 
-// Function: GETCUEBANNERTEXT
-// Purpose: Retrieves the cue banner (placeholder text) of a specified edit control window.
-// Parameters: hwnd (window handle of the control)
-// Returns: Cue banner text as a string, or NULL if text is not set or an error occurs.
+/*
+ * FUNCTION GETCUEBANNERTEXT()
+ *
+ * Retrieves the cue banner text (placeholder text) from an edit control.
+ *
+ * Parameters:
+ *   Parameter 1: hwnd (HWND) - The handle of the edit control window.
+ *
+ * Returns:
+ *   (STRING) - The cue banner text as a string. Returns NULL string if the cue banner is not set or if an error occurs.
+ *
+ * Purpose:
+ *   This function allows you to retrieve the cue banner text that is displayed in an edit control when it is empty.
+ *   The cue banner provides a hint to the user about what kind of input is expected in the edit control.
+ *   This is useful for providing a better user experience by guiding the user on how to use the application.
+ *
+ * Notes:
+ *   The function allocates memory to store the cue banner text. This memory is freed before the function returns.
+ *   The function uses the EM_GETCUEBANNER message to retrieve the cue banner text.
+ *   If an invalid window handle is passed, an error is raised.
+ */
 HB_FUNC( GETCUEBANNERTEXT )
 {
    HWND hwnd = hmg_par_raw_HWND( 1 ); // Get the window handle from the function parameters
@@ -102,14 +119,30 @@ HB_FUNC( GETCUEBANNERTEXT )
    }
 }
 
-// Function: SENDMESSAGESTRINGW
-// Purpose: Sends a Unicode (wide-character) string message to a specified window.
-// Parameters:
-//   hwnd (window handle of the control)
-//   message (UINT - the message ID to be sent)
-//   boolean flag (WPARAM - a flag that may be passed with the message)
-//   string (LPCWSTR - the string to send in the message)
-// Notes: This function sends a message only if hwnd is a valid window.
+/*
+ * FUNCTION SENDMESSAGESTRINGW()
+ *
+ * Sends a Windows message to a specified window, including a Unicode string as a parameter.
+ *
+ * Parameters:
+ *   Parameter 1: hwnd (HWND) - The handle of the window to which the message will be sent.
+ *   Parameter 2: message (UINT) - The message identifier (e.g., WM_SETTEXT).
+ *   Parameter 3: boolean flag (LOGICAL) - A boolean flag (TRUE or FALSE) to be passed as the WPARAM of the message.
+ *   Parameter 4: string (STRING) - The string to be sent as the LPARAM of the message. This string will be converted to Unicode.
+ *
+ * Returns:
+ *   None (VOID). The function does not return a value directly. The effect of the function depends on the message being sent.
+ *
+ * Purpose:
+ *   This function provides a way to send Windows messages that require a Unicode string as a parameter.
+ *   It handles the conversion of the Harbour string to a wide-character (Unicode) string before sending the message.
+ *   This is essential for interacting with Windows controls that expect Unicode input, especially in internationalized applications.
+ *
+ * Notes:
+ *   The function allocates memory to store the Unicode string. This memory is freed after the message is sent.
+ *   If an invalid window handle is passed, an error is raised.
+ *   If the string parameter is empty, a NULL pointer is passed as the LPARAM.
+ */
 HB_FUNC( SENDMESSAGESTRINGW )
 {
    HWND hwnd = hmg_par_raw_HWND( 1 ); // Get the window handle from function parameters

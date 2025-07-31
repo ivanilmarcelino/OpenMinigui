@@ -44,10 +44,10 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-   Parts of this code  is contributed and used here under permission of his
+   Parts of this code are contributed and used here under permission of the
    author:
    Copyright 2007-2017 (C) P.Chornyj <myorg63@mail.ru>
-   ----------------------------------------------------------------------*/
+  ----------------------------------------------------------------------*/
 #if !defined( __WINNT__ )
 #define __WINNT__
 #endif
@@ -89,6 +89,28 @@ HBITMAP        HMG_LoadPicture
                   int         iAlpfaConstant
                );
 
+/*
+ * FUNCTION SETACCELERATORTABLE( hWndMain, hAccel )
+ *
+ * Sets the accelerator table for a given window.
+ *
+ * Parameters:
+ *   hWndMain : HWND - Handle to the main window.
+ *   hAccel   : HACCEL - Handle to the accelerator table.
+ *
+ * Returns:
+ *   None. This function does not return a value.
+ *
+ * Purpose:
+ *   This function associates an accelerator table with a window, allowing
+ *   keyboard shortcuts defined in the table to be processed by the window.
+ *   This is useful for providing keyboard access to menu items and other
+ *   window functions.
+ *
+ * Notes:
+ *   The function checks if both hWndMain and hAccel are valid handles
+ *   before attempting to set the accelerator table.
+ */
 HB_FUNC( SETACCELERATORTABLE )
 {
    HWND     hWndMain = hmg_par_raw_HWND( 1 );
@@ -100,6 +122,32 @@ HB_FUNC( SETACCELERATORTABLE )
    }
 }
 
+/*
+ * FUNCTION ACCELERATORTABLE2ARRAY( hAccel )
+ *
+ * Converts an accelerator table to a Harbour array.
+ *
+ * Parameters:
+ *   hAccel : HACCEL - Handle to the accelerator table.
+ *
+ * Returns:
+ *   PHB_ITEM - A Harbour array where each element represents an accelerator entry.
+ *              Each accelerator entry is itself an array containing three elements:
+ *              1. fVirt (Numeric): Flags indicating virtual key modifiers (e.g., Ctrl, Shift, Alt).
+ *              2. key (Numeric): The virtual key code.
+ *              3. cmd (Numeric): The command ID associated with the accelerator.
+ *              Returns an empty array if hAccel is NULL or if an error occurs.
+ *
+ * Purpose:
+ *   This function allows you to inspect the contents of an accelerator table
+ *   from within Harbour code. This is useful for dynamically displaying
+ *   keyboard shortcuts in the user interface or for programmatically
+ *   modifying accelerator tables.
+ *
+ * Notes:
+ *   The function allocates memory for the accelerator entries. It is the
+ *   caller's responsibility to release the returned array using hb_itemRelease().
+ */
 HB_FUNC( ACCELERATORTABLE2ARRAY )
 {
    HACCEL   hAccel = hmg_par_raw_HACCEL( 1 );
@@ -141,6 +189,33 @@ HB_FUNC( ACCELERATORTABLE2ARRAY )
    hb_itemReturnRelease( aAccels );
 }
 
+/*
+ * FUNCTION ARRAY2ACCELERATORTABLE( pArray )
+ *
+ * Creates an accelerator table from a Harbour array.
+ *
+ * Parameters:
+ *   pArray : PHB_ITEM - A Harbour array where each element represents an accelerator entry.
+ *              Each accelerator entry should be an array containing three elements:
+ *              1. fVirt (Numeric): Flags indicating virtual key modifiers (e.g., Ctrl, Shift, Alt).
+ *              2. key (Numeric): The virtual key code.
+ *              3. cmd (Numeric): The command ID associated with the accelerator.
+ *
+ * Returns:
+ *   HACCEL - Handle to the created accelerator table. Returns NULL if pArray is NULL,
+ *            empty, or if an error occurs during creation.
+ *
+ * Purpose:
+ *   This function allows you to create an accelerator table dynamically
+ *   from within Harbour code. This is useful for loading keyboard shortcuts
+ *   from a configuration file or for allowing the user to customize
+ *   keyboard shortcuts.
+ *
+ * Notes:
+ *   The function allocates memory for the accelerator entries. It is the
+ *   caller's responsibility to destroy the returned accelerator table using
+ *   DestroyAcceleratorTable() when it is no longer needed.
+ */
 HB_FUNC( ARRAY2ACCELERATORTABLE )
 {
    PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
@@ -178,7 +253,28 @@ HB_FUNC( ARRAY2ACCELERATORTABLE )
    hmg_ret_raw_HACCEL( hAccel );
 }
 
-// int WINAPI CopyAcceleratorTable( HACCEL hAccelSrc, LPACCEL lpAccelDst, int cAccelEntries )
+/*
+ * FUNCTION COPYACCELERATORTABLE( hAccelSrc, lpAccelDst )
+ *
+ * Copies an accelerator table.
+ *
+ * Parameters:
+ *   hAccelSrc : HACCEL - Handle to the source accelerator table.
+ *   lpAccelDst: Pointer - Pointer to memory where the copied accelerator table will be stored. If NULL, the function returns the number of entries in the table.
+ *
+ * Returns:
+ *   INT - The number of accelerator entries copied. Returns 0 if hAccelSrc is NULL.
+ *
+ * Purpose:
+ *   This function allows you to create a copy of an existing accelerator table.
+ *   This is useful for modifying an accelerator table without affecting the original.
+ *
+ * Notes:
+ *   If lpAccelDst is NULL, the function returns the number of entries in the
+ *   accelerator table. You can then allocate memory for the destination buffer
+ *   and call the function again with the allocated buffer.
+ *   The caller is responsible for allocating and freeing the memory pointed to by lpAccelDst.
+ */
 HB_FUNC( COPYACCELERATORTABLE )
 {
    HACCEL   hAccelSrc = hmg_par_raw_HACCEL( 1 );
@@ -203,7 +299,28 @@ HB_FUNC( COPYACCELERATORTABLE )
    }
 }
 
-// HACCEL WINAPI CreateAcceleratorTable( LPACCEL lpAccel, int cAccelEntries )
+/*
+ * FUNCTION CREATEACCELERATORTABLE( lpAccel, cAccelEntries )
+ *
+ * Creates an accelerator table.
+ *
+ * Parameters:
+ *   lpAccel       : Pointer - Pointer to an array of ACCEL structures that define the accelerator table entries.
+ *   cAccelEntries : INT - The number of entries in the lpAccel array.
+ *
+ * Returns:
+ *   HACCEL - Handle to the created accelerator table. Returns NULL if lpAccel is NULL,
+ *            cAccelEntries is less than or equal to 0, or if an error occurs during creation.
+ *
+ * Purpose:
+ *   This function creates an accelerator table from an array of ACCEL structures.
+ *   This is the underlying function used by ARRAY2ACCELERATORTABLE().
+ *
+ * Notes:
+ *   The function takes ownership of the memory pointed to by lpAccel and frees it.
+ *   The caller is responsible for ensuring that lpAccel points to valid memory
+ *   containing an array of ACCEL structures.
+ */
 HB_FUNC( CREATEACCELERATORTABLE )
 {
    LPACCEL  lpAccels = ( LPACCEL ) hb_parptr( 1 );
@@ -220,7 +337,25 @@ HB_FUNC( CREATEACCELERATORTABLE )
    hmg_ret_raw_HACCEL( hAccel );
 }
 
-// BOOL WINAPI DestroyAcceleratorTable( HACCEL hAccel )
+/*
+ * FUNCTION DESTROYACCELERATORTABLE( hAccel )
+ *
+ * Destroys an accelerator table.
+ *
+ * Parameters:
+ *   hAccel : HACCEL - Handle to the accelerator table to destroy.
+ *
+ * Returns:
+ *   BOOL - TRUE if the accelerator table was successfully destroyed, FALSE otherwise.
+ *
+ * Purpose:
+ *   This function destroys an accelerator table, freeing the resources
+ *   associated with it. It is important to destroy accelerator tables when
+ *   they are no longer needed to prevent memory leaks.
+ *
+ * Notes:
+ *   The function returns FALSE if hAccel is an invalid handle.
+ */
 HB_FUNC( DESTROYACCELERATORTABLE )
 {
    HACCEL   hAccel = hmg_par_raw_HACCEL( 1 );
@@ -228,7 +363,29 @@ HB_FUNC( DESTROYACCELERATORTABLE )
    hmg_ret_L( DestroyAcceleratorTable( hAccel ) );
 }
 
-// HACCEL WINAPI LoadAccelerators( HINSTANCE hInstance, LPCTSTR lpTableName )
+/*
+ * FUNCTION LOADACCELERATORS( hInstance, lpTableName )
+ *
+ * Loads an accelerator table from a resource file.
+ *
+ * Parameters:
+ *   hInstance : HINSTANCE - Handle to the instance of the module whose executable file contains the accelerator table.
+ *                           If 0, the function loads from the current executable.
+ *   lpTableName : LPCTSTR - The name of the accelerator table resource. This can be either a string or an integer resource ID.
+ *
+ * Returns:
+ *   HACCEL - Handle to the loaded accelerator table. Returns NULL if the accelerator table could not be loaded.
+ *
+ * Purpose:
+ *   This function loads an accelerator table from a resource file. This is the
+ *   most common way to create accelerator tables in Windows applications.
+ *
+ * Notes:
+ *   If hInstance is 0, the function loads the accelerator table from the
+ *   executable file of the current process.
+ *   The lpTableName parameter can be either a string or an integer resource ID.
+ *   If it is an integer, it must be converted to a string using the MAKEINTRESOURCE() macro.
+ */
 HB_FUNC( LOADACCELERATORS )
 {
    HACCEL      hAccel = ( HACCEL ) NULL;
@@ -258,7 +415,29 @@ HB_FUNC( LOADACCELERATORS )
    hmg_ret_raw_HACCEL( hAccel );
 }
 
-// HMENU WINAPI LoadMenu( HINSTANCE hInstance, LPCTSTR lpMenuName )
+/*
+ * FUNCTION LOADMENU( hInstance, lpMenuName )
+ *
+ * Loads a menu resource from the specified module.
+ *
+ * Parameters:
+ *   hInstance : HINSTANCE - Handle to the instance of the module whose executable file contains the menu resource.
+ *                           If 0, the function loads from the current executable.
+ *   lpMenuName : LPCTSTR - The name of the menu resource. This can be either a string or an integer resource ID.
+ *
+ * Returns:
+ *   HMENU - Handle to the loaded menu. Returns NULL if the menu could not be loaded.
+ *
+ * Purpose:
+ *   This function loads a menu resource from a resource file. This is the
+ *   most common way to create menus in Windows applications.
+ *
+ * Notes:
+ *   If hInstance is 0, the function loads the menu from the executable file
+ *   of the current process.
+ *   The lpMenuName parameter can be either a string or an integer resource ID.
+ *   If it is an integer, it must be converted to a string using the MAKEINTRESOURCE() macro.
+ */
 HB_FUNC( LOADMENU )
 {
    HMENU       hMenu = ( HMENU ) NULL;
@@ -288,6 +467,28 @@ HB_FUNC( LOADMENU )
    hmg_ret_raw_HMENU( hMenu );
 }
 
+/*
+ * FUNCTION _NEWMENUSTYLE( bCustomDraw )
+ *
+ * Sets or retrieves the flag indicating whether custom menu drawing is enabled.
+ *
+ * Parameters:
+ *   bCustomDraw : HB_BOOL (Optional) - A logical value indicating whether to enable custom menu drawing.
+ *                 If .T., custom menu drawing is enabled. If .F., it is disabled.
+ *                 If omitted, the function only retrieves the current setting.
+ *
+ * Returns:
+ *   HB_BOOL - A logical value indicating the current state of custom menu drawing.
+ *             Returns .T. if custom menu drawing is enabled, .F. otherwise.
+ *
+ * Purpose:
+ *   This function allows you to enable or disable custom menu drawing.
+ *   Custom menu drawing allows you to customize the appearance of menus
+ *   beyond the standard Windows menu styles.
+ *
+ * Notes:
+ *   This function affects the global variable s_bCustomDraw.
+ */
 HB_FUNC( _NEWMENUSTYLE )
 {
    if( HB_ISLOG( 1 ) )
@@ -298,11 +499,56 @@ HB_FUNC( _NEWMENUSTYLE )
    hb_retl( s_bCustomDraw );
 }
 
+/*
+ * FUNCTION _CLOSEMENU()
+ *
+ * Ends the current menu.
+ *
+ * Parameters:
+ *   None.
+ *
+ * Returns:
+ *   HB_BOOL - A logical value indicating whether the menu was successfully ended.
+ *             Returns the result of the EndMenu() function.
+ *
+ * Purpose:
+ *   This function is used to programmatically end a menu.
+ *
+ * Notes:
+ *   This function calls the Windows API function EndMenu().
+ */
 HB_FUNC( _CLOSEMENU )
 {
    hb_retl( EndMenu() );
 }
 
+/*
+ * FUNCTION TRACKPOPUPMENU( hMenu, x, y, hwnd, bPostNull )
+ *
+ * Displays a popup menu.
+ *
+ * Parameters:
+ *   hMenu     : HMENU - Handle to the popup menu to display.
+ *   x         : INT - The horizontal screen coordinate at which to display the menu.
+ *   y         : INT - The vertical screen coordinate at which to display the menu.
+ *   hwnd      : HWND - Handle to the window that owns the menu. This window receives all messages from the menu.
+ *   bPostNull : HB_BOOL (Optional) - A logical value indicating whether to post a WM_NULL message to the window after the menu is closed.
+ *               This is a workaround for a Microsoft "feature" that can prevent tray menus from closing properly.
+ *
+ * Returns:
+ *   None. This function does not return a value.
+ *
+ * Purpose:
+ *   This function displays a popup menu at the specified coordinates.
+ *   It is commonly used to display context menus when the user right-clicks
+ *   on a window or control.
+ *
+ * Notes:
+ *   The function uses SetForegroundWindow() to ensure that the menu is displayed
+ *   correctly.
+ *   The bPostNull parameter is a workaround for a Microsoft "feature" that can
+ *   prevent tray menus from closing properly.
+ */
 HB_FUNC( TRACKPOPUPMENU )
 {
    HWND  hwnd = hmg_par_raw_HWND( 4 );
@@ -317,41 +563,194 @@ HB_FUNC( TRACKPOPUPMENU )
    }
 }
 
+/*
+ * FUNCTION SETMENU( hWnd, hMenu )
+ *
+ * Sets the menu for a window.
+ *
+ * Parameters:
+ *   hWnd  : HWND - Handle to the window.
+ *   hMenu : HMENU - Handle to the menu to set.
+ *
+ * Returns:
+ *   None. This function does not return a value.
+ *
+ * Purpose:
+ *   This function sets the menu for a window. The menu will be displayed
+ *   at the top of the window.
+ *
+ * Notes:
+ *   This function calls the Windows API function SetMenu().
+ */
 HB_FUNC( SETMENU )
 {
    SetMenu( hmg_par_raw_HWND( 1 ), hmg_par_raw_HMENU( 2 ) );
 }
 
+/*
+ * FUNCTION SETMENUDEFAULTITEM( hMenu, uItem, fByPos )
+ *
+ * Sets the default menu item for a menu.
+ *
+ * Parameters:
+ *   hMenu  : HMENU - Handle to the menu.
+ *   uItem : INT - The menu item to set as the default.
+ *   fByPos : BOOL - Specifies whether the uItem parameter is the position of the menu item or its command ID.  Always FALSE in this implementation.
+ *
+ * Returns:
+ *   None. This function does not return a value.
+ *
+ * Purpose:
+ *   This function sets the default menu item for a menu. The default menu item
+ *   is the item that is selected when the user presses the Enter key.
+ *
+ * Notes:
+ *   This function calls the Windows API function SetMenuDefaultItem().
+ *   The fByPos parameter is always FALSE in this implementation, meaning that
+ *   the uItem parameter is always interpreted as a command ID.
+ */
 HB_FUNC( SETMENUDEFAULTITEM )
 {
    SetMenuDefaultItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), FALSE );
 }
 
+/*
+ * FUNCTION XCHECKMENUITEM( hMenu, uIDCheckItem )
+ *
+ * Checks a menu item.
+ *
+ * Parameters:
+ *   hMenu       : HMENU - Handle to the menu.
+ *   uIDCheckItem : INT - The command ID of the menu item to check.
+ *
+ * Returns:
+ *   None. This function does not return a value.
+ *
+ * Purpose:
+ *   This function checks a menu item, adding a checkmark next to it.
+ *
+ * Notes:
+ *   This function calls the Windows API function CheckMenuItem().
+ */
 HB_FUNC( XCHECKMENUITEM )
 {
    CheckMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_CHECKED );
 }
 
+/*
+ * FUNCTION XUNCHECKMENUITEM( hMenu, uIDCheckItem )
+ *
+ * Unchecks a menu item.
+ *
+ * Parameters:
+ *   hMenu       : HMENU - Handle to the menu.
+ *   uIDCheckItem : INT - The command ID of the menu item to uncheck.
+ *
+ * Returns:
+ *   None. This function does not return a value.
+ *
+ * Purpose:
+ *   This function unchecks a menu item, removing the checkmark next to it.
+ *
+ * Notes:
+ *   This function calls the Windows API function CheckMenuItem().
+ */
 HB_FUNC( XUNCHECKMENUITEM )
 {
    CheckMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_UNCHECKED );
 }
 
+/*
+ * FUNCTION XENABLEMENUITEM( hMenu, uIDEnableItem )
+ *
+ * Enables a menu item.
+ *
+ * Parameters:
+ *   hMenu       : HMENU - Handle to the menu.
+ *   uIDEnableItem : INT - The command ID of the menu item to enable.
+ *
+ * Returns:
+ *   None. This function does not return a value.
+ *
+ * Purpose:
+ *   This function enables a menu item, allowing the user to select it.
+ *
+ * Notes:
+ *   This function calls the Windows API function EnableMenuItem().
+ */
 HB_FUNC( XENABLEMENUITEM )
 {
    EnableMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_ENABLED );
 }
 
+/*
+ * FUNCTION XDISABLEMENUITEM( hMenu, uIDEnableItem )
+ *
+ * Disables a menu item.
+ *
+ * Parameters:
+ *   hMenu       : HMENU - Handle to the menu.
+ *   uIDEnableItem : INT - The command ID of the menu item to disable.
+ *
+ * Returns:
+ *   None. This function does not return a value.
+ *
+ * Purpose:
+ *   This function disables a menu item, preventing the user from selecting it.
+ *   The menu item is typically grayed out to indicate that it is disabled.
+ *
+ * Notes:
+ *   This function calls the Windows API function EnableMenuItem().
+ */
 HB_FUNC( XDISABLEMENUITEM )
 {
    EnableMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_GRAYED );
 }
 
+/*
+ * FUNCTION XDISABLECLOSEBUTTON( hWnd, bEnable )
+ *
+ * Enables or disables the Close button on a window's system menu.
+ *
+ * Parameters:
+ *   hWnd    : HWND - Handle to the window.
+ *   bEnable : HB_BOOL - A logical value indicating whether to enable or disable the Close button.
+ *             If .T., the Close button is enabled. If .F., it is disabled.
+ *
+ * Returns:
+ *   None. This function does not return a value.
+ *
+ * Purpose:
+ *   This function allows you to control whether the user can close a window
+ *   using the Close button in the system menu.
+ *
+ * Notes:
+ *   This function calls the Windows API function EnableMenuItem() to enable or
+ *   disable the SC_CLOSE command in the system menu.
+ */
 HB_FUNC( XDISABLECLOSEBUTTON )
 {
    EnableMenuItem( GetSystemMenu( hmg_par_raw_HWND( 1 ), FALSE ), SC_CLOSE, MF_BYCOMMAND | ( hb_parl( 2 ) ? MF_ENABLED : MF_GRAYED ) );
 }
 
+/*
+ * FUNCTION CREATEMENU()
+ *
+ * Creates a new menu.
+ *
+ * Parameters:
+ *   None.
+ *
+ * Returns:
+ *   HMENU - Handle to the created menu.
+ *
+ * Purpose:
+ *   This function creates a new, empty menu. You can then add menu items
+ *   to the menu using functions such as AppendMenu() and InsertMenu().
+ *
+ * Notes:
+ *   This function calls the Windows API function CreateMenu().
+ */
 HB_FUNC( CREATEMENU )
 {
    HMENU hMenu = CreateMenu();
@@ -365,157 +764,328 @@ HB_FUNC( CREATEMENU )
    hmg_ret_raw_HMENU( hMenu );
 }
 
+/*
+ * FUNCTION CREATEPOPUPMENU()
+ *
+ * Creates a new popup menu.
+ *
+ * Parameters:
+ *   None.
+ *
+ * Returns:
+ *   HMENU - Handle to the created popup menu.
+ *
+ * Purpose:
+ *   This function creates a new, empty popup menu. Popup menus are typically
+ *   displayed when the user right-clicks on a window or control.
+ *
+ * Notes:
+ *   This function calls the Windows API function CreatePopupMenu().
+ */
 HB_FUNC( CREATEPOPUPMENU )
 {
    hmg_ret_raw_HMENU( CreatePopupMenu() );
 }
 
+/*
+ * FUNCTION: APPENDMENUSTRING
+ *
+ * Appends a new menu item to the end of a menu.
+ *
+ * Parameters:
+ *   hMenu: HMENU - Handle to the menu to which the item will be appended.
+ *   nIDNewItem: INT - The command ID of the new menu item.
+ *   lpNewItem: STRING - The text of the new menu item.
+ *   nStyle: INT - The style of the new menu item. Can be 0 (MF_STRING), 1 (MF_STRING | MF_MENUBREAK), or 2 (MF_STRING | MF_MENUBARBREAK).
+ *
+ * Returns:
+ *   HB_BOOL - A logical value indicating whether the menu item was successfully appended.
+ *             Returns .T. if the menu item was appended successfully, .F. otherwise.
+ *
+ * Purpose:
+ *   This function appends a new menu item to the end of a menu.
+ *   The menu item can be a string, a separator, or a submenu.
+ *
+ * Notes:
+ *   This function calls the Windows API function AppendMenu().
+ *   The nStyle parameter determines the appearance and behavior of the menu item.
+ *   If custom menu drawing is enabled (s_bCustomDraw is .T.), the function
+ *   creates a MENUITEM structure and passes it to AppendMenu(). Otherwise, it
+ *   passes the string directly to AppendMenu().
+ */
 HB_FUNC( APPENDMENUSTRING )
 {
 #ifndef UNICODE
-   LPCSTR   lpNewItem = hb_parc( 3 );
+   LPCSTR   lpNewItem = hb_parc( 3 );     // Get the text of the new menu item as an ANSI string
 #else
-   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 3 ) );
+   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 3 ) ); // Convert the text of the new menu item to a wide string for Unicode
 #endif
-   UINT     Style;
+   UINT     Style;            // Variable to hold the style of the new menu item
 
+   // Check if custom menu drawing is enabled
    if( s_bCustomDraw )
    {
-      LPMENUITEM  lpMenuItem;
-      UINT        cch = ( UINT ) HB_STRNLEN( lpNewItem, MAX_ITEM_TEXT * sizeof( TCHAR ) );
+      LPMENUITEM  lpMenuItem; // Pointer to a MENUITEM structure
+      UINT        cch = ( UINT ) HB_STRNLEN( lpNewItem, MAX_ITEM_TEXT * sizeof( TCHAR ) );   // Calculate the length of the menu item text
+      lpMenuItem = ( LPMENUITEM ) hb_xgrab( ( sizeof( MENUITEM ) ) );   // Allocate memory for the MENUITEM structure
+      ZeroMemory( lpMenuItem, sizeof( MENUITEM ) );                     // Initialize the MENUITEM structure to zero
 
-      lpMenuItem = ( LPMENUITEM ) hb_xgrab( ( sizeof( MENUITEM ) ) );
-      ZeroMemory( lpMenuItem, sizeof( MENUITEM ) );
+      // Set the properties of the MENUITEM structure
+      lpMenuItem->cbSize = hb_parni( 2 );                   // Set the size of the structure
+      lpMenuItem->uiID = hb_parni( 2 );                     // Set the command ID of the menu item
+      lpMenuItem->caption = HB_STRNDUP( lpNewItem, cch );   // Duplicate the menu item text
+      lpMenuItem->cch = cch;                    // Set the length of the menu item text
+      lpMenuItem->hBitmap = ( HBITMAP ) NULL;   // Set the bitmap handle to NULL
+      lpMenuItem->hFont = ( HFONT ) NULL;       // Set the font handle to NULL
+      lpMenuItem->uiItemType = hb_parni( 4 );   // Set the item type
+      lpMenuItem->hwnd = ( HWND ) NULL;         // Set the window handle to NULL
 
-      lpMenuItem->cbSize = hb_parni( 2 );
-      lpMenuItem->uiID = hb_parni( 2 );
-      lpMenuItem->caption = HB_STRNDUP( lpNewItem, cch );
-      lpMenuItem->cch = cch;
-      lpMenuItem->hBitmap = ( HBITMAP ) NULL;
-      lpMenuItem->hFont = ( HFONT ) NULL;
-      lpMenuItem->uiItemType = hb_parni( 4 );
-      lpMenuItem->hwnd = ( HWND ) NULL;
-
+      // Determine the style of the menu item based on the nStyle parameter
       switch( hb_parni( 4 ) )
       {
          case 1:
-            Style = MF_OWNERDRAW | MF_MENUBREAK;
+            Style = MF_OWNERDRAW | MF_MENUBREAK;      // Set style for owner-drawn menu item with a menu break
             break;
 
          case 2:
-            Style = MF_OWNERDRAW | MF_MENUBARBREAK;
+            Style = MF_OWNERDRAW | MF_MENUBARBREAK;   // Set style for owner-drawn menu item with a menu bar break
             break;
 
          default:
-            Style = MF_OWNERDRAW;
+            Style = MF_OWNERDRAW;                     // Set style for owner-drawn menu item
       }
 
+      // Append the menu item to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), Style, hb_parni( 2 ), ( LPTSTR ) lpMenuItem ) );
    }
    else
    {
+      // Determine the style of the menu item based on the nStyle parameter
       switch( hb_parni( 4 ) )
       {
          case 1:
-            Style = MF_STRING | MF_MENUBREAK;
+            Style = MF_STRING | MF_MENUBREAK;         // Set style for string menu item with a menu break
             break;
 
          case 2:
-            Style = MF_STRING | MF_MENUBARBREAK;
+            Style = MF_STRING | MF_MENUBARBREAK;      // Set style for string menu item with a menu bar break
             break;
 
          default:
-            Style = MF_STRING;
+            Style = MF_STRING;         // Set style for string menu item
       }
 
+      // Append the menu item to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), Style, hb_parni( 2 ), lpNewItem ) );
    }
 
 #ifdef UNICODE
-   hb_xfree( lpNewItem );
+   hb_xfree( lpNewItem );              // Free the wide string memory if Unicode is defined
 #endif
 }
 
+/*
+ * FUNCTION: APPENDMENUPOPUP
+ *
+ * Appends a new popup menu item to the end of a menu.
+ *
+ * Parameters:
+ *   hMenu: HMENU - Handle to the menu to which the item will be appended.
+ *   nIDNewItem: INT - The command ID of the new menu item.
+ *   lpNewItem: STRING - The text of the new menu item.
+ *   nStyle: INT - The style of the new menu item.
+ *   hFont: HFONT - The font to use for the new menu item.
+ *
+ * Returns:
+ *   HB_BOOL - A logical value indicating whether the menu item was successfully appended.
+ *             Returns .T. if the menu item was appended successfully, .F. otherwise.
+ *
+ * Purpose:
+ *   This function appends a new popup menu item to the end of a menu.
+ *   The menu item can be a string, a separator, or a submenu.
+ *
+ * Notes:
+ *   This function calls the Windows API function AppendMenu().
+ *   If custom menu drawing is enabled (s_bCustomDraw is .T.), the function
+ *   creates a MENUITEM structure and passes it to AppendMenu(). Otherwise, it
+ *   passes the string directly to AppendMenu().
+ */
 HB_FUNC( APPENDMENUPOPUP )
 {
 #ifndef UNICODE
-   LPCSTR   lpNewItem = hb_parc( 3 );
+   LPCSTR   lpNewItem = hb_parc( 3 );  // Get the text of the new menu item as an ANSI string
 #else
-   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 3 ) );
+   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 3 ) ); // Convert the text of the new menu item to a wide string for Unicode
 #endif
+
+   // Check if custom menu drawing is enabled
    if( s_bCustomDraw )
    {
-      LPMENUITEM  lpMenuItem;
-      UINT        cch = ( UINT ) HB_STRNLEN( lpNewItem, MAX_ITEM_TEXT * sizeof( TCHAR ) );
+      LPMENUITEM  lpMenuItem; // Pointer to a MENUITEM structure
+      UINT        cch = ( UINT ) HB_STRNLEN( lpNewItem, MAX_ITEM_TEXT * sizeof( TCHAR ) );   // Calculate the length of the menu item text
+      lpMenuItem = ( LPMENUITEM ) hb_xgrabz( ( sizeof( MENUITEM ) ) );  // Allocate and zero memory for the MENUITEM structure
 
-      lpMenuItem = ( LPMENUITEM ) hb_xgrabz( ( sizeof( MENUITEM ) ) );
+      // Set the properties of the MENUITEM structure
+      lpMenuItem->cbSize = hb_parni( 2 );                   // Set the size of the structure
+      lpMenuItem->uiID = hb_parni( 2 );                     // Set the command ID of the menu item
+      lpMenuItem->caption = HB_STRNDUP( lpNewItem, cch );   // Duplicate the menu item text
+      lpMenuItem->cch = cch;                    // Set the length of the menu item text
+      lpMenuItem->hBitmap = ( HBITMAP ) NULL;   // Set the bitmap handle to NULL
+      lpMenuItem->hFont = hmg_par_raw_HFONT( 5 );  // Set the font handle
+      lpMenuItem->uiItemType = hb_parni( 4 );      // Set the item type
 
-      lpMenuItem->cbSize = hb_parni( 2 );
-      lpMenuItem->uiID = hb_parni( 2 );
-      lpMenuItem->caption = HB_STRNDUP( lpNewItem, cch );
-      lpMenuItem->cch = cch;
-      lpMenuItem->hBitmap = ( HBITMAP ) NULL;
-      lpMenuItem->hFont = hmg_par_raw_HFONT( 5 );
-      lpMenuItem->uiItemType = hb_parni( 4 );
-
+      // Append the popup menu item to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), MF_POPUP | MF_OWNERDRAW, hb_parni( 2 ), ( LPTSTR ) lpMenuItem ) );
    }
    else
    {
+      // Append the popup menu item to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), MF_POPUP | MF_STRING, hb_parni( 2 ), lpNewItem ) );
    }
 
 #ifdef UNICODE
-   hb_xfree( lpNewItem );
+   hb_xfree( lpNewItem );  // Free the wide string memory if Unicode is defined
 #endif
 }
 
+/*
+ * FUNCTION: APPENDMENUSEPARATOR
+ *
+ * Appends a new separator item to the end of a menu.
+ *
+ * Parameters:
+ *   hMenu: HMENU - Handle to the menu to which the separator will be appended.
+ *
+ * Returns:
+ *   HB_BOOL - A logical value indicating whether the separator was successfully appended.
+ *             Returns .T. if the separator was appended successfully, .F. otherwise.
+ *
+ * Purpose:
+ *   This function appends a new separator item to the end of a menu.
+ *   The separator is used to visually separate groups of menu items.
+ *
+ * Notes:
+ *   This function calls the Windows API function AppendMenu().
+ *   If custom menu drawing is enabled (s_bCustomDraw is .T.), the function
+ *   creates a MENUITEM structure and passes it to AppendMenu(). Otherwise, it
+ *   passes NULL directly to AppendMenu().
+ */
 HB_FUNC( APPENDMENUSEPARATOR )
 {
+   // Check if custom menu drawing is enabled
    if( s_bCustomDraw )
    {
-      LPMENUITEM  lpMenuItem = ( LPMENUITEM ) hb_xgrabz( ( sizeof( MENUITEM ) ) );
+      LPMENUITEM  lpMenuItem = ( LPMENUITEM ) hb_xgrabz( ( sizeof( MENUITEM ) ) );  // Allocate and zero memory for the MENUITEM structure
+      lpMenuItem->uiItemType = 1000;   // Set the item type to separator
 
-      lpMenuItem->uiItemType = 1000;
-
+      // Append the separator to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), MF_SEPARATOR | MF_OWNERDRAW, 0, ( LPTSTR ) lpMenuItem ) );
    }
    else
    {
+      // Append the separator to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), MF_SEPARATOR, 0, NULL ) );
    }
 }
 
+/*
+ * FUNCTION: MODIFYMENUITEM
+ *
+ * Modifies an existing menu item.
+ *
+ * Parameters:
+ *   hMenu: HMENU - Handle to the menu containing the item to modify.
+ *   nPosition: INT - The position of the menu item to modify.
+ *   nIDNewItem: INT - The new command ID of the menu item.
+ *   lpNewItem: STRING - The new text of the menu item.
+ *
+ * Returns:
+ *   HB_BOOL - A logical value indicating whether the menu item was successfully modified.
+ *             Returns .T. if the menu item was modified successfully, .F. otherwise.
+ *
+ * Purpose:
+ *   This function modifies an existing menu item in a menu.
+ *   The menu item can be a string, a separator, or a submenu.
+ *
+ * Notes:
+ *   This function calls the Windows API function ModifyMenu().
+ */
 HB_FUNC( MODIFYMENUITEM )
 {
 #ifndef UNICODE
-   LPCSTR   lpNewItem = hb_parc( 4 );
+   LPCSTR   lpNewItem = hb_parc( 4 );  // Get the new text of the menu item as an ANSI string
 #else
-   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 4 ) );
+   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 4 ) ); // Convert the new text of the menu item to a wide string for Unicode
 #endif
+
+   // Modify the menu item and return the result
    hb_retl( ModifyMenu( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND | MF_STRING, hb_parni( 3 ), lpNewItem ) );
 
 #ifdef UNICODE
-   hb_xfree( lpNewItem );
+   hb_xfree( lpNewItem );              // Free the wide string memory if Unicode is defined
 #endif
 }
 
+/*
+ * FUNCTION: INSERTMENUITEM
+ *
+ * Inserts a new menu item at a specified position in a menu.
+ *
+ * Parameters:
+ *   hMenu: HMENU - Handle to the menu where the item will be inserted.
+ *   nPosition: INT - The position at which the new menu item will be inserted.
+ *   nIDNewItem: INT - The command ID of the new menu item.
+ *   lpNewItem: STRING - The text of the new menu item.
+ *
+ * Returns:
+ *   HB_BOOL - A logical value indicating whether the menu item was successfully inserted.
+ *             Returns .T. if the menu item was inserted successfully, .F. otherwise.
+ *
+ * Purpose:
+ *   This function inserts a new menu item at a specified position in a menu.
+ *   The menu item can be a string, a separator, or a submenu.
+ *
+ * Notes:
+ *   This function calls the Windows API function InsertMenu().
+ */
 HB_FUNC( INSERTMENUITEM )
 {
 #ifndef UNICODE
-   LPCSTR   lpNewItem = hb_parc( 4 );
+   LPCSTR   lpNewItem = hb_parc( 4 );  // Get the text of the new menu item as an ANSI string
 #else
-   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 4 ) );
+   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 4 ) ); // Convert the text of the new menu item to a wide string for Unicode
 #endif
+
+   // Insert the menu item at the specified position and return the result
    hb_retl( InsertMenu( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND | MF_STRING, hb_parni( 3 ), lpNewItem ) );
 
 #ifdef UNICODE
-   hb_xfree( lpNewItem );
+   hb_xfree( lpNewItem );  // Free the wide string memory if Unicode is defined
 #endif
 }
 
+/*
+ * FUNCTION: REMOVEMENUITEM
+ *
+ * Removes an existing menu item from a menu.
+ *
+ * Parameters:
+ *   hMenu: HMENU - Handle to the menu containing the item to remove.
+ *   nPosition: INT - The position of the menu item to remove.
+ *
+ * Returns:
+ *   HB_BOOL - A logical value indicating whether the menu item was successfully removed.
+ *             Returns .T. if the menu item was removed successfully, .F. otherwise.
+ *
+ * Purpose:
+ *   This function removes an existing menu item from a menu.
+ *
+ * Notes:
+ *   This function calls the Windows API function RemoveMenu().
+ */
 HB_FUNC( REMOVEMENUITEM )
 {
+   // Remove the menu item at the specified position and return the result
    hb_retl( RemoveMenu( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND ) );
 }
 
@@ -974,8 +1544,8 @@ HB_FUNC( _ONDRAWMENUITEM )
       MenuItemInfo.fMask = MIIM_CHECKMARKS;
       GetMenuItemInfo( ( HMENU ) lpdis->hwndItem, lpdis->itemID, FALSE, &MenuItemInfo );
 
-      size.cx = bm_size;                  //GetSystemMetrics(SM_CXMENUCHECK);
-      size.cy = bm_size;                  //GetSystemMetrics(SM_CYMENUCHECK);
+      size.cx = bm_size;   //GetSystemMetrics(SM_CXMENUCHECK);
+      size.cy = bm_size;   //GetSystemMetrics(SM_CYMENUCHECK);
       DrawCheck( lpdis->hDC, size, lpdis->rcItem, fGrayed, fSelected, MenuItemInfo.hbmpChecked );
    }
 

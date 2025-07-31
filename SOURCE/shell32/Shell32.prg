@@ -39,15 +39,13 @@
 */
 FUNCTION SHFolderDelete( hWnd, acFolder, lSilent )
 
-   LOCAL nFlag := 0
+   LOCAL nFlags := 0
 
-   DEFAULT hWnd TO GetActiveWindow()
-
-   IF lSilent == NIL .OR. lSilent
-      nFlag := FOF_NOCONFIRMATION + FOF_SILENT  // No confirmation and silent operation
+   IF hb_defaultvalue( lSilent, .T. )
+      nFlags := FOF_NOCONFIRMATION + FOF_SILENT  // No confirmation and silent operation
    ENDIF
 
-RETURN ( ShellFiles( hWnd, acFolder, , FO_DELETE, nFlag ) == 0 )
+RETURN ( ShellFiles( hWnd, acFolder, , FO_DELETE, nFlags ) == 0 )
 
 /*
  ===========================================================================
@@ -69,19 +67,17 @@ RETURN ( ShellFiles( hWnd, acFolder, , FO_DELETE, nFlag ) == 0 )
 */
 FUNCTION SHFileDelete( hWnd, acFiles, lRecycle )
 
-   LOCAL nFlag := 0
+   LOCAL nFlags := 0
 
-   DEFAULT hWnd TO GetActiveWindow()
-
-   IF lRecycle == NIL .OR. lRecycle
-      nFlag := FOF_ALLOWUNDO  // Allow undo (send to Recycle Bin)
+   IF hb_defaultvalue( lRecycle, .T. )
+      nFlags := FOF_ALLOWUNDO  // Allow undo (send to Recycle Bin)
    ENDIF
 
-RETURN ( ShellFiles( hWnd, acFiles, , FO_DELETE, nFlag ) == 0 )
+RETURN ( ShellFiles( hWnd, acFiles, , FO_DELETE, nFlags ) == 0 )
 
 /*
  ===========================================================================
- Function: ShellFiles( hParentWnd, aFiles, aTarget, nFunc, nFlag )
+ Function: ShellFiles( hParentWnd, aFiles, aTarget, nOperation, nFlags )
 
  Purpose:
   Performs a file system operation (copy, move, delete, rename) on one or more
@@ -91,35 +87,27 @@ RETURN ( ShellFiles( hWnd, acFiles, , FO_DELETE, nFlag ) == 0 )
   - hWnd    : Handle to the parent window (default is the active window).
   - aFiles  : A string representing the source file(s) or an array of file names.
   - aTarget : A string representing the target file(s) or an array of file names (optional).
-  - nFunc   : Operation to perform: FO_MOVE, FO_COPY, FO_DELETE, FO_RENAME.
-  - fFlag   : Operation flags, such as FOF_NOCONFIRMATION, FOF_ALLOWUNDO, etc.
+  - nOperation : Operation to perform: FO_MOVE, FO_COPY, FO_DELETE, FO_RENAME.
+  - nFlags  : Operation flags, such as FOF_NOCONFIRMATION, FOF_ALLOWUNDO, etc.
 
  Returns:
   - The result of the Shell operation: 0 if successful, non-zero otherwise.
  ===========================================================================
 */
-FUNCTION ShellFiles( hWnd, acFiles, acTarget, wFunc, fFlag )
+FUNCTION ShellFiles( hWnd, acFiles, acTarget, nOperation, nFlags )
 
    LOCAL cTemp
 
    // Parent Window
-   //
-   hb_default( @hWnd, GetActiveWindow() )
+   DEFAULT hWnd TO GetActiveWindow()
 
    // Default function to delete if not specified
-   //
-   IF wFunc == NIL
-      wFunc := FO_DELETE
-   ENDIF
+   DEFAULT nOperation TO FO_DELETE
 
    // Default option to allow undo (send to Recycle Bin) if not specified
-   //
-   IF fFlag == NIL
-      fFlag := FOF_ALLOWUNDO
-   ENDIF
+   DEFAULT nFlags TO FOF_ALLOWUNDO
 
    // Convert source files from an array to a null-terminated string
-   //
    DEFAULT acFiles TO Chr( 0 )
 
    IF hb_IsArray( acFiles )
@@ -130,7 +118,6 @@ FUNCTION ShellFiles( hWnd, acFiles, acTarget, wFunc, fFlag )
    acFiles += Chr( 0 )  // Append null character to terminate the string
 
    // Convert target files from an array to a null-terminated string, if specified
-   //
    DEFAULT acTarget TO Chr( 0 )
 
    IF hb_IsArray( acTarget )
@@ -141,8 +128,7 @@ FUNCTION ShellFiles( hWnd, acFiles, acTarget, wFunc, fFlag )
    acTarget += Chr( 0 )  // Append null character to terminate the string
 
    // Call the ShellFileOperation function
-   //
-RETURN ShellFileOperation( hWnd, acFiles, acTarget, wFunc, fFlag )
+RETURN ShellFileOperation( hWnd, acFiles, acTarget, nOperation, nFlags )
 
 /*
  ===========================================================================
