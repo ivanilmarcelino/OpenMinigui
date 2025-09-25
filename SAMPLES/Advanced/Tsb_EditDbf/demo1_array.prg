@@ -54,19 +54,21 @@ FUNCTION ArrayLoadDim()
    // (14) - additional data for type (3): SPR_A,CALC,SPR_J,SPR_S,CALC
    // (15) - additional data different
    //                      1                         2            3     4        5               6                 7              8                9   10  11   12  13  14   15
-   AADD( aDim, {"Variable checks"                  , ""        ,  1, "LINE1" , ""         , ""               , ""              , ""             , "R", "", "", "", nil, {} , "" } )
-   AADD( aDim, {"   Type C field test"             , SPACE(20) ,  2, "C"     , "FIO"      , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
-   AADD( aDim, {"   Type L field test"             , .F.       ,  3, "L"     , "lPrint"   , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
-   AADD( aDim, {"   Type M (memo) field test"      , SPACE(90) ,  4, "M"     , "MREM"     , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
-   AADD( aDim, {"   Test of field type N"          , 0         ,  5, "N"     , "NNZa"     , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
-   AADD( aDim, {"   Test of field type D"          , CTOD("")  ,  6, "D"     , "DateDog"  , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
-   AADD( aDim, {"   Test of field type D calendar" , CTOD("")  ,  7, "DMN"   , "DatePlan" , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
-   AADD( aDim, {"   Test of field of type T"       , ""        ,  8, "DT"    , "IMZ"      , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
-   AADD( aDim, {"Checks of composite variables"    , ""        ,  9, "LINE2" , ""         , ""               , ""              , ""             , "R", "", "", "", nil, {} , "" } )
-   AADD( aDim, {"   Subscriber's apartment N + C"  , SPACE(20) , 10, "A"     , {"NKvar","CKvar"}, ""         , ""              , ""             , "W", "", "", "", nil, {"@Z 99999","xxxxx", "/" } , {"Number:","Letter:"} } )
-   AADD( aDim, {"   Phone (home/mobile/work)"      , SPACE(50) , 11, "A"     , {"TelFIO","TelFIO3","TelFIO2"}, ""    , ""      , ""             , "W", "", "", "", nil, {"@R (999) 999-99-99","@R (999) 999-99-99","@R (999) 999-99-99", " , "} , "" } )
-   AADD( aDim, {"   Select from array - type SPR_A", SPACE(20) , 12, "SPR_A" , "KDispJil" , "GetDim2Str()"   , ""              , ""             , "W", "", "", "", nil, {"Tenant","Dispatch","Rostelecom","ODS (obshch.disp.service)","City 77"}, "iVOTelefon48" } ) // 15-icon
-   AADD( aDim, {"   Select from array in this line", SPACE(20) , 13, "SPR_A" , "KOnline"  , "GetDim2Str()"   , ""              , ""             , "W", "", "", "", nil, {"Portal" ,"other", "https://www.hmgextended.com/" } , "iUser32"} ) // 15-icon
+   AADD( aDim, {"Variable checks"                   , ""        ,  1, "LINE1" , ""         , ""               , ""              , ""             , "R", "", "", "", nil, {} , "" } )
+   AADD( aDim, {"   Type C field test"              , SPACE(20) ,  2, "C"     , "FIO"      , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
+   AADD( aDim, {'   Type C + picture "@R xxxx-xxxx"', SPACE(20) ,  3, "C"     , "cNumHouse", "@R xxxx-xxxx"   , ""              , ""             , "W", "", "", "", nil, {} , "" } )
+   AADD( aDim, {'   Type C + encryption/decryption' , SPACE(40) ,  4, "PSW"   , "CDOGOV"   , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
+   AADD( aDim, {"   Type L field test"              , .F.       ,  5, "L"     , "lPrint"   , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
+   AADD( aDim, {"   Type M (memo) field test"       , SPACE(90) ,  6, "M"     , "MREM"     , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
+   AADD( aDim, {"   Test of field type N"           , 0         ,  7, "N"     , "NNZa"     , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
+   AADD( aDim, {"   Test of field type D"           , CTOD("")  ,  8, "D"     , "DateDog"  , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
+   AADD( aDim, {"   Test of field type D calendar"  , CTOD("")  ,  9, "DMN"   , "DatePlan" , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
+   AADD( aDim, {"   Test of field of type T"        , ""        , 10, "DT"    , "IMZ"      , ""               , ""              , ""             , "W", "", "", "", nil, {} , "" } )
+   AADD( aDim, {"Checks of composite variables"     , ""        , 11, "LINE2" , ""         , ""               , ""              , ""             , "R", "", "", "", nil, {} , "" } )
+   AADD( aDim, {"   Subscriber's apartment N + C"   , SPACE(20) , 12, "A"     , {"NKvar","CKvar"}, ""         , ""              , ""             , "W", "", "", "", nil, {"@Z 99999","xxxxx", "/" } , {"Number:","Letter:"} } )
+   AADD( aDim, {"   Phone (home/mobile/work)"       , SPACE(50) , 13, "A"     , {"TelFIO","TelFIO3","TelFIO2"}, ""    , ""      , ""             , "W", "", "", "", nil, {"@R (999) 999-99-99","@R (999) 999-99-99","@R (999) 999-99-99", " , "} , "" } )
+   AADD( aDim, {"   Select from array - type SPR_A" , SPACE(20) , 14, "SPR_A" , "KDispJil" , "GetDim2Str()"   , ""              , ""             , "W", "", "", "", nil, {"Tenant","Dispatch","Rostelecom","ODS (obshch.disp.service)","City 77"}, "iVOTelefon48" } ) // 15-icon
+   AADD( aDim, {"   Select from array in this line" , SPACE(20) , 15, "SPR_A" , "KOnline"  , "GetDim2Str()"   , ""              , ""             , "W", "", "", "", nil, {"Portal" ,"other", "https://www.hmgextended.com/" } , "iUser32"} ) // 15-icon
 
    // заполн€етс€ дл€ вложенного справочника "CALC", дл€ других не надо
    oTipVd := oHmgData()
@@ -90,16 +92,9 @@ FUNCTION ArrayLoadDim()
    AADD( aDim, {"   Application Type/Miscellaneous" , SPACE(20) , 14, "CALC"  , ""         , "Za_TipVid()"    , "SetDim2Wrt()"  , "myWinCalc()"  , "W", "", "", "", nil, oTipVid:aFld, oTipVid } )
    // ---------------------
    // заполн€етс€ дл€ вложенного справочника "CALC", дл€ других не надо
-   oSrkZa := oHmgData()
-   oSrkZa:aName := {"Type of urgency", "Deadline" }
-   oSrkZa:aType := {"S","D"}
-   oSrkZa:aTFor := { {"srokza","Ksrokza","srokza",2} , {"D"} }
-   oSrkZa:aCod1 := { 1, 2, 3, 4, 7, 5, 6, 10, 20, 30 }
-   oSrkZa:aVal1 := { "1-day", "2-days", "3-days", "4-days", "7-days", "out of turn (4 hours)", "current day (until 17:30)", "repair (10-days)", "repair (20-days)", "end of current month" }
-   oSrkZa:aXArr := { {oSrkZa:aCod1,oSrkZa:aVal1} , {}  }        // все значени€ из одной Dbf + дата
-   oSrkZa:aBClr := BLUE      // цвет внутри
-   oSrkZa:aFClr := MAROON    // PINK  PURPLE
-   oSrkZa:aFld  := {"Ksrokza","DateSrok" }  // пол€ записи в базу                                                                         //     9  10  11   12  13        14        15
+   oSrkZa := oHmgData()  
+   oSrkZa:aFld  := {"Ksrokza","DateSrok" }  // пол€ записи в базу / database entry fields                                                                        //     9  10  11   12  13        14        15
+   oSrkZa:Help  := "!!! ¬се значени€ в функции Tsb_myWinCalc2() / All values in the Tsb_myWinCalc2() function" 
    AADD( aDim, {"   (*) Request urgency type"       , SPACE(20) , 15, "CALC"  , ""         , "Za_Srokza()"  , "SetDim2Wrt()" , "myWinCalc2()" , "W", "", "", "", nil, oSrkZa:aFld , oSrkZa } )
    // ---------------------
    AADD( aDim, {"   Request overdue"                , SPACE(20) , 16, "CALC"  , ""         , "Za_ProSrok()" , ""             , ""             , "R", "", "", "", nil, {} , nil } )
@@ -123,8 +118,8 @@ FUNCTION ArrayLoadDim()
    oVipZa:aTFor := { {"VipZa","KVipZa","VipZa",2,""} , {}, {}, {} }
    oVipZa:aBClr := BLUE      // цвет внутри
    oVipZa:aFClr := MAROON    // PINK  PURPLE
-   oVipZa:aFld  := {"Ksrokza", "DATEVip", "TimeVip", "INET" }  // пол€ записи в базу - "INET" ‘лаг дл€ передачи на сайт
-   AADD( aDim, {"   (*) Request execution type"     , SPACE(20) , 21, "CALC"  , ""         , "Za_VipZa()"     , "SetDim2Wrt()"  , "myWinCalc3()" , "W", "", "", "", nil, oVipZa:aFld , oVipZa  } )
+   oVipZa:aFld  := {"KVipZa", "DATEVip", "TimeVip", "INET" }  // пол€ записи в базу - "INET" ‘лаг дл€ передачи на сайт
+   AADD( aDim, {"   (*) Request execution - oVipZa" , SPACE(20) , 21, "CALC"  , ""         , "Za_VipZa()"     , "SetDim2Wrt()"  , "myWinCalc3()" , "W", "", "", "", nil, oVipZa:aFld , oVipZa  } )
    // ---------------------
    AADD( aDim, {"Example of a database card:"       , ""        , 22, "LINE1" , ""         , ""             , ""             , ""             , "R", "", "", "", nil, {} , "" } )
    AADD( aDim, {"Bid: number, date, time"           , ""        , 23, ""      , ""         , "GetNumZa()"   , ""             , ""             , "R", "", "", "", nil, {} , "" } )

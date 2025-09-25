@@ -14,7 +14,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////
 FUNCTION TestChess(cForm,cObj2)
-   LOCAL aDim, aLine, cTtl2
+   LOCAL aDim, cTtl2, aRet, a3Dim, nMode, aDim2, nI, nRec
 
    aDim  :=  {"116/1", " 115", " 114", " 113", " 112/2", " 111", " 110", " 109", " 108/3", " 107", " 106",;
               " 105", " 104/4", " 103", " 102", " 101", " 100/5", " 99", " 98", " 97", " 96/6", " 95", " 94",;
@@ -22,24 +22,51 @@ FUNCTION TestChess(cForm,cObj2)
               " 80/10", " 26", " 25", " 24/1", " 23", " 22", " 21/2", " 20", " 19", " 18/3", " 17", " 16", " 15/4",;
               " 14", " 13", " 12/5", " 11", " 10", " 9/6", " 8", " 7", " 6/7", " 5", " 4", " 3/8", " 2", " 1 "}
    //aDim :=  {"116/1", " 115", " 114", " 110"}
+
+   a3Dim :=  { ;   // RECNO()
+               {"1"  , 10459, "00001|"}  ,;
+               {"2"  , 10460, "00002|"}  ,;
+               {"3"  , 10461, "00003|"}  ,;
+               {"4"  , 10462, "00004|"}  ,;
+               {"5A" , 10463, "00005|A"} ,;
+               {"5Б" , 10467, "00005|Б"} ,;
+               {"6"  , 10464, "00006|"}  ,;
+               {"7"  , 10465, "00007|"}  ,;
+               {"7/1", 10470, "00007|/1"} ,;
+               {"8"  , 10480, "00008|"}  }
+   aDim2 := {}
+   FOR nI := 1 TO LEN(a3Dim)
+       AADD(aDim2,a3Dim[nI,1])
+   NEXT
    //AMERGE( aDim, aDim )
-   aLine := Nil
    cTtl2 := "Checkerboard test on the button"
+   nMode := 2  // по кнопке
+   //aDim2 := {}
    // cObj2 - для привязки координат меню к объекту
-   Tsb_Checkerboard(,aDim,aLine,cForm,cTtl2,cObj2)
+   aRet := Tsb_Checkerboard( ,aDim, ,nMode,cForm,cTtl2,cObj2,aDim2)
+   IF LEN(aRet) > 0
+      nRec := 0
+      FOR nI := 1 TO LEN(a3Dim)
+         IF aRet[1] == a3Dim[nI,1]
+            nRec := a3Dim[nI,2]
+         ENDIF
+      NEXT
+      MsgDebug(aRet, "RECNO()=", nRec )
+   ENDIF
 
 RETURN NIL
 
 ////////////////////////////////////////////////////////////////////////////////////
-FUNCTION Tsb_Checkerboard(oBrw,aDim,aLine,cParentWnd,cTtl2,cObj2)
+FUNCTION Tsb_Checkerboard(oBrw,aDim,aLine,nMode,cParentWnd,cTtl2,cObj2,aDim2)
    LOCAL oWnd, cForm, o, owc, aRet, cTitle, aBClr, cMsg, nWTitl, nW1Cel, nH1Cel
    LOCAL nW, nH, nY, nX, nG, oCell, nWCell, nHCell, cMaska, hFont, nX2, nCols
-   LOCAL oTsb, nWTsb, nHTsb, aXDim, aIsx, nYWnd, nXWnd, nWWnd, nHWnd, nLen, lTsbPos
+   LOCAL oTsb, nWTsb, nHTsb, aXDim, aIsx, nYWnd, nXWnd, nWWnd, nHWnd, nLen
    LOCAL lMod := _HMG_IsModalActive
    LOCAL hMod := _HMG_ActiveModalHandle
-   DEFAULT aLine := {}, cParentWnd := "None!" , cTtl2 := "Chess Window Title"
-   DEFAULT cObj2 := "None!"
+   DEFAULT aLine := {},  aDim := {}, nMode := 1, cParentWnd := "None!"
+   DEFAULT cObj2 := "None!", aDim2 := {}, cTtl2 := "Chess Window Title"
 
+   ? ProcNL(), oBrw,aDim,aLine,nMode,cParentWnd,cTtl2,cObj2,aDim2
    IF IsObject(oBrw)
       oWnd := _WindowObj(oBrw:cParentWnd)
       // координаты ячейки которую редактируем
@@ -48,9 +75,7 @@ FUNCTION Tsb_Checkerboard(oBrw,aDim,aLine,cParentWnd,cTtl2,cObj2)
       nX      := oCell:nCol
       nWCell  := oCell:nWidth
       nHCell  := oCell:nHeight
-      lTsbPos := .T.
    ELSE
-      lTsbPos := .F.
       IF !_IsWindowDefined(cParentWnd)
          MsgDebug("Error! There is no such WINDOW:",cParentWnd)
       ENDIF
@@ -68,7 +93,11 @@ FUNCTION Tsb_Checkerboard(oBrw,aDim,aLine,cParentWnd,cTtl2,cObj2)
    nXWnd  := oWnd:Col
    nWWnd  := oWnd:Width
    nHWnd  := oWnd:Height
-   IF !lTsbPos ; nY += nYWnd
+   IF nMode == 2 // это кнопка
+      // добавим координаты объекта от которого берем координаты
+      // add the coordinates of the object from which we take the coordinates
+      nY += nYWnd
+      nX += nXWnd
    ENDIF
    //
    aRet   := {}
@@ -92,14 +121,19 @@ FUNCTION Tsb_Checkerboard(oBrw,aDim,aLine,cParentWnd,cTtl2,cObj2)
    IF IsString(aDim)
       aDim := HB_ATokens( aDim, ",", .T., .T. )
    ENDIF
-   aDim  := mySortKvar(aDim)
-   //MsgDebug(aIsx, aDim)
+   IF nMode == 2 // это кнопка
+      aDim := aDim2  // массив уже отсортирован
+   ELSE
+      aDim := mySortKvar(aDim)  // сортировка массива
+   ENDIF
 
-   aXDim := mySquarXDim(aDim, 3)   // 3-мин.кол-во колонок / min.number of columns
    IF LEN(aDim) == 0
       nH   := nH1Cel * 2
       cMsg := "Array aDim is empty!"
+      MsgDebug("ERROR !",cMsg)
+      RETURN {}
    ELSE
+      aXDim := mySquarXDim(aDim, 3)   // 3-мин.кол-во колонок / min.number of columns
       nCols := LEN(aXDim[1])
       nLen  := LEN(aXDim)
       nH    := nH1Cel * nLen  + GetBorderHeight() - 4
@@ -367,7 +401,8 @@ STATIC FUNCTION TablePatamChess(cForm,aXDim,cBrw,nWTsb,nW1Cel,nH1Cel)
    // выбор и выход / choice and exit
    AAdd(oTsb:aUserKeys, {VK_RETURN, {|ob|
                                      Local owc := _WindowCargo(ob:cParentWnd)
-                                     owc:aRet := { ob:aArray[ob:nAt][ob:nCell] }   // ВАЖНО/IMPORTANT !!!
+                                     // ВАЖНО/IMPORTANT !!! - вернуть выбранные значения
+                                     owc:aRet := { ob:aArray[ob:nAt][ob:nCell], ob:nAt, ob:nCell }
                                      _wPost(99, ob:cParentWnd)
                                      Return Nil
                                      } })
@@ -438,6 +473,8 @@ STATIC FUNCTION myColorTsb( nAt, nCol, oBrw)
 RETURN nColor
 
 ///////////////////////////////////////////////////////////////
+// массив преобразуем в квадратный массив
+// transform the array into a square array
 FUNCTION mySquarXDim(aDim, nMinCol)
    LOCAL nSquare, nI, nCol, nMaxCol, aVal, aRet, cDim
    // Округление до меньшего значения квадратного корня

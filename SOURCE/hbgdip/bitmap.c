@@ -21,11 +21,13 @@ HB_FUNC( GDIPCLONEBITMAPAREA )
       GpBitmap *  srcBitmap = hb_parptr( 6 );
       GpBitmap *  dstBitmap = NULL;
 
-      if( NULL != srcBitmap )
-         hb_retni( fn_GdipCloneBitmapArea( x, y, width, height, format, srcBitmap, &dstBitmap ) );
-      else
+      if( srcBitmap == NULL )
+      {
          hb_retni( InvalidParameter );
+         return;
+      }
 
+      hb_retni( fn_GdipCloneBitmapArea( x, y, width, height, format, srcBitmap, &dstBitmap ) );
       hb_storptr( dstBitmap, 7 );
    }
    else

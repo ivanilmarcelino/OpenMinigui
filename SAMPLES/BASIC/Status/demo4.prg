@@ -21,10 +21,10 @@ Procedure Main
 
 		DEFINE STATUSBAR FONT 'MS Sans Serif' SIZE 8
 
-			STATUSITEM 'Fixed Item <&W>idth:' ACTION MsgInfo('Click! 1') FONTCOLOR BLUE
-			STATUSITEM 'Item &2' WIDTH aItemsWidth[2] ACTION ChangeItem( 2 ) FONTCOLOR BLUE
-			STATUSITEM 'Item &3' WIDTH aItemsWidth[3] ACTION ChangeItem( 3 ) FONTCOLOR BLUE
-			STATUSITEM 'Item &4' WIDTH aItemsWidth[4] ACTION ChangeItem( 4 ) FONTCOLOR BLUE
+			STATUSITEM 'Fixed Item <&W>idth:' ACTION MsgInfo('Click! 1')
+			STATUSITEM 'Item &2' WIDTH aItemsWidth[2] ACTION ChangeItem( 2 ) RIGHTALIGN
+			STATUSITEM 'Item &3' WIDTH aItemsWidth[3] ACTION ChangeItem( 3 ) RIGHTALIGN
+			STATUSITEM 'Item &4' WIDTH aItemsWidth[4] ACTION ChangeItem( 4 ) RIGHTALIGN
 
 		END STATUSBAR
 

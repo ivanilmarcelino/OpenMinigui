@@ -43,16 +43,17 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
- ---------------------------------------------------------------------------*/
+---------------------------------------------------------------------------*/
 #include <mgdefs.h>
 #include <commctrl.h>
 
 #if ( defined( __BORLANDC__ ) || defined( __POCC__ ) ) && defined( _WIN64 )
 #define PtrToLong( p )  ( ( LONG ) ( LONG_PTR ) ( p ) )
 #endif
+#define MAX_REG_BUFFER  255
 
 // Helper function that wraps RegSetValueExA
-// Sets a registry value using the provided parameters.
+// Sets a registry value using the provided parameters
 static LONG _setRegValue( HKEY hKey, LPCSTR lpValueName, DWORD dwType, const void *pData, DWORD cbData )
 {
    return RegSetValueExA( hKey, lpValueName, 0, dwType, ( const BYTE * ) pData, cbData );
@@ -136,7 +137,7 @@ HB_FUNC( REGOPENKEYEXA )
  */
 HB_FUNC( REGQUERYVALUEEXA )
 {
-   DWORD dwType = hb_parnl( 4 );
+   DWORD dwType = hmg_par_DWORD( 4 );
    DWORD dwSize = 0;
    LONG  lError;
 
@@ -145,7 +146,7 @@ HB_FUNC( REGQUERYVALUEEXA )
 
    if( lError == ERROR_SUCCESS )
    {
-      BYTE  *lpData = ( BYTE * ) hb_xgrab( dwSize + 1 ); // +1 for null-termination safety
+      BYTE  *lpData = ( BYTE * ) hb_xgrab( dwSize );
 
       // Second call to retrieve actual data
       lError = RegQueryValueExA( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), NULL, &dwType, lpData, &dwSize );
@@ -189,7 +190,6 @@ HB_FUNC( REGQUERYVALUEEXA )
  */
 HB_FUNC( REGENUMKEYEXA )
 {
-#define MAX_REG_BUFFER  255
    FILETIME ft;
    CHAR     cName[MAX_REG_BUFFER];
    CHAR     cClass[MAX_REG_BUFFER];
@@ -233,12 +233,12 @@ HB_FUNC( REGENUMKEYEXA )
  */
 HB_FUNC( REGSETVALUEEXA )
 {
-   DWORD dwType = hb_parnl( 4 );
+   DWORD dwType = hmg_par_DWORD( 4 );
    LONG  lError;
 
    if( dwType == REG_DWORD )
    {
-      DWORD nValue = hb_parnl( 5 );
+      DWORD nValue = hmg_par_DWORD( 5 );
       lError = _setRegValue( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), dwType, &nValue, sizeof( DWORD ) );
    }
    else

@@ -1015,12 +1015,12 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
 
                      *ELSEIF _HMG_aControlType [x] == 'TOOLBAR'
 
-                        *MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
+                       * MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
 
                      ELSE
-
-                        _HMG_aControlCol [x]:=IIF(_HMG_aControlCol [x]=Nil,0,_HMG_aControlCol [x])
-                        _HMG_aControlRow [x]:=IIF(_HMG_aControlRow [x]=Nil,0,_HMG_aControlRow [x])
+                        
+                        _HMG_aControlCol [x] := IIF(_HMG_aControlCol [x]=Nil,0,_HMG_aControlCol [x])
+                        _HMG_aControlRow [x] := IIF(_HMG_aControlRow [x]=Nil,0,_HMG_aControlRow [x])
                         MoveWindow ( _HMG_aControlhandles [x] , _HMG_aControlCol [x] - NewHPos , _HMG_aControlRow [x] - NewPos , _HMG_aControlWidth [x] , _HMG_aControlHeight [x] , .T. )
 
                      ENDIF
@@ -1306,9 +1306,9 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
                       *  MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
 
                      ELSE
-
-                        _HMG_aControlCol [x]:=IIF(_HMG_aControlCol [x]=Nil,0,_HMG_aControlCol [x])
-                        _HMG_aControlRow [x]:=IIF(_HMG_aControlRow [x]=Nil,0,_HMG_aControlRow [x])
+                        
+                        _HMG_aControlCol [x] := IIF(_HMG_aControlCol [x]=Nil,0,_HMG_aControlCol [x])
+                        _HMG_aControlRow [x] := IIF(_HMG_aControlRow [x]=Nil,0,_HMG_aControlRow [x])
                         MoveWindow ( _HMG_aControlhandles [x] , _HMG_aControlCol [x] - NewHPos , _HMG_aControlRow [x] - NewVPos , _HMG_aControlWidth [x] , _HMG_aControlHeight [x] , .T. )
 
                      ENDIF
@@ -1551,7 +1551,7 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
 
       IF i > 0
 
-         IF _HMG_MainActive == .T.
+         IF _HMG_MainActive == .T. .OR. _HMG_aFormActive [i] == .T.
             _DoWindowEventProcedure ( _HMG_aFormMoveProcedure [i] , i )
          ENDIF
 
@@ -1565,15 +1565,12 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
          lEnterSizeMove := NIL
          _HMG_MouseState := 1
       ENDIF
-
-      IF _HMG_MainClientMDIHandle != 0
-         EXIT
-      ENDIF
+      EXIT
    ****************************************************************************
    CASE WM_SIZE
    ****************************************************************************
 
-      IF HB_ISNIL ( lEnterSizeMove ) .OR. ! lEnterSizeMove .OR. ! iswinnt()
+      IF HB_ISNIL( lEnterSizeMove ) .OR. ! lEnterSizeMove .OR. ! iswinnt()
 
          hb_default( @lEnterSizeMove, .T. )
 
@@ -1620,7 +1617,7 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
 
             ENDIF
 
-            IF _HMG_MainActive == .T. .OR. _HMG_MainWindowFirst == .F.
+            IF _HMG_MainActive == .T. .OR. _HMG_aFormActive [i] == .T.
 
                IF wParam == SIZE_MAXIMIZED
 
@@ -1640,8 +1637,8 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
 
                ELSE
 
-                  IF _HMG_aFormType [i] == 'M' .AND. IsMenu( GetMenu ( hWnd ) ) .AND. ! _IsWindowActive( _HMG_aFormNames [ i ] )
-                  ELSE
+                  IF _HMG_aFormType [i] == 'M' .AND. IsMenu( GetMenu ( hWnd ) ) .AND. ! _HMG_aFormActive [i]
+                  ELSEIF !lEnterSizeMove
                      _DoWindowEventProcedure ( _HMG_aFormSizeProcedure [i], i )
                   ENDIF
 

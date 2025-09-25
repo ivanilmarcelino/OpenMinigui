@@ -1,0 +1,30 @@
+# Keys compile
+-prgflag=-w 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-oLibrarySystemMain
+
+# to list all * .prg
+LibrarySystemMain.prg
+BookManager.prg
+ConfigManager.prg
+Employee.prg
+EmployeeManager.prg
+hborm.prg
+LibrarySystem.prg
+Book.prg
+Loan.prg
+LoanManager.prg
+LoginSystem.prg
+ReportManager.prg
+User.prg
+UserManager.prg
+
+# project Resources
+#LibrarySystemMain.rc

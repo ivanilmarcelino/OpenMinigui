@@ -43,8 +43,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
    "HWGUI"
    Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
-----------------------------------------------------------------------------*/
-
+ ----------------------------------------------------------------------------*/
 #include "minigui.ch"
 #include "error.ch"
 #include "fileio.ch"
@@ -265,7 +264,7 @@ STATIC FUNCTION ErrorMessage( oError )
       FOR n := 1 TO Len( oError:args )
          cMessage += ;
             "     [" + hb_ntos( n, 2 ) + "] = " + ValType( oError:args[ n ] ) + ;
-            "   " + cValToChar( cValToChar( oError:args[ n ] ) ) + ;
+            "   " + cValToChar( oError:args[ n ] ) + ;
             iif( ValType( oError:args[ n ] ) == "A", " length: " + ;
             hb_ntos( Len( oError:args[ n ] ) ), "" ) + iif( n < Len( oError:args ), CRLF, "" )
       NEXT
@@ -313,7 +312,7 @@ STATIC PROCEDURE ShowError( cErrorMessage, oError )
       _TSB_aControlhWnd := {}
 #endif
       IF ISBLOCK( _HMG_bOnErrorInit )
-         cMsg := Eval( _HMG_bOnErrorInit, cMsg )
+         cMsg := Eval( _HMG_bOnErrorInit, cMsg, oError, ErrorMessage( oError ), cErrorMessage )
       ENDIF
 
       cMsg += iif( _lShowDetailError(), cErrorMessage, ErrorMessage( oError ) )

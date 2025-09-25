@@ -1,0 +1,8 @@
+main.prg
+ui.prg
+login.prg
+data.prg
+events.Prg
+
+-lhbsqlit3
+-lsqlite3

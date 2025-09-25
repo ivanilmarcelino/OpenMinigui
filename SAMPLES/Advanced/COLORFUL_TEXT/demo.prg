@@ -262,46 +262,26 @@ RETURN nResult
 FUNCTION AShuffle( aArray )
 /*------------------------------------------------------------------------------*/
 /*
- * This function shuffles the elements of an array in a random order.
+ * Shuffles the elements of an array in place using the Fisher–Yates algorithm.
  *
  * Parameters:
- *   aArray : (Array) The array to be shuffled.  This array is passed by reference,
- *            so the original array will be modified.
+ *   aArray : (Array) The array to be shuffled. Modified in place.
  *
  * Returns:
- *   aArray : (Array) The shuffled array.  This is the same array that was passed
- *            as input, but with its elements rearranged in a random order.
- *
- * Purpose:
- *   This function implements a shuffling algorithm to randomize the order of
- *   elements within an array.  It's used in this application to randomize the
- *   order of colors used to display the multi-colored text.  This ensures that
- *   each character is displayed in a different, randomly selected color.
- *
- * Notes:
- *   - The function uses a temporary array 'a' to keep track of the indices that
- *     have already been used.
- *   - The function modifies the original array directly (passed by reference).
+ *   aArray : (Array) The shuffled array.
  */
-   LOCAL n, i, j, a := {}
+   LOCAL n := Len( aArray )
+   LOCAL i, j, temp
 
-   IF ( n := Len( aArray ) ) > 1
+   IF n > 1
+      FOR i := n TO 2 STEP -1
+         j := hb_RandomInt( 1, i )   // Random index between 1 and i
 
-      FOR i := 1 TO n
-
-         REPEAT
-            j := Random( n )
-            IF AScan( a, j ) == 0
-               AAdd( a, j )
-            ENDIF
-         UNTIL Len( a ) < i
-
-         j := aArray[ i ]
-         aArray[ i ] := aArray[ a[ i ] ]
-         aArray[ a[ i ] ] := j
-
-      NEXT i
-
+         // Swap aArray[i] with aArray[j]
+         temp      := aArray[i]
+         aArray[i] := aArray[j]
+         aArray[j] := temp
+      NEXT
    ENDIF
 
 RETURN aArray

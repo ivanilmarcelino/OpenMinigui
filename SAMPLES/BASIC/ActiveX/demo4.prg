@@ -20,8 +20,7 @@ FUNCTION Main()
 		TITLE 'HMG ActiveX Support Demo' ;
 		MAIN ;
 		ON MAXIMIZE ( Win1.Test.Width := (Win1.Width) - 100, Win1.Test.Height := (Win1.Height) - 100 ) ;
-		ON SIZE ( Win1.Test.Width := (Win1.Width) - 100, Win1.Test.Height := (Win1.Height) - 100 ) ;
-		ON RELEASE Win1.Test.Release
+		ON SIZE ( Win1.Test.Width := (Win1.Width) - 100, Win1.Test.Height := (Win1.Height) - 100 )
 
 		DEFINE MAIN MENU
 			POPUP "Test"

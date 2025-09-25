@@ -505,32 +505,31 @@ RETURN lVisible
 #endif
 
 *-----------------------------------------------------------------------------*
-STATIC FUNCTION _IsControlVisibleFromHandle ( Handle )
+STATIC FUNCTION _IsControlVisibleFromHandle( nHandle )
 *-----------------------------------------------------------------------------*
-   LOCAL lVisible As Logical
-   LOCAL hControl
+   LOCAL xCandidateHandle
+   LOCAL nIndex
 
-   FOR EACH hControl IN _HMG_aControlHandles
+   FOR EACH xCandidateHandle IN _HMG_aControlHandles
+      nIndex := hb_enumindex( xCandidateHandle )
 
-      IF ISNUMERIC ( hControl )
-
-         IF hControl == Handle
-            lVisible := _HMG_aControlVisible [ hb_enumindex( hControl ) ]
-            EXIT
-         ENDIF
-
-      ELSEIF ISARRAY ( hControl )
-
-         IF hControl [1] == Handle
-            lVisible := _HMG_aControlVisible [ hb_enumindex( hControl ) ]
-            EXIT
-         ENDIF
-
+      IF lHandlesMatch( xCandidateHandle, nHandle )
+         RETURN _HMG_aControlVisible[ nIndex ]
       ENDIF
-
    NEXT
 
-RETURN lVisible
+RETURN .F.   // not found : assume invisible
+
+*-----------------------------------------------------------------------------*
+STATIC FUNCTION lHandlesMatch( xCandidate, nHandle )
+*-----------------------------------------------------------------------------*
+   IF ISNUMERIC( xCandidate )
+      RETURN ( xCandidate == nHandle )
+   ELSEIF ISARRAY( xCandidate )
+      RETURN ( xCandidate[1] == nHandle )
+   ENDIF
+
+RETURN .F.
 
 *-----------------------------------------------------------------------------*
 FUNCTION _BeginTabPage ( caption , image , tooltip )

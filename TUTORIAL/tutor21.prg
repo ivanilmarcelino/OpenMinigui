@@ -110,7 +110,7 @@ Procedure Save
 Return
 
 Procedure OpenTables 
-    USE TEST
+    USE TEST SHARED
 Return
 
 Procedure CloseTables

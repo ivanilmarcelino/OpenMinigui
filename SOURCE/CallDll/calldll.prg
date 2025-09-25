@@ -17,51 +17,80 @@
 #include "hbdyn.ch"  // Include Harbour dynamic library handling constants
 
 // Static variables to store loaded DLLs and a mutex for thread-safe operations
-STATIC s_hDLL := { => }      // Stores a map of loaded DLLs
+STATIC s_hDLL := { => }             // Stores a map of loaded DLLs
 STATIC s_mutex := hb_mutexCreate()  // Mutex for synchronization when loading/unloading DLLs
 
-* ===========================================================================
-* PROCEDURE UnloadAllDll()
-*
-* Purpose:
-*   Unloads all dynamically loaded DLLs by clearing the `s_hDLL` map, which 
-*   holds references to loaded libraries.
-*
-* Operation:
-*   Locks the mutex to ensure thread safety, clears the map of DLLs, and unlocks
-*   the mutex.
-*
-* Returns: 
-*   Nothing (procedure).
-* ===========================================================================
+/*
+ * PROCEDURE UnloadAllDll()
+ *
+ * Description:
+ *   Unloads all dynamically loaded DLLs from memory. This is typically called
+ *   when the application is closing to release resources held by the DLLs.
+ *
+ * Purpose:
+ *   This procedure ensures that all DLLs loaded during the application's
+ *   lifetime are properly unloaded when the application terminates. This
+ *   prevents memory leaks and ensures a clean shutdown.
+ *
+ * Notes:
+ *   This procedure relies on the Harbour runtime to properly unload the DLLs
+ *   when they are removed from the s_hDLL map. The hb_libFree() function is implicitly
+ *   called by Harbour when the DLL handle is removed from the map.
+ */
 PROCEDURE UnloadAllDll()
 
-   hb_mutexLock( s_mutex )  // Lock the mutex to ensure safe access
-   s_hDLL := { => }         // Clear the DLL map (unload all DLLs)
-   hb_mutexUnlock( s_mutex )  // Unlock the mutex
+   hb_mutexLock( s_mutex )   // Lock the mutex to ensure safe access
+   s_hDLL := { => }          // Clear the DLL map (unload all DLLs)
+   hb_mutexUnlock( s_mutex ) // Unlock the mutex
 
 RETURN
 
-* ===========================================================================
-* FUNCTION HMG_CallDLL( cLibName, [ nRetType ], cFuncName [, Arg1, ..., ArgN ] )
-*
-* Purpose:
-*   Dynamically loads a DLL and calls a specified function from the DLL.
-*
-* Parameters:
-*   - cLibName: Name of the DLL to load (string).
-*   - nRetType: Type of the return value (optional, numeric).
-*   - cFuncName: Name of the function to call from the DLL (string).
-*   - Arg1, ..., ArgN: Arguments to pass to the DLL function (optional).
-*
-* Operation:
-*   Loads the specified DLL if it hasn't been loaded, finds the function within
-*   the DLL, and calls the function with the provided arguments. Handles Unicode 
-*   or ASCII function names depending on the current code page.
-*
-* Returns:
-*   The return value of the called DLL function, or NIL if parameters are invalid.
-* ===========================================================================
+/*
+ * FUNCTION HMG_CallDLL( cLibName, [ nRetType ], cFuncName [, Arg1, ..., ArgN ] )
+ *
+ * Description:
+ *   Dynamically loads a DLL (if not already loaded) and calls a specified function
+ *   within that DLL.
+ *
+ * Parameters:
+ *   - cLibName: The name of the DLL file (string). This should be the base name
+ *     (e.g., "MyDLL") without the file extension (e.g., ".dll").
+ *   - nRetType: (Optional) A numeric code specifying the data type of the return value
+ *     from the DLL function. This corresponds to the HB_DYN_CTYPE_* constants
+ *     defined in hbdyn.ch. If omitted, the default return type is used.
+ *   - cFuncName: The name of the function to call within the DLL (string).
+ *   - Arg1, ..., ArgN: (Optional) A variable number of arguments to pass to the DLL function.
+ *     The data types of these arguments must be compatible with the expected types
+ *     of the DLL function's parameters.
+ *
+ * Returns:
+ *   The return value of the called DLL function. The data type of the return value
+ *   depends on the nRetType parameter. If the function fails (e.g., invalid
+ *   parameters, DLL not found, function not found), it returns NIL.
+ *
+ * Purpose:
+ *   This function provides a bridge between the HMG Extended environment and
+ *   external DLLs. It allows HMG applications to leverage functionality
+ *   provided by external libraries, such as operating system APIs, third-party
+ *   components, or specialized algorithms.
+ *
+ *   Example Usage:
+ *   // Call a function in "MyDLL.dll" that returns an integer and takes two integer arguments.
+ *   LOCAL nResult := HMG_CallDLL( "MyDLL", HB_DYN_CTYPE_INTEGER, "MyFunction", 10, 20 )
+ *
+ * Notes:
+ *   - The DLL must be located in a directory that is in the system's search path
+ *     or in the same directory as the HMG Extended executable.
+ *   - The nRetType parameter is crucial for correctly interpreting the return value
+ *     from the DLL function. Incorrectly specifying the return type can lead to
+ *     unexpected results or application crashes.
+ *   - This function uses a mutex to ensure thread-safe access to the DLL loading
+ *     and unloading mechanisms, which is important in multi-threaded applications.
+ *   - The function automatically appends "W" or "A" to the function name if the
+ *     current code page is Unicode or ANSI, respectively, and if the corresponding
+ *     function exists in the DLL. This allows for seamless handling of Unicode
+ *     and ANSI versions of DLL functions.
+ */
 FUNCTION HMG_CallDLL( cLibName, nRetType, cFuncName, ... )
 
    LOCAL nEncoding := iif( HMG_IsCurrentCodePageUnicode(), HB_DYN_ENC_UTF16, HB_DYN_ENC_ASCII )  // Set encoding based on current code page
@@ -100,35 +129,62 @@ FUNCTION HMG_CallDLL( cLibName, nRetType, cFuncName, ... )
 
 RETURN NIL  // Return NIL if inputs are invalid
 
-* ===========================================================================
-* FUNCTION HMG_IsCurrentCodePageUnicode()
-*
-* Purpose:
-*   Checks whether the current code page is Unicode (UTF-8).
-*
-* Returns:
-*   TRUE (.T.) if the current code page is Unicode (UTF-8), FALSE (.F.) otherwise.
-* ===========================================================================
+/*
+ * FUNCTION HMG_IsCurrentCodePageUnicode()
+ *
+ * Description:
+ *   Determines whether the current code page setting in the HMG Extended environment
+ *   is Unicode (UTF-8).
+ *
+ * Parameters:
+ *   None.
+ *
+ * Returns:
+ *   .T. (TRUE) if the current code page is Unicode (UTF-8), .F. (FALSE) otherwise.
+ *
+ * Purpose:
+ *   This function is used to determine whether to use Unicode or ANSI versions of
+ *   DLL functions when calling them using HMG_CallDLL.  Many Windows APIs have
+ *   separate versions for ANSI and Unicode strings, and this function ensures
+ *   that the correct version is called based on the application's code page.
+ */
 FUNCTION HMG_IsCurrentCodePageUnicode()
 RETURN ( "UTF8" $ Set( _SET_CODEPAGE ) )  // Check if UTF-8 is part of the current code page setting
 
-* ===========================================================================
-* HB_FUNC( HMG_ISFUNCDLL )
-*
-* Purpose:
-*   Checks whether a specified function exists in a given DLL.
-*
-* Parameters:
-*   - pLibDLL or cLibName: A handle to the DLL or the name of the DLL (string).
-*   - cFuncName: Name of the function to check within the DLL.
-*
-* Returns:
-*   TRUE if the function exists, FALSE otherwise.
-* ===========================================================================
-#pragma BEGINDUMP  // Start inline C code
+/*
+ * HB_FUNC( HMG_ISFUNCDLL )
+ *
+ * Description:
+ *   Checks if a specific function exists within a given DLL. This function is
+ *   implemented in C code for performance reasons and direct access to Windows API.
+ *
+ * Parameters:
+ *   - pLibDLL or cLibName: Either a handle to a loaded DLL (HMODULE) or the name
+ *     of the DLL file (string). If a string is provided, the function attempts
+ *     to load the DLL.
+ *   - cFuncName: The name of the function to check for within the DLL (string).
+ *
+ * Returns:
+ *   .T. (TRUE) if the function exists in the DLL, .F. (FALSE) otherwise.
+ *
+ * Purpose:
+ *   This function is used to verify the existence of a function in a DLL before
+ *   attempting to call it using HMG_CallDLL. This can help prevent runtime errors
+ *   (e.g., calling a function that doesn't exist) and improve the robustness
+ *   of the application.
+ *
+ * Notes:
+ *   - If the DLL is loaded by name (cLibName), it is automatically unloaded after
+ *     the function check is complete. This prevents the DLL from remaining loaded
+ *     unnecessarily.
+ *   - This function uses the Windows API functions LoadLibrary, GetProcAddress,
+ *     and FreeLibrary. These functions provide direct access to the operating
+ *     system's DLL loading and function lookup mechanisms.
+ */
+#pragma BEGINDUMP
 
-#include <windows.h>  // Windows API functions
-#include "hbapi.h"    // Harbour API functions
+#include <windows.h>   // Windows API functions
+#include "hbapi.h"     // Harbour API functions
 
 HB_FUNC ( HMG_ISFUNCDLL )
 {
@@ -158,4 +214,4 @@ HB_FUNC ( HMG_ISFUNCDLL )
       FreeLibrary( hModule );
 }
 
-#pragma ENDDUMP  // End inline C code
+#pragma ENDDUMP

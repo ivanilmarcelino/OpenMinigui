@@ -1,7 +1,7 @@
 /*
  * 'HMG EasySQL' a Simple HMG library To Handle MySql/MariaDB 'Things'
  *
- * Copyright 2024 Roberto Lopez <mail.box.hmg@gmail.com>
+ * Copyright 2025 Roberto Lopez <mail.box.hmg@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,26 +70,26 @@ CLASS SQL
    DATA lError EXPORTED READONLY     // Read-only flag indicating whether an error occurred during the last SQL operation.
    DATA cErrorDesc EXPORTED READONLY // Read-only string containing the description of the last error.
 
-   DATA aMsgs HIDDEN          // Hidden array storing messages for different languages.
-   DATA cCommandBuffer HIDDEN // Hidden string buffer used to build SQL commands.
-   DATA cCommandWhere HIDDEN  // Hidden string used to store the WHERE clause for SQL commands.
-   DATA nConnHandle HIDDEN    // Hidden numeric handle for the database connection.
+   DATA aMsgs HIDDEN              // Hidden array storing messages for different languages.
+   DATA cCommandBuffer HIDDEN     // Hidden string buffer used to build SQL commands.
+   DATA cCommandWhere HIDDEN      // Hidden string used to store the WHERE clause for SQL commands.
+   DATA nConnHandle HIDDEN        // Hidden numeric handle for the database connection.
    DATA cMessageWindowName HIDDEN // Hidden string containing the name of the message window.
-   DATA aWorkAreas HIDDEN     // Hidden array storing the work areas used by the class.
+   DATA aWorkAreas HIDDEN         // Hidden array storing the work areas used by the class.
 
    // Methods:
 
-   METHOD New()              // Constructor: Initializes the SQL class instance.
+   METHOD New()                           // Constructor: Initializes the SQL class instance.
    METHOD Connect( cServer, cUser, cPassword, cDatabase ) // Establishes a connection to the SQL database.
-   METHOD Select( cCommand, cWorkArea ) // Executes a SELECT SQL command and opens a work area.
-   METHOD Insert( cTable, aHash ) // Executes an INSERT SQL command using data from a hash.
+   METHOD Select( cCommand, cWorkArea )   // Executes a SELECT SQL command and opens a work area.
+   METHOD Insert( cTable, aHash )         // Executes an INSERT SQL command using data from a hash.
    METHOD Update( cTable, cWhere, aHash ) // Executes an UPDATE SQL command using data from a hash and a WHERE clause.
-   METHOD Delete( cTable, cWhere ) // Executes a DELETE SQL command with a WHERE clause.
-   METHOD Exec()             // Executes the SQL command stored in the command buffer.
-   METHOD AffectedRows()     // Returns the number of rows affected by the last SQL command.
-   METHOD Disconnect()       // Closes the database connection.
-   METHOD CloseAreas()       // Closes all open work areas used by the class.
-   METHOD Destroy()          // Destructor: Cleans up resources used by the SQL class instance.
+   METHOD Delete( cTable, cWhere )        // Executes a DELETE SQL command with a WHERE clause.
+   METHOD Exec( cCommand )                // Executes the SQL command stored in the command buffer.
+   METHOD AffectedRows()                  // Returns the number of rows affected by the last SQL command.
+   METHOD Disconnect()                    // Closes the database connection.
+   METHOD CloseAreas()                    // Closes all open work areas used by the class.
+   METHOD Destroy()                       // Destructor: Cleans up resources used by the SQL class instance.
 
    METHOD Field( cField, xExpression ) HIDDEN // Hidden method to format a field and its value for SQL commands.
    METHOD ShowMessage( cMessage ) HIDDEN      // Hidden method to display a message in the message window.
@@ -425,9 +425,7 @@ METHOD SQL:CloseAreas()
  * Returns:
  *   The number of work areas closed.
  */
-   LOCAL i, n
-
-   n := 0
+   LOCAL i, n := 0
 
    FOR i := 1 TO Len( ::aWorkAreas )
       IF Select( ::aWorkAreas[ I ] ) <> 0
@@ -456,31 +454,43 @@ METHOD SQL:Connect( cServer, cUser, cPassword, cDatabase )
  * Returns:
  *   .T. if the connection was successful, .F. otherwise.
  */
+   LOCAL oError, lSuccess := .F.
+   
+   IF Empty( cServer ) .OR. Empty( cUser ) .OR. Empty( cDatabase )
+      ::lError := .T.
+      ::cErrorDesc := ::aMsgs[ 2 ] // 'Connection Error!'
+      IF ::lShowMsgs
+         ::ShowError( ::cErrorDesc )
+      ENDIF
+      RETURN .F.
+   ENDIF
 
    IF ::lShowMsgs
       ::ShowMessage( ::aMsgs[ 1 ] ) // 'SQL: Connecting...'
    ENDIF
 
-   ::nConnHandle := rddInfo( RDDI_CONNECT, { "MYSQL", cServer, cUser, cPassword, cDatabase }, "SQLMIX" )
-
-   IF ValType( ::nConnHandle ) <> 'N'
-      ::nConnHandle := 0
-   ENDIF
-
-   IF ::nConnHandle == 0
+   TRY
+      ::nConnHandle := rddInfo( RDDI_CONNECT, { "MYSQL", cServer, cUser, cPassword, cDatabase }, "SQLMIX" )
+      lSuccess := ( ValType( ::nConnHandle ) == 'N' .AND. ::nConnHandle > 0 )
+   CATCH oError
       ::lError := .T.
-      ::cErrorDesc := ::aMsgs[ 2 ] // 'SQL: Connection Error!'
+      ::cErrorDesc := oError:Description
+   END
+
+   IF ! lSuccess
+      ::nConnHandle := 0
+      ::lError := .T.
+      ::cErrorDesc := ::aMsgs[ 2 ] // 'Connection Error!'
    ENDIF
 
    IF ::lShowMsgs
       ::HideMessage()
+      IF ::lError
+         MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
+      ENDIF
    ENDIF
 
-   IF ::lError .AND. ::lShowMsgs
-      MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
-   ENDIF
-
-RETURN ! ::lError
+RETURN lSuccess
 
 *---------------------------------------------------------------------------------------------*
 METHOD SQL:Disconnect()
@@ -501,7 +511,7 @@ METHOD SQL:Disconnect()
    ::lError := .F.
    ::cErrorDesc := ''
 
-   rddInfo( RDDI_DISCONNECT,,, ::nConnHandle )
+   rddInfo( RDDI_DISCONNECT,, "SQLMIX", ::nConnHandle )
 
 RETURN NIL
 
@@ -521,43 +531,56 @@ METHOD SQL:Select( cCommand, cWorkArea )
  * Returns:
  *   .T. if the command was executed successfully, .F. otherwise.
  */
-   LOCAL oError
+   LOCAL oError, lSuccess := .F.
 
    ::lError := .F.
    ::cErrorDesc := ''
+
+   // Validate parameters
+   IF ValType( cCommand ) <> 'C' .OR. Empty( cCommand ) .OR. At( ';', cCommand ) > 0
+      ::lError := .T.
+      ::cErrorDesc := 'Invalid SQL command'
+      IF ::lShowMsgs
+         MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
+      ENDIF
+      RETURN .F.
+   ENDIF
+
+   IF ValType( cWorkArea ) <> 'C' .OR. Empty( cWorkArea )
+      ::lError := .T.
+      ::cErrorDesc := 'Invalid work area name'
+      IF ::lShowMsgs
+         MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
+      ENDIF
+      RETURN .F.
+   ENDIF
 
    IF ::lShowMsgs
       ::ShowMessage( ::aMsgs[ 3 ] ) // 'SQL: Processing...'
    ENDIF
 
-   IF ::lTrace
-      hb_MemoWrit( 'trace.log', cCommand, .F. )
-   ENDIF
-
    TRY
-
       dbUseArea( .T., "SQLMIX", cCommand, cWorkArea,,,, ::nConnHandle )
+      lSuccess := Used()
+      AAdd( ::aWorkAreas, cWorkArea )
+
+      IF ::lTrace
+         hb_MemoWritEx( 'trace.log', DToC( Date() ) + ' ' + Time() + ': SELECT ' + cCommand + hb_eol(), .T. )
+      ENDIF
 
    CATCH oError
-
       ::lError := .T.
       ::cErrorDesc := oError:Description
-
    END
 
    IF ::lShowMsgs
       ::HideMessage()
+      IF ::lError
+         MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
+      ENDIF
    ENDIF
 
-   IF ::lError .AND. ::lShowMsgs
-      MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
-   ENDIF
-
-   IF ! ::lError
-      AAdd( ::aWorkAreas, cWorkArea )
-   ENDIF
-
-RETURN ! ::lError
+RETURN lSuccess
 
 *---------------------------------------------------------------------------------------------*
 METHOD SQL:Field( cField, xExpression )
@@ -596,7 +619,7 @@ METHOD SQL:Field( cField, xExpression )
       cExpression := StrTran( cExpression, "'", "''" )
       cExpression := StrTran( cExpression, "\", "\\" )
    ELSEIF ValType( xExpression ) = 'N'
-      cExpression := AllTrim( Str( xExpression ) )
+      cExpression := hb_ntos( xExpression )
       lRaw := .T.
    ELSEIF ValType( xExpression ) = 'L'
       IF xExpression
@@ -670,7 +693,7 @@ METHOD SQL:Insert( cTable, aHash )
       aValues := hb_HValues( aHash )
 
       FOR i := 1 TO Len( aKeys )
-         IF ! ::field( aKeys[ i ], aValues[ i ] )
+         IF ! ::Field( aKeys[ i ], aValues[ i ] )
             EXIT
          ENDIF
       NEXT i
@@ -701,13 +724,13 @@ METHOD SQL:Delete( cTable, cWhere )
    IF ValType( cTable ) <> 'C'
       ::lError := .T.
       ::cErrorDesc := ::aMsgs[ 7 ] // 'SQL: DELETE cTable Param Type Error'
-      IF ::lError .AND. ::lShowMsgs
+      IF ::lShowMsgs
          MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
       ENDIF
    ELSEIF ValType( cWhere ) <> 'C'
       ::lError := .T.
       ::cErrorDesc := ::aMsgs[ 8 ] // 'SQL: DELETE cWhere Param Type Error'
-      IF ::lError .AND. ::lShowMsgs
+      IF ::lShowMsgs
          MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
       ENDIF
    ELSE
@@ -743,7 +766,7 @@ METHOD SQL:AffectedRows()
    ::lError := .F.
    ::cErrorDesc := ''
 
-   nRetVal := rddInfo( RDDI_AFFECTEDROWS,,, ::nConnHandle )
+   nRetVal := rddInfo( RDDI_AFFECTEDROWS,, "SQLMIX", ::nConnHandle )
 
    IF ValType( nRetVal ) <> 'N'
       nRetVal := 0
@@ -774,7 +797,7 @@ METHOD SQL:Update( cTable, cWhere, aHash )
    IF ValType( cTable ) <> 'C'
       ::lError := .T.
       ::cErrorDesc := ::aMsgs[ 9 ] // 'SQL: UPDATE cTable Param Type Error'
-      IF ::lError .AND. ::lShowMsgs
+      IF ::lShowMsgs
          MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
       ENDIF
    ELSEIF ValType( cWhere ) <> 'C'
@@ -801,7 +824,7 @@ METHOD SQL:Update( cTable, cWhere, aHash )
       aValues := hb_HValues( aHash )
 
       FOR i := 1 TO Len( aKeys )
-         IF ! ::field( aKeys[ i ], aValues[ i ] )
+         IF ! ::Field( aKeys[ i ], aValues[ i ] )
             EXIT
          ENDIF
       NEXT i
@@ -821,7 +844,7 @@ METHOD SQL:Exec( cCommand )
  * SQL:Exec( cCommand )
  *
  * Executes the SQL command stored in the command buffer or a provided command.
- * It uses the rddInfo function with RDDI_EXECUTE to execute the command.
+ * Uses rddInfo with RDDI_EXECUTE for execution, with enhanced error handling and logging.
  *
  * Parameters:
  *   cCommand (optional): The SQL command to execute. If omitted, the command in ::cCommandBuffer is executed.
@@ -829,72 +852,66 @@ METHOD SQL:Exec( cCommand )
  * Returns:
  *   .T. if the command was executed successfully, .F. otherwise.
  */
-   LOCAL cRDD
+   LOCAL oError, lSuccess := .F.
+   LOCAL cFinalCommand
+
+   ::lError := .F.
+   ::cErrorDesc := ''
 
    IF ::lShowMsgs
-      ::ShowMessage( ::aMsgs[ 3 ] ) // 'SQL:Processing...'
+      ::ShowMessage( ::aMsgs[ 3 ] ) // 'SQL: Processing...'
    ENDIF
 
-   cRDD := rddSetDefault()
-
-   rddSetDefault( "SQLMIX" )
-
-   IF ValType( cCommand ) = 'U'
-
-      IF Right( ::cCommandBuffer, 1 ) == ','
-         ::cCommandBuffer := Left( ::cCommandBuffer, Len( ::cCommandBuffer ) - 1 )
+   TRY
+      IF ValType( cCommand ) == 'U'
+         cFinalCommand := ::cCommandBuffer
+         IF Right( cFinalCommand, 1 ) == ','
+            cFinalCommand := hb_StrShrink( cFinalCommand )
+         ENDIF
+         IF ! Empty( ::cCommandWhere )
+            cFinalCommand += ' WHERE ' + AllTrim( ::cCommandWhere )
+         ENDIF
+      ELSE
+         cFinalCommand := AllTrim( cCommand )
       ENDIF
 
-      IF .NOT. Empty( ::cCommandWhere )
-         ::cCommandBuffer += 'WHERE ' + ::cCommandWhere
-      ENDIF
-
-      ::lError := .NOT. rddInfo( RDDI_EXECUTE, ::cCommandBuffer, , ::nConnHandle )
-
-      IF ValType( ::lError ) <> 'L'
+      // Sanitize input to prevent SQL injection
+      IF Empty( cFinalCommand ) .OR. At( ';', cFinalCommand ) > 0
          ::lError := .T.
+         ::cErrorDesc := 'Invalid SQL command'
+         BREAK
       ENDIF
+
+      lSuccess := rddInfo( RDDI_EXECUTE, cFinalCommand, "SQLMIX", ::nConnHandle )
 
       IF ::lTrace
-         hb_MemoWrit( 'trace.log', ::cCommandBuffer, .F. )
+         hb_MemoWritEx( 'trace.log', DToC( Date() ) + ' ' + Time() + ': ' + cFinalCommand + hb_eol(), .T. )
       ENDIF
 
-   ELSE
+   CATCH oError
+      ::lError := .T.
+      ::cErrorDesc := oError:Description
+   END
 
-      ::lError := .NOT. rddInfo( RDDI_EXECUTE, cCommand, , ::nConnHandle )
-
-      IF ValType( ::lError ) <> 'L'
-         ::lError := .T.
-      ENDIF
-
-      IF ::lTrace
-         hb_MemoWrit( 'trace.log', cCommand, .F. )
-      ENDIF
-
-   ENDIF
-
-   IF ::lError
-      ::cErrorDesc := rddInfo( RDDI_ERROR,,, ::nConnHandle )
+   IF ! lSuccess
+      ::lError := .T.
+      ::cErrorDesc := rddInfo( RDDI_ERROR, , "SQLMIX", ::nConnHandle )
       IF Empty( ::cErrorDesc )
-         ::cErrorDesc := ::aMsgs[ 12 ]
+         ::cErrorDesc := ::aMsgs[ 12 ] // 'EXEC Undefined Error'
       ENDIF
-   ELSE
-      ::cErrorDesc := ''
    ENDIF
 
    ::cCommandBuffer := ''
-
-   rddSetDefault( cRDD )
+   ::cCommandWhere := ''
 
    IF ::lShowMsgs
       ::HideMessage()
+      IF ::lError
+         MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
+      ENDIF
    ENDIF
 
-   IF ::lError .AND. ::lShowMsgs
-      MsgExclamation( ::cErrorDesc, ::aMsgs[ 13 ] )
-   ENDIF
-
-RETURN ! ::lError
+RETURN lSuccess
 
 *---------------------------------------------------------------------------------------------*
 METHOD SQL:ShowMessage( cMessage )
@@ -949,3 +966,45 @@ METHOD SQL:HideMessage()
    DoMethod( ::cMessageWindowName, 'Hide' )
 
 RETURN NIL
+
+#include "fileio.ch"
+
+/*
+ * hb_MemoWritEx( cFileName, cString, lAppend ) -> lSuccess
+ *
+ * Writes or appends a string to a file, supporting append mode.
+ *
+ * Parameters:
+ *   cFileName : The name of the file to write to.
+ *   cString   : The string to write to the file.
+ *   lAppend   : Optional logical flag; .T. to append, .F. to overwrite (default).
+ *
+ * Returns:
+ *   .T. if the operation was successful, .F. otherwise.
+ */
+STATIC FUNCTION hb_MemoWritEx( cFileName, cString, lAppend )
+   LOCAL lSuccess := .F.
+   LOCAL nHandle
+
+   IF ValType( cFileName ) <> 'C' .OR. ValType( cString ) <> 'C'
+      RETURN .F.
+   ENDIF
+
+   lAppend := hb_defaultValue( lAppend, .F. )
+
+   TRY
+      IF lAppend .AND. File( cFileName )
+         nHandle := FOpen( cFileName, FO_READWRITE )
+         IF nHandle <> -1
+            FSeek( nHandle, 0, FS_END )
+            lSuccess := ( FWrite( nHandle, cString ) == Len( cString ) )
+            FClose( nHandle )
+         ENDIF
+      ELSE
+         lSuccess := hb_MemoWrit( cFileName, cString )
+      ENDIF
+   CATCH
+      lSuccess := .F.
+   END
+
+RETURN lSuccess

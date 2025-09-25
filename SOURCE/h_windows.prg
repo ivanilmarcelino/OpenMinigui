@@ -555,7 +555,13 @@ FUNCTION _DefineModalWindow ( FormName, Caption, x, y, w, h, Parent, nosize, nos
             ENDIF
          ENDIF
       ENDIF
-
+   ELSE
+      IF MSC_VER() > 0 .OR. _HMG_IsBcc77
+         IF nosize .AND. !nocaption .AND. _HMG_IsThemed
+            w += GetBorderWidth() + 2
+            h += GetBorderHeight() + 2
+         ENDIF
+      ENDIF
    ENDIF
 
    mVar := '_' + FormName
@@ -600,13 +606,6 @@ FUNCTION _DefineModalWindow ( FormName, Caption, x, y, w, h, Parent, nosize, nos
          MsgMiniGuiError( "DEFINE WINDOW: Virtual Width must be greater than Window Width." )
       ENDIF
       hscroll := .T.
-   ENDIF
-
-   IF ( MSC_VER() > 0 .OR. _HMG_IsBcc77 ) .AND. _HMG_IsThemed
-      IF nosize .AND. nosysmenu
-         w += GetBorderWidth() + 2
-         h += GetBorderHeight() + 2
-      ENDIF
    ENDIF
 
    IF ValType ( aRGB ) != 'C' .AND. IsArrayRGB ( aRGB ) == .F.
@@ -2462,7 +2461,7 @@ FUNCTION ReleaseAllWindows ()
 
    NEXT
 
-   IF IsExtendedMenuStyleActive() .AND. IsMenu ( hMenu := GetMenu ( _HMG_MainHandle ) )
+   IF IsExtendedMenuStyleActive() .AND. ! Empty ( _HMG_MainHandle ) .AND. IsMenu ( hMenu := GetMenu ( _HMG_MainHandle ) )
       _OnDestroyMenu ( hMenu )  // Release OwnerDraw Main Menu
    ENDIF
 
@@ -2913,11 +2912,14 @@ FUNCTION WaitWindow ( cMessage, lNoWait, nWidth, nSize, cFont, aFontColor, aBack
 *-----------------------------------------------------------------------------*
    LOCAL cFormName := "_HMG_CHILDWAITWINDOW"
    LOCAL lDefined := _IsWindowDefined( cFormName )
-   LOCAL lIsModal, hWnd
+   LOCAL lIsModal
    LOCAL lWidth := ( nWidth == NIL )
    LOCAL nHeight
    LOCAL nY, nX, nW, nH, nI, nK
    LOCAL hFont, cTmp, nTmp, cLbl, bOnInit, l_No_Wait := .T.
+#ifdef _HMG_COMPAT_
+   LOCAL hWnd
+#endif
 #ifdef _NAMES_LIST_
    LOCAL oo, lo
 #endif

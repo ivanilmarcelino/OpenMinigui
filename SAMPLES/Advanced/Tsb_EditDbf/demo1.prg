@@ -7,9 +7,13 @@
  * _TBrowse() Разное редактирование ячеек таблицы (для массивов) из DBf-файла
  * Замена целиком массива показа строк в таблице на массив показа строк юзера
  * Хранение сортировки показа строк таблицы юзера в ini-файле
+ * Редактирование строк по шаблону для типа полей "C"
+ * Шифрация/дешифрация отдельных полей базы в TBrowse
  * _TBrowse() Miscellaneous editing of table cells (for arrays) from DBf-file
  * Replace the entire array of table row display with the array of user row display
  * Store the sorting of user table row display in the ini file
+ * Editing lines by template for field type "C"
+ * Encryption/decryption of individual database fields in TBrowse
 */
 #define  _HMG_OUTLOG
 #include "hmg.ch"
@@ -18,8 +22,9 @@
 
 REQUEST DBFNTX, DBFCDX, DBFFPT
 #define PROGRAM  "MiniGui: _TBrowse(). Miscellaneous editing of table cells (for arrays) from DBf-file."
-#define PROGVER  "   Version 1.01 (21.05.2025)"
+#define PROGVER  "   Version 1.07 (17.08.2025)"
 #define PROGINF  "Display test:"
+#define ID_PASSW "0123456"
 
 FUNCTION Main()
    LOCAL nY, nX, nG := 20, aLng, nH, nW, aBClr := {255,178,178}
@@ -60,15 +65,15 @@ FUNCTION Main()
    // размеры экрана программы задаются в Sets_ENV() / The program screen sizes are set in Sets_ENV()
    // можно протестировать любое разрешение экрана / you can test any screen resolution
    // o:aDisplayMode   := { 1440, 800 }
-   nH := 800
    nW := App.Cargo:aDisplayMode[1] * 0.9
+   nH := App.Cargo:aDisplayMode[2] * 0.96
 
    IF nH > Sys.ClientHeight ; nH := Sys.ClientHeight
    ENDIF
    IF nW > Sys.ClientWidth  ; nW := Sys.ClientWidth
    ENDIF
 
-   DEFINE WINDOW wMain CLIENTAREA nW, nH TITLE App.Cargo:cTitle  ;
+   DEFINE WINDOW wMain AT 0,0 WIDTH nW HEIGHT nH TITLE App.Cargo:cTitle  ;
           MAIN NOMAXIMIZE NOSIZE TOPMOST BACKCOLOR aBClr         ;
           ON INIT    ( This.Topmost := .F., _wPost( 0) )         ;  // выполняется после инициализации окна
           ON RELEASE ( This.Hide, _wSend(90) )                      // выполняется перед разрушением окна
@@ -85,17 +90,17 @@ FUNCTION Main()
       nY := 5
       DRAW ICON IN WINDOW wMain AT nY, nW-96-10 PICTURE "1MG" WIDTH 96 HEIGHT 96 COLOR aBClr
 
-      @ nY, 5 LABEL Buff VALUE cVal WIDTH nW-195-nY*2 HEIGHT nH - nY*2 ;
-        SIZE 14 FONTCOLOR WHITE TRANSPARENT RIGHTALIGN
+      @ nY, nW-96-10-20 BUTTONEX Btn_Test WIDTH 20 HEIGHT 96 CAPTION "T"+CRLF+"e"+CRLF+"s"+CRLF+"t" ;
+        SIZE 12 BOLD NOHOTLIGHT NOXPSTYLE HANDCURSOR ACTION {|| _wPost("_BtnTest", , This.Name) }
 
-      @ nY+30, nW-96-nY*2-80 BUTTONEX Btn_Test WIDTH 80 HEIGHT 45 CAPTION "Test" ;
-        NOHOTLIGHT NOXPSTYLE HANDCURSOR ACTION {|| _wPost("_BtnTest", , This.Name) }
+      @ nY, 5 LABEL Buff VALUE cVal WIDTH nW-96-10*2-20 HEIGHT nH - nY*2 ;
+        SIZE 14 FONTCOLOR WHITE TRANSPARENT RIGHTALIGN
 
       cVal := aLng[2]                        // кроме колонки массива и объекта
       nX   := nY := nG                       // except array column and object
       @ nY, nX CHECKLABEL Chk_1 WIDTH nW-500 HEIGHT 35                ;
                VALUE cVal LEFTCHECK IMAGE { 'CheckT28', 'CheckF28' }  ;
-               SIZE 15 FONTCOLOR RED BACKCOLOR aBClr                  ;
+               SIZE 16 FONTCOLOR RED BACKCOLOR aBClr                  ;
                ON MOUSEHOVER Rc_Cursor( "MINIGUI_FINGER" )            ;
                ON INIT {|| This.Checked := .F.          }             ;
                ACTION  {|| This.Checked := ! This.Checked, _wPost(22,, This.Checked) }
@@ -103,7 +108,7 @@ FUNCTION Main()
       nY += This.Chk_1.Height - 2
 
       cVal := aLng[3]
-      @ nY, nX LABEL Lbl_0 VALUE cVal WIDTH nW-nG*2-96 HEIGHT nF SIZE 15 FONTCOLOR RED TRANSPARENT
+      @ nY, nX LABEL Lbl_0 VALUE cVal WIDTH nW-nG*2-96 HEIGHT nF SIZE 16 FONTCOLOR RED TRANSPARENT
 
       nY := 5 + 96 + 5  ; nX := nG
 
@@ -111,7 +116,7 @@ FUNCTION Main()
 
       cVal := aLng[4]
       nF   := 16 * 2
-      @ nY - nF, nX LABEL Lbl_1 VALUE cVal WIDTH nW-nG*2-96 HEIGHT nF SIZE 15 FONTCOLOR RED TRANSPARENT
+      @ nY - nF, nX LABEL Lbl_1 VALUE cVal WIDTH nW-nG*2-96 HEIGHT nF SIZE 16 FONTCOLOR RED TRANSPARENT
 
       /////////////////////// Table ///////////////////////////////////////////////////////
       // назначаем параметры таблицы / assign table parameters
@@ -393,6 +398,9 @@ STATIC FUNCTION TableParam(cForm,aXDim,cBrw,aName,aHead,nWTsb)
    //                         cell     Head    Foot     SpecHider  SuperHider   Edit
    oTsb:aFont          := { "Normal", "Bold", "Italic", "SpecHdr" , "SuperHd", "TsbEdit" }
    nHCell              := GetFontHeight(oTsb:aFont[1])*1.35       // высота ячеек  / cell height
+   nHCell              := Int( nHCell )                           // ТОЛЬКО так / ONLY this way
+   // или
+   //nHCell := Round( nHCell, 0 )
    oTsb:aNumber        := { 1, GetFontWidth(oTsb:aFont[4], 4) }   // колонка нумерации и её ширина / numbering column and its width
    oTsb:nHeightCell    := nHCell                                  // the supplement depends on the screen size
    oTsb:nHeightHead    := 1                                       // высота шапки таблицы  / table header height
@@ -482,7 +490,8 @@ STATIC FUNCTION TableParam(cForm,aXDim,cBrw,aName,aHead,nWTsb)
                         ELSEIF cTyp == "SPR_J"      ; nClr := aClr[4]
                         ELSEIF cTyp == "M"          ; nClr := CLR_MAGENTA
                         ELSEIF cTyp == "CALC"       ; nClr := CLR_BLUE
-                        ELSEIF cTyp == ""           ; nClr := CLR_HRED
+                        ELSEIF cTyp == "PSW"        ; nClr := CLR_HRED
+                        ELSEIF cTyp == ""           ; nClr := CLR_GRAY
                         ELSEIF "LINE" $ cTyp        ; nClr := CLR_WHITE
                         ELSE                        ; nClr := CLR_GRAY
                         ENDIF
@@ -562,6 +571,7 @@ STATIC FUNCTION TableParam(cForm,aXDim,cBrw,aName,aHead,nWTsb)
    //  code block oTsb:bEnd after END TBROWSE - DO NOT use unless necessary - do everything in oTsb:bAfter !!!
 
    oTsb:bInit := {|ob,op| // настройки тсб
+                   Local oCol
                    ob:Hide()                                      // скрыть таблицу для дальнейшей прорисовки
                    ob:HideColumns( op:aHideCol ,.t.)              // скрыть колонки
                    ? "### oTsb:bInit", ProcNL(), HB_ValToExp(op:aHideCol)
@@ -573,8 +583,82 @@ STATIC FUNCTION TableParam(cForm,aXDim,cBrw,aName,aHead,nWTsb)
                    ob:aBitMaps    := { LoadImage("bGear24"), LoadImage("bEye24"), LoadImage("bGear20") ,;
                                        LoadImage("bGear16"), LoadImage("bEye16"), LoadImage("bAttach24") ,;
                                        LoadImage("bAttach24x2"), LoadImage("bAttach24x3")  }
+                   // вариант-1 ! для показа "C" формата строк, например: "@R xxxx-xxxx"
+                   oCol := ob:GetColumn("REDIT")     // колонка ACOL_2
+                   oCol:cPicture := {|cp,na,nc,ob|
+                                     Local cFunc, cPict
+                                     IF pCount() != 4
+                                        ob := nc
+                                        nc := na
+                                        na := ob:nAt
+                                     ENDIF
+                                     cp := ob:aArray[na][ACOL_4]                // тип обработки строки
+                                     IF cp == "C" 
+                                        cFunc := ALLTRIM(ob:aArray[na][ACOL_6]) // здесь может быть формат поля "@R xxxx-xxxx"
+                                        IF LEN(cFunc) > 0 ; cPict := cFunc
+                                        ENDIF
+                                     ENDIF
+                                     Return cPict  // будет возврат NIL или Picture
+                                     }
+                   // вариант-2 ! для показа "C" формата строк, например: "@R xxxx-xxxx"
+                   oCol := ob:GetColumn("REDIT")     // колонка ACOL_2
+                   oCol:bDecode := {|xv,ob,nc,oc|    // расшифровка значения xv после чтения
+                                     Local nAt := ob:nAt, cPict, nLen := 0
+                                     Local cType := ob:aArray[nAt][ACOL_4]
+                                     IF cType == "C" 
+                                        cPict := ALLTRIM(ob:aArray[nAt][ACOL_6]) 
+                                        //IF LEN(cPict) > 0
+                                        //   xv := Transform(xv, cPict)
+                                        //   nc := oc 
+                                        //ENDIF
+                                     ELSEIF cType == "PSW" 
+                                        IF LEN(ALLTRIM(xv)) > 0
+                                           ? ">>>:bDecode 0", xv, len(xv)
+                                           xv := hb_base64Decode(xv)   //!!!
+                                           xv := HB_Decrypt( xv, ID_PASSW ) 
+                                           ? ">>>:bDecode 1", xv
+                                           IF subs(xv, 4, 1) == ":"
+                                              nLen := Val(xv)
+                                              xv := subs(xv, 5)
+                                              xv := trim(left(xv, nLen))
+                                              ? ">>>:bDecode 2", xv
+                                           ELSE
+                                              xv := left(xv, 4)
+                                           ENDIF
+                                           xv += space(30)
+                                           ?
+                                           nc := oc
+                                        ENDIF
+                                     ENDIF
+                                     Return xv
+                                     }
+                   oCol:bEncode := {|xv,ob,nc,oc|    // шифровка значения xv перед записью
+                                     Local nAt := ob:nAt, cPict, nLen := 0
+                                     Local cType := ob:aArray[nAt][ACOL_4]
+                                     IF cType == "C" 
+                                        cPict := ALLTRIM(ob:aArray[nAt][ACOL_6]) 
+                                        //IF LEN(cPict) > 0 .and. "-" $ cPict .and. "-" $ xv
+                                        //   xv := StrTran(xv, "-", "")
+                                        //   nc := oc
+                                        //ENDIF
+                                     ELSEIF cType == "PSW" 
+                                        IF LEN(ALLTRIM(xv)) > 0
+                                           nLen := len(trim(xv))
+                                           ? ">>>:bEncode 0", xv, nLen
+                                           xv := HB_Crypt( strzero(nLen,3)+":"+xv, ID_PASSW ) 
+                                           xv := hb_base64Encode(xv)   //!!!
+                                           ob:aArray[nAt][nc] := xv
+                                           ? ">>>:bEncode 1", xv
+                                           ? ">>>:bEncode 2", ob:aArray[nAt][nc]
+                                           ?
+                                           nc := oc 
+                                        ENDIF
+                                     ENDIF
+                                     Return xv
+                                     } 
                    // редактирование ячеек таблицы -> см. ниже
                    myTsbEdit(ob,op)
+                   //
                    Return Nil
                    }
 
@@ -691,12 +775,41 @@ STATIC FUNCTION TableParam(cForm,aXDim,cBrw,aName,aHead,nWTsb)
                        //oc:nWidth += nn
                     ENDIF
                     ? repl("-", Len(ProcNL())), "=== TSB === nWidth =", nw ; ?
-                    // можно так
-                    //ob:UserKeys(VK_F2 ,  {|ob| myTsbListColumn( ob ), ob:Setfocus() })  // инфо по списку колонок
-                    //ob:UserKeys(VK_F3 ,  {|ob| myTsbListFont( ob )  , ob:Setfocus() })  // инфо по фонтам таблицы
-                    //ob:UserKeys(VK_F4 ,  {|ob| myTsbArrayLine( ob ) , ob:Setfocus() })  // инфо по строке таблицы
-                    ob:SetNoHoles()
-                    ob:Refresh()
+                    /*
+                    //!!!!!
+                    //  назначаем на суперхидер отдельную функцию ЭТО ДЕЛАЕМ ПОСЛЕ END TBROWSE
+                    FOR EACH oCol IN oBrw:aColumns
+                       // левая //и правая// кнопка мышки для шапки таблицы
+                       oCol:bHLClicked := {|Ypix,Xpix,nAt,ob| iif( Ypix > ob:nHeightSuper, ;
+                                            Tbrowse_Header("Header:",Ypix,Xpix,nAt,ob) ,;
+                                            Tbrowse_SuperHd("Super:",Ypix,Xpix,nAt,ob) ) }
+                       cCol := oCol:cName
+                       IF cCol == "ORDKEYNO" .OR. cCol == "SELECTOR"
+                       ELSE
+                          // картинка в шапке колонок таблицы - стрелка_вниз  20x20
+                          // {|| hArrDown } - так нельзя
+                          oCol:uBmpHead := {|nc,ob| nc := ob:Cargo, nc:hArrDown }
+                          oCol:nHAlign  := nMakeLong( DT_CENTER, DT_RIGHT  )
+                          // картинка в подвале колонок таблицы - стрелка_вверх 20x20
+                          //oCol:uBmpFoot  := {|nc,ob| nc := ob:Cargo, nc:hArrUp20  }
+                          //oCol:nFAlign   := nMakeLong( DT_CENTER, DT_RIGHT  )
+                          // картинка в нумераторе колонок таблицы - стрелка_вниз  20x20
+                          //oCol:uBmpSpcHd := {|nc,ob| nc := ob:Cargo, nc:hArrDown20   }
+                          //oCol:nSAlign   := nMakeLong( DT_CENTER, DT_RIGHT  )
+                       ENDIF
+                       // маска показа картинок
+                       //IF oCol:lVisible
+                          //oCol:nBmpMaskHead := 0x00CC0020    // SRCCOPY - резерв
+                          //oCol:nBmpMaskFoot := 0x00CC0020    // SRCCOPY - резерв
+                          oCol:nBmpMaskHead   := 0x00BB0226    // MERGEPAINT
+                          oCol:nBmpMaskFoot   := 0x00BB0226    // MERGEPAINT
+                          oCol:nBmpMaskSpcHd  := 0x00CC0020    // SRCCOPY
+                          //oCol:nBmpMaskCell := 0x00CC0020    // SRCCOPY - ячейки таблицы пропустить
+                          //oCol:nBmpMaskCell := 0x00BB0226    // MERGEPAINT - ячейки таблицы
+                       //ENDIF
+                    NEXT
+                    */
+
                     DO EVENTS
                     Return Nil
                     }
@@ -813,7 +926,7 @@ STATIC FUNCTION myTsbEditPrev( uVal, ob )
    LOCAL nCol, oCol, cNam, cAls, uOld, lRet, cJTyp, cFunc, cVal, nVal, cCol5
    LOCAL cTyp, cMsg, lWrt, cStr, aVal, aDim14, aRet, xDop15, a2Dim, aCode
    LOCAL cAccess, aDim, aVal13, nAt, aText, nJ, nI, aFld2, cErr, cFld, lYes
-   LOCAL cMemo, cText, a3Dim
+   LOCAL cMemo, cText, a3Dim, cPict
 
    WITH OBJECT ob
       aVal    := :aArray[:nAt]         // вся строка массива
@@ -830,6 +943,7 @@ STATIC FUNCTION myTsbEditPrev( uVal, ob )
       aDim14  := aVal[ACOL_14]
       xDop15  := aVal[ACOL_15]
       cAccess := aVal[ACOL_9]
+      cPict   := ALLTRIM(aVal[ACOL_6])  // здесь может быть формат поля "@R xxxx-xxxx"
       IF cAccess == "R"
          cJTyp := "0"
       ENDIF
@@ -837,6 +951,11 @@ STATIC FUNCTION myTsbEditPrev( uVal, ob )
          cJTyp := "N"
       ENDIF
    END WITH
+   // не надо - сделано в oTsb:bInit 
+   //  если задан для "C" формат поля, например: "@R xxxx-xxxx"
+   //IF LEN(cPict) > 0 .AND. cJTyp == "C"
+      //oCol:cPicture := cPict
+   //ENDIF
 
    uOld := uVal
    ? ProcNL(), nCol, cNam, cTyp, Valtype(uVal)
@@ -855,9 +974,13 @@ STATIC FUNCTION myTsbEditPrev( uVal, ob )
 
    IF LEN(cJTyp) == 0             // нет обработки
    ELSEIF cJTyp == "0"            // нет обработки
-   ELSEIF cJTyp $ "NLCD"
+   ELSEIF cJTyp $ "NLCD"  
       lRet := .T.                 // редактировать поле в :get
       lWrt := .T.                 // записывать в ячейку
+   ELSEIF cJTyp == "PSW"          // текст с паролем
+      lRet := .T.                 // редактировать поле в :get
+      lWrt := .T.                 // записывать в ячейку
+      ob:aArray[ob:nAt][ACOL_13] := uVal
    ELSEIF cJTyp == "M"
       aRet := CellEditMemo(uVal, ob)   // -->> tsb_memo_cell.prg
       IF LEN(aRet) > 0
@@ -1120,7 +1243,7 @@ RETURN lRet
 STATIC FUNCTION myTsbEditPost( uVal, ob )
    LOCAL nCol, oCol, cNam, uOld, cAls, lMod, cJTyp
    LOCAL oWnd  := _WindowObj(ob:cParentWnd)
-   LOCAL cTyp, cMsg, cStr
+   LOCAL cTyp, cMsg, cStr, cPict
 
    WITH OBJECT ob
       nCol := :nCell
@@ -1132,9 +1255,15 @@ STATIC FUNCTION myTsbEditPost( uVal, ob )
       cAls := :cAlias
       cJTyp := ob:aArray[ob:nAt][ACOL_4]   // тип обработки строки
       Default cJTyp := "+"
+      cPict := ALLTRIM(ob:aArray[ob:nAt][ACOL_6])  // здесь может быть формат поля "@R xxxx-xxxx"
    END WITH
-
-   IF Valtype(uVal) == "N"                           // !!!!!!!!!!!!!!!!!!!!!
+   // не надо - сделано в oTsb:bInit 
+   // восстановим - если задан для "C" формат поля, например: "@R xxxx-xxxx"
+   //IF LEN(cPict) > 0 .AND. cJTyp == "C"
+   //   oCol:cPicture := NIL
+   //ENDIF
+   // восстановим ввод числа для колонки, см. myTsbEditPrev()
+   IF Valtype(uVal) == "N"                          
       ob:aEditCellAdjust[3] := 0
    ENDIF
 
@@ -1145,6 +1274,8 @@ STATIC FUNCTION myTsbEditPost( uVal, ob )
    cStr += ';Column array cJTyp: "' + cJTyp + '" ;'
 
    IF cJTyp $ "CNDLM"
+      // стандартная обработка
+   ELSEIF cJTyp $ "PSW"
       // стандартная обработка
    ELSE
       cMsg := ProcNL(0) + ";" + ProcNL(1) + ";;"
@@ -1234,6 +1365,8 @@ INIT PROCEDURE Sets_ENV()
 *----------------------------------------------------------------------------*
    LOCAL o, cLog, cIni  := hb_FNameExtSet( App.ExeName, ".ini" )
 
+   SET CODEPAGE TO RUSSIAN
+   SET LANGUAGE TO RUSSIAN
 
    rddSetDefault( "DBFCDX" )
 
@@ -1248,7 +1381,8 @@ INIT PROCEDURE Sets_ENV()
    SET SOFTSEEK  ON
    SET OOP ON
    SET DATE FORMAT TO "DD.MM.YY"
-
+   SET TOOLTIPSTYLE BALLOON
+   //!!! такой порядок
    IF !HB_ISOBJECT( App.Cargo ) ; App.Cargo := oHmgData()
    ENDIF
    o := App.Cargo
@@ -1262,8 +1396,6 @@ INIT PROCEDURE Sets_ENV()
    SET MULTIPLE QUIT WARNING  // окно маленькое
    SET WINDOW MAIN OFF
 
-   SET CODEPAGE TO RUSSIAN
-   SET LANGUAGE TO RUSSIAN
    o:tStart         := hb_DateTime()        // start time
    o:cLogFile       := ChangeFileExt( App.ExeName, '.log' )
    // для отладки - потом убрать

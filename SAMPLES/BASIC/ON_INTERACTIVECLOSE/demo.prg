@@ -21,8 +21,8 @@ PROCEDURE Main()
             "Row = " + NTRIM( ThisWindow.Row ) + ;
             "   Col = " + NTRIM( ThisWindow.Col ) ) ;
          ON SIZE ( lMaximize := .F., ThisWindow.TITLE := ;
-            "Row = " + NTRIM( ThisWindow.Row ) + ;
-            "   Col = " + NTRIM( ThisWindow.Col ) ) ;
+            "Width = " + NTRIM( ThisWindow.Width ) + ;
+            "   Height = " + NTRIM( ThisWindow.Height ) ) ;
          ON MOVE if( lMaximize, , ThisWindow.TITLE := ;
             "Row = " + NTRIM( _HMG_MouseRow - GetTitleHeight() - GetBorderWidth() ) + ;
             "   Col = " + NTRIM( _HMG_MouseCol - GetBorderWidth() ) ) ;
@@ -40,10 +40,7 @@ PROCEDURE Main()
          ROW 40
          COL 10
          CAPTION 'Form Center'
-         ACTION ( ThisWindow.CENTER, ;
-            ThisWindow.TITLE := ;
-            "Row = " + NTRIM( ThisWindow.Row ) + ;
-            "   Col = " + NTRIM( ThisWindow.Col ) )
+         ACTION ThisWindow.CENTER
       END BUTTON
 
       DEFINE BUTTON Button_3

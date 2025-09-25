@@ -2,7 +2,7 @@
  * MINIGUI - Harbour Win32 GUI library
  *
  * Copyright 2025 Verchenko Andrey <verchenkoag@gmail.com>
- * Edit 15.04.25
+ * Edit 15.08.25
  *
  * _TBrowse() Разные функции для редактирований ячеек таблицы
  * _TBrowse() Various functions for editing table cells
@@ -122,7 +122,7 @@ FUNCTION CellEdit_DT(oBrw,cType,xGet, cForm)
    nW     := nWDate + nWBtn + 5
    aRet   := {}   // всегда массив - пусто, значит отказ от ввода
    nH     := nHCell
-   nW     := nWCell //- GetVScrollBarWidth()  // сделаем до конца ячейки - НЕ НАДО !
+   nW     := nWCell - GetVScrollBarWidth()  // сделаем до конца ячейки
 
    // новое окно в ячейку таблицы
    DEFINE WINDOW &cForm AT nY,nX WIDTH nW HEIGHT nH       ;
@@ -288,7 +288,7 @@ FUNCTION CellEdit_A(oBrw,aGet,aDim14,aDim15,cForm)
    ENDIF
    ?? "вертик.расположение getbox'ов=", lVert
 
-   // nW -= GetVScrollBarWidth()  // сделаем до конца ячейки - НЕ НАДО !!!
+   nW -= GetVScrollBarWidth()  // сделаем до конца ячейки
 
    // новое окно в ячейку таблицы
    DEFINE WINDOW &cForm AT nY, nX WIDTH nW  HEIGHT nH    ;
@@ -381,7 +381,7 @@ FUNCTION Tsb_myWinCalc(oBrw,aDim,oDop,aLine,cForm)
    LOCAL nY0, nX0, nW0, nH0, lWin0
    DEFAULT cForm := "Tsb_Win"
 
-   IF App.Cargo:lPosWinOrTsb  
+   IF App.Cargo:lPosWinOrTsb
       // позиция окна по родит.окну / window position by parent window
       oTWnd  := _WindowObj( oBrw:cParentWnd )    // parent window
       nY0    := oTWnd:Row
@@ -1030,17 +1030,16 @@ RETURN cRet
 ///////////////////////////////////////////////////////////////////////
 FUNCTION Tsb_myWinCalc2(oBrw,aDim,oDop,aLine, cForm)
    LOCAL oTWnd, aRet, nWBtn, nHBtn, nHIco, nWLbl, aFont2, aLang
-   LOCAL cFont, nFSize, aFont, cText, nWDate, dDate, nArr, a1One
-   LOCAL nY, nX, nW, nH, nG, nI, nJ, cType, aBClr, xVal, cTitle
-   LOCAL aName, aType, aSprv, aXArr, nWLine, cMsg, cVal, nText, nVal
-   LOCAL nWText, nWGBox, aFClr, nHText, aArCmb, cObj, nCol, lDay
-   LOCAL a2Code, aVal13, nHBox, owc, aRet1, aBZebra, aIco1, aIco2
+   LOCAL cFont, nFSize, aFont, cText, nWDate, dDate, nMenu, aMenu
+   LOCAL nY, nX, nW, nH, nG, nI, nJ, aBClr, cTitle, aCode, dZDate
+   LOCAL cMetka, aName, aType, aXArr, nWLine, cVal, nText, nVal
+   LOCAL cFileIni,nWText, nWGBox, aFClr, nHText, nCol, lDay
+   LOCAL aVal13, nHBox, owc, aRet1, aBZebra, aIco1, aIco2
    LOCAL aColor, aGrOver, aGrFill, cBtnFont, nBtnFSize, aBtnFClr
-   LOCAL cFileIni, cMetka, cObjDate, a3Code, a3Val, dZDate
-   LOCAL nY0, nX0, nW0, nH0, lWin0
+   LOCAL nY0, nX0, nW0, nH0, lWin0, cObj
    DEFAULT cForm := "Tsb_Win2"
 
-   dZDate := oBrw:Cargo:dZDate             // Дата заявки
+   ? ProcNL(), oBrw, aDim, oDop, aLine, cForm
    IF App.Cargo:lPosWinOrTsb
       // позиция окна по родит.окну / window position by window
       oTWnd  := _WindowObj( oBrw:cParentWnd )    // parent window
@@ -1063,14 +1062,29 @@ FUNCTION Tsb_myWinCalc2(oBrw,aDim,oDop,aLine, cForm)
    aFont  := GetFontParam(GetFontHandle("Normal"))     // Фонт колонок таблицы
    aFont2 := GetFontParam(GetFontHandle("ComSanMS"))
    aLang  := { 'Save', 'Cancel' , "Application receipt date: ", "Accounting for weekends (Saturday and Sunday)" ,;
-               "Day of completion:", "Completion date" }
+               "Completion date:" , "Date is arbitrary:", "implementation" }
+   aType  := {"S","D"}
+   aName  := {"Urgency type:","Completion date:"}
+   aMenu  := { "1-day", "2-days", "3-days", "4-days", "7-days", "out of turn (4 hours)", "current day (until 17:30)", "repair (10-days)", "repair (20-days)", "end of current month", "arbitrary" }
+   aCode  := { 1, 2, 3, 4, 7, 5, 6, 10, 20, 30, 31 }
 #else
    aFont  := GetFontParam(GetFontHandle("Normal"))     // Фонт колонок таблицы
    aFont2 := GetFontParam(GetFontHandle("FntBtn_1"))   // Фонт-1 кнопок других форм
    aLang  := { "Сохранить", "Отмена", "Дата поступления заявки: ", "Учитывать выходные дни (суббота и воскресенье)" ,;
-               "Дата выполнения:" , "выполнение"}
+               "Срок выполнения:", "Дата произвольная:", "выполнение" }
+   aType  := {"S","D"}
+   aName  := {"Тип срочности:","Срок выполнения:"}
+   aMenu  := { "1-день", "2-дня", "3-дня", "4-дня", "7-дней", "вне очереди (4 часа)","текущий день (до 17:30)", "ремонтная (10-дней)", "ремонтная (20-дней)", "конец текущего месяца", "произвольная" }
+   aCode  := { 1, 2, 3, 4, 7, 5, 6, 10, 20, 30, 31 }
 #endif
 
+   //aXArr   := oDop:aXArr // { {oSrkZa:aCod1,oSrkZa:aVal1} , {}  }        // все значения из одной Dbf + дата
+   aXArr     := { { aCode, aMenu } , {}  }    // для функции myCode2Str(@aRet1, aXArr, aType) 
+                                              // преобразовать коды массива в коды базы
+   dZDate    := oBrw:Cargo:dZDate             // Дата заявки
+   aBZebra   := oBrw:Cargo:oParam:aBZebra
+   aBClr     := HMG_n2RGB(aBzebra[2])
+   aFClr     := BLACK    
    nG        := 20
    aRet      := {}   // всегда массив - пусто, значит отказ от ввода
    cTitle    := aLine[1] + SPACE(5) + CValToChar(App.Cargo:lPosWinOrTsb)
@@ -1092,87 +1106,33 @@ FUNCTION Tsb_myWinCalc2(oBrw,aDim,oDop,aLine, cForm)
    // считать введённые ранее данные
    IniLoadFileChk(cFileIni,cMetka,@lDay)
 
-   IF !ISOBJECT(oDop)
-      cMsg := "Error ! Not an oDop object !"
-      MsgDebug(cMsg, oDop, ProcNL(),ProcNL(1))
-      RETURN NIL
-   ENDIF
-
-   aName := oDop:aName // {"Тип срочности","Срок выполнения"}
-   aType := oDop:aType // {"S","D"}
-   aSprv := oDop:aSprv // { {"srokza","Ksrokza","srokza","srokza0","srokza2"} , {} }
-   // заполняется для справочника "S", для других не надо
-   //oSrkZa:aCod1 := { 1, 2, 3, 4, 7, 5, 6, 10, 20, 30 }
-   //oSrkZa:aVal1 := { "1-день", "2-дня", "3-дня", "4-дня", "7-дней", "вне очереди (4 часа)","текущий день (до 17:30)", "ремонтная (10-дней)", "ремонтная (20-дней)", "конец текущего месяца" }
-   aXArr := oDop:aXArr // { {oSrkZa:aCod1,oSrkZa:aVal1} , {}  }        // все значения из одной Dbf + дата
-   //oSrkZa:aFld  := {"Ksrokza","DateSrok" }  // поля записи в базу
-
-   aBClr := oDop:aBClr // цвет внутри
-   aFClr := oDop:aFClr //  MAROON    // PINK  PURPLE
-   IF !IsArray(aBClr)  ;  aBClr := RED
-   ENDIF
-   IF !IsArray(aFClr)  ;  aFClr := YELLOW
-   ENDIF
-   aBZebra := oBrw:Cargo:oParam:aBZebra
-   aBClr   := HMG_n2RGB(aBzebra[2])
-
    // первоначальные массивы значений
    aVal13 := aLine[13]          // (13) - первоначальные значения - коды
    aRet1  := ACLONE(aVal13)     // что пришло   !!! только через ACLONE()
-   nArr   := LEN(aName)
-   aArCmb := ARRAY(nArr)
-   a2Code := ARRAY(nArr)
-   a1One  := ARRAY(nArr)
-   AFILL(a1One, 0 )
-   IF LEN(aVal13) # LEN(aName)
-      cMsg := "Error ! LEN(aVal13) # LEN(aName) !"
-      MsgDebug(cMsg, aVal13, aName, ProcNL(),ProcNL(1))
-   ENDIF
-   ? "=======",ProcNL() , nArr, hb_valtoexp(aRet1)
-   FOR nI := 1 TO nArr
-      cType := aType[nI]
-      xVal  := aVal13[nI]
-      ? nI, cType, "xVal=", xVal
-      IF cType == "S"
-         aArCmb[nI] := aXArr[nI,2]    // все значения из 1/2/3/Х  Dbf
-         a2Code[nI] := aXArr[nI,1]    // коды значений
-         aDim       := a2Code[nI]
-         FOR nJ := 1 TO LEN(aDim)
-            nVal := aDim[nJ]
-            IF xVal == nVal
-               a1One[nI] := nJ  // номер в массиве COMBOBOX
-                ?? "Ok=", nJ
-               // исправим вход.данные на порядк.номер массива Combo
-               aRet1[nI] := nJ
-               EXIT
-            ENDIF
-         NEXT
+   ? SPACE(5)+".", "aVal13=", hb_valtoexp(aRet1)
+   nMenu  := 0
+   FOR nJ := 1 TO LEN(aCode)
+      nVal := aCode[nJ]
+      IF aRet1[1] == nVal
+         nMenu := nJ  // номер в массиве COMBOBOX
+         ?? "nMenu=", nMenu
+         // исправим вход.данные на порядк.номер массива Combo
+         aRet1[1] := nJ   // потом сделать обратную операцию
+         EXIT
       ENDIF
    NEXT
-   a3Code := a2Code[1]  // { "1-день", "2-дня", "3-дня"...
-   a3Val  := aArCmb[1]  // { "1-день", "2-дня", "3-дня"...
 
    // расчёт ширины/высоты окна
    nText := nVal := 0
    nHBox := nG + nHText*2 + nG*3          // высота отступа сверху
+
+   FOR nJ := 1 TO LEN(aMenu)
+      nVal := MAX(nVal,LEN(aMenu[nJ]))
+   NEXT
+   nI   := LEN("dd'.'00MMMM'000'yyyy" + "00")
+   nVal := MAX(nVal,nI)
    FOR nI := 1 TO LEN(aName)
       nText := MAX(nText,LEN(aName[nI]))
-//? nI, aName[nI], nText
-      cType := aType[nI]
-      IF cType == "S"
-         aDim := aXArr[nI,2]    // все значения из двух Dbf
-         FOR nJ := 1 TO LEN(aDim)
-            nVal := MAX(nVal,LEN(aDim[nJ]))
-         NEXT
-      ELSEIF cType == "D"
-         nVal := LEN("dd'.'00MMMM'000'yyyy" + "00")
-      ELSEIF cType == "C"
-         nVal := 40
-      ELSEIF cType == "N"
-         nVal := 14
-      ELSE
-         nVal := LEN("REZERV")
-      ENDIF
       nHBox += nHText + nG
    NEXT
    nHBox  += nG + nHText + nG + nHBtn + nG*2
@@ -1186,12 +1146,10 @@ FUNCTION Tsb_myWinCalc2(oBrw,aDim,oDop,aLine, cForm)
    nWDate := GetTxtWidth( "dd0'.'0MMMM'0'yyyy0" , nFSize, cFont, .T. )
    //
    nX := (nW - nWLine)/2 + oTWnd:Col
-   nW := GetTxtWidth( aLang[4] , nFSize, cFont, .T. ) + nG*2 + 40  // CheckT28
+   nW := GetTxtWidth( aLang[4] , nFSize, cFont, .T. ) + nG*2 + 40 + 40  // CheckT28
    nH := nHBox
-   ? ProcNL(), "******** ["+cForm+"] высота окна =", nH
+   //? ProcNL(), "******** ["+cForm+"] высота окна =", nH
    nY := (oTWnd:Height - oTWnd:Row - nH) / 2
-   ?? "nY=",nY
-   // testing
    IF ( nY + nH ) > Sys.ClientHeight
       nI := ( nY + nH ) - Sys.ClientHeight
       nY -= nI
@@ -1219,86 +1177,109 @@ FUNCTION Tsb_myWinCalc2(oBrw,aDim,oDop,aLine, cForm)
       cText  += " - " + CDoW(dZDate)
       nWLbl  := GetTxtWidth( cText, nFSize, cFont, .F. ) + 10
 
-      @ nY, nX LABEL Label_1 VALUE cText WIDTH nW HEIGHT nHText ;
+      @ nY, 0 LABEL Label_1 VALUE cText WIDTH nW HEIGHT nHText ;
                FONTCOLOR BLACK TRANSPARENT CENTERALIGN
 
       nY += This.Label_1.Height + nG
 
-      cText := aLang[4]
+      cText := aLang[4]   // "Учитывать выходные дни (суббота и воскресенье)"
       nWLbl := GetTxtWidth( cText, nFSize, cFont, .T. ) + 40
       nCol  := ( nW - nWLbl ) / 2
 
       @ nY, nCol CHECKLABEL Chk_1 WIDTH nWLbl HEIGHT 35 VALUE cText ;
                  LEFTCHECK IMAGE { 'CheckT28', 'CheckF28' }         ;
-                 FONTCOLOR BLACK BACKCOLOR aBClr /*BOLD*/           ;
+                 FONTCOLOR BLACK BACKCOLOR aBClr BOLD               ;
                  ON MOUSEHOVER Rc_Cursor( "MINIGUI_FINGER" )        ;
                  ON INIT {|| This.Checked := lDay }                 ;
                  ACTION  {|| This.Checked := ! This.Checked, ;
                              lDay := This.Checked }
 
-      nY += This.Chk_1.Height + nG
+      nY  += This.Chk_1.Height + nG
 
-      FOR nI := 1 TO LEN(aName)
-         cType := aType[nI]
-         cText := aName[nI] + ":"
-         cObj  := "Lbl_" + STRZERO(nI,2)
+      @ nY, nX LABEL Lbl_01 VALUE aName[1] WIDTH nWText HEIGHT nHText ;
+        FONTCOLOR aFClr RIGHTALIGN TRANSPARENT
 
-         @ nY, nX LABEL &cObj VALUE cText WIDTH nWText HEIGHT nHText ;
-                  BOLD FONTCOLOR aFClr RIGHTALIGN TRANSPARENT
+      nCol := nX + This.Lbl_01.Width + nG/2
 
-         This.&(cObj).Cargo := nI
+      cObj := "CmBox_1" ; owc:cComboBox := cObj               // положим на окно !!!
+      @ nY, nCol COMBOBOXEX CmBox_1 WIDTH nWGBox HEIGHT 460 ;
+             ITEMS aMenu VALUE nMenu NOTABSTOP              ;
+             ON INIT   {|| This.Cargo := oHmgData() }       ;
+             ON CHANGE {|| _wPost("_CmBox",, This.Name) }   ;
+             ON LISTCLOSE _wPost("_CmBox",, {This.Name})
 
-         nCol := nX + This.&(cObj).Width + nG/2
-         cObj := "GBox_" + STRZERO(nI,2)
+      This.&(cObj).Cargo:nDay   := nMenu     // в качестве примера
+      This.&(cObj).Cargo:dDate  := aRet1[2]  // предыдущая дата из базы
+      This.&(cObj).Cargo:aMenu  := aMenu     // название меню
+      This.&(cObj).Cargo:aCode  := aCode     // коды меню
+      This.&(cObj).Cargo:dZDate := dZDate    // Дата заявки
+      This.&(cObj).Cargo:cLabel := "Say_Day" // показ - срок выполнения
+      // нужно править aRet1[1]      := код CmBox_1
+      // нужно править aRet1[2]      := расчёт даты - DATE_XX
+      // нужно править Say_Day.Value := DTOC(DATE_XX) + " - " + CDoW(DATE_XX)
 
-         IF     cType  == "C"
-            @ nY, nCol GETBOX &cObj VALUE aRet1[nI] BOLD ;
-                       WIDTH nWGBox HEIGHT nHText        ;
-                       ON CHANGE {|| aRet1[ This.Cargo ] := This.Value }
-
-         ELSEIF cType  == "N"
-            @ nY, nCol GETBOX &cObj VALUE aRet1[nI] WIDTH nWGBox HEIGHT nHText ;
-                       BOLD ON CHANGE ( aRet1[ This.Cargo ] := This.Value )
-            This.&(cObj).Alignment := "LEFT"   // "CENTER" or "RIGHT"
-
-         ELSEIF cType == "D"
-            dDate := aRet1[nI]
-            @ nY, nCol DATEPICKER &cObj VALUE dDate WIDTH nWGBox BOLD       ;
-                       HEIGHT nHText DATEFORMAT "dd'.'MMMM' 'yyyy" SHOWNONE ;
-                       ON CHANGE ( aRet1[ This.Cargo ] := This.Value )
-
-            cObjDate := cObj
-
-         ELSEIF cType == "S"
-            aDim  := aArCmb[nI]
-            cObj  := "CmBox_" + STRZERO(nI,2)
-            @ nY, nCol COMBOBOXEX &cObj WIDTH nWGBox HEIGHT 300 ;
-                       ITEMS aDim  VALUE a1One[nI]   BOLD       ;
-                       ON CHANGE ( aRet1[ This.Cargo ] := This.Value,;
-                                   myChangeDate(This.Value,lDay,dZDate,a3Code,a3Val,cObjDate,"Say_Day"), ;
-                                   This.Label_0.Setfocus )
-         ENDIF
-
-         This.&(cObj).Cargo := nI
-
-         nY += This.&(cObj).ClientHeight + nG
-
-      NEXT
-
-      cText := aLang[5]
-
+      nY    += This.CmBox_1.ClientHeight + nG/3
+      cText := aLang[5]  // "Срок выполнения:"
       @ nY, nX LABEL Label_Day VALUE cText WIDTH nWText HEIGHT nHText ;
-               BOLD FONTCOLOR aFClr RIGHTALIGN TRANSPARENT
+        FONTCOLOR aFClr RIGHTALIGN TRANSPARENT
 
-      nCol := nX + This.Label_Day.Width + nG/2
+      @ nY, nCol LABEL Say_Day VALUE '' WIDTH nWGBox HEIGHT nHText ;
+        BOLD FONTCOLOR aFClr TRANSPARENT
 
-      ? dDate := aRet1[2]
-      cText := CDOW(dDate)
+      dDate := aRet1[2]
+      This.Say_Day.Value := DTOC(dDate) + ": " + CDoW(dDate)
 
-      @ nY, nCol LABEL Say_Day VALUE cText WIDTH nWGBox HEIGHT nHText ;
-                 BOLD FONTCOLOR aFClr TRANSPARENT
+      nY += This.Label_Day.ClientHeight + 5
+      cText := REPL("- ", 30)
+      @ nY, 0 LABEL Label_Line VALUE cText WIDTH nW HEIGHT nHText ;
+        FONTCOLOR MAROON CENTERALIGN  TRANSPARENT
+      nY += nG*2
 
-      nY += This.Label_Day.ClientHeight + nG
+      cText := aLang[6]  // Дата произвольная:  // aName[2]+":"
+      @ nY, nX LABEL Lbl_02 VALUE cText WIDTH nWText HEIGHT nHText ;
+        FONTCOLOR MAROON RIGHTALIGN TRANSPARENT
+
+      cObj := "Date_1"
+      owc:cDatePick  := cObj      // расчет от этой даты
+      owc:&(cObj)    := aRet1[2]  // пришла дата из базы
+      owc:cDateCheck := cObj      // получаем новую дату тут
+
+      DEFINE DATEPICKER &cObj
+         ROW   nY
+         COL   nCol
+         VALUE owc:&(cObj)
+         HEIGHT nHText
+         WIDTH nWGBox
+         TOOLTIP cText //'DatePicker Control' 
+         SHOWNONE .F.
+         DATEFORMAT "dd'.'MMMM' 'yyyy"
+         TITLEBACKCOLOR BLACK
+         TITLEFONTCOLOR YELLOW
+         TRAILINGFONTCOLOR PURPLE
+         ONCHANGE {|owc| owc := ThisWindow.Cargo                   ,;
+                         owc:&(This.Name) := This.Value            ,;
+                         owc:&(owc:cDateCheck) := This.Value       ,;
+                         This.&(owc:cComboBox).Value := LEN(aCode) ,; // "произвольная"/"arbitrary"
+                         aRet1[1] := LEN(aCode) , aRet1[2] := This.Value ,;
+                         This.Say_Day.Value  := DTOC(This.Value) + ": " + CDoW(This.Value) ,; 
+                         This.Say_Day2.Value := DTOC(This.Value) + ": " + CDoW(This.Value)    } 
+      END DATEPICKER
+      //ONCHANGE ThisWindow.Cargo:&(This.Name) := This.Value - простая обработка / simple processing 
+
+      // нужно править aRet1[1]        := LEN(aCode) т.е. = 11
+      // нужно править  CmBox_1.Value  := LEN(aCode) т.е. = 11
+      // нужно править aRet1[2]        := This.Value
+      // нужно править  Say_Day2.Value := DTOC(This.Value) + ": " + CDoW(This.Value)
+
+      nY += This.&(cObj).ClientHeight + nG/3
+
+      cText := aLang[5]  // "Срок выполнения:"
+      @ nY, nX LABEL Label_Day2 VALUE cText WIDTH nWText HEIGHT nHText ;
+        FONTCOLOR MAROON RIGHTALIGN TRANSPARENT
+
+      cText :=  DTOC(dDate) + ": " + CDoW(dDate)
+      @ nY, nCol LABEL Say_Day2 VALUE cText WIDTH nWGBox HEIGHT nHText ;
+        BOLD FONTCOLOR MAROON TRANSPARENT
 
       /////////////////////// buttons on the form ////////////////////////////////
       nY := nH - nG - nHBtn
@@ -1312,96 +1293,124 @@ FUNCTION Tsb_myWinCalc2(oBrw,aDim,oDop,aLine, cForm)
       aIco2   := { "iMg_Cancel48x1"  , "iMg_Cancel48x2" }
 
       @ nY, nX BUTTONEX Btn_Ok WIDTH nWBtn HEIGHT nHBtn CAPTION aLang[1] ;
-               ICON aIco1[1] NOXPSTYLE HANDCURSOR NOTABSTOP            ;
-               FONTCOLOR aBtnFClr[1] FONT cBtnFont SIZE nBtnFSize BOLD ;
-               BACKCOLOR aGrOver GRADIENTFILL aGrFill                  ;
-               ON MOUSEHOVER ( This.Icon := aIco1[2],         ;
-                               This.Fontcolor := aBtnFClr[2], ;
-                               This.GradientFill := aGrFill ) ;
-               ON MOUSELEAVE ( This.Icon := aIco1[1], ;
-                               This.Fontcolor := aBtnFClr[1], ;
-                               This.GradientOver := aGrOver ) ;
-               ACTION {||
-                       ? "### Save", ProcNL(), HB_ValToExp(aRet1)
-                       IniSaveFileChk(cFileIni, cMetka, lDay)
-                       cVal := myCode2Str(@aRet1, aXArr, aType)
-                       cVal += " - " + aLang[6] + " - "
-                       cVal += CDoW(This.&(cObjDate).Value)
-                       ? "### myCode2Str()", HB_ValToExp(aRet1), cVal
-                       aRet := {aRet1,cVal}
-                       ThisWindow.Release
-                       Return Nil
-                       }
+        ICON aIco1[1] NOXPSTYLE HANDCURSOR NOTABSTOP                     ;
+        FONTCOLOR aBtnFClr[1] FONT cBtnFont SIZE nBtnFSize BOLD          ;
+        BACKCOLOR aGrOver GRADIENTFILL aGrFill                           ;
+        ON MOUSEHOVER ( This.Icon := aIco1[2], This.Fontcolor := aBtnFClr[2], This.GradientFill := aGrFill ) ;
+        ON MOUSELEAVE ( This.Icon := aIco1[1], This.Fontcolor := aBtnFClr[1], This.GradientOver := aGrOver ) ;
+        ACTION _wPost("_Btn_Ok",, This.Name)
 
       nX += This.Btn_Ok.Width + nG
 
       @ nY, nX BUTTONEX Btn_Esc WIDTH nWBtn HEIGHT nHBtn CAPTION aLang[2] ;
-               ICON aIco2[1] NOXPSTYLE HANDCURSOR NOTABSTOP               ;
-               FONTCOLOR aBtnFClr[1] FONT cBtnFont SIZE nBtnFSize BOLD    ;
-               BACKCOLOR aGrOver GRADIENTFILL aGrFill                     ;
-               ON MOUSEHOVER ( This.Icon := aIco2[2],         ;
-                               This.Fontcolor := aBtnFClr[2], ;
-                               This.GradientFill := aGrFill ) ;
-               ON MOUSELEAVE ( This.Icon := aIco2[1],         ;
-                               This.Fontcolor := aBtnFClr[1], ;
-                               This.GradientOver := aGrOver ) ;
-               ACTION ( aRet := {}, ThisWindow.Release )
+        ICON aIco2[1] NOXPSTYLE HANDCURSOR NOTABSTOP                      ;
+        FONTCOLOR aBtnFClr[1] FONT cBtnFont SIZE nBtnFSize BOLD           ;
+        BACKCOLOR aGrOver GRADIENTFILL aGrFill                            ;
+        ON MOUSEHOVER ( This.Icon := aIco2[2], This.Fontcolor := aBtnFClr[2], This.GradientFill := aGrFill ) ;
+        ON MOUSELEAVE ( This.Icon := aIco2[1], This.Fontcolor := aBtnFClr[1], This.GradientOver := aGrOver ) ;
+        ACTION _wPost("_Btn_Esc",, This.Name)
+
+      WITH OBJECT This.Object
+         :Event({10,"_CmBox"}, {|ow,ky,cn| //
+                                            Local cv, o, dRet, cVal, lEnt
+                                            ? ProcNL(), ow:Name, ky, cn, "=>", HB_ValToExp(cn)
+                                            IF ( lEnt := IsArray(cn) ) ; cn := cn[1]
+                                            ENDIF
+                                            cv := This.&(cn).Value
+                                            o  := This.&(cn).Cargo
+                                            cObj := o:cLabel  // имя объекта: показ - срок выполнения
+                                            ?? cv 
+                                            dRet := myChangeDate(cv,lDay,o:dZDate,o:aCode,o:aMenu)
+                                            cVal := DTOC(dRet) + "-" + CDoW(dRet)+" !"
+                                            This.&(cObj).Value  := cVal
+                                            //This.Say_Day2.Value := cVal 
+                                            //This.Date_1.Value   := dRet
+                                            // запомним в массиве
+                                            aRet1[1] := This.&(cn).Value
+                                            aRet1[2] := dRet
+                                            ? ProcNL(), "aRet1=", HB_ValToExp(aRet1)
+                                            Return Nil
+                                            } )
+         :Event({20,"_Btn_Ok"}, {|ow,ky,cn| //
+                                            ? ProcNL(), ow:Name, ky, cn, "=>"
+                                            ? "###### Save", HB_ValToExp(aRet1)
+                                            This.&(cn).Enabled := .F.    
+                                            IniSaveFileChk(cFileIni, cMetka, lDay)
+                                            // преобразовать коды массива в коды базы
+                                            cVal := myCode2Str(@aRet1, aXArr, aType)
+                                            cVal += " - " + aLang[7] + ": "
+                                            cVal += CDoW(aRet1[2])
+                                            ? "###### myCode2Str()", HB_ValToExp(aRet1), cVal
+                                            aRet := {aRet1,cVal}
+                                            _wSend(99,ow)
+                                            Return Nil
+                                            } )
+         :Event({21,"_Btn_Esc"}, {|ow,ky,cn| //
+                                            ? ProcNL(), ow:Name, ky, cn, "=>"
+                                            This.&(cn).Enabled := .F. 
+                                            aRet := {}
+                                            _wSend(99,ow)
+                                            Return Nil
+                                            } )
+         :Event({99,"_Exit"}, {|ow| ow:Release() } )
+      END WITH
 
       ON KEY ESCAPE ACTION ThisWindow.Release
       ON KEY RETURN ACTION ThisWindow.Release
 
-      //SetWindowLong(This.Handle, GWL_STYLE, WS_BORDER)
-
    END WINDOW
+
+   SetProperty(cForm, "Date_1", "FontColor" , RED    )
+   SetProperty(cForm, "Date_1", "BackColor" , YELLOW )
 
    ACTIVATE WINDOW &cForm
 
 RETURN aRet // всегда массив, если пусто - значит отказ от ввода
 
 /////////////////////////////////////////////////////////////////////////////////
-Static Function myChangeDate(nI,lDay,dZDate,a3Code,a3Val,cObjDate,cObjSay)
-   LOCAL nDay, cVal, dZDt := dZDate
+Static Function myChangeDate(nI,lDay,dZDate,aCode,aMenu)
+   LOCAL nDay, dZDt := dZDate
 
-   //#  1  2  3  4  5  6  7  8   9   10  - порядковый номер в массиве
-   // { 1, 2, 3, 4, 7, 5, 6, 10, 20, 30 }
+   //#  1  2  3  4  5  6  7  8   9   10  11 - порядковый номер в массиве
+   // { 1, 2, 3, 4, 7, 5, 6, 10, 20, 30, 31 }
    // { "1-день", "2-дня", "3-дня", "4-дня", "7-дней", "вне очереди (4 часа)","текущий день (до 17:30)",;
-   //      "ремонтная (10-дней)", "ремонтная (20-дней)", "конец текущего месяца" }
+   //      "ремонтная (10-дней)", "ремонтная (20-дней)", "конец текущего месяца", "произвольная" }
 
    nDay := 0
    // nI - порядковый номер в массиве
    IF nI >= 1 .AND. nI <= 5
-      dZDate += a3Code[nI]
-      nDay   := a3Code[nI]
+      dZDate += aCode[nI]
+      nDay   := aCode[nI]
    ELSEIF nI >= 6 .AND. nI <= 7  // вне очереди (4 часа) , текущий день (до 17:30)
       //dZDate += 0
       nDay   := 0
+      lDay   := .F.     // пропуск прибавления дней
    ELSEIF nI >= 8 .AND. nI <= 9
-      dZDate += a3Code[nI]
-      nDay   := a3Code[nI]
+      dZDate += aCode[nI]
+      nDay   := aCode[nI]
    ELSEIF nI == 10
       dZDate := EOM(dZDate)
-      nDay   := a3Code[nI]
+      nDay   := aCode[nI]
+   ELSEIF nI == 11
+      dZDate += aCode[nI]
+      nDay   := aCode[nI]
    ELSE
-      MsgDebug("Error! nI=",nI,"Out of array range !",a3Code,a3Val)
+      MsgDebug("Error! nI=",nI,"Out of array range !",aCode,aMenu)
    ENDIF
 
    IF lDay
-      IF DoW(dZDate) == 7  // суббота
+      IF DoW(dZDate) == 7  // суббота/Saturday
          dZDate += 1
       ENDIF
-      IF DoW(dZDate) == 1  // воскресенье
+      IF DoW(dZDate) == 1  // воскресенье/Sunday
          dZDate += 1
       ENDIF
    ENDIF
-   cVal := DTOC(dZDate) + "-" + CDoW(dZDate)+" !"
 
-   This.&(cObjDate).Value := dZDate
-   This.&(cObjSay).Value  := CDoW(dZDate)
-   //MsgDebug(nI, "nDay=",nDay, a3Val[nI],DTOC(dZDt),a3Code,cObjDate,cVal)
-RETURN NIL
+RETURN dZDate
 
 ///////////////////////////////////////////////////////////////////////
-// считать данные с ини-файла
+// считать данные с ини-файла / read data from ini file
 Static Function IniLoadFileChk(cFileIni, cMetkaIni, lLog)
    LOCAL cStr, aRet
 
@@ -1428,21 +1437,10 @@ Return Nil
 //////////////////////////////////////////////////////////////////////////////////////
 Static Function IniSaveFileChk(cFileIni, cMetkaIni, lLog)
    LOCAL aSave
-   // значения первоначальные
    aSave := { lLog, cMetkaIni, App.ExeName }
    HB_MemoWrit( cFileIni, HB_ValToExp(aSave) )
 Return Nil
 
-
-///////////////////////////////////////////////////////////////////////
-// oVipZa:aName := {"Тип выполнения", "Дата выполнения", "Время выполнения", "Отправка на сайт"}
-// oVipZa:aType := {"S","D","N","N" }
-// oVipZa:aSpav := { {"VipZa","KVipZa","VipZa",2,""} , {}, {}, {} }
-// oVipZa:aBClr := BLUE      // цвет внутри
-// oVipZa:aFClr := MAROON    // PINK  PURPLE        // Флаг для передачи на сайт
-// oVipZa:aFld  := {"Ksrokza", "DATEVip", "TimeVip", "INET" }  // поля записи в базу                                                                        //  8    9  10  11   12  13           14     15
-// AADD( aDim, {"(*) Тип выполнения заявки", SPACE(20), 2, "CALC"  , "" , "Za_VipZa()", "SetDim2Wrt()" ;
-// , "myWinCalc3()" , "W", "", "", "", nil, oVipZa:aFld , oVipZa  } )
 ///////////////////////////////////////////////////////////////////////////////
 FUNCTION Tsb_myWinCalc3(oBrw,aDim,oDop,aLine, cForm)
    LOCAL oTWnd, aRet, nWBtn, nHBtn, nHIco, cImg, aIcon, cVal6, lMemo, aPict
@@ -1895,11 +1893,12 @@ FUNCTION Tsb_myWinCalc3(oBrw,aDim,oDop,aLine, cForm)
 RETURN aRet // всегда массив, если пусто - значит отказ от ввода
 
 ///////////////////////////////////////////////////////////////////////////////
-FUNCTION Tsb_RClickContexMenu(oBrw, aCol, nAt)
+FUNCTION Tsb_RClickContexMenu(oBrw, aCol, nAt, lDbf)
    LOCAL oWnd, cForm, hFont1, hFont2, nY, nX, aRet, nI, cMenu, bAction
    LOCAL lChk, lDis, hFont, lMenuStyle, nMenuBitmap, nMenu, aLang, cImg
    LOCAL lIcon, aFont, nFSize, cName, nWCell, nHCell, oCell, aDim, aMenu
    LOCAL cLine1, cLine2, cTitle, cField, cFunc, cRType, cMsg, xRet, l4Menu
+   DEFAULT lDbf := .F.
 
 #ifdef KEY_ENG // for this project demo1-en.hbp
    hFont1 := GetFontHandle("Normal")     // Фонт колонок таблицы
@@ -1925,10 +1924,23 @@ FUNCTION Tsb_RClickContexMenu(oBrw, aCol, nAt)
    nWCell := oCell:nWidth
    nHCell := oCell:nHeight
    //
-   cLine1 := aCol[1] + " | " + myVal2Str( aCol[2] )
-   cLine2 := myTsbArrayLine(oBrw , .T., .F.)
-   cField := aCol[5]
-   cRType := aCol[ACOL_4]           // тип обработки ячеек
+   cLine2 := ""
+   IF lDbf
+      cLine1 := myVal2Str( aCol[oBrw:nCell-2] )
+      FOR nI := 1 TO LEN(aCol)
+         cLine2 += myVal2Str( aCol[nI] ) + CRLF
+      NEXT
+      cLine2 += REPL(";",15)
+      cField := ""
+      cRType := "C"                    // тип обработки ячеек
+   ELSE
+      cLine1 := aCol[1] + " | " + myVal2Str( aCol[2] )
+      cLine2 := myTsbArrayLine(oBrw , .T., .F.)
+      cField := aCol[5]
+      cRType := aCol[ACOL_4]           // тип обработки ячеек
+   ENDIF
+   cLine1 += REPL(";",15)
+   cLine2 += REPL(";",15)
    aFont  := GetFontParam(hFont1)
    nFSize := aFont[2]
    nMenu  := -2
@@ -1999,10 +2011,10 @@ FUNCTION Tsb_RClickContexMenu(oBrw, aCol, nAt)
       IF l4Menu
          IF nMenu == 1
             cTitle := aDim[nMenu,2]
-            AlertInfo(cLine1, cTitle, 64, , {ORANGE})
+            AlertInfo(cLine1, cTitle, ,64, {ORANGE})
          ELSEIF nMenu == 2
             cTitle := aDim[nMenu-1,2]
-            AlertInfo(cLine2, cTitle, 64, , {ORANGE})
+            AlertInfo(cLine2, cTitle, ,64, {ORANGE})
          ELSEIF nMenu == 4
            //#translate System.Clipboard := <arg> => CopyToClipboard ( <arg> )
             CopyToClipboard(cLine1)

@@ -2,24 +2,55 @@
       Name: Selector
     Author: Written in Clipper 5.2e by Janusz Piwowarski <januszp@geocities.com>
    Purpose: Emulates a simplified SQL SELECT statement, extracting data from a database based on specified criteria.
+ */
 
-   Input Parameters:
-      aSelectList: Array defining fields/expressions to select. Each element is an array: {expression, alias, length, decimals, grouping flag ('G'), summary flag (.T.)}.
-      xcnFromArea: Work area (database) to select from (numeric work area or character alias).
-      aOneToMany:  Array defining a one-to-many relationship between parent (xcnFromArea) and child database: {child alias, parent field, child field}. NIL if no relationship.
-      lSelect:     Code block filter expression (WHERE clause). NIL for all records.
-      lWhile:      Code block loop termination condition (WHILE clause). NIL for EOF().
-      lRest:       Logical value indicating whether to start from the current record (.T.) or the beginning (.F.).
-      xcFile:      Output database file name. NIL for "TEMP.DBF".
-      xcAlias:     Alias for the output database file. NIL defaults to filename or "temp".
-      lAdditive:   Logical value indicating whether to append to an existing database (.T.) or create a new one (.F.).
-      aSummary:    Array to store summary values (sums) for selected fields. NIL for no summary.
-      xEval:       Code block to be evaluated for each record.
-
-   Return Value:
-      None (Undefined). Modifies the current work area and potentially creates/modifies a database file.
-*/
-
+#xcommand DEFAULT <uVar1> := <uVal1> ;
+               [, <uVarN> := <uValN> ] => ;
+                  <uVar1> := iif( <uVar1> == NIL, <uVal1>, <uVar1> ) ;;
+                [ <uVarN> := iif( <uVarN> == NIL, <uValN>, <uVarN> ); ]
+/*
+ * PROCEDURE Selector( aSelectList, xcnFromArea, aOneToMany, lSelect, lWhile, lRest, xcFile, xcAlias, lAdditive, aSummary, xEval )
+ *
+ * Purpose:
+ *   Executes a Clipper/Harbour-based emulation of a simplified SQL SELECT query.
+ *   Extracts, processes, and optionally aggregates data from a DBF table (or a one-to-many related set of tables),
+ *   then outputs the results to a new or existing DBF file with optional indexing and summary calculations.
+ *
+ * Parameters:
+ *   aSelectList  (ARRAY)  – Definition of the fields/expressions to select.
+ *       Format: { expression (CODEBLOCK), alias (STRING), length (NUMERIC|NIL), decimals (NUMERIC|NIL),
+ *                 groupFlag (STRING: "G" for GROUP BY, "T" for total, "A" for average, or NIL),
+ *                 summaryFlag (LOGICAL: .T. if included in aSummary) }
+ *   xcnFromArea  (NUMERIC|STRING|NIL) – Work area number or alias name of the source DBF. NIL = current work area.
+ *   aOneToMany   (ARRAY|NIL) – Defines a one-to-many relationship: { childAlias, parentFieldBlock, childFieldBlock }. NIL = no relation.
+ *   lSelect      (CODEBLOCK|NIL) – WHERE condition to filter records. NIL = include all.
+ *   lWhile       (CODEBLOCK|NIL) – WHILE condition to limit processing. NIL = process until EOF().
+ *   lRest        (LOGICAL) – .T. = start from current record, .F. = start from first record.
+ *   xcFile       (STRING|NIL) – Output DBF file path. NIL = "TEMP.DBF".
+ *   xcAlias      (STRING|NIL) – Alias for output DBF. Defaults to filename (or "temp").
+ *   lAdditive    (LOGICAL) – .T. = append to existing DBF, .F. = create new file.
+ *   aSummary     (ARRAY|NIL) – Holds running totals for fields marked in aSelectList[6]. NIL = no summary.
+ *   xEval        (CODEBLOCK|NIL) – Optional per-record evaluation before appending/updating.
+ *
+ * Return:
+ *   None (side effects only).
+ *   - Creates or appends to a DBF.
+ *   - Optionally builds an index.
+ *   - Optionally fills aSummary array with totals.
+ *   - Changes the active work area to the output table and positions at the first record.
+ *
+ * Purpose (Rationale):
+ *   This function enables SQL-like data extraction and transformation in DBF-based Harbour apps without
+ *   requiring an SQL engine. It supports grouping, aggregation, conditional filtering, and joining
+ *   (one-to-many), making it useful for reporting and batch data processing in legacy systems.
+ *
+ * Notes:
+ *   - Index creation is only done if GROUP BY fields are specified.
+ *   - Grouping is implemented via index key expressions, not SQL semantics.
+ *   - aOneToMany assumes child records can be located by dbSeek().
+ *   - When lAdditive = .T., structure compatibility between source and target is assumed.
+ *   - Large datasets may be slower due to per-record Eval() calls.
+ */
 PROCEDURE Selector( aSelectList, xcnFromArea, aOneToMany, lSelect, lWhile, lRest, xcFile, xcAlias, lAdditive, aSummary, xEval )
 
    LOCAL nLenSelectList := Len( aSelectList )
@@ -32,26 +63,24 @@ PROCEDURE Selector( aSelectList, xcnFromArea, aOneToMany, lSelect, lWhile, lRest
    LOCAL nCurrent, cSeekExpr, nStartRec
    LOCAL lEval := HB_ISBLOCK( xEval )
 
-   // Determine the work area (database) to select from
+   /* Determine and select the source work area */
    IF xcnFromArea == NIL
-      nSelectFrom := Select() // Default to the current work area
+      nSelectFrom := Select()
    ELSE
-      // If work area is specified as numeric, use it directly
       IF HB_ISNUMERIC( xcnFromArea )
          nSelectFrom := xcnFromArea
-         // If specified as character, select the area using its alias
       ELSEIF HB_ISSTRING( xcnFromArea )
          nSelectFrom := Select( xcnFromArea )
       ENDIF
-      dbSelectArea( nSelectFrom ) // Switch to the selected work area
+      dbSelectArea( nSelectFrom )
    ENDIF
 
-   // If one-to-many relationship is defined, select the child area
+   /* Prepare child work area if one-to-many relationship is defined */
    IF lOTM
       nSelectChild := Select( aOneToMany[ 1 ] )
    ENDIF
 
-   // Define the output file and alias if not provided
+   /* Set output file and alias defaults */
    IF xcFile == NIL
       xcFile := "TEMP.DBF"
       IF xcAlias == NIL
@@ -61,142 +90,132 @@ PROCEDURE Selector( aSelectList, xcnFromArea, aOneToMany, lSelect, lWhile, lRest
       xcAlias := hb_FNameName( xcFile )
    ENDIF
 
-   // Define the index name based on file name if not provided
-   IF cIndexName == NIL
-      cIndexName := hb_FNameExtSet( hb_FNameName( xcFile ), IndexExt() )
-   ENDIF
+   /* Determine default index filename */
+   DEFAULT cIndexName := hb_FNameExtSet( hb_FNameName( xcFile ), IndexExt() )
 
+   /* Bookmark current record and move to EOF to prep for reading */
    nStartRec := RecNo()
    dbGoto( LastRec() + 1 )
-
-   // If there is a child area, move to the end of the child database as well
    IF lOTM
       ( nSelectChild )->( dbGoto( LastRec() + 1 ) )
    ENDIF
 
-   // Loop through the selection list and process each field/expression
+   /* Build output structure and determine grouping/summary fields */
    FOR nCurrExpr := 1 TO nLenSelectList
       xExprValue := Eval( aSelectList[ nCurrExpr, 1 ] )
       cExprType := ValType( xExprValue )
       cExprValue := Transform( xExprValue, "" )
       nExprLen := Len( cExprValue )
-      // Add the expression's structure to the field structure (alias, type, length, decimals)
-      AAdd( aStruct, { iif( ( nExprAlias := At( "->", aSelectList[ nCurrExpr, 2 ] ) ) == 0, aSelectList[ nCurrExpr, 2 ], ;
-         SubStr( aSelectList[ nCurrExpr, 2 ], nExprAlias + 2 ) ), cExprType, ;
-         iif( aSelectList[ nCurrExpr, 3 ] <> NIL, aSelectList[ nCurrExpr, 3 ], ;
-         iif( cExprType == "D", 8, nExprLen ) ), ;
-         iif( aSelectList[ nCurrExpr, 4 ] <> NIL, aSelectList[ nCurrExpr, 4 ], ;
-         iif( cExprType == "N" .AND. ( nExprAlias := At( ".", cExprValue ) ) > 0, ;
-         nExprLen - nExprAlias, 0 ) ) } )
 
-      // If the expression is to be grouped (GROUP keyword)
+      AAdd( aStruct, { iif( ( nExprAlias := At( "->", aSelectList[ nCurrExpr, 2 ] ) ) == 0, ;
+                            aSelectList[ nCurrExpr, 2 ], ;
+                            SubStr( aSelectList[ nCurrExpr, 2 ], nExprAlias + 2 ) ), ;
+                            cExprType, ;
+                            iif( aSelectList[ nCurrExpr, 3 ] <> NIL, aSelectList[ nCurrExpr, 3 ], ;
+                                 iif( cExprType == "D", 8, nExprLen ) ), ;
+                            iif( aSelectList[ nCurrExpr, 4 ] <> NIL, aSelectList[ nCurrExpr, 4 ], ;
+                                 iif( cExprType == "N" .AND. ( nExprAlias := At( ".", cExprValue ) ) > 0, ;
+                                      nExprLen - nExprAlias, 0 ) ) } )
+
+      /* Handle GROUP BY */
       IF aSelectList[ nCurrExpr, 5 ] == "G"
-         IF .NOT. lCreateIndex
+         IF !lCreateIndex
             lCreateIndex := .T.
          ELSE
             cIndexKey += "+"
          ENDIF
-         // Build the index key based on the type of the expression (character, numeric, date, logical)
-         IF cExprType == "C"
+
+         DO CASE
+         CASE cExprType == "C"
             cIndexKey += aStruct[ nCurrExpr, 1 ]
-         ELSEIF cExprType == "N"
+         CASE cExprType == "N"
             cIndexKey += ( "Str(" + aStruct[ nCurrExpr, 1 ] + ")" )
-         ELSEIF cExprType == "D"
+         CASE cExprType == "D"
             cIndexKey += ( "DToS(" + aStruct[ nCurrExpr, 1 ] + ")" )
-         ELSEIF cExprType == "L"
+         CASE cExprType == "L"
             cIndexKey += ( "Iif(" + aStruct[ nCurrExpr, 1 ] + "," + Chr( 34 ) + "1" + Chr( 34 ) + "," + Chr( 34 ) + "0" + Chr( 34 ) + ")" )
-         ENDIF
-         // Add the expression to an array of expressions
+         ENDCASE
+
          AAdd( axExpr, aSelectList[ nCurrExpr, 1 ] )
 
-         // If the expression is marked for summary (SUMMARY keyword)
-      ELSEIF aSelectList[ nCurrExpr, 6 ] .AND. ( lSummary .AND. .NOT. lAdditive )
-         // Add the expression to the summary array, initializing the value to 0
+      /* Handle SUMMARY fields */
+      ELSEIF aSelectList[ nCurrExpr, 6 ] .AND. ( lSummary .AND. !lAdditive )
          AAdd( aSummary, 0 )
       ENDIF
    NEXT
 
    dbGoto( nStartRec )
 
-   // If additive flag is set, select the target work area, otherwise create a new file
+   /* Open output table for writing */
    IF lAdditive
       nSelectTemp := Select( xcAlias )
    ELSE
       dbCreate( xcFile, aStruct )
       dbUseArea( .T., NIL, xcFile, xcAlias, .F. )
       nSelectTemp := Select()
-      // Create an index if necessary
       IF lCreateIndex
          dbCreateIndex( cIndexName, cIndexKey, hb_macroBlock( cIndexKey ) )
       ENDIF
       dbSelectArea( nSelectFrom )
    ENDIF
 
-   // If REST is not specified, go to the first record
-   IF .NOT. lRest
+   IF !lRest
       dbGoTop()
    ENDIF
 
-   // Process records if there is a one-to-many relationship
+   /* Align source and child cursors for one-to-many */
    IF lOTM
-      DO WHILE .NOT. Eof() .AND. .NOT. ( nSelectChild )->( dbSeek( xValueFromMother := ( nSelectFrom )->( Eval( aOneToMany[ 2 ] ) ), .F. ) )
+      DO WHILE !Eof() .AND. !( nSelectChild )->( dbSeek( xValueFromMother := ( nSelectFrom )->( Eval( aOneToMany[ 2 ] ) ), .F. ) )
          dbSkip()
       ENDDO
    ENDIF
 
-   // Main loop for selecting and processing records
-   DO WHILE .NOT. Eof() .AND. ( lWhile == NIL .OR. Eval( lWhile ) )
-      // Evaluate the expression for each record if an evaluation block is provided
+   /* Main record processing loop */
+   DO WHILE !Eof() .AND. ( lWhile == NIL .OR. Eval( lWhile ) )
       IF lEval
          Eval( xEval )
       ENDIF
-      // Check if the record meets the select condition or if no condition is provided
       IF lSelect == NIL .OR. Eval( lSelect )
          lAppend := .F.
-         lCreateIndex := .NOT. lCreateIndex
+         lCreateIndex := !lCreateIndex
          cSeekExpr := ""
 
-         // If there's an expression array, evaluate and build the seek expression
-         IF HB_ISARRAY( axExpr ) .AND. ValType( AEval( axExpr, {| e | cSeekExpr += ToString( Eval( e ) ) } ) ) == "A" .OR. .NOT. ( nSelectTemp )->( dbSeek( cSeekExpr, .F. ) )
+         IF HB_ISARRAY( axExpr ) .AND. ValType( AEval( axExpr, {| e | cSeekExpr += ToString( Eval( e ) ) } ) ) == "A" .OR. !( nSelectTemp )->( dbSeek( cSeekExpr, .F. ) )
             ( nSelectTemp )->( dbAppend() )
             lAppend := .T.
          ENDIF
 
          nCurrent := 0
-
-         // Loop through the selection list to process each field
          FOR nCurrExpr := 1 TO nLenSelectList
             IF aSelectList[ nCurrExpr, 6 ]
                ++nCurrent
             ENDIF
-            // If index creation is not required or the record is being appended, update the field value
-            IF .NOT. lCreateIndex .OR. lAppend .OR. aSelectList[ nCurrExpr, 5 ] $ "TA"
+            IF !lCreateIndex .OR. lAppend .OR. aSelectList[ nCurrExpr, 5 ] $ "TA"
                xExprValue := Eval( aSelectList[ nCurrExpr, 1 ] )
-               // Handle totals (T) and averages (A)
-               IF aSelectList[ nCurrExpr, 5 ] == "T"
+               DO CASE
+               CASE aSelectList[ nCurrExpr, 5 ] == "T"
                   ( nSelectTemp )->( FieldPut( nCurrExpr, FieldGet( nCurrExpr ) + xExprValue ) )
-               ELSEIF aSelectList[ nCurrExpr, 5 ] == "A" .AND. .NOT. lAppend
+               CASE aSelectList[ nCurrExpr, 5 ] == "A" .AND. !lAppend
                   ( nSelectTemp )->( FieldPut( nCurrExpr, ( FieldGet( nCurrExpr ) + xExprValue ) / 2 ) )
-               ELSE
+               OTHERWISE
                   ( nSelectTemp )->( FieldPut( nCurrExpr, xExprValue ) )
-               ENDIF
-               // Update summary if required
+               ENDCASE
                IF aSelectList[ nCurrExpr, 6 ] .AND. lSummary
-                  aSummary[ nCurrent ] := aSummary[ nCurrent ] + xExprValue
+                  aSummary[ nCurrent ] += xExprValue
                ENDIF
             ENDIF
          NEXT
       ENDIF
-      // Skip records depending on the one-to-many relationship
-      IF .NOT. lOTM
+
+      /* Advance record pointers */
+      IF !lOTM
          ( nSelectFrom )->( dbSkip() )
       ELSE
          ( nSelectChild )->( dbSkip() )
-         IF ( nSelectChild )->( Eof() ) .OR. .NOT. xValueFromMother == ( nSelectChild )->( Eval( aOneToMany[ 3 ] ) )
+         IF ( nSelectChild )->( Eof() ) .OR. !xValueFromMother == ( nSelectChild )->( Eval( aOneToMany[ 3 ] ) )
             dbSkip()
             IF lOTM
-               // Continue processing the next record in the one-to-many relationship
-               DO WHILE .NOT. Eof() .AND. .NOT. ( nSelectChild )->( dbSeek( ( nSelectFrom )->( Eval( aOneToMany[ 2 ] ) ), .F. ) )
+               DO WHILE !Eof() .AND. !( nSelectChild )->( dbSeek( ( nSelectFrom )->( Eval( aOneToMany[ 2 ] ) ), .F. ) )
                   dbSkip()
                ENDDO
             ENDIF
@@ -204,26 +223,36 @@ PROCEDURE Selector( aSelectList, xcnFromArea, aOneToMany, lSelect, lWhile, lRest
       ENDIF
    ENDDO
 
-   // Select the output area and go to the first record
    dbSelectArea( nSelectTemp )
    dbGoTop()
 
 RETURN
 
+
 /*
-   Converts a value to a string for index key consistency.
-
-   Input Parameters:
-      cStr: The value to convert.
-
-   Return Value:
-      String representation of the value.
-*/
+ * STATIC FUNCTION ToString( cStr )
+ *
+ * Purpose:
+ *   Converts a value of various Harbour types into a consistent string form,
+ *   mainly for index key construction and comparison in GROUP BY/seek operations.
+ *
+ * Parameters:
+ *   cStr – Value to be converted. May be Numeric, Date, Logical, or String.
+ *
+ * Return:
+ *   (STRING) – Formatted value as a string.
+ *     - Numeric to Str()
+ *     - Date to DToS() (YYYYMMDD)
+ *     - Logical to "1" for .T., "0" for .F.
+ *     - Other to unchanged
+ *
+ * Notes:
+ *   Ensures grouping keys are type-consistent when building index expressions.
+ */
 STATIC FUNCTION ToString( cStr )
 
    LOCAL cType := ValType( cStr )
 
-   // Convert different types to string
    SWITCH cType
    CASE "N"
       RETURN Str( cStr )

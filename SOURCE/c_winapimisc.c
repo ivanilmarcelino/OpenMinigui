@@ -54,6 +54,7 @@
 #include <shellapi.h>
 #include <shlobj.h>
 #include <shlwapi.h>
+#include <wchar.h>
 
 #include "hbapierr.h"
 #include "hbapiitm.h"
@@ -68,12 +69,6 @@
 #include "hbapifs.h"
 #include "inkey.ch"
 
-#ifdef __XCC__
-char                       *itoa( int __value, char *__string, int __radix );
-#endif
-#if defined( _MSC_VER ) && !defined( __POCC__ )
-#define itoa( __value, __string, __radix )   _itoa( __value, __string, __radix )
-#endif
 #if defined( __XHARBOUR__ )
 #define HB_LONGLONG  LONGLONG
 extern HB_EXPORT void      hb_evalBlock0( PHB_ITEM pCodeBlock );
@@ -1628,8 +1623,8 @@ HB_FUNC( GETCURRENTFOLDER )
 HB_FUNC( CREATESOLIDBRUSH )
 {
    HBRUSH   hBrush = CreateSolidBrush( RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) ); // Create the solid brush.
-   RegisterResource( hBrush, "BRUSH" );   // Register the brush for resource management.
-   hmg_ret_raw_HBRUSH( hBrush );          // Return the brush handle.
+   RegisterResource( hBrush, "BRUSH" );      // Register the brush for resource management.
+   hmg_ret_raw_HBRUSH( hBrush );             // Return the brush handle.
 }
 
 /*
@@ -1703,359 +1698,207 @@ HB_FUNC( GETSYSCOLOR )
        [3]: string - The build number.
        [4]: string - Extended OS information (e.g., "Professional", "Datacenter Edition").
 */
+#if defined( __BORLANDC__ )
+#ifndef VER_SUITE_PERSONAL
+#define VER_SUITE_PERSONAL 0x00000200
+#endif
+#ifndef VER_SUITE_BLADE
+#define VER_SUITE_BLADE 0x00000400
+#endif
+#endif
 HB_FUNC( WINVERSION )
 {
-#if defined( __BORLANDC__ )
-   // These constants are specific to Borland C++ and define suite masks for OS version identification.
-#define VER_SUITE_PERSONAL 0x00000200     // Indicates Windows Personal Edition
-#define VER_SUITE_BLADE    0x00000400     // Indicates Windows Web Edition (Blade Server)
-#endif
-
-   // Struct for OS version information and extended OS information
-   OSVERSIONINFOEX   osvi;
-   BOOL              bOsVersionInfoEx;
-
-   // Pointers to hold OS version, Service Pack, build number, and additional version info
-   TCHAR             *szVersion = NULL;
-   TCHAR             *szServicePack = NULL;
-   TCHAR             *szBuild = NULL;
-   TCHAR             buffer[5];           // For numeric conversions
-   TCHAR             *szVersionEx = NULL;
-#ifdef UNICODE
-   LPSTR             pStr;                // Pointer for ANSI conversion in Unicode build
-#endif
-
-   // Initialize the OSVERSIONINFOEX structure with zeros.
-   ZeroMemory( &osvi, sizeof( OSVERSIONINFOEX ) );
-
-   // Set the size of the structure.  This is required for GetVersionEx to work correctly.
-   osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFOEX );
-
-   // Attempt to get extended version information (OSVERSIONINFOEX)
-   bOsVersionInfoEx = GetVersionEx( ( OSVERSIONINFO * ) &osvi );
-   if( !bOsVersionInfoEx )
+   typedef struct
    {
-      // If extended info retrieval fails, try basic version info
-      osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+      DWORD       major;
+      DWORD       minor;
+      DWORD       buildMin, buildMax;
+      BYTE        productType;               /* VER_NT_WORKSTATION or VER_NT_SERVER */
+      const char  *name;
+   } OSVERSIONMAP;
 
-      // If extended info retrieval fails, try basic version info
-      if( !GetVersionEx( ( OSVERSIONINFO * ) &osvi ) )
-      {
-         // If even basic version info retrieval fails, set the OS name to "Unknown Operating System".
-         szVersion = TEXT( "Unknown Operating System" );
-      }
-   }
-
-   // Identify OS version and service pack based on version number and platform
-   if( szVersion == NULL )
+   static const OSVERSIONMAP  osTable[] =
    {
-      // Determine the OS version based on the platform ID.
-      switch( osvi.dwPlatformId )
+      /* Windows 11 / 10 / Server family */
+      { 10, 0, 22000, 0xFFFFFFFF, VER_NT_WORKSTATION, "Windows 11" },
+      { 10, 0, 10240, 21999, VER_NT_WORKSTATION, "Windows 10" },
+      { 10, 0, 20348, 0xFFFFFFFF, VER_NT_SERVER, "Windows Server 2022" },
+      { 10, 0, 17763, 20347, VER_NT_SERVER, "Windows Server 2019" },
+      { 10, 0, 14393, 17762, VER_NT_SERVER, "Windows Server 2016" },
+
+      /* Windows 8.x / Server 2012 */
+      { 6, 3, 0, 0, VER_NT_WORKSTATION, "Windows 8.1" },
+      { 6, 3, 0, 0, VER_NT_SERVER, "Windows Server 2012 R2" },
+      { 6, 2, 0, 0, VER_NT_WORKSTATION, "Windows 8" },
+      { 6, 2, 0, 0, VER_NT_SERVER, "Windows Server 2012" },
+
+      /* Windows 7 / Server 2008 R2 */
+      { 6, 1, 0, 0, VER_NT_WORKSTATION, "Windows 7" },
+      { 6, 1, 0, 0, VER_NT_SERVER, "Windows Server 2008 R2" },
+
+      /* Windows Vista / Server 2008 */
+      { 6, 0, 0, 0, VER_NT_WORKSTATION, "Windows Vista" },
+      { 6, 0, 0, 0, VER_NT_SERVER, "Windows Server 2008" },
+
+      /* Windows XP / 2003 / 2000 */
+      { 5, 2, 0, 0, VER_NT_WORKSTATION, "Windows XP x64 Edition" },
+      { 5, 2, 0, 0, VER_NT_SERVER, "Windows Server 2003" },
+      { 5, 1, 0, 0, VER_NT_WORKSTATION, "Windows XP" },
+      { 5, 0, 0, 0, VER_NT_WORKSTATION, "Windows 2000" },
+      { 5, 0, 0, 0, VER_NT_SERVER, "Windows 2000 Server" },
+
+      /* NT4 and earlier */
+      { 4, 0, 0, 0, VER_NT_WORKSTATION, "Windows NT Workstation 4.0" },
+      { 4, 0, 0, 0, VER_NT_SERVER, "Windows NT Server 4.0" },
+   };
+
+   char                 osName[64] = "Unknown Operating System";
+   char                 sp[128] = "";
+   char                 buildStr[32] = "";
+   char                 edition[64] = "";
+   BOOL                 filled = FALSE;
+
+   /* --- Preferred path: RtlGetVersion --- */
+   HMODULE              hNtdll = GetModuleHandleA( "ntdll.dll" );
+   if( hNtdll )
+   {
+      typedef LONG ( WINAPI *RtlGetVersionPtr ) ( OSVERSIONINFOEXW * );
+
+      RtlGetVersionPtr  pRtlGetVersion = ( RtlGetVersionPtr ) wapi_GetProcAddress( hNtdll, "RtlGetVersion" );
+
+      if( pRtlGetVersion )
       {
-         case VER_PLATFORM_WIN32_NT:
-            // Windows NT-based systems
-            if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
-            {
-               szVersion = TEXT( "Windows Server 2003 family " );
-            }
+         OSVERSIONINFOEXW  osvi;
+         ZeroMemory( &osvi, sizeof( osvi ) );
+         osvi.dwOSVersionInfoSize = sizeof( osvi );
 
-            if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
+         if( pRtlGetVersion( &osvi ) == 0 )  /* STATUS_SUCCESS */
+         {
+            /* --- Lookup from table --- */
+            HB_SIZE  i;
+            for( i = 0; i < HB_SIZEOFARRAY( osTable ); i++ )
             {
-               szVersion = TEXT( "Windows XP " );
-            }
-
-            if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
-            {
-               szVersion = TEXT( "Windows 2000 " );
-            }
-
-            if( osvi.dwMajorVersion <= 4 )
-            {
-               szVersion = TEXT( "Windows NT " );
-            }
-
-            // Additional OS version info if OSVERSIONINFOEX is supported
-            if( bOsVersionInfoEx )
-            {
-               if( osvi.wProductType == VER_NT_WORKSTATION )
+               if( osvi.dwMajorVersion == osTable[i].major && osvi.dwMinorVersion == osTable[i].minor && osvi.wProductType == osTable[i].productType )
                {
-                  // Workstation versions
-                  if( osvi.dwMajorVersion == 10 && osvi.dwBuildNumber >= 22000 )
+                  if
+                  (
+                     osTable[i].buildMin == 0
+                  || ( osvi.dwBuildNumber >= osTable[i].buildMin && osvi.dwBuildNumber <= ( osTable[i].buildMax ? osTable[i].buildMax : osvi.dwBuildNumber ) )
+                  )
                   {
-                     szVersion = TEXT( "Windows 11 " );
-                  }
-                  else if( osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 )
-                  {
-                     szVersion = TEXT( "Windows 10 " );
-                  }
-                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 )
-                  {
-                     szVersion = TEXT( "Windows 8.1 " );
-                  }
-                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 )
-                  {
-                     szVersion = TEXT( "Windows 8 " );
-                  }
-                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1 )
-                  {
-                     szVersion = TEXT( "Windows 7 " );
-                  }
-                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )
-                  {
-                     szVersion = TEXT( "Windows Vista " );
-                  }
-
-                  if( osvi.dwMajorVersion == 4 )
-                  {
-                     szVersionEx = TEXT( "Workstation 4.0 " );
-                  }
-                  else if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
-                  {
-                     szVersionEx = TEXT( "Home Edition " );
-                  }
-                  else
-                  {
-                     szVersionEx = TEXT( "Professional " );
-                  }
-               }
-               else if( osvi.wProductType == VER_NT_SERVER )
-               {
-                  // Server versions
-                  if( osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 )
-                  {
-                     if( osvi.dwBuildNumber >= 20348 )
-                     {
-                        szVersion = TEXT( "Windows Server 2022" );
-                     }
-                     else if( osvi.dwBuildNumber >= 17763 )
-                     {
-                        szVersion = TEXT( "Windows Server 2019" );
-                     }
-                     else
-                     {
-                        szVersion = TEXT( "Windows Server 2016" );
-                     }
-                  }
-                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 )
-                  {
-                     szVersion = TEXT( "Windows Server 2012 R2 " );
-                  }
-                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 )
-                  {
-                     szVersion = TEXT( "Windows Server 2012 " );
-                  }
-                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1 )
-                  {
-                     szVersion = TEXT( "Windows Server 2008 R2 " );
-                  }
-                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )
-                  {
-                     szVersion = TEXT( "Windows Server 2008 " );
-                  }
-                  else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
-                  {
-                     if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-                     {
-                        szVersionEx = TEXT( "Datacenter Edition " );
-                     }
-                     else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                     {
-                        szVersionEx = TEXT( "Enterprise Edition " );
-                     }
-                     else if( osvi.wSuiteMask & VER_SUITE_BLADE )
-                     {
-                        szVersionEx = TEXT( "Web Edition " );
-                     }
-                     else
-                     {
-                        szVersionEx = TEXT( "Standard Edition " );
-                     }
-                  }
-                  else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
-                  {
-                     if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-                     {
-                        szVersionEx = TEXT( "Datacenter Server " );
-                     }
-                     else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                     {
-                        szVersionEx = TEXT( "Advanced Server " );
-                     }
-                     else
-                     {
-                        szVersionEx = TEXT( "Server " );
-                     }
-                  }
-                  else
-                  {
-                     if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                     {
-                        szVersionEx = TEXT( "Server 4.0, Enterprise Edition " );
-                     }
-                     else
-                     {
-                        szVersionEx = TEXT( "Server 4.0 " );
-                     }
+                     hb_strncpyTrim( osName, osTable[i].name, sizeof( osName ) );
+                     break;
                   }
                }
             }
 
-            // Fallback registry-based check for pre-Windows 2000
-            else
+            /* --- Edition string --- */
+            if( osvi.wProductType == VER_NT_WORKSTATION )
             {
-               // Open registry to identify server or workstation version
-               HKEY  hKey;
-               TCHAR szProductType[80];
-               DWORD dwBufLen = 80;
-               LONG  lRetVal;
-
-               // Open the registry key to get the product type.
-               lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE, TEXT( "SYSTEM\\CurrentControlSet\\Control\\ProductOptions" ), 0, KEY_QUERY_VALUE, &hKey );
-
-               if( lRetVal != ERROR_SUCCESS )
-               {
-                  szVersion = TEXT( "Unknown Operating System" );
-               }
-               else
-               {
-                  // Query the registry value for the product type.
-                  lRetVal = RegQueryValueEx( hKey, TEXT( "ProductType" ), NULL, NULL, ( LPBYTE ) szProductType, &dwBufLen );
-                  if( ( lRetVal != ERROR_SUCCESS ) || ( dwBufLen > 80 ) )
-                  {
-                     szVersion = TEXT( "Unknown Operating System" );
-                  }
-               }
-
-               RegCloseKey( hKey );
-
-               // Determine server/workstation from registry value
-               if( lstrcmpi( TEXT( "Unknown Operating System" ), szVersion ) != 0 )
-               {
-                  if( lstrcmpi( TEXT( "WINNT" ), szProductType ) == 0 )
-                  {
-                     szVersionEx = TEXT( "Workstation " );
-                  }
-
-                  if( lstrcmpi( TEXT( "LANMANNT" ), szProductType ) == 0 )
-                  {
-                     szVersionEx = TEXT( "Server " );
-                  }
-
-                  if( lstrcmpi( TEXT( "SERVERNT" ), szProductType ) == 0 )
-                  {
-                     szVersionEx = TEXT( "Advanced Server " );
-                  }
-
-                  // Concatenate the major and minor version numbers to the OS name.
-                  szVersion = lstrcat( szVersion, _itot( osvi.dwMajorVersion, buffer, 10 ) );
-                  szVersion = lstrcat( szVersion, TEXT( "." ) );
-                  szVersion = lstrcat( szVersion, _itot( osvi.dwMinorVersion, buffer, 10 ) );
-               }
-            }
-
-            // Check for Service Pack 6a on Windows NT 4.0
-            if( osvi.dwMajorVersion == 4 && lstrcmpi( osvi.szCSDVersion, TEXT( "Service Pack 6" ) ) == 0 )
-            {
-               HKEY  hKey;
-               LONG  lRetVal;
-
-               // Check for the Q246009 hotfix to determine if it's Service Pack 6a.
-               lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE, TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009" ), 0, KEY_QUERY_VALUE, &hKey );
-               if( lRetVal == ERROR_SUCCESS )
-               {
-                  szServicePack = TEXT( "Service Pack 6a" );
-                  szBuild = _itot( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
-               }
-               else
-               {
-                  szServicePack = osvi.szCSDVersion;
-                  szBuild = _itot( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
-               }
-
-               RegCloseKey( hKey );
+               hb_strncpyTrim( edition, ( osvi.wSuiteMask & VER_SUITE_PERSONAL ) ? "Home Edition" : "Professional", sizeof( edition ) );
             }
             else
             {
-               // Get the service pack and build number from the OSVERSIONINFOEX structure.
-               szServicePack = osvi.szCSDVersion;
-               szBuild = _itot( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
-            }
-            break;
-
-         case VER_PLATFORM_WIN32_WINDOWS:
-            // Windows 9x-based systems
-            if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 0 ) )
-            {
-               if( osvi.szCSDVersion[1] == TEXT( 'B' ) )
+               if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
                {
-                  szVersion = TEXT( "Windows 95 B" );
-                  szServicePack = TEXT( "OSR2" );
+                  hb_strncpyTrim( edition, "Datacenter Edition", sizeof( edition ) );
+               }
+               else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
+               {
+                  hb_strncpyTrim( edition, "Enterprise Edition", sizeof( edition ) );
+               }
+               else if( osvi.wSuiteMask & VER_SUITE_BLADE )
+               {
+                  hb_strncpyTrim( edition, "Web Edition", sizeof( edition ) );
                }
                else
                {
-                  if( osvi.szCSDVersion[1] == TEXT( 'C' ) )
-                  {
-                     szVersion = TEXT( "Windows 95 C" );
-                     szServicePack = TEXT( "OSR2" );
-                  }
-                  else
-                  {
-                     szVersion = TEXT( "Windows 95" );
-                     szServicePack = TEXT( "OSR1" );
-                  }
+                  hb_strncpyTrim( edition, "Standard Edition", sizeof( edition ) );
                }
-
-               szBuild = _itot( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
 
-            if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 10 ) )
+            /* --- Service Pack string --- */
+            if( osvi.wServicePackMajor > 0 )
             {
-               if( osvi.szCSDVersion[1] == 'A' )
-               {
-                  szVersion = TEXT( "Windows 98 A" );
-                  szServicePack = TEXT( "Second Edition" );
-               }
-               else
-               {
-                  szVersion = TEXT( "Windows 98" );
-                  szServicePack = TEXT( "First Edition" );
-               }
-
-               szBuild = _itot( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
-            }
-
-            if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 90 ) )
-            {
-               szVersion = TEXT( "Windows ME" );
-               szBuild = _itot( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
-            }
-            break;
-      }
-   }
-
-   // Final storage and return of collected OS version details
-   hb_reta( 4 );  // Create an array with 4 elements to store the OS information.
-#ifndef UNICODE
-   // Store the OS version, service pack, build number, and extended version information in the array (ANSI version).
-   HB_STORC( szVersion, -1, 1 );
-   HB_STORC( szServicePack, -1, 2 );
-   HB_STORC( szBuild, -1, 3 );
-   HB_STORC( szVersionEx, -1, 4 );
+#if defined( __MINGW32__ )
+               /* Pacified "ISO C does not support the '%S' ms_printf format" warning for MinGW compiler */
+               char  csd[128] = "";
+               WideCharToMultiByte( CP_UTF8, 0, osvi.szCSDVersion, -1, csd, sizeof( csd ), NULL, NULL );
+               hb_snprintf( sp, sizeof( sp ), "Service Pack %d.%d (%s)", osvi.wServicePackMajor, osvi.wServicePackMinor, csd );
 #else
-   // Convert the wide character strings to ANSI strings and store them in the array (Unicode version).
-   pStr = WideToAnsi( szVersion );
-   HB_STORC( pStr, -1, 1 );
-   hb_xfree( pStr );
-   pStr = WideToAnsi( szServicePack );
-   HB_STORC( pStr, -1, 2 );
-   hb_xfree( pStr );
-   pStr = WideToAnsi( szBuild );
-   HB_STORC( pStr, -1, 3 );
-   hb_xfree( pStr );
-   pStr = WideToAnsi( szVersionEx );
-   HB_STORC( pStr, -1, 4 );
-   hb_xfree( pStr );
-#endif
+               hb_snprintf( sp, sizeof( sp ), "Service Pack %d.%d (%S)", osvi.wServicePackMajor, osvi.wServicePackMinor, osvi.szCSDVersion );
+#endif /* __MINGW32__ */
+            }
+            else
+            {
+               hb_strncpyTrim( sp, "No Service Pack", sizeof( sp ) );
+            }
+
+            /* --- Build string --- */
+            {
+               DWORD build = osvi.dwBuildNumber;
+               if( osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && osvi.dwMajorVersion <= 4 )
+               {
+                  build &= 0xFFFF;      /* old NT style */
+               }
+
+               hb_snprintf( buildStr, sizeof( buildStr ), "%lu", ( unsigned long ) build );
+            }
+
+            filled = TRUE;
+         }
+      }
+   }
+
+   /* --- Fallback path: legacy OS (Windows 9x, very old NT) --- */
+   if( !filled )
+   {
+      OSVERSIONINFOA osvi;
+      ZeroMemory( &osvi, sizeof( osvi ) );
+      osvi.dwOSVersionInfoSize = sizeof( osvi );
+
+      if( !GetVersionExA( &osvi ) )
+      {
+         hb_reta( 4 );
+         HB_STORC( osName, -1, 1 );
+         HB_STORC( "", -1, 2 );
+         HB_STORC( "", -1, 3 );
+         HB_STORC( "", -1, 4 );
+         return;
+      }
+
+      /* 9x family */
+      if( osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS )
+      {
+         if( osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 0 )
+         {
+            hb_strncpyTrim( osName, "Windows 95", sizeof( osName ) );
+         }
+         else if( osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 10 )
+         {
+            hb_strncpyTrim( osName, "Windows 98", sizeof( osName ) );
+         }
+         else if( osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 90 )
+         {
+            hb_strncpyTrim( osName, "Windows ME", sizeof( osName ) );
+         }
+
+         hb_snprintf( buildStr, sizeof( buildStr ), "%lu", ( unsigned long ) ( osvi.dwBuildNumber & 0xFFFF ) );
+      }
+      else if( osvi.dwPlatformId == VER_PLATFORM_WIN32_NT )
+      {
+         hb_snprintf( osName, sizeof( osName ), "Windows NT %lu.%lu", ( unsigned long ) osvi.dwMajorVersion, ( unsigned long ) osvi.dwMinorVersion );
+         hb_strncpyTrim( sp, osvi.szCSDVersion, sizeof( sp ) );
+         hb_snprintf( buildStr, sizeof( buildStr ), "%lu", ( unsigned long ) ( osvi.dwBuildNumber & 0xFFFF ) );
+      }
+   }
+
+   /* --- Returns { OS name, Service Pack / release, Build, Edition } as Harbour array --- */
+   hb_reta( 4 );
+   HB_STORC( osName, -1, 1 );
+   HB_STORC( sp, -1, 2 );
+   HB_STORC( buildStr, -1, 3 );
+   HB_STORC( edition, -1, 4 );
 }
 
 #if defined( __XHARBOUR__ )
@@ -2132,7 +1975,7 @@ HB_FUNC( GETDLLVERSION )
             dwBuildNumber = dvi.dwBuildNumber;
          }
       }
-      else  // If the DllGetVersion function is not found.
+      else        // If the DllGetVersion function is not found.
       {
          hb_errRT_BASE_SubstR( EG_ARG, 3012, "Failed to get DllGetVersion function.", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
       }
@@ -2172,9 +2015,7 @@ HB_FUNC( GETDLLVERSION )
 HB_FUNC( SELECTOBJECT )
 {
    // Call the Windows API SelectObject to select the object into the device context.
-   hmg_ret_raw_HGDIOBJ( SelectObject( hmg_par_raw_HDC( 1 ), // handle of device context
-   hmg_par_raw_HGDIOBJ( 2 ) // handle of object
-   ) );
+   hmg_ret_raw_HGDIOBJ( SelectObject( hmg_par_raw_HDC( 1 ), hmg_par_raw_HGDIOBJ( 2 ) ) );
 }
 
 /*
@@ -2617,7 +2458,7 @@ HB_FUNC( DRAWTEXT )
    );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpchText );  // Free the memory allocated for the wide character text string.
+   hb_xfree( ( TCHAR * ) lpchText );         // Free the memory allocated for the wide character text string.
 #endif
 }
 
@@ -3138,28 +2979,3 @@ HB_FUNC( C_CREATELINK )
       hmg_ret_HRESULT( hRes );
    }
 }
-
-#ifdef __XCC__
-char *itoa( int n, char s[], int base )
-{
-   int   d = n % base;
-   int   r = n / base;
-
-   if( n < 0 )
-   {
-      *s++ = '-';
-      d = -d;
-      r = -r;
-   }
-
-   if( r )
-   {
-      s = itoa( r, s, base );
-   }
-
-   *s++ = "0123456789abcdefghijklmnopqrstuvwxyz"[d];
-   *s = 0;
-
-   return s;
-}
-#endif /* __XCC__ */

@@ -302,10 +302,10 @@ HB_FUNC( FI_ALLOCATET )
       FREE_IMAGE_TYPE   type = ( FREE_IMAGE_TYPE ) hb_parni( 1 );
       int               width = hb_parni( 2 );
       int               height = hb_parni( 3 );
-      int               bpp = hb_parni( 3 );
-      unsigned          red_mask = ( unsigned ) hb_parni( 4 );
-      unsigned          green_mask = ( unsigned ) hb_parni( 5 );
-      unsigned          blue_mask = ( unsigned ) hb_parni( 6 );
+      int               bpp = hb_parni( 4 );
+      unsigned          red_mask = ( unsigned ) hb_parni( 5 );
+      unsigned          green_mask = ( unsigned ) hb_parni( 6 );
+      unsigned          blue_mask = ( unsigned ) hb_parni( 7 );
 
       hb_FIBITMAP_ret( FreeImage_AllocateT( type, width, height, bpp, red_mask, green_mask, blue_mask ), HB_TRUE );
    }

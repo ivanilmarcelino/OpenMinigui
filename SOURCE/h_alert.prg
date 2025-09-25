@@ -358,6 +358,9 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
    END EDITBOX  
    
 
+   SetWindowLong( &( cForm ).MsgAlert.Handle, GWL_EXSTYLE, hb_bitAnd( GetWindowLong(&( cForm ).MsgAlert.Handle, GWL_EXSTYLE), hb_bitNot(WS_EX_CLIENTEDGE) ) )
+   SetWindowPos( &( cForm ).MsgAlert.Handle, 0, 0,0,0,0, SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER + SWP_FRAMECHANGED )
+
    IF nIcoSize > 0
 
       DRAW ICON IN WINDOW ( cForm ) ;

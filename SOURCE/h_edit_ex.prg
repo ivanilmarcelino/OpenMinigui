@@ -558,6 +558,7 @@ FUNCTION ABM2( cArea, cTitulo, aNombreCampo, ;
          _aControl[ i, ABM_CON_TYPE ] := ABM_TEXTBOXC
          EXIT
       CASE "D"
+      CASE "T"
          _aControl[ i, ABM_CON_NAME ] := "ABM2Control" + AllTrim( Str( i ) )
          _aControl[ i, ABM_CON_ROW ] := nFila
          _aControl[ i, ABM_CON_COL ] := nColumna + nAnchoEtiqueta + 20
@@ -594,7 +595,7 @@ FUNCTION ABM2( cArea, cTitulo, aNombreCampo, ;
          _aControl[ i, ABM_CON_TYPE ] := ABM_EDITBOX
          nFila += 45
       endswitch
-      IF _aEstructura[ i, DBS_TYPE ] $ "CDNLM"
+      IF _aEstructura[ i, DBS_TYPE ] $ "CDTNLM"
          nFila += 35
       ENDIF
    NEXT
@@ -1085,6 +1086,7 @@ STATIC FUNCTION ABM2Editar( lNuevo )
             HEIGHT _aControl[ i, ABM_CON_HEIGHT ] ;
             VALUE "" ;
             FONT "Arial" SIZE 9 ;
+            NOHSCROLL ;
             ON GOTFOCUS ABM2ConFoco() ;
             ON LOSTFOCUS ABM2SinFoco()
       ENDCASE
@@ -1235,7 +1237,7 @@ STATIC FUNCTION ABM2EditarGuardar( lNuevo )
    // ------- Guarda el registro.-------------------------------------------------
    IF _bGuardar == NIL
 
-      IF IS_SQLRDD
+      IF IS_SQLRDD .OR. RddName() == "SQLMIX"
          FOR i := 1 TO Len( _aControl )
             lResultado := _aEditable[ i ]
          NEXT

@@ -46,48 +46,67 @@
    Parts of this code are contributed and used here under permission of the author:
        Copyright 2006 (C) Grigory Filatov <gfilatov@gmail.com>
  ---------------------------------------------------------------------------*/
-
-// Define the minimum required Internet Explorer version to be 5.01, which is needed by some Windows controls.
 #define _WIN32_IE 0x0501
 
-// Include necessary headers for Harbour library definitions, Windows macros, and common controls.
 #include <mgdefs.h>
 #include <windowsx.h>
 #include <commctrl.h>
-
-// Include Harbour-specific headers for VM and date functions.
 #include "hbvm.h"
 #include "hbdate.h"
 
-// If UNICODE is enabled, declare a function to convert ANSI strings to wide character strings.
 #ifdef UNICODE
 LPWSTR   AnsiToWide( LPCSTR );
 #endif
-
-// Declare the PrepareFont function for C linkage.
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 extern HFONT   PrepareFont( TCHAR *, int, int, int, int, int, int, int );
-
 #ifdef __cplusplus
 }
 #endif
-
-// Custom Window Procedure for the Month Calendar control.
 LRESULT CALLBACK  OwnMCProc( HWND hmonthcal, UINT Msg, WPARAM wParam, LPARAM lParam );
-
-// Function to retrieve the instance handle for the application.
 HINSTANCE         GetInstance( void );
 
-// Harbour function to initialize a Month Calendar control.
+/*
+ * FUNCTION: INITMONTHCAL
+ *
+ * Creates and initializes a Windows Month Calendar control with custom styles and font settings.
+ *
+ * Parameters:
+ *   1: HWND     - Handle of the parent window.
+ *   2: HMENU    - Menu handle (used as control ID).
+ *   3: INT      - X coordinate of the control.
+ *   4: INT      - Y coordinate of the control.
+ *   7: CHAR*    - Font face name (ANSI string; converted to wide string if UNICODE).
+ *   8: INT      - Font size in points.
+ *   9: LOGICAL  - TRUE to hide the "Today" date.
+ *  10: LOGICAL  - TRUE to hide the circle around "Today".
+ *  11: LOGICAL  - TRUE to display week numbers.
+ *  12: LOGICAL  - FALSE to make the control visible initially.
+ *  13: LOGICAL  - FALSE to enable WS_TABSTOP.
+ *  14: LOGICAL  - TRUE to set font weight to bold.
+ *  15: LOGICAL  - TRUE to make font italic.
+ *  16: LOGICAL  - TRUE to underline font.
+ *  17: LOGICAL  - TRUE to strike through font.
+ *
+ * Returns:
+ *   Array[2]:
+ *     [1]: HANDLE - Handle of the created Month Calendar control.
+ *     [2]: HANDLE - Handle of the created font.
+ *
+ * Purpose:
+ *   Creates a Month Calendar control using Windows common controls with styles
+ *   and font attributes specified from Harbour parameters. Subclasses the control
+ *   to route messages through a custom window procedure for Harbour event handling.
+ *   Automatically sizes the control to the minimum required dimensions.
+ */
 HB_FUNC( INITMONTHCAL )
 {
    HWND                 hmonthcal;
    RECT                 rc;
    INITCOMMONCONTROLSEX icex;
-   DWORD                Style = WS_BORDER | WS_CHILD | MCS_DAYSTATE; // Define initial window styles.
+   DWORD                Style = WS_BORDER | WS_CHILD | MCS_DAYSTATE;
    HFONT                hfont;
    DWORD                bold = FW_NORMAL;
    DWORD                italic = 0;
@@ -98,13 +117,10 @@ HB_FUNC( INITMONTHCAL )
 #ifdef UNICODE
    LPWSTR               pStr;
 #endif
-
-   // Initialize common controls with date class for Month Calendar support.
    icex.dwSize = sizeof( icex );
    icex.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &icex );
 
-   // Check optional style flags based on Harbour parameters.
    if( hb_parl( 9 ) )
    {
       Style |= MCS_NOTODAY;
@@ -130,14 +146,11 @@ HB_FUNC( INITMONTHCAL )
       Style |= WS_TABSTOP;
    }
 
-   // Create the Month Calendar window.
    hmonthcal = CreateWindowEx( 0, MONTHCAL_CLASS, TEXT( "" ), Style, 0, 0, 0, 0, hmg_par_raw_HWND( 1 ), hmg_par_raw_HMENU( 2 ), GetInstance(), NULL );
 
-   // Store the original window procedure and subclass the control.
    SetProp( ( HWND ) hmonthcal, TEXT( "oldmcproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hmonthcal, GWLP_WNDPROC ) );
    SubclassWindow2( hmonthcal, OwnMCProc );
 
-   // Check font properties based on Harbour parameters.
    if( hb_parl( 14 ) )
    {
       bold = FW_BOLD;
@@ -158,228 +171,342 @@ HB_FUNC( INITMONTHCAL )
       strikeout = 1;
    }
 
-   // Prepare the font for the Month Calendar control.
 #ifdef UNICODE
-   pStr = AnsiToWide( hb_parc( 7 ) );           // Convert the font name to wide characters if needed.
+   pStr = AnsiToWide( hb_parc( 7 ) );
    hfont = PrepareFont( ( TCHAR * ) pStr, hb_parni( 8 ), bold, italic, underline, strikeout, angle, DEFAULT_CHARSET );
-   hb_xfree( pStr );                            // Free the allocated wide string.
+   hb_xfree( pStr );
 #else
    hfont = PrepareFont( ( TCHAR * ) hb_parc( 7 ), hb_parni( 8 ), bold, italic, underline, strikeout, angle, DEFAULT_CHARSET );
 #endif
-
-   // Set the custom font for the Month Calendar.
    SetWindowFont( hmonthcal, hfont, TRUE );
-
-   // Get the minimum required rectangle size for the calendar.
    MonthCal_GetMinReqRect( hmonthcal, &rc );
-
-   // Position the Month Calendar window with the calculated rectangle size.
    SetWindowPos( hmonthcal, NULL, hb_parni( 3 ), hb_parni( 4 ), rc.right, rc.bottom, SWP_NOZORDER );
 
-   // Return the Month Calendar handle and font handle as an array.
    hb_reta( 2 );
    hmg_storvnl_HANDLE( hmonthcal, -1, 1 );
    hmg_storvnl_HANDLE( hfont, -1, 2 );
 }
 
-// Harbour function to set a specific date on the Month Calendar control.
+/*
+ * FUNCTION: SETMONTHCALVALUE
+ *
+ * Sets the selected date in a Month Calendar control.
+ *
+ * Parameters:
+ *   1: HWND  - Handle of the Month Calendar control.
+ *   2: WORD  - Year to set.
+ *   3: WORD  - Month to set (1-12).
+ *   4: WORD  - Day to set (1-31).
+ *
+ * Returns:
+ *   None.
+ *
+ * Purpose:
+ *   Allows Harbour code to programmatically select a specific date in the
+ *   Month Calendar control using year, month, and day parameters.
+ */
 HB_FUNC( SETMONTHCALVALUE )
 {
    SYSTEMTIME  sysTime;
    HWND        hwnd = hmg_par_raw_HWND( 1 );
 
-   // Set the year, month, and day based on Harbour parameters.
    sysTime.wYear = hmg_par_WORD( 2 );
    sysTime.wMonth = hmg_par_WORD( 3 );
    sysTime.wDay = hmg_par_WORD( 4 );
    sysTime.wDayOfWeek = LOWORD( SendMessage( hwnd, MCM_GETFIRSTDAYOFWEEK, 0, 0 ) );
-
-   // Initialize time fields to zero as only the date is relevant.
    sysTime.wHour = 0;
    sysTime.wMinute = 0;
    sysTime.wSecond = 0;
    sysTime.wMilliseconds = 0;
 
-   // Set the selected date on the Month Calendar.
    MonthCal_SetCurSel( hwnd, &sysTime );
 }
 
-// Harbour function to retrieve the current selected year, month, or day from the Month Calendar.
+/*
+ * FUNCTION: GETMONTHCALVALUE
+ *
+ * Retrieves a specific date component (year, month, or day) from the Month Calendar control.
+ *
+ * Parameters:
+ *   1: HWND - Handle of the Month Calendar control.
+ *   2: INT  - Component selector:
+ *             1 = Year
+ *             2 = Month
+ *             3 = Day
+ *
+ * Returns:
+ *   INT - Value of the requested date component.
+ *
+ * Purpose:
+ *   Enables Harbour code to extract individual components of the currently
+ *   selected date in the Month Calendar control without retrieving the full date.
+ */
 HB_FUNC( GETMONTHCALVALUE )
 {
    SYSTEMTIME  st;
-
-   // Get the current selected date from the Month Calendar control.
    SendMessage( hmg_par_raw_HWND( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) & st );
 
-   // Return the requested date component based on the Harbour parameter.
    switch( hb_parni( 2 ) )
    {
       case 1:
-         hb_retni( st.wYear );                  // Return the year.
+         hb_retni( st.wYear );
          break;
 
       case 2:
-         hb_retni( st.wMonth );                 // Return the month.
+         hb_retni( st.wMonth );
          break;
 
       case 3:
-         hb_retni( st.wDay );                   // Return the day.
+         hb_retni( st.wDay );
+         break;
    }
 }
 
-// Harbour function to retrieve the selected date as a Harbour date object.
+/*
+ * FUNCTION: GETMONTHCALDATE
+ *
+ * Retrieves the currently selected date from the Month Calendar control
+ * as a Harbour date value.
+ *
+ * Parameters:
+ *   1: HWND - Handle of the Month Calendar control.
+ *
+ * Returns:
+ *   Harbour Date - Encoded date corresponding to the selected day.
+ *
+ * Purpose:
+ *   Provides Harbour applications with the full date in a format directly
+ *   usable in Harbour date operations, simplifying integration with date logic.
+ */
 HB_FUNC( GETMONTHCALDATE )
 {
    SYSTEMTIME  st;
-
-   // Get the current selected date from the Month Calendar control.
    SendMessage( hmg_par_raw_HWND( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) & st );
-
-   // Convert SYSTEMTIME to a Harbour date and return it.
    hb_retdl( hb_dateEncode( st.wYear, st.wMonth, st.wDay ) );
 }
 
-// Harbour function to set the position and dimensions of a Month Calendar control.
+/*
+ * FUNCTION: SETPOSMONTHCAL
+ *
+ * Adjusts the position and size of a Month Calendar control based on its
+ * minimum required rectangle and optional padding.
+ *
+ * Parameters:
+ *   1: HWND    - Handle of the Month Calendar control.
+ *   2: INT     - X coordinate of the control.
+ *   3: INT     - Y coordinate of the control.
+ *   4: LOGICAL - TRUE to add padding around the control, FALSE otherwise (optional).
+ *
+ * Returns:
+ *   None.
+ *
+ * Purpose:
+ *   Ensures that the Month Calendar is positioned correctly and large enough
+ *   to display all its content, including the "Today" area if present.
+ */
 HB_FUNC( SETPOSMONTHCAL )
 {
-   HWND  hWndMonthCal = hmg_par_raw_HWND( 1 );  // Retrieve Month Calendar window handle from the first parameter.
+   HWND  hWndMonthCal = hmg_par_raw_HWND( 1 );
    RECT  rc;
    DWORD dwWidth;
 
-   // Get the minimum required rectangle size for the Month Calendar control.
    MonthCal_GetMinReqRect( hWndMonthCal, &rc );
-
-   // Get the maximum width of the "Today" date indicator and adjust the control width if needed.
    dwWidth = MonthCal_GetMaxTodayWidth( hWndMonthCal );
+
    if( dwWidth > ( DWORD ) rc.right )
    {
       rc.right = dwWidth;
    }
 
-   // If the fourth parameter is true, inflate the rectangle slightly to add padding.
    if( hb_parldef( 4, HB_FALSE ) )
    {
       InflateRect( &rc, 6, 6 );
    }
 
-   // Set the position and size of the Month Calendar control based on the provided coordinates and dimensions.
    SetWindowPos( hWndMonthCal, NULL, hb_parni( 2 ), hb_parni( 3 ), rc.right, rc.bottom, SWP_NOZORDER );
 }
 
-// Harbour function to retrieve the date range displayed in the Month Calendar control.
+/*
+ * FUNCTION: GETMONTHRANGE
+ *
+ * Retrieves the date range currently displayed in the Month Calendar control.
+ *
+ * Parameters:
+ *   1: HWND - Handle of the Month Calendar control.
+ *
+ * Returns:
+ *   Array[3]:
+ *     [1]: INT      - Number of months in the displayed range.
+ *     [2]: Date     - Start date of the displayed range.
+ *     [3]: Date     - End date of the displayed range.
+ *
+ * Purpose:
+ *   Allows Harbour code to determine which dates are currently visible in the
+ *   Month Calendar, useful for updating day states or validating displayed content.
+ */
 HB_FUNC( GETMONTHRANGE )
 {
-   SYSTEMTIME  sysTime[2];       // Array to store the start and end dates of the displayed range.
+   SYSTEMTIME  sysTime[2];
    int         iCount;
 
-   // Get the displayed month range and populate the SYSTEMTIME array with start and end dates.
    iCount = MonthCal_GetMonthRange( hmg_par_raw_HWND( 1 ), GMR_DAYSTATE, sysTime );
 
-   // Return the count and date range as an array to Harbour.
    hb_reta( 3 );
-   HB_STORNI( iCount, -1, 1 );   // Store the number of displayed months.
-   HB_STORDL( hb_dateEncode( sysTime[0].wYear, sysTime[0].wMonth, sysTime[0].wDay ), -1, 2 );   // Store start date.
-   HB_STORDL( hb_dateEncode( sysTime[1].wYear, sysTime[1].wMonth, sysTime[1].wDay ), -1, 3 );   // Store end date.
+   HB_STORNI( iCount, -1, 1 );
+   HB_STORDL( hb_dateEncode( sysTime[0].wYear, sysTime[0].wMonth, sysTime[0].wDay ), -1, 2 );
+   HB_STORDL( hb_dateEncode( sysTime[1].wYear, sysTime[1].wMonth, sysTime[1].wDay ), -1, 3 );
 }
 
-// Macro to mark a day as bold in the MONTHDAYSTATE structure if the day is valid.
 #ifndef BOLDDAY
 #define BOLDDAY( ds, iDay ) \
    if( iDay > 0 && iDay < 32 ) ( ds ) |= ( 0x00000001 << ( iDay - 1 ) )
 #endif
 
-// Harbour function to set custom bold days in the Month Calendar control.
-HB_FUNC( C_SETDAYSTATE )
+   /*
+ * FUNCTION: C_SETDAYSTATE
+ *
+ * Sets custom "bold" days in the Month Calendar control.
+ *
+ * Parameters:
+ *   1: HWND        - Handle of the Month Calendar control.
+ *   2: INT         - Number of months for which to set day states.
+ *   3: ARRAY(INT)  - Array of day states where each entry is 1 (bold) or 0 (normal).
+ *                    Indexed as: monthIndex * 32 + dayNumber.
+ *
+ * Returns:
+ *   None.
+ *
+ * Purpose:
+ *   Allows Harbour applications to visually emphasize specific days (e.g., events,
+ *   holidays) by rendering them in bold on the Month Calendar.
+ */
+   HB_FUNC( C_SETDAYSTATE )
 {
-   int               iCount = hb_parni( 2 );                // Number of months for day state.
-   PHB_ITEM          hArray = hb_param( 3, HB_IT_ARRAY );   // Array containing day states.
-   LPMONTHDAYSTATE   rgMonths;         // Array to hold day states.
+   int               iCount = hb_parni( 2 );
+   PHB_ITEM          hArray = hb_param( 3, HB_IT_ARRAY );
+   LPMONTHDAYSTATE   rgMonths;
    int               i, j, iSize;
 
-   // Allocate and initialize memory for the day states array.
    iSize = sizeof( MONTHDAYSTATE ) * iCount;
    rgMonths = ( LPMONTHDAYSTATE ) hb_xgrab( iSize );
    memset( rgMonths, 0, iSize );
 
-   // Iterate over each day in each month to set bold days based on the array values.
    for( i = 0; i < iCount; i++ )
    {
       for( j = 1; j <= 32; j++ )
       {
          if( hb_arrayGetNI( hArray, i * 32 + j ) == 1 )
          {
-            BOLDDAY( rgMonths[i], j ); // Mark day as bold if array entry is 1.
+            BOLDDAY( rgMonths[i], j );
          }
       }
    }
-
-   // Send the day states to the Month Calendar control.
    SendMessage( hmg_par_raw_HWND( 1 ), MCM_SETDAYSTATE, ( WPARAM ) iCount, ( LPARAM ) rgMonths );
-
-   // Free the allocated day state memory.
    hb_xfree( rgMonths );
 }
 
-// Harbour function to return the bold day state configuration.
+/*
+ * FUNCTION: C_RETDAYSTATE
+ *
+ * Prepares a MONTHDAYSTATE array from a Harbour day state array and stores
+ * it in an NMDAYSTATE structure.
+ *
+ * Parameters:
+ *   1: LONG_PTR   - Pointer to NMDAYSTATE structure.
+ *   2: INT        - Number of months.
+ *   3: ARRAY(INT) - Array of day states (1 = bold, 0 = normal).
+ *
+ * Returns:
+ *   None.
+ *
+ * Purpose:
+ *   Converts Harbour day-state array format into the Windows MONTHDAYSTATE
+ *   format for use in custom draw operations or notifications.
+ */
 HB_FUNC( C_RETDAYSTATE )
 {
-   LPNMDAYSTATE      pData = ( NMDAYSTATE * ) HB_PARNL( 1 );   // Pointer to day state data.
-   int               iCount = hb_parni( 2 );                   // Number of months for day state.
-   PHB_ITEM          hArray = hb_param( 3, HB_IT_ARRAY );      // Array containing day states.
-   LPMONTHDAYSTATE   rgMonths;         // Array to hold day states.
+   LPNMDAYSTATE      pData = ( NMDAYSTATE * ) HB_PARNL( 1 );
+   int               iCount = hb_parni( 2 );
+   PHB_ITEM          hArray = hb_param( 3, HB_IT_ARRAY );
+   LPMONTHDAYSTATE   rgMonths;
    int               i, j, iSize;
 
-   // Allocate and initialize memory for the day states array.
    iSize = sizeof( MONTHDAYSTATE ) * iCount;
    rgMonths = ( LPMONTHDAYSTATE ) hb_xgrab( iSize );
    memset( rgMonths, 0, iSize );
 
-   // Iterate over each day in each month to retrieve the day states from the array.
    for( i = 0; i < iCount; i++ )
    {
       for( j = 1; j <= 32; j++ )
       {
          if( hb_arrayGetNI( hArray, i * 32 + j ) == 1 )
          {
-            BOLDDAY( rgMonths[i], j ); // Mark day as bold if array entry is 1.
+            BOLDDAY( rgMonths[i], j );
          }
       }
    }
 
-   // Store the bold day state information in the provided pointer structure.
    pData->prgDayState = rgMonths;
-
-   // Free the allocated day state memory.
    hb_xfree( rgMonths );
 }
 
-// Harbour function to get the number of bold days and starting date.
+/*
+ * FUNCTION: GETDAYSTATEDATA
+ *
+ * Retrieves the number of bold day states and the start date from an NMDAYSTATE structure.
+ *
+ * Parameters:
+ *   1: LONG_PTR - Pointer to NMDAYSTATE structure.
+ *
+ * Returns:
+ *   Array[2]:
+ *     [1]: INT  - Count of bold day states.
+ *     [2]: Date - Start date for the bold day states.
+ *
+ * Purpose:
+ *   Allows Harbour code to inspect day state notification data sent by
+ *   the Month Calendar control, useful for dynamically updating bold days.
+ */
 HB_FUNC( GETDAYSTATEDATA )
 {
-   LPNMDAYSTATE   pData = ( NMDAYSTATE * ) HB_PARNL( 1 );   // Pointer to day state data.
+   LPNMDAYSTATE   pData = ( NMDAYSTATE * ) HB_PARNL( 1 );
 
-   // Return array with the count of bold days and start date.
    hb_reta( 2 );
-   HB_STORNI( ( int ) pData->cDayState, -1, 1 );            // Store the count of bold day states.
-   HB_STORDL( hb_dateEncode( pData->stStart.wYear, pData->stStart.wMonth, pData->stStart.wDay ), -1, 2 );   // Store start date.
+   HB_STORNI( ( int ) pData->cDayState, -1, 1 );
+   HB_STORDL( hb_dateEncode( pData->stStart.wYear, pData->stStart.wMonth, pData->stStart.wDay ), -1, 2 );
 }
 
-// Custom Window Procedure for the Month Calendar control to handle specific messages.
+/*
+ * FUNCTION: OwnMCProc
+ *
+ * Custom window procedure for Month Calendar control to handle specific
+ * Windows messages and forward them to a Harbour event handler.
+ *
+ * Parameters:
+ *   hwnd   - Handle of the Month Calendar control.
+ *   Msg    - Windows message identifier.
+ *   wParam - Additional message information (depends on Msg).
+ *   lParam - Additional message information (depends on Msg).
+ *
+ * Returns:
+ *   LRESULT - Result of message processing (0 or non-zero depending on handling).
+ *
+ * Purpose:
+ *   Subclasses the Month Calendar control to intercept focus and mouse activation
+ *   messages, passing them to a Harbour function ("OMONTHCALEVENTS") for custom handling.
+ *   Restores the original procedure on WM_DESTROY.
+ */
 LRESULT CALLBACK OwnMCProc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
-   static PHB_SYMB   pSymbol = NULL;   // Static symbol for the Harbour function.
+   static PHB_SYMB   pSymbol = NULL;
    LRESULT           r;
    WNDPROC           OldWndProc;
 
-   // Retrieve the original window procedure.
    OldWndProc = ( WNDPROC ) ( HB_PTRUINT ) GetProp( hwnd, TEXT( "oldmcproc" ) );
 
-   // Handle specific messages to manage focus and mouse interactions.
    switch( Msg )
    {
       case WM_DESTROY:
-         // Restore the original window procedure and remove the subclass.
          SubclassWindow2( hwnd, OldWndProc );
          RemoveProp( hwnd, TEXT( "oldmcproc" ) );
          break;
@@ -387,13 +514,11 @@ LRESULT CALLBACK OwnMCProc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam )
       case WM_MOUSEACTIVATE:
       case WM_SETFOCUS:
       case WM_KILLFOCUS:
-         // Dynamically retrieve and cache the symbol for handling events in Harbour.
          if( !pSymbol )
          {
             pSymbol = hb_dynsymSymbol( hb_dynsymGet( "OMONTHCALEVENTS" ) );
          }
 
-         // If the symbol exists, call the Harbour event handler function.
          if( pSymbol )
          {
             hb_vmPushSymbol( pSymbol );
@@ -405,11 +530,9 @@ LRESULT CALLBACK OwnMCProc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam )
             hb_vmDo( 4 );
          }
 
-         // Get the result from the Harbour function and return it, or call the original window procedure.
          r = hmg_par_LRESULT( -1 );
          return( r != 0 ) ? r : CallWindowProc( OldWndProc, hwnd, Msg, wParam, lParam );
    }
 
-   // Default message handling.
    return CallWindowProc( OldWndProc, hwnd, Msg, wParam, lParam );
 }

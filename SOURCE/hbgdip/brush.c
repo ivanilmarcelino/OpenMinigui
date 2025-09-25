@@ -28,7 +28,7 @@ HB_FUNC( GDIPCLONEBRUSH )
 
       status = fn_GdipCloneBrush( hb_parptr( 1 ), &brush );
 
-      hb_storptr( ( ( status == Ok ) ? ( void * ) brush : NULL ), 2 );
+      hb_storptr( ( ( status == Ok ) ? brush : NULL ), 2 );
       hb_retni( status );
    }
    else

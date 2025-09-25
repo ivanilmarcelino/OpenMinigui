@@ -43,7 +43,7 @@
 	"HWGUI"
   	Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
----------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 
 #xcommand BEGIN INI ;
           [ <file: FILENAME, FILE, DISK> <cIniFile> ] ;
@@ -91,6 +91,15 @@
 #xcommand SET END COMMENT TO <uVal> ;
       => ;
          SetEndComment( <uVal> )
+
+
+#xtranslate IniRead ( <cFile>, <cSection>, <cEntry> [, <cDefault> ] ) ;
+=> ;
+GetPrivateProfileString( <cSection>, <cEntry>, <cDefault>, iif( Empty( cFilePath( <cFile> ) ), hb_DirBase() + <cFile>, <cFile> ) )
+
+#xtranslate IniWrite ( <cFile>, <cSection>, <cEntry>, <cValue> ) ;
+=> ;
+WritePrivateProfileString( <cSection>, <cEntry>, <cValue>, iif( Empty( cFilePath( <cFile> ) ), hb_DirBase() + <cFile>, <cFile> ) )
 
 
 #xcommand SET LOGFILE TO <(name)> => _SetGetLogFile( <(name)> )

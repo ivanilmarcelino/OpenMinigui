@@ -8,27 +8,46 @@ ANNOUNCE RDDSYS
 
 #include "minigui.ch"
 
-STATIC aColors
+STATIC aColors // Static array to store color data (name and RGB value).
 
 /*
- * Procedure Main
+ * PROCEDURE Main
  *
- * This is the main procedure of the application. It initializes the color data,
- * defines the main window with a grid control to display the colors, and
- * sets up a status bar to show the RGB value of the selected color.
+ * Initializes the application, defines the main window, and displays a table of colors using a grid control.
+ *
+ * Purpose:
+ *   This is the main entry point of the application. It performs the following tasks:
+ *     1. Disables multiple instance execution to prevent conflicts.
+ *     2. Initializes the color data by calling the InitColorsArray() function and populates an array (aData) for the grid.
+ *     3. Defines the main window (Form_1) with its properties (size, title, icon, etc.).
+ *     4. Defines a main menu with options to show the number of items in the grid and exit the application.
+ *     5. Defines a grid control (Grid_1) to display the color data. The grid is configured to use virtual data, meaning it only requests data for the visible rows.
+ *     6. Sets event handlers for the grid:
+ *       - ON QUERYDATA: Calls the OnDataRequest() procedure to retrieve data for a specific row.
+ *       - ON CHANGE: Calls the ShowRGB() procedure to update the status bar with the RGB value of the selected color.
+ *     7. Defines a status bar to display the RGB value of the selected color.
+ *     8. Sets a keyboard shortcut (Alt+X) to exit the application.
+ *     9. Centers the main window on the screen.
+ *     10. Activates the main window, making it visible to the user.
+ *
+ * Notes:
+ *   The aColors array is initialized only once and used throughout the application.
+ *   The grid control uses virtual data to improve performance, especially when dealing with a large number of colors.
+ *   The IsXPThemeActive() function is used to adjust the grid width based on whether the XP theme is active.
  */
-PROCEDURE Main
+PROCEDURE MAIN
 
-   LOCAL aData := {}
+   LOCAL aData := {} // Local array to hold data for the grid control.
 
-   SET MULTIPLE OFF
+   SET MULTIPLE OFF // Disables multiple instances of the application.
 
+   // Initialize the color array and populate the aData array with color names for the grid.
    AEval( ( aColors := InitColorsArray() ), {| x | AAdd( aData, { x[ 1 ] } ) } )
 
    DEFINE WINDOW Form_1 ;
          AT 0, 0 ;
          WIDTH 400 ;
-         HEIGHT iif( IsWinXP(), 596, 600 ) ;
+         HEIGHT 600 ;
          TITLE 'Table of Colors' ;
          ICON "DEMO" ;
          MAIN ;
@@ -46,13 +65,13 @@ PROCEDURE Main
          ROW 12
          COL 12
          WIDTH 370
-         HEIGHT iif( IsWinXP(), 497, 504 )
+         HEIGHT 504
          WIDTHS { 350 - iif( IsXPThemeActive(), 2, 0 ) }
          VALUE 1
          VIRTUAL .T.
          ITEMCOUNT Len( aData )
          ON QUERYDATA OnDataRequest( aData )
-         ON CHANGE Show_RGB()
+         ON CHANGE ShowRGB()
          SHOWHEADERS .F.
          DYNAMICFORECOLOR { {| x, nItem | GetColumnForeColor( nItem ) } }
          DYNAMICBACKCOLOR { {| x, nItem | GetColumnBackColor( nItem ) } }
@@ -64,7 +83,7 @@ PROCEDURE Main
          STATUSITEM "Value RGB: " + aColors[ 1 ][ 2 ]
       END STATUSBAR
 
-      ON KEY ALT+X ACTION ThisWindow.Release()
+      ON KEY ALT + X ACTION ThisWindow.Release()
 
    END WINDOW
 
@@ -75,17 +94,24 @@ PROCEDURE Main
 RETURN
 
 /*
- * Procedure OnDataRequest( aData )
+ * PROCEDURE OnDataRequest( aData )
  *
- * This procedure is called when the grid control needs data for a specific row.
- * It retrieves the data from the provided array and assigns it to the
- * QueryData property of the grid.
+ * Provides data to the grid control when it requests a specific row.
  *
  * Parameters:
- *   aData - An array containing the data to be displayed in the grid.
+ *   aData - An array containing the color names.
  *
  * Return:
  *   None
+ *
+ * Purpose:
+ *   This procedure is called by the grid control when it needs to display data for a specific row.
+ *   It retrieves the color name from the aData array based on the grid's QueryRowIndex property and assigns it to the QueryData property of the grid.
+ *   This allows the grid to display the color name in the corresponding row.
+ *
+ * Notes:
+ *   The QueryRowIndex property of the grid indicates the row number for which data is being requested.
+ *   The QueryData property of the grid is used to provide the data for the requested row.
  */
 PROCEDURE OnDataRequest( aData )
 
@@ -94,30 +120,44 @@ PROCEDURE OnDataRequest( aData )
 RETURN
 
 /*
- * Procedure Show_RGB
+ * PROCEDURE ShowRGB
  *
- * This procedure updates the status bar with the RGB value of the currently
- * selected color in the grid. It retrieves the color information from the
- * aColors array based on the grid's Value property.
+ * Updates the status bar with the RGB value of the currently selected color in the grid.
+ *
+ * Purpose:
+ *   This procedure is called when the selected color in the grid changes.
+ *   It retrieves the RGB value of the selected color from the aColors array based on the grid's Value property and updates the text of the first status bar item.
+ *   This allows the user to see the RGB value of the currently selected color.
+ *
+ * Notes:
+ *   The Value property of the grid indicates the index of the currently selected color.
+ *   The aColors array contains the color names and their corresponding RGB values.
  */
-PROCEDURE Show_RGB
+PROCEDURE ShowRGB
 
    Form_1.StatusBar.Item( 1 ) := "Value RGB: " + aColors[ Form_1.Grid_1.Value ][ 2 ]
 
 RETURN
 
 /*
- * Function GetColumnForeColor( n )
+ * FUNCTION GetColumnForeColor( n )
  *
- * This function determines the foreground color (text color) for a specific
- * item in the grid. It uses a Switch statement to assign different colors
- * based on the item's index (n).  This is used to highlight certain rows.
+ * Determines the foreground color (text color) for a specific item in the grid.
  *
  * Parameters:
  *   n - The index of the item in the grid.
  *
  * Return:
  *   The foreground color for the item (e.g., WHITE, YELLOW, BLACK).
+ *
+ * Purpose:
+ *   This function is used to dynamically change the foreground color of specific rows in the grid.
+ *   It uses a SWITCH statement to assign different colors based on the item's index (n).
+ *   This is used to highlight certain rows, making them more visually distinct.
+ *
+ * Notes:
+ *   The SWITCH statement allows for efficient selection of different colors based on the item index.
+ *   The #ifndef __XHARBOUR__ and #else directives are used to ensure compatibility with different Harbour compilers.
  */
 FUNCTION GetColumnForeColor( n )
 
@@ -191,8 +231,10 @@ FUNCTION GetColumnForeColor( n )
 
 #ifndef __XHARBOUR__
    OTHERWISE
+
 #else
    DEFAULT
+
 #endif
       aColor := BLACK
 
@@ -201,55 +243,51 @@ FUNCTION GetColumnForeColor( n )
 RETURN aColor
 
 /*
- * Function GetColumnBackColor( n )
+ * FUNCTION GetColumnBackColor( n )
  *
- * This function determines the background color for a specific item in the grid.
- * It retrieves the RGB value from the aColors array based on the item's
- * index (n) and converts it into a color value suitable for the grid.
+ * Determines the background color for a specific item in the grid.
  *
  * Parameters:
  *   n - The index of the item in the grid.
  *
  * Return:
- *   An array containing the RGB components of the background color
- *   (e.g., {255, 0, 0} for red).
+ *   An array containing the RGB components of the background color (e.g., {255, 0, 0} for red).
+ *
+ * Purpose:
+ *   This function is used to dynamically change the background color of each row in the grid based on the RGB value stored in the aColors array.
+ *   It retrieves the RGB value from the aColors array based on the item's index (n), splits the string into individual RGB components, and converts them into numerical values.
+ *   The resulting array containing the RGB components is then returned, which is used by the grid to set the background color of the corresponding row.
+ *
+ * Notes:
+ *   The hb_ATokens() function is used to split the RGB string into individual components.
+ *   The Val() function is used to convert the string components into numerical values.
  */
 FUNCTION GetColumnBackColor( n )
 
-   LOCAL cColor
+   LOCAL aColor := Array( 3 )
 
-   cColor := aColors[ n ][ 2 ]
+   AEval( hb_ATokens( aColors[ n ][ 2 ], " " ), {| x, i | aColor[ i ] := Val( x ) } )
 
-RETURN { Val( Token( cColor, " ", 1 ) ), Val( Token( cColor, " ", 2 ) ), Val( Token( cColor, " ", 3 ) ) }
+RETURN aColor
 
 /*
- * Static Function IsWinXP()
+ * STATIC FUNCTION InitColorsArray()
  *
- * This function checks if the operating system is Windows XP.
+ * Initializes an array containing color names and their corresponding RGB values.
  *
  * Parameters:
  *   None
  *
  * Return:
- *   .T. if the OS is Windows XP, .F. otherwise.
- */
-STATIC FUNCTION IsWinXP()
-
-RETURN _HMG_IsXP
-
-/*
- * Static Function InitColorsArray()
+ *   An array of arrays, where each inner array contains a color name and its RGB value (e.g., { "Red", "255 0 0" }).
  *
- * This function initializes an array containing color names and their
- * corresponding RGB values. This array is used to populate the grid control
- * with color information.
+ * Purpose:
+ *   This function creates and populates an array with a list of color names and their corresponding RGB values.
+ *   This array serves as the data source for the grid control, providing the color names and RGB values to be displayed in the grid.
+ *   The function is declared as STATIC, meaning it is only accessible within the current source file.
  *
- * Parameters:
- *   None
- *
- * Return:
- *   An array of arrays, where each inner array contains a color name and its
- *   RGB value (e.g., { "Red", "255 0 0" }).
+ * Notes:
+ *   The color data is hardcoded in this function. In a real-world application, this data could be loaded from a file or database.
  */
 STATIC FUNCTION InitColorsArray()
 

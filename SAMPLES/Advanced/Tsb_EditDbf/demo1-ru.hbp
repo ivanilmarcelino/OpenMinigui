@@ -8,7 +8,7 @@
 -inc
 
 # folder where are all * .obj
--workdir=OBJ
+-workdir=OBJ\RU
 
 # Name EXE-module
 -odemo1-ru
@@ -27,8 +27,6 @@ tsb_tovar_outfit.prg
 tsb_memo_cell.prg
 tsb_util.prg
 util_button.prg
-#h_controlmisc2.prg
-#h_tbrowse.prg
 
 # project Resources
 demo1.rc

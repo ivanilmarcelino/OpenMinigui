@@ -42,7 +42,7 @@ Function Main
 Return Nil
 
 Procedure OpenTables()
-    Use Test
+    Use Test Shared
     Win_1.Browse_1.Value := RecNo() 
 Return
 

@@ -1927,11 +1927,12 @@ FUNCTION _SetItem ( ControlName , ParentForm , Item , Value , index )
       ENDIF
 
    CASE T == "MESSAGEBAR"  // JP
-
+   
+      Value := cValToChar( Value )
       IF _IsOwnerDrawStatusBarItem ( c , Item , Value , .T. )
          MoveWindow ( c , 0 , 0 , 0 , 0 , .T. )
       ELSE
-         SetItemBar ( c , value , Item - 1 )
+         SetItemBar ( c , Value , Item - 1 )
       ENDIF
 
    ENDCASE
@@ -1944,13 +1945,13 @@ FUNCTION _GetItem ( ControlName , ParentForm , Item , index )
    LOCAL ItemHandle
    LOCAL RetVal
    LOCAL AEDITCONTROLS
+   LOCAL AEC
    LOCAL AITEMS, ALABELS
    LOCAL ATEMP
    LOCAL CTYPE, CFORMAT
    LOCAL Pos
    LOCAL CI
    LOCAL XRES
-   LOCAL AEC
    LOCAL ColumnCount
    LOCAL t , c , i
    LOCAL V, Z, X
@@ -6776,59 +6777,50 @@ RETURN
 *-----------------------------------------------------------------------------*
 FUNCTION GetControlTabPage ( cControlName , cTabName , cParentWindowName )
 *-----------------------------------------------------------------------------*
-   LOCAL nRetVal As Numeric
-   LOCAL niControl
-   LOCAL niTab
-   LOCAL xControlHandle
-   LOCAL tabpage
-   LOCAL c , r , k
+   LOCAL nRetVal := 0
+   LOCAL nCtrlIndex, nTabIndex
+   LOCAL xControlHandle, aPage, nPageIndex, xCandidate
 
-   IF ( niControl := GetControlIndex ( cControlName , cParentWindowName ) ) > 0
+   IF ( nCtrlIndex := GetControlIndex( cControlName, cParentWindowName ) ) > 0
 
-      xControlHandle := _HMG_aControlHandles [ niControl ]
-      niTab := GetControlIndex ( cTabName , cParentWindowName )
+      xControlHandle := _HMG_aControlHandles[ nCtrlIndex ]
+      nTabIndex := GetControlIndex( cTabName, cParentWindowName )
 
-      FOR EACH tabpage IN _HMG_aControlPageMap [ niTab ]
+      FOR EACH aPage IN _HMG_aControlPageMap[ nTabIndex ]
+         nPageIndex := hb_enumindex( aPage )
 
-         k := hb_enumindex( tabpage )
-
-         FOR EACH c IN tabpage
-
-            IF ISNUMERIC ( c ) .AND. ISNUMERIC ( xControlHandle )
-               IF c == xControlHandle
-                  nRetVal := k
-                  EXIT
-               ENDIF
-
-            ELSEIF ISARRAY ( c ) .AND. ISARRAY ( xControlHandle )
-               FOR EACH r IN xControlHandle
-                  IF AScan ( c , r ) <> 0
-                     nRetVal := k
-                     EXIT
-                  ENDIF
-               NEXT
-               IF nRetVal <> 0
-                  EXIT
-               ENDIF
-
-            ELSEIF ISARRAY ( c ) .AND. ISNUMERIC ( xControlHandle )
-               IF AScan ( c , xControlHandle ) <> 0
-                  nRetVal := k
-                  EXIT
-               ENDIF
+         FOR EACH xCandidate IN aPage
+            IF lIsHandleMatch( xCandidate, xControlHandle )
+               RETURN nPageIndex
             ENDIF
-
          NEXT
-
-         IF nRetVal <> 0
-            EXIT
-         ENDIF
 
       NEXT
 
    ENDIF
 
 RETURN nRetVal
+
+*-----------------------------------------------------------------------------*
+STATIC FUNCTION lIsHandleMatch ( xCandidate, xControlHandle )
+*-----------------------------------------------------------------------------*
+   LOCAL xSubHandle
+
+   IF ISNUMERIC( xCandidate ) .AND. ISNUMERIC( xControlHandle )
+      RETURN ( xCandidate == xControlHandle )
+
+   ELSEIF ISARRAY( xCandidate ) .AND. ISARRAY( xControlHandle )
+      FOR EACH xSubHandle IN xControlHandle
+         IF AScan( xCandidate, xSubHandle ) <> 0
+            RETURN .T.
+         ENDIF
+      NEXT
+
+   ELSEIF ISARRAY( xCandidate ) .AND. ISNUMERIC( xControlHandle )
+      RETURN ( AScan( xCandidate, xControlHandle ) <> 0 )
+   ENDIF
+
+RETURN .F.
 
 *-----------------------------------------------------------------------------*
 STATIC PROCEDURE IsControlInsideSplitBox ( cParentName , cControlName )
@@ -8843,61 +8835,56 @@ FUNCTION HMG_GetForms( cTyp, lObj )
 RETURN aNames
 
 *-----------------------------------------------------------------------------*
-FUNCTION HMG_GetFormControls ( cFormName, cUserType )
+FUNCTION HMG_GetFormControls( cFormName, aUserType )
 *-----------------------------------------------------------------------------*
    LOCAL aRetVal := {}
-   LOCAL hWnd
-   LOCAL h
-   LOCAL i
-   LOCAL x
+   LOCAL nFormHandle, nParentHandle, nCtrlIndex
+   LOCAL cUserType
 
-   DEFAULT cUserType := "ALL"
+   DEFAULT aUserType := "ALL"
+   IF ISCHARACTER( aUserType )
+      aUserType := { aUserType }
+   ENDIF
 
-   cUserType := Upper ( cUserType )
+   nFormHandle := GetFormHandle( cFormName )
 
-   hWnd := GetFormHandle ( cFormName )
+   FOR EACH nParentHandle IN _HMG_aControlParentHandles
+      nCtrlIndex := hb_enumindex( nParentHandle )
 
-   FOR EACH h IN _HMG_aControlParentHandles
+      FOR EACH cUserType IN aUserType
+         cUserType := Upper( cUserType )
 
-      i := hb_enumindex( h )
+         IF nParentHandle == nFormHandle .AND. ;
+               ( cUserType == "ALL" .OR. ;
+               GetUserControlType( _HMG_aControlNames[ nCtrlIndex ], ;
+               GetParentFormName( nCtrlIndex ) ) == cUserType )
 
-      IF h == hWnd .AND. iif( cUserType == "ALL", .T., GetUserControlType ( _HMG_aControlNames [i], GetParentFormName( i ) ) == cUserType )
+            IF ISNUMERIC( _HMG_aControlHandles[ nCtrlIndex ] )
+               AddIfUnique( aRetVal, _HMG_aControlNames[ nCtrlIndex ] )
 
-         IF ISNUMERIC ( _HMG_aControlHandles [i] )
-
-            IF ! Empty ( _HMG_aControlNames [i] )
-
-               IF AScan ( aRetVal, _HMG_aControlNames [i], , , .T. ) == 0
-                  AAdd ( aRetVal, _HMG_aControlNames [i] )
-               ENDIF
-
+            ELSEIF ISARRAY( _HMG_aControlHandles[ nCtrlIndex ] )
+               AEval( _HMG_aControlHandles[ nCtrlIndex ], {|| ;
+                  AddIfUnique( aRetVal, _HMG_aControlNames[ nCtrlIndex ] ) } )
             ENDIF
 
-         ELSEIF ISARRAY ( _HMG_aControlHandles [i] )
-
-            FOR x := 1 TO Len ( _HMG_aControlHandles [i] )
-
-               IF !Empty ( _HMG_aControlNames [i] )
-
-                  IF AScan ( aRetVal, _HMG_aControlNames [i], , , .T. ) == 0
-                     AAdd ( aRetVal, _HMG_aControlNames [i] )
-                  ENDIF
-
-               ENDIF
-
-            NEXT x
-
          ENDIF
-
-      ENDIF
-
+      NEXT
    NEXT
 
-RETURN ASort ( aRetVal )
+RETURN ASort( aRetVal )
 
-*----------------------------------------------------------------------------*
+*-----------------------------------------------------------------------------*
+STATIC PROCEDURE AddIfUnique( aList, cName )
+*-----------------------------------------------------------------------------*
+   IF ! Empty( cName ) .AND. AScan( aList, cName, , , .T. ) == 0
+      AAdd( aList, cName )
+   ENDIF
+
+RETURN
+
+*-----------------------------------------------------------------------------*
 FUNCTION HMG_GetAllFonts( lObj )
-*----------------------------------------------------------------------------*
+*-----------------------------------------------------------------------------*
    LOCAL oFonts := NIL
    LOCAL aFonts := {}, cName
    LOCAL aFont := {}, cFont, hFont
@@ -8928,55 +8915,64 @@ FUNCTION HMG_GetAllFonts( lObj )
       ENDIF
    NEXT
 
-   IF Empty( lObj ) ; RETURN aFont
+   IF Empty( lObj )
+      RETURN aFont
    ENDIF
 
 RETURN oFonts
 
 *-----------------------------------------------------------------------------*
-STATIC FUNCTION GetUserControlType ( ControlName, ParentForm )
+STATIC FUNCTION GetUserControlType ( cControlName , cParentForm )
 *-----------------------------------------------------------------------------*
-   LOCAL cRetName
-   LOCAL i
+   LOCAL nCtrlIndex, cCtrlType
 
-   IF ( i := GetControlIndex ( ControlName, ParentForm ) ) == 0
+   #define COMBO_STANDARD  0
+   #define COMBO_EXTENDED  1
+
+   nCtrlIndex := GetControlIndex( cControlName, cParentForm )
+   IF nCtrlIndex == 0
       RETURN ''
    ENDIF
 
-   cRetName := _HMG_aControlType [i]
+   cCtrlType := _HMG_aControlType[ nCtrlIndex ]
 
-   IF cRetName == 'CHECKBOX' .AND. ValType ( _HMG_aControlPageMap [i] ) == 'A'
-      cRetName := 'CHECKBUTTON'
+   DO CASE
+   CASE cCtrlType == 'CHECKBOX' .AND. ValType( _HMG_aControlPageMap[nCtrlIndex] ) == 'A'
+      cCtrlType := 'CHECKBUTTON'
 
-   ELSEIF cRetName == 'COMBO'
-      IF _HMG_aControlMiscData1 [i][1] == 0      // standard combo
-         cRetName += 'BOX'
+   CASE cCtrlType == 'COMBO'
+      DO CASE
+      CASE _HMG_aControlMiscData1[nCtrlIndex][1] == COMBO_STANDARD
+         cCtrlType := 'COMBOBOX'
+      CASE _HMG_aControlMiscData1[nCtrlIndex][1] == COMBO_EXTENDED
+         cCtrlType := 'COMBOBOXEX'
+      ENDCASE
 
-      ELSEIF _HMG_aControlMiscData1 [i][1] == 1  // extend combo
-         cRetName += 'BOXEX'
+   CASE "TEXT" $ cCtrlType .OR. ;
+        "EDIT" $ cCtrlType .OR. ;
+        ( "LIST" $ cCtrlType .AND. cCtrlType != 'IMAGELIST' )
+      IF cCtrlType == "NUMTEXT" .OR. cCtrlType == "MASKEDTEXT" .OR. cCtrlType == "CHARMASKTEXT"
+         cCtrlType := Right( cCtrlType, 4 )
+      ENDIF
+      cCtrlType += 'BOX'
+      IF cCtrlType == 'RICHEDITBOX' .AND. _HMG_aControlMiscData1[nCtrlIndex] == 1
+         cCtrlType += 'EX'
       ENDIF
 
-   ELSEIF "TEXT" $ cRetName .OR. "EDIT" $ cRetName .OR. ( "LIST" $ cRetName .AND. cRetName != 'IMAGELIST' )
-      cRetName += 'BOX'
-      IF cRetName == 'RICHEDITBOX' .AND. _HMG_aControlMiscData1 [i] == 1
-         cRetName += 'EX'
-      ENDIF
+   CASE "PICK" $ cCtrlType
+      cCtrlType += 'ER'
 
-   ELSEIF "PICK" $ cRetName
-      cRetName += 'ER'
+   CASE "MONTHCAL" $ cCtrlType
+      cCtrlType += 'ENDAR'
 
-   ELSEIF "MONTHCAL" $ cRetName
-      cRetName += 'ENDAR'
+   CASE cCtrlType == 'MESSAGEBAR'
+      cCtrlType := 'STATUSBAR'
 
-   ELSEIF cRetName == 'MESSAGEBAR'
-      cRetName := 'STATUSBAR'
+   CASE cCtrlType == 'ITEMMESSAGE'
+      cCtrlType := 'STATUSITEM'
+   ENDCASE
 
-   ELSEIF cRetName == 'ITEMMESSAGE'
-      cRetName := 'STATUSITEM'
-
-   ENDIF
-
-RETURN cRetName
+RETURN cCtrlType
 
 *-----------------------------------------------------------------------------*
 FUNCTION _SetAlign ( ControlName , ParentForm , cAlign )

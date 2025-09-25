@@ -295,6 +295,10 @@ HB_FUNC( GETSYSTEMFONT )
 #ifdef UNICODE
    LPSTR             pStr;
 #endif
+   int               iPointSize;
+   HDC               hdc = GetDC( NULL );
+   int               logPixY = GetDeviceCaps( hdc, LOGPIXELSY );
+   ReleaseDC( NULL, hdc );
 
    // Set the size of NONCLIENTMETRICS structure
    ncm.cbSize = sizeof( ncm );
@@ -306,13 +310,18 @@ HB_FUNC( GETSYSTEMFONT )
 
    hb_reta( 2 );  // Return an array
 #ifndef UNICODE
-   HB_STORC( lfDlgFont.lfFaceName, -1, 1 );     // Store font name
+   HB_STORC( lfDlgFont.lfFaceName, -1, 1 );  // Store font name
 #else
    pStr = WideToAnsi( lfDlgFont.lfFaceName );
    HB_STORC( pStr, -1, 1 );
    hb_xfree( pStr );
 #endif
-   HB_STORNI( 21 + lfDlgFont.lfHeight, -1, 2 ); // Store font height
+
+   /* lfHeight is negative when it encodes character height. 
+   PointSize = (-lfHeight) * 72 / LOGPIXELSY */
+   iPointSize = MulDiv( -lfDlgFont.lfHeight, 72, logPixY );
+
+   HB_STORNI( iPointSize, -1, 2 );           // Store font height
 }
 
 /*
@@ -404,7 +413,7 @@ HB_FUNC( ENUMFONTSEX )
       }
    }
 
-   hb_itemReturnRelease( pArray );              // Return font enumeration array
+   hb_itemReturnRelease( pArray );           // Return font enumeration array
 }
 
 /*
@@ -440,7 +449,7 @@ int CALLBACK EnumFontFamExProc( ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme, 
 
 #ifdef UNICODE
       pStr = WideToAnsi( lpelfe->elfLogFont.lfFaceName );
-      hb_arraySetC( pSubArray, 1, pStr );       // Font name
+      hb_arraySetC( pSubArray, 1, pStr );    // Font name
 #else
       hb_arraySetC( pSubArray, 1, lpelfe->elfLogFont.lfFaceName );
 #endif

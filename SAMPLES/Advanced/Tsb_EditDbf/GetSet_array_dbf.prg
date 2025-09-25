@@ -12,12 +12,12 @@
 #include "tsbrowse.ch"
 #include "tsb_mydef.ch"
 
-#define  THIS_DEBUG  .F.
+#define  THIS_DEBUG .T. // .F.
 //////////////////////////////////////////////////////////////////////////////////
 FUNCTION ArrayDbfLoad(aXdim,cAls,cIni,aWrtIni,nPage)  // чтение из базы в массив
    LOCAL nI, xVal, cField, cFunc, cRType, xDbf, xRet, cMsg, nFld, aPara, aLine
    LOCAL aUSort, aFld, x2Dbf, aVal, nJ, aPict, cName, cDbf, lDbg, nFlag
-   LOCAL x15Col, x14Col, x13Col
+   LOCAL x15Col, x14Col, x13Col, cPict
    DEFAULT cIni := App.Cargo:cIniSortUser
    DEFAULT aWrtIni := {}, nPage := 0  // для других проектов - резерв
 
@@ -34,6 +34,7 @@ FUNCTION ArrayDbfLoad(aXdim,cAls,cIni,aWrtIni,nPage)  // чтение из базы в массив
       cRType := aXdim[nI,ACOL_4]           // тип обработки ячеек
       cField := aXdim[nI,ACOL_5]           // поле базы
       cFunc  := ALLTRIM(aXdim[nI,ACOL_6])  // чтение(4) и запись в (2)
+      cPict  := ALLTRIM(aXdim[nI,ACOL_6])  // здесь может быть формат поля "@R xxxx-xxxx"
       x13Col := aXdim[nI,ACOL_13]          // (13) - значение исправленного поля, если NIL, то править ненужно
       x14Col := aXdim[nI,ACOL_14]          // (14) - доп.данные для типа (3): SPR_A,CALC,SPR_J,SPR_S,CALC
       x15Col := aXdim[nI,ACOL_15]
@@ -59,6 +60,7 @@ FUNCTION ArrayDbfLoad(aXdim,cAls,cIni,aWrtIni,nPage)  // чтение из базы в массив
       ELSEIF cRType == "SPR_S"  // справочник из dbf файла - контекстное меню {"Master","KMaster","Master",2,"KFIRMA==1"}
       ELSEIF cRType == "K"      // код в базе по set relation из другой базы - обработка через внутреннюю функцию
          // только показ, без правки
+      ELSEIF cRType == "PSW"    // текст с паролем
       ELSE
          cMsg := 'Ошибка !; Нет обработки типа: "'
          cMsg += cRType + '" !;'
@@ -122,6 +124,10 @@ FUNCTION ArrayDbfLoad(aXdim,cAls,cIni,aWrtIni,nPage)  // чтение из базы в массив
 
       IF lDbg  ; ?? "cFunc=",cFunc
       ENDIF
+      IF AT("@",cFunc) > 0
+         // это формат поля "@R xxxx-xxxx"
+         cFunc := ""
+      ENDIF
       IF LEN(cFunc) > 0
          IF AT("[",cFunc) > 0
             nFlag := 1            // стандартные харборовские функции / standard harbour functions
@@ -166,8 +172,12 @@ FUNCTION ArrayDbfLoad(aXdim,cAls,cIni,aWrtIni,nPage)  // чтение из базы в массив
          aXdim[nI,ACOL_11] := myVal2Str(aXdim[nI,ACOL_14])
          aXdim[nI,ACOL_12] := myVal2Str(aXdim[nI,ACOL_15])
       ELSE
-         IF cRType $ "CLDNM"
-            aXdim[nI,ACOL_2] := xDbf
+         IF cRType $ "CLDNM" 
+            //IF LEN(cPict) > 0
+            //   aXdim[nI,ACOL_2] := TRANSFORM( xDbf, cPict )
+            //ELSE
+               aXdim[nI,ACOL_2] := xDbf
+            //ENDIF
          ELSEIF cRType == "DMN"  // дата с календарем
             aXdim[nI,ACOL_2] := xDbf
          ELSEIF cRType == "DT"   // дата+время
@@ -195,6 +205,8 @@ FUNCTION ArrayDbfLoad(aXdim,cAls,cIni,aWrtIni,nPage)  // чтение из базы в массив
                cDbf := GET_from_DBF(xDbf, x14Col)   // получить значение - как по set relation
             ENDIF
             aXdim[nI,ACOL_2]  := cDbf
+         ELSEIF cRType == "PSW"    // текст с паролем
+            aXdim[nI,ACOL_2] := xDbf
          ENDIF
       ENDIF
 
@@ -232,10 +244,11 @@ RETURN aXdim
 
 ////////////////////////////////////////////////////////////////////////
 // запись из массива в базу
-FUNCTION ArrayDbfSave(aArray)
+FUNCTION ArrayDbfSave(aArray,cPass)
    LOCAL nI, xVal, cField, cFunc, cRType, xRet, cMsg, nFld, cAls
    LOCAL cFType, cXType, x13Col, c9Col, x14Col, aFld, nF, aVal
    LOCAL x15Col, aLine, aPara, cSay, lDbg, aUSort := {}
+   DEFAULT cPass := ""
 
    lDbg := THIS_DEBUG
    cAls := ALIAS()
@@ -367,6 +380,19 @@ FUNCTION ArrayDbfSave(aArray)
                (cAls)->( DbCommit() )
             ENDIF
             IF lDbg ; ?? "xVal=", xVal
+            ENDIF
+
+         ELSEIF cRType == "PSW"    // текст с паролем
+            IF (cAls)->( RLock() )
+               IF LEN(cPass) > 0
+                  (cAls)->&cField := HB_Crypt( xVal, cPass )
+               ELSE
+                  (cAls)->&cField := xVal
+               ENDIF
+               (cAls)->( DbUnlock() )
+               (cAls)->( DbCommit() )
+            ENDIF
+            IF lDbg ; ?? "xVal=", xVal, "["+(cAls)->&cField+"]"
             ENDIF
 
          ELSEIF cRType == "A"   // вложенный массив
