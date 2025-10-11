@@ -169,7 +169,7 @@ STATIC FUNCTION HMG_GenError( cMsg )
 
 RETURN oError
 
-#define MG_VERSION "Harbour MiniGUI Extended Edition 25.09 ("
+#define MG_VERSION "Harbour MiniGUI Extended Edition 25.10 ("
 
 /*-----------------------------------------------------------------------------*
 * FUNCTION MiniGuiVersion( nVer )

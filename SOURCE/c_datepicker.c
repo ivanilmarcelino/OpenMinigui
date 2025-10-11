@@ -134,7 +134,7 @@ HB_FUNC( INITDATEPICK )
       );
 
    // Store the original window procedure for the date picker control, which will be needed for subclassing
-   SetProp( ( HWND ) hbutton, TEXT( "oldpickproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hbutton, GWLP_WNDPROC ) );
+   SetProp( hbutton, TEXT( "oldpickproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hbutton, GWLP_WNDPROC ) );
 
    // Subclass the control to use the custom window procedure for handling specific messages
    SubclassWindow2( hbutton, OwnPickProc );
@@ -189,7 +189,7 @@ HB_FUNC( INITTIMEPICK )
       );
 
    // Store the original window procedure for subclassing later
-   SetProp( ( HWND ) hbutton, TEXT( "oldpickproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hbutton, GWLP_WNDPROC ) );
+   SetProp( hbutton, TEXT( "oldpickproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hbutton, GWLP_WNDPROC ) );
 
    // Subclass the control to allow custom event handling
    SubclassWindow2( hbutton, OwnPickProc );
@@ -206,7 +206,7 @@ LRESULT CALLBACK OwnPickProc( HWND hButton, UINT Msg, WPARAM wParam, LPARAM lPar
    WNDPROC OldWndProc;              // Pointer to original window procedure
 
    // Retrieve the stored original window procedure
-   OldWndProc = ( WNDPROC ) ( HB_PTRUINT ) GetProp( hButton, TEXT( "oldpickproc" ) );
+   OldWndProc = ( WNDPROC ) ( LONG_PTR ) GetProp( hButton, TEXT( "oldpickproc" ) );
 
    // Handle specific messages
    switch( Msg )
@@ -568,7 +568,7 @@ HB_FUNC( SETDATEPICKERDATEFORMAT )
    LPCWSTR  lpFormat = AnsiToWide( ( char * ) hb_parc( 2 ) );
 #endif
    // Set the format string for the date picker control.
-   hb_retl( ( int ) SendMessage( hmg_par_raw_HWND( 1 ), DTM_SETFORMAT, 0, ( LPARAM ) lpFormat ) );
+   hb_retl( ( BOOL ) SendMessage( hmg_par_raw_HWND( 1 ), DTM_SETFORMAT, 0, ( LPARAM ) lpFormat ) );
 
 #ifdef UNICODE
    hb_xfree( ( TCHAR * ) lpFormat );  // Free memory if Unicode conversion was used.

@@ -1,28 +1,29 @@
 /*
  * MINIGUI - Harbour Win32 GUI library Demo
  *
- * Copyright 2024 Sergej Kiselev <bilance@bilance.lv>
- * Copyright 2024 Verchenko Andrey <verchenkoag@gmail.com> Dmitrov, Moscow region
+ * Copyright 2024-2025 Sergej Kiselev <bilance@bilance.lv>
+ * Copyright 2024-2025 Verchenko Andrey <verchenkoag@gmail.com> Dmitrov, Moscow region
  *
- * Просмотр массивов в окне через _TBrowse()
- * Viewing arrays in a window using _TBrowse()
+ * AlertTsb() - просмотр массивов/dbf в окне через _TBrowse()
+ * AlertTsb() - viewing arrays/dbf in a window using _TBrowse()
 */
 #define  _HMG_OUTLOG
 #include "hmg.ch"
 #include "tsbrowse.ch"
 
 #define PROGRAM  "MG Test AlertTsb()"
-#define PROGVER  "Version 0.63 (16.03.2025)"
-#define PROGINF  "Viewing arrays in a window using _TBrowse()"
+#define PROGVER  "Version 0.7 (15.09.2025)"
+#define PROGINF  "AlertTsb() - viewing arrays/dbf in a window using _TBrowse()"
 
 FUNCTION Main()
-   LOCAL nH, nW, nY, aBClr, cWIco, cVal, owc
+   LOCAL nH, nW, nY, nX, aBClr, cWIco, cVal, owc
    LOCAL aParam := hb_aParams()
 
-   nH    := 64 + GetMenuBarHeight() + GetTitleHeight() // высота окна главной формы
+   nH    := 96 + GetMenuBarHeight() + GetTitleHeight() // высота окна главной формы
    aBClr := {42,174,239}
    cWIco := "1MG"
    cVal  := MiniGuiVersion() + CRLF + Version() + CRLF + hb_Ccompiler()
+   cVal  += CRLF + PROGRAM + "  -  " + PROGVER
 
    SET FONT TO _GetSysFont(), App.Cargo:nFontSize
 
@@ -69,16 +70,28 @@ FUNCTION Main()
             SEPARATOR
             ITEM 'AlertTSB("iMgLogfile128",96,...,{"Print","Save",..})'   ACTION Test3()  FONT "DlgFont"
             ITEM 'AlertTSB("iMgSave128",128,,"Config",{"Save","Cancel"})' ACTION Test4()  FONT "DlgFont"
-            ITEM 'AlertTSB("iMgLogfile128",96,,"File CSV")' ACTION Test5()  FONT "DlgFont"
+            ITEM 'AlertTSB("iMgLogfile128",96,,"File CSV")'               ACTION Test5()  FONT "DlgFont"
+         END POPUP
+
+         DEFINE POPUP '&Use dbf AlertTSB()' FONT "ComSanMS"
+            ITEM 'Opening Dbf on AlertTSB form' DISABLED FONT "ComSanMS"
+            SEPARATOR
+            ITEM 'USE operat.dbf - AlertTSB( , , ALIAS() )'                                     ACTION Test6()  FONT "DlgFont" ICON "iMgLogfile128"
+            ITEM 'USE operat.dbf - AlertTSB("iMgSave128",128,,"Config",{"Print","Cancel"})' ACTION Test7()  FONT "DlgFont" ICON "iMgSave128"
          END POPUP
 
       END MENU
 
       nY := 5
-      DRAW ICON IN WINDOW wMain AT nY+5, nW-64 PICTURE "1MG" WIDTH 64 HEIGHT 64 COLOR aBClr
+      DRAW ICON IN WINDOW wMain AT nY, nW-96 PICTURE "1MG" WIDTH 96 HEIGHT 96 COLOR aBClr
 
-      @ nY, 5 LABEL Buff VALUE cVal WIDTH nW-64-nY*2 HEIGHT nH - nY*2 ;
+      nX := nW/2
+      @ nY, nX + 5 LABEL Buff VALUE cVal WIDTH nX-96-5*2 HEIGHT nH - nY*2 ;
         FONTCOLOR BLUE TRANSPARENT RIGHTALIGN
+
+      cVal := PROGINF
+      @ nY, 5 LABEL Info VALUE cVal WIDTH nX-5*2 HEIGHT nH - nY*2 ;
+        FONT App.Cargo:cFontName2 SIZE App.Cargo:nFontSize + 10 FONTCOLOR MAROON TRANSPARENT
 
       ON KEY F1     OF wMain ACTION NIL
       ON KEY ESCAPE OF wMain ACTION _wPost(99,"wMain")
@@ -188,7 +201,7 @@ FUNCTION Test3()
    oWin := oHmgData()
    oWin:cHelp      := "Help line what to do, like SELECT the files you need" + CRLF + "second help line!"
    oWin:aHelpFClr  := YELLOW
-   oWin:aHelpBClr  := MAROON
+   oWin:aHelpBClr  := GRAY
 
    // этот код выполняется уже в окне - alert_tsb.prg ПОСЛЕ END TBROWSE (в качестве примера)
    // this code is already executed in the window - alert_tsb.prg AFTER END TBROWSE (as an example)
@@ -303,7 +316,7 @@ FUNCTION Test4()
 
    oWin := oHmgData()
    oWin:cHelp     := "Configure the settings for this selection and" + CRLF + "save the settings for future work!"
-   oWin:aHelpFClr := RED
+   oWin:aHelpFClr := BLUE
    oWin:aBtnFClr  := { WHITE  , WHITE  , WHITE   }    // цвет фонта кнопки
    oWin:aBtnBClr  := { LGREEN , ORANGE , MAROON  }    // цвет фона кнопки
    oWin:aBtnFClr2 := WHITE                            // инвертный цвет фонта кнопки (фокус на кнопке)
@@ -322,66 +335,11 @@ FUNCTION Test4()
                       }
 
    aDim2 := ACLONE(aDim)
-   aSize := CalculatColumnWidths(aDim2)   // подсчёт ширины колонок
+   aSize := CalculatColumnWidths(aDim2)           // расчёт ширины колонок / Calculating column widths
+   oTsb  := Test4_ParamTsb(aSize)                 // все настройки ТСБ в одном месте
+                                                  // all TSB settings in one place
+   aRet  := AlertTSB(cIco,nIco,aDim,cTtl,aBtn,oWin,oTsb,bInitForm)
 
-   oTsb := oHmgData()
-   oTsb:aNumber     := {}                         // нет колонки нумерации
-   oTsb:aHead       := {"", "", "Edit"}
-   oTsb:aFoot       := {"", "", "Edit"}
-   oTsb:nHeightHead := 0                          // высота шапки - убрать шапку таблицы
-   oTsb:nHeightFoot := 0                          // высота подвала
-   oTsb:lFooting    := .F.                        // НЕ ставить в таблице подвал
-   oTsb:lNoPicture  := .T.
-   oTsb:lSpecHd     := .F.                        // поставить в таблице нумератор колонок
-   oTsb:lSuperHd    := .T.                        // поставить в таблице суперхидер
-   oTsb:cSuperHd    := "Configuring the application entry - example"
-   oTsb:aHideCol    := { 4, 5, 6 }                // скрыть колонки
-   oTsb:aSize       := aSize                      // назначим ширину колонок для ТСБ
-
-   // блоки кода для _TBrowse(...) - название переменных bInit,bBody,bEnd,bAfter менять нельзя
-   // ob=oBrw, op=oTsb
-   //oTsb:bInit  := {|ob,op| myTsbInit(ob,op)                   }  // настройки тсб
-   //oTsb:bBody  := {|ob,op| myTsbKeyFX(ob,op), myTsbEdit(ob,op)}  // другие настройки тсб
-   //oTsb:bAfter := {|ob,op| myTsbAfter(ob,op)                  }  // блок кода после END TBROWSE, чтобы не изменять oTsb:bEnd
-   //oTsb:bEnd   := {|ob,op| myTsbEnd(ob,op)                    }  // блок кода после END TBROWSE
-   oTsb:bBody := {|ob,op,oc| ob:nHeightHead  := 0   /* убрать шапку таблицы */     ,;
-                             ob:lPickerMode := .F. , oc := ob:aColumns[3]          ,;
-                             oc:lEdit  := .T. , oc:cPicture := Nil , oc:lCheckBox := .T. ,;
-                             oc:nAlign := DT_CENTER , oc:nEditMove := 0 ,;  // перечитать ячейку
-                             oc:aCheck := { LoadImage("bMgCheckT24"), LoadImage("bMgCheckF24") } ,;
-                             _LogFile(.T., "### oTsb:bInit", ProcNL(), op:cSuperHd, ob:nHeightSuper, ob:lDrawSuperHd)  }
-
-   oTsb:bInit := {|ob,op| //
-                          //ob:HideColumns( op:aHideCol ,.t.)  // скрыть колонки - резерв
-                          ob:nFreeze     := 2                  // Заморозить столбец
-                          ob:lLockFreeze := .T.                // Избегать прорисовки курсора на замороженных столбцах
-                          ob:nCell       := ob:nFreeze + 1
-                          // цвет фона в ячейках таблицы  -> alert_tsb.prg
-                          ob:Cargo:aZebra := op:aZebra
-                          ob:aColumns[3]:nClrBack := { |nr,nc,ob| myAlertTsbColorBack(nr,nc,ob) }
-                          // редактирование ячеек таблицы -> alert_tsb.prg
-                          myAlertTsbEdit(ob,op)
-                          // перечитать состояние скролинга
-                          ob:ResetVScroll( .T. )
-                          ob:oHScroll:SetRange( 0, 0 )
-                          ob:Refresh()
-                          Return Nil
-                          }
-
-
-   oTsb:bAfter := {|ob|
-                    Local oc, nw := 0
-                    ? ProcNL(), "@@@ TSB @@@ width =", ob:GetAllColsWidth()
-                    FOR EACH oc IN ob:aColumns
-                        ? hb_enumindex(oc), oc:lVisible, oc:nWidth
-                        IF oc:lVisible ; nw += oc:nWidth
-                        ENDIF
-                    NEXT
-                    ? "TSB nWidth =", nw  ; ?
-                    Return Nil
-                    }
-
-   aRet := AlertTSB(cIco,nIco,aDim,cTtl,aBtn,oWin,oTsb,bInitForm)
    DO EVENTS
    ? ProcNL(), aRet
 
@@ -444,6 +402,76 @@ FUNCTION Test4()
 
 RETURN NIL
 
+////////////////////////////////////////////////////////////////
+// все настройки ТСБ в одном месте
+// all TSB settings in one place
+FUNCTION Test4_ParamTsb(aSize)
+   LOCAL oTsb
+
+   oTsb := oHmgData()
+   oTsb:aNumber     := {}                         // нет колонки нумерации
+   oTsb:aHead       := {"", "", "Edit"}
+   oTsb:aFoot       := {"", "", "Edit"}
+   oTsb:nHeightHead := 0                          // высота шапки - убрать шапку таблицы
+   oTsb:nHeightFoot := 0                          // высота подвала
+   oTsb:lFooting    := .F.                        // НЕ ставить в таблице подвал
+   oTsb:lNoPicture  := .T.
+   oTsb:lSpecHd     := .F.                        // поставить в таблице нумератор колонок
+   oTsb:lSuperHd    := .T.                        // поставить в таблице суперхидер
+   oTsb:cSuperHd    := "Configuring the application entry - example"
+   oTsb:aHideCol    := { 4, 5, 6 }                // скрыть колонки
+   oTsb:aSize       := aSize                      // назначим ширину колонок для ТСБ
+
+   // этот код выполняется уже в ТСБ в alert_tsb.prg
+   // блоки кода для _TBrowse(...) - название переменных bInit,bBody,bEnd,bAfter менять нельзя
+   // ВНИМАНИЕ ! Это добавочные блоки кода для: bInit,bBody,bEnd,bAfter
+   // this code is already executed in TSB in alert_tsb.prg
+   // code blocks for _TBrowse(...) - variable names bInit,bBody,bEnd,bAfter cannot be changed
+   // ATTENTION! These are additional code blocks for: bInit,bBody,bEnd,bAfter
+   oTsb:bInit_2 := {|ob,op| // добавка для инициализации тсб / add-on for initialization of tsb
+                            //ob:HideColumns( op:aHideCol ,.t.)  // скрыть колонки - резерв
+                            ob:nFreeze     := 2                  // Заморозить столбец
+                            ob:lLockFreeze := .T.                // Избегать прорисовки курсора на замороженных столбцах
+                            ob:nCell       := ob:nFreeze + 1
+                            // цвет фона в ячейках таблицы  -> alert_tsb.prg
+                            ob:Cargo:aZebra := op:aZebra
+                            ob:aColumns[3]:nClrBack := { |nr,nc,ob| myAlertTsbColorBack(nr,nc,ob) }
+                            // редактирование ячеек таблицы -> alert_tsb.prg
+                            // ВНИМАНИЕ ! Это функция содержит обработку на основе колонок: 5,6
+                            // Для простых операций она не нужна
+                            // edit table cells -> alert_tsb.prg
+                            // WARNING! This function contains column-based processing: 5,6
+                            // It is not needed for simple operations
+                            myAlertTsbEdit(ob,op)
+                            // перечитать состояние скролинга
+                            // reread scrolling state
+                            ob:ResetVScroll( .T. )
+                            ob:oHScroll:SetRange( 0, 0 )
+                            ob:Refresh()
+                            Return Nil
+                            }
+
+   oTsb:bBody_2 := {|ob,op,oc| ob:nHeightHead  := 0   /* убрать шапку таблицы */     ,;
+                               ob:lPickerMode := .F. , oc := ob:aColumns[3]          ,;
+                               oc:lEdit  := .T. , oc:cPicture := Nil , oc:lCheckBox := .T. ,;
+                               oc:nAlign := DT_CENTER , oc:nEditMove := 0 ,;  // перечитать ячейку
+                               oc:aCheck := { LoadImage("bMgCheckT24"), LoadImage("bMgCheckF24") } ,;
+                               _LogFile(.T., "### oTsb:bInit", ProcNL(), op:cSuperHd, ob:nHeightSuper, ob:lDrawSuperHd) }
+
+   oTsb:bAfter_2 := {|ob| // добавка для oTsb:bAfter / additive for oTsb:bAfter
+                    Local oc, nw := 0
+                    ? ProcNL(), "@@@ TSB @@@ width =", ob:GetAllColsWidth()
+                    FOR EACH oc IN ob:aColumns
+                        ? hb_enumindex(oc), oc:lVisible, oc:nWidth
+                        IF oc:lVisible ; nw += oc:nWidth
+                        ENDIF
+                    NEXT
+                    ? "TSB nWidth =", nw  ; ?
+                    Return Nil
+                    }
+
+RETURN oTsb
+
 ///////////////////////////////////////////////////////////////////////////
 FUNCTION Test5()
    LOCAL cIco, nIco, aDim, cTtl, cFile, cPath, aRet, cStr, cSprt, aDim2
@@ -483,20 +511,20 @@ FUNCTION Test5()
             aDim2 := HB_ATokens(cStr,cSprt,.F.,.F.)
             aVal  := {}
             FOR nJ := 1 TO LEN(aDim2)
-if val(aDim2[5]) == 1
+            if val(aDim2[5]) == 1
                AADD( aVal, aDim2[nJ] )
-endif
+            endif
             NEXT
-      If Len(aVal) > 0
-            AADD( aArray , aVal )
-      EndIf
+            If Len(aVal) > 0
+               AADD( aArray , aVal )
+            EndIf
          ENDIF
       NEXT
 
       If Len(aArray) == 0
          aArray := { { "Error! ", "Could not create array for import !" } }
-else
-aSort(aArray, NIL, NIL, {| x, y | val(x[ 9 ]) > val(y[ 9 ]) })
+      else
+         aSort(aArray, NIL, NIL, {| x, y | val(x[ 9 ]) > val(y[ 9 ]) })
       EndIf
 
       oTsb := oHmgData()
@@ -509,6 +537,88 @@ aSort(aArray, NIL, NIL, {| x, y | val(x[ 9 ]) > val(y[ 9 ]) })
    aRet := AlertTSB(cIco,nIco,aArray,cTtl,,,oTsb)
 
 RETURN NIL
+
+///////////////////////////////////////////////////////////////////////////
+FUNCTION Test6()
+   LOCAL cIco,nIco,aArray,cTtl,oTsb,aRet
+
+   USE OPERAT
+   aArray := ALIAS() 
+   cIco   := "iMgLogfile128"
+   nIco   := 96
+   cTtl   := "File operat.dbf" 
+   //aRet := AlertTSB(,,ALIAS()) // you can do it like this
+   aRet   := AlertTSB(cIco,nIco,aArray,cTtl,,,oTsb)
+   (Alias())->(DbCloseArea()) 
+
+RETURN NIL
+
+//////////////////////////////////////////////////////////////////////////
+FUNCTION Test7()
+   LOCAL cIco, nIco, cTtl, cFile, cPath, aRet, aArray, oTsb, aBtn, oWin
+   LOCAL bInitForm
+
+   USE OPERAT
+   aArray := ALIAS()
+   cPath  := App.Cargo:cPathStart
+   cFile  := cPath + "operat.dbf"
+   cIco   := "iMgSave128"
+   nIco   := 128
+   cTtl   := "File - " + cFile 
+
+   oWin := oHmgData()
+   oWin:aBColor   := { 210, 166, 236 }                // цвет всей формы
+   oWin:cHelp     := "Editing columns is allowed !" + CRLF + "Not all columns can be edited !"
+   oWin:aFntHelp  := { "Arial", 22, .T., .T. }
+   oWin:aHelpFClr := MAROON
+   oWin:aBtnFClr  := { WHITE  , WHITE  }              // цвет фонта кнопки
+   oWin:aBtnBClr  := { ORANGE , MAROON }              // цвет фона кнопки
+   oWin:aBtnFClr2 := WHITE                            // инвертный цвет фонта кнопки (фокус на кнопке)
+   oWin:aBtnBClr2 := BLUE                             // инвертный цвет фона кнопки  (фокус на кнопке)
+   aBtn           := {"Print" , "Cancel"}             // кнопки на форме
+   bInitForm      := Nil                              // блок кода после показа формы
+
+   oTsb := Test7_ParamTsb()
+   aRet := AlertTSB(cIco,nIco,aArray,cTtl,aBtn,oWin,oTsb,bInitForm)
+   DO EVENTS
+   ? ProcNL(), aRet
+   MsgDebug("Return AlertTSB()=",aRet)
+   (Alias())->(DbCloseArea()) 
+
+RETURN NIL
+
+////////////////////////////////////////////////////////////////
+FUNCTION Test7_ParamTsb()
+   LOCAL oTsb
+
+   oTsb := oHmgData()
+   //oTsb:aNumber   := {}                         // не задавать колонку нумерации, по умолчанию есть колонка
+   //                         1          2         3       4            5                 6
+   oTsb:aHead       := { "User;Code" , "User" , "Group" , "Label", "Edited;Date;Time", "Print"  }
+   oTsb:aFoot       := { "(1)"      , "(2)"  , "(3)"   , "(4)"  , "(5)"              , "(6)"    }
+   oTsb:aEdit       := { .F.        , .T.    , .T.     , .T.    , .T.                , .T.      }  // редактировать колонки
+   oTsb:aField      := {"KOPERAT"   ,"OPERAT", "KGROUP", "LCHK" , "TS"               , "lPRN"   }
+   oTsb:aName       := oTsb:aField
+   //oTsb:nHeightHead := 1                        // высота шапки   - убрать шапку таблицы
+   //oTsb:nHeightFoot := 1                        // высота подвала - убрать подвал таблицы
+   //oTsb:lFooting    := .F.                      // НЕ ставить в таблице подвал
+   oTsb:lSpecHd     := .T.                        // поставить в таблице нумератор колонок
+   oTsb:lSuperHd    := .T.                        // поставить в таблице суперхидер
+   oTsb:cSuperHd    := "Table Superheader - example"
+   //oTsb:aHideCol  := { 4, 5, 6 }                // скрыть колонки
+   //oTsb:aSize     := aSize                      // назначим ширину колонок для ТСБ
+
+   // ВНИМАНИЕ ! Блок-кода использовать НЕЛЬЗЯ ! он уже используется в alert_tsb.prg !
+   // oTsb:bInit := {|ob,op| // настройки тсб для Dbf - не использую
+
+   oTsb:bBody_2 := {|ob,op| // другие настройки тсб для Dbf - добавочный блок
+                     // редактирование ячеек таблицы -> alert_tsb.prg
+                     myAlertTsbEdit(ob,op)  
+                     DO EVENTS
+                     Return Nil
+                     }
+  
+RETURN oTsb
 
 ////////////////////////////////////////////////////////////////
 FUNCTION CalculatColumnWidths(aDim)   // подсчёт ширины колонок
@@ -575,7 +685,6 @@ INIT PROCEDURE Sets_ENV()
    SET SOFTSEEK  ON
    SET OOP ON
    SET DATE FORMAT TO "DD.MM.YY"
-   SET TOOLTIPSTYLE BALLOON
 
    IF !HB_ISOBJECT( App.Cargo ) ; App.Cargo := oHmgData()
    ENDIF
@@ -593,8 +702,8 @@ INIT PROCEDURE Sets_ENV()
    o:tStart         := hb_DateTime()        // start time
    o:cLogFile       := ChangeFileExt( App.ExeName, '.log' )
    cLog             := o:cLogFile
-   o:cLogFile       := cFilePath( cLog ) + "\"
-   o:cLogFile       += "_" + cFileNoPath( cLog )
+   //o:cLogFile     := cFilePath( cLog ) + "\"
+   //o:cLogFile     += "_" + cFileNoPath( cLog )
    //
    o:tStart         := hb_DateTime()       // start time
    o:cIniFile       := cIni
@@ -624,7 +733,7 @@ INIT PROCEDURE Sets_ENV()
    // setting your parameters, allows you to test for other screen resolutions
    //o:aDisplayMode   := { 1280 , 1280 }
    o:cDisplayMode   := HB_NtoS(o:aDisplayMode[1]) + "x" + HB_NtoS(o:aDisplayMode[2])
-   o:cFontName      := "Arial"             // "DejaVu Sans Mono"
+   o:cFontName      := "Arial"  //"DejaVu Sans Mono"
    o:cFontName2     := "Comic Sans MS"
    o:nFontSize      := 14
    o:cDlgFont       := "DejaVu Sans Mono"

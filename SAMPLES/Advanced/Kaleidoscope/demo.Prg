@@ -1,550 +1,767 @@
 #include <minigui.ch>
 
-memvar backcolor
-memvar akalai
-memvar x
-memvar y
+MEMVAR backcolor
+MEMVAR akalai
+MEMVAR x
+MEMVAR y
 
-*------------------------------------------------------------------------------*
-function main
-*------------------------------------------------------------------------------*
-local showinterval := 2000
-private backcolor := {0,0,0}
-private akalai := {}
-private x := 250 // xcenter
-private y := 250 // ycenter
+/*
+ * FUNCTION Main()
+ *
+ * Initializes the application, defines the main window, and sets up the UI elements for the Kaleidoscope application.
+ *
+ * Purpose:
+ *   This is the entry point of the application. It performs the following tasks:
+ *     1. Sets the default slideshow interval.
+ *     2. Initializes the background color to black.
+ *     3. Initializes an empty array to store the shapes drawn (akalai).
+ *     4. Sets the center coordinates (x, y) for the kaleidoscope effect.
+ *     5. Defines the main window with its controls (labels, spinners, checkboxes, buttons, hyperlinks).
+ *     6. Sets the initial values and event handlers for the controls.
+ *     7. Centers the main window on the screen.
+ *     8. Activates the main window, making it visible to the user.
+ *   The main window contains controls to adjust the number of iterations, select shapes to draw (triangles, circles, rectangles, ellipses, squares, polygons),
+ *   change the background color, toggle the slideshow mode, save the current image, and display a stereo view.
+ *   It also includes hyperlinks to external resources.
+ *
+ * Notes:
+ *   The akalai array stores the points, colors, and type of each shape drawn, which is used for the stereo view.
+ *   The drawkalai() function is called initially and by the timer to redraw the kaleidoscope.
+ *   The iswindowactive(s) check prevents drawing the stereo window if it's not active, improving performance.
+ */
+FUNCTION Main
 
-define window k at 0,0 width 650 height 530 title "Kaleidoscope - 3D v.1.1 by S. Rathinagiri" main icon "kalai" nomaximize nosize on init drawkalai()
-   define timer timer1 interval showinterval action (drawkalai(),iif(iswindowactive(s),drawstereowindow(),))
+   LOCAL showinterval := 2000
+   PRIVATE backcolor := { 0, 0, 0 }
+   PRIVATE akalai := {}
+   PRIVATE x := 250 // xcenter
+   PRIVATE y := 250 // ycenter
 
-   define label iterationslabel
-      row 10
-      col 510
-      value "Iterations"
-      width 80
-   end label
-   define spinner iterations
-      row 10
-      col 590
-      width 50
-      rangemin 1
-      rangemax 999
-      value 3
-   end spinner
-   define frame shapes
-      row 40
-      col 505
-      width 135
-      height 200
-      caption "Shapes"
-   end frame
-   define checkbox triangles
-      row 60
-      col 510
-      width 120
-      caption "Triangles"
-   end checkbox
-   define checkbox circles
-      row 90
-      col 510
-      width 120
-      caption "Circles"
-   end checkbox
-   define checkbox rectangles
-      row 120
-      col 510
-      width 120
-      caption "Rectangles"
-   end checkbox
-   define checkbox ellipses
-      row 150
-      col 510
-      width 120
-      caption "Ellipses"
-   end checkbox
-   define checkbox squares
-      row 180
-      col 510
-      width 120
-      caption "Squares"
-   end checkbox
-   define checkbox polygons
-      row 210
-      col 510
-      width 120
-      caption "Polygons"
-      value .t.
-   end checkbox
-   define button backcolor
-      row 250
-      col 510
-      width 130
-      caption "Background Colour"
-      action  setbackcolor()
-   end button
-   define checkbox show1
-      row 280
-      col 510
-      caption "Slideshow ("+alltrim(str(showinterval/1000,5,0))+" Sec)"
-      width 130
-      onchange show1changed()
-   end checkbox
-   define button but1
-      row 310
-      col 510
-      width 60
-      caption "Show"
-      action drawkalai()
-   end button
-   define button save
-      row 310
-      col 580
-      width 60
-      caption "Save"
-      action savewindow1()
-   end button
-   define button showstereo
-      row 340
-      col 510
-      width 130
-      caption "Show Stereo"
-      action showstereowindow()
-   end button
-   define hyperlink email1
-      row 400
-      col 510
-      value "Algorithm of Cliff"
-      width 130
-      handcursor .t.
-      address "http://sprott.physics.wisc.edu/pickover/ekscop.html"
-   end hyperlink
-   define hyperlink email
-      row 430
-      col 510
-      value "E-Mail me"
-      width 130
-      handcursor .t.
-      address "srgiri@dataone.in"
-   end hyperlink
-   on key escape action thiswindow.release()
-end window
-k.show1.value := .t.
-k.center
-activate window k
+   DEFINE WINDOW k AT 0, 0 WIDTH 650 HEIGHT 530 TITLE "Kaleidoscope - 3D v.1.1 by S. Rathinagiri" MAIN ICON "kalai" NOMAXIMIZE NOSIZE ON INIT drawkalai()
+      DEFINE TIMER timer1 INTERVAL showinterval ACTION ( drawkalai(), iif( iswindowactive( s ), drawstereowindow(), ) )
 
-return nil
+      DEFINE LABEL iterationslabel
+         ROW 10
+         COL 510
+         VALUE "Iterations"
+         WIDTH 80
+      END LABEL
+      DEFINE SPINNER iterations
+         ROW 10
+         COL 590
+         WIDTH 50
+         RANGEMIN 1
+         RANGEMAX 999
+         VALUE 3
+      END SPINNER
+      DEFINE FRAME shapes
+         ROW 40
+         COL 505
+         WIDTH 135
+         HEIGHT 200
+         CAPTION "Shapes"
+      END FRAME
+      DEFINE CHECKBOX triangles
+         ROW 60
+         COL 510
+         WIDTH 120
+         CAPTION "Triangles"
+      END CHECKBOX
+      DEFINE CHECKBOX circles
+         ROW 90
+         COL 510
+         WIDTH 120
+         CAPTION "Circles"
+      END CHECKBOX
+      DEFINE CHECKBOX rectangles
+         ROW 120
+         COL 510
+         WIDTH 120
+         CAPTION "Rectangles"
+      END CHECKBOX
+      DEFINE CHECKBOX ellipses
+         ROW 150
+         COL 510
+         WIDTH 120
+         CAPTION "Ellipses"
+      END CHECKBOX
+      DEFINE CHECKBOX squares
+         ROW 180
+         COL 510
+         WIDTH 120
+         CAPTION "Squares"
+      END CHECKBOX
+      DEFINE CHECKBOX polygons
+         ROW 210
+         COL 510
+         WIDTH 120
+         CAPTION "Polygons"
+         VALUE .T.
+      END CHECKBOX
+      DEFINE BUTTON backcolor
+         ROW 250
+         COL 510
+         WIDTH 130
+         CAPTION "Background Colour"
+         ACTION setbackcolor()
+      END BUTTON
+      DEFINE CHECKBOX show1
+         ROW 280
+         COL 510
+         CAPTION "Slideshow (" + AllTrim( Str( showinterval / 1000, 5, 0 ) ) + " Sec)"
+         WIDTH 130
+         ONCHANGE show1changed()
+      END CHECKBOX
+      DEFINE BUTTON but1
+         ROW 310
+         COL 510
+         WIDTH 60
+         CAPTION "Show"
+         ACTION drawkalai()
+      END BUTTON
+      DEFINE BUTTON save
+         ROW 310
+         COL 580
+         WIDTH 60
+         CAPTION "Save"
+         ACTION savewindow1()
+      END BUTTON
+      DEFINE BUTTON showstereo
+         ROW 340
+         COL 510
+         WIDTH 130
+         CAPTION "Show Stereo"
+         ACTION showstereowindow()
+      END BUTTON
+      DEFINE HYPERLINK email1
+         ROW 400
+         COL 510
+         VALUE "Algorithm of Cliff"
+         WIDTH 130
+         HANDCURSOR .T.
+         ADDRESS "http://sprott.physics.wisc.edu/pickover/ekscop.html"
+      END HYPERLINK
+      DEFINE HYPERLINK email
+         ROW 430
+         COL 510
+         VALUE "E-Mail me"
+         WIDTH 130
+         HANDCURSOR .T.
+         ADDRESS "srgiri@dataone.in"
+      END HYPERLINK
+      ON KEY ESCAPE ACTION thiswindow.release()
+   END WINDOW
+   k.show1.value := .T.
+   k.center
+   ACTIVATE WINDOW k
 
-*------------------------------------------------------------------------------*
-function drawkalai
-*------------------------------------------------------------------------------*
-local aPoints
-local apoints1
-local x1,x2,y1,y2,t
-local i,j := 0,r,g,b,r1
-local sides
+RETURN NIL
 
-asize(akalai,0)
-erase window k
-if k.iterations.value < 1
-   return nil
-endif
+/*
+ * FUNCTION drawkalai()
+ *
+ * Draws the kaleidoscope pattern on the main window.
+ *
+ * Purpose:
+ *   This function generates and draws the kaleidoscope pattern based on the user's selections (shapes, iterations)
+ *   and random color generation. It clears the window and then iterates based on the 'iterations' spinner value.
+ *   For each iteration, it checks which shapes are selected (triangles, circles, rectangles, ellipses, squares, polygons)
+ *   and draws them with random colors. The shapes are then flipped and drawn in 8 different orientations to create the kaleidoscope effect.
+ *   The shape data (points, color, type) is stored in the akalai array for use in the stereo view.
+ *
+ * Notes:
+ *   The akalai array is cleared at the beginning of the function to ensure that only the shapes from the current iteration are displayed.
+ *   The flip() function is used to generate the different orientations of the shapes.
+ *   The random() function is used to generate random coordinates and colors.
+ *   The drawrect, drawellipse, and drawpolygon functions are HMG Extended functions for drawing shapes on a window.
+ */
+FUNCTION drawkalai
 
-drawrect("k",0,0,x*2,y*2,backcolor,,backcolor)
+   LOCAL aPoints
+   LOCAL apoints1
+   LOCAL x1, x2, y1, y2, t
+   LOCAL i, j := 0, r, g, b, r1
+   LOCAL sides
 
-FOR i = 1 to k.iterations.value
+   ASize( akalai, 0 )
+   ERASE WINDOW k
+   IF k.iterations.value < 1
+      RETURN NIL
+   ENDIF
 
-   if k.triangles.value
-      sides := 3
-      aPoints := {}
-      for j := 1 to sides
-         x1 := random(x)
-         y1 := random(y)
-         if ( x1 > y1 ) 
+   drawrect( "k", 0, 0, x * 2, y * 2, backcolor,, backcolor )
+
+   FOR i = 1 TO k.iterations.value
+
+      IF k.triangles.value
+         sides := 3
+         aPoints := {}
+         FOR j := 1 TO sides
+            x1 := random( x )
+            y1 := random( y )
+            IF ( x1 > y1 )
+               t := x1
+               x1 := y1
+               y1 := t
+            ENDIF
+            AAdd( apoints, { x1, y1 } )
+         NEXT j
+         r := random( 255 )
+         g := random( 255 )
+         b := random( 255 )
+         FOR j := 1 TO 8
+            apoints1 := flip( AClone( apoints ), x, y, j )
+            drawpolygon( "k", aPoints1, { r, g, b },, { r, g, b } )
+            AAdd( akalai, { AClone( apoints1 ), { r, g, b }, "TRIANGLE" } )
+         NEXT j
+      ENDIF
+
+      IF k.circles.value
+         x1 = random( x )
+         y1 = random( y )
+         r1 := random( Min( x - x1, y - y1 ) )
+         IF ( x1 > y1 )
             t := x1
             x1 := y1
             y1 := t
-         endif
-         aadd(apoints,{x1,y1})
-      next j
-      r := random(255)
-      g := random(255)
-      b := random(255)
-      for j := 1 to 8
-         apoints1 := flip(aclone(apoints),x,y,j)
-         drawpolygon("k",aPoints1,{r,g,b},,{r,g,b})
-         aadd(akalai,{aclone(apoints1),{r,g,b},"TRIANGLE"})
-      next j
-   endif
-   
-   if k.circles.value
-      x1 = random(x)
-      y1 = random(y)
-      r1 := random(min(x-x1,y-y1))
-      if ( x1 > y1 ) 
-         t := x1
-         x1 := y1
-         y1 := t
-      endif
-      x2 := x1 + r1
-      y2 := y1 + r1
-      r := random(255)
-      g := random(255)
-      b := random(255)
-      aPoints := {{x1,y1},{x2,y2}}
-      for j := 1 to 8
-         apoints1 := flip(aclone(apoints),x,y,j)
-         drawellipse("k",apoints1[1,1],apoints1[1,2],apoints1[2,1],apoints1[2,2],{r,g,b},,{r,g,b})
-         aadd(akalai,{aclone(apoints1),{r,g,b},"CIRCLE"})
-      next j   
-   endif      
-   
-   if k.ellipses.value
-      sides := 2
-      aPoints := {}
-      for j := 1 to sides
-         x1 := random(x)
-         y1 := random(y)
-         if ( x1 > y1 ) 
+         ENDIF
+         x2 := x1 + r1
+         y2 := y1 + r1
+         r := random( 255 )
+         g := random( 255 )
+         b := random( 255 )
+         aPoints := { { x1, y1 }, { x2, y2 } }
+         FOR j := 1 TO 8
+            apoints1 := flip( AClone( apoints ), x, y, j )
+            drawellipse( "k", apoints1[ 1, 1 ], apoints1[ 1, 2 ], apoints1[ 2, 1 ], apoints1[ 2, 2 ], { r, g, b },, { r, g, b } )
+            AAdd( akalai, { AClone( apoints1 ), { r, g, b }, "CIRCLE" } )
+         NEXT j
+      ENDIF
+
+      IF k.ellipses.value
+         sides := 2
+         aPoints := {}
+         FOR j := 1 TO sides
+            x1 := random( x )
+            y1 := random( y )
+            IF ( x1 > y1 )
+               t := x1
+               x1 := y1
+               y1 := t
+            ENDIF
+            AAdd( apoints, { x1, y1 } )
+         NEXT j
+         r := random( 255 )
+         g := random( 255 )
+         b := random( 255 )
+         FOR j := 1 TO 8
+            apoints1 := flip( AClone( apoints ), x, y, j )
+            drawellipse( "k", apoints1[ 1, 1 ], apoints1[ 1, 2 ], apoints1[ 2, 1 ], apoints1[ 2, 2 ], { r, g, b },, { r, g, b } )
+            AAdd( akalai, { AClone( apoints1 ), { r, g, b }, "ELLIPSE" } )
+         NEXT j
+      ENDIF
+
+      IF k.rectangles.value
+         sides := 2
+         aPoints := {}
+         FOR j := 1 TO sides
+            x1 := random( x )
+            y1 := random( y )
+            IF ( x1 > y1 )
+               t := x1
+               x1 := y1
+               y1 := t
+            ENDIF
+            AAdd( apoints, { x1, y1 } )
+         NEXT j
+         r := random( 255 )
+         g := random( 255 )
+         b := random( 255 )
+
+         FOR j := 1 TO 8
+            apoints1 := flip( AClone( apoints ), x, y, j )
+            drawrect( "k", apoints1[ 1, 1 ], apoints1[ 1, 2 ], apoints1[ 2, 1 ], apoints1[ 2, 2 ], { r, g, b },, { r, g, b } )
+            AAdd( akalai, { AClone( apoints1 ), { r, g, b }, "RECTANGLE" } )
+         NEXT j
+      ENDIF
+
+      IF k.squares.value
+         x1 = random( x )
+         y1 = random( y )
+         r1 := random( Min( x - x1, y - y1 ) )
+         IF ( x1 > y1 )
             t := x1
             x1 := y1
             y1 := t
-         endif
-         aadd(apoints,{x1,y1})
-      next j
-      r := random(255)
-      g := random(255)
-      b := random(255)
-      for j := 1 to 8
-         apoints1 := flip(aclone(apoints),x,y,j)
-         drawellipse("k",apoints1[1,1],apoints1[1,2],apoints1[2,1],apoints1[2,2],{r,g,b},,{r,g,b})
-         aadd(akalai,{aclone(apoints1),{r,g,b},"ELLIPSE"})
-      next j
-   endif
-   
-   if k.rectangles.value
-      sides := 2
-      aPoints := {}
-      for j := 1 to sides
-         x1 := random(x)
-         y1 := random(y)
-         if ( x1 > y1 ) 
-            t := x1
-            x1 := y1
-            y1 := t
-         endif
-         aadd(apoints,{x1,y1})
-      next j
-      r := random(255)
-      g := random(255)
-      b := random(255)
-      
-      for j := 1 to 8
-         apoints1 := flip(aclone(apoints),x,y,j)
-         drawrect("k",apoints1[1,1],apoints1[1,2],apoints1[2,1],apoints1[2,2],{r,g,b},,{r,g,b})
-         aadd(akalai,{aclone(apoints1),{r,g,b},"RECTANGLE"})
-      next j   
-   endif
-   
-   if k.squares.value
-      x1 = random(x)
-      y1 = random(y)
-      r1 := random(min(x-x1,y-y1))
-      if ( x1 > y1 ) 
-         t := x1
-         x1 := y1
-         y1 := t
-      endif
-      x2 := x1 + r1
-      y2 := y1 + r1
-      r := random(255)
-      g := random(255)
-      b := random(255)
-      aPoints := {{x1,y1},{x2,y2}}
-      for j := 1 to 8
-         apoints1 := flip(aclone(apoints),x,y,j)
-         drawrect("k",apoints1[1,1],apoints1[1,2],apoints1[2,1],apoints1[2,2],{r,g,b},,{r,g,b})
-         aadd(akalai,{aclone(apoints1),{r,g,b},"SQUARE"})
-      next j          
-   endif
-   
-   if k.polygons.value .or. empty(j)
-      if empty(j)
-         k.polygons.value := .t.
-      endif
-      sides := 4+random(20)
-      aPoints := {}
-      for j := 1 to sides
-         x1 := random(x)
-         y1 := random(y)
-         if ( x1 > y1 ) 
-            t := x1
-            x1 := y1
-            y1 := t
-         endif
-         aadd(apoints,{x1,y1})
-      next j
-      r := random(255)
-      g := random(255)
-      b := random(255)
-      for j := 1 to 8
-         apoints1 := flip(aclone(apoints),x,y,j)
-         drawpolygon("k",aPoints1,{r,g,b},,{r,g,b})
-         aadd(akalai,{aclone(apoints1),{r,g,b},"POLYGON"})
-      next j
-   endif
-next i
+         ENDIF
+         x2 := x1 + r1
+         y2 := y1 + r1
+         r := random( 255 )
+         g := random( 255 )
+         b := random( 255 )
+         aPoints := { { x1, y1 }, { x2, y2 } }
+         FOR j := 1 TO 8
+            apoints1 := flip( AClone( apoints ), x, y, j )
+            drawrect( "k", apoints1[ 1, 1 ], apoints1[ 1, 2 ], apoints1[ 2, 1 ], apoints1[ 2, 2 ], { r, g, b },, { r, g, b } )
+            AAdd( akalai, { AClone( apoints1 ), { r, g, b }, "SQUARE" } )
+         NEXT j
+      ENDIF
 
-return nil
+      IF k.polygons.value .OR. Empty( j )
+         IF Empty( j )
+            k.polygons.value := .T.
+         ENDIF
+         sides := 4 + random( 20 )
+         aPoints := {}
+         FOR j := 1 TO sides
+            x1 := random( x )
+            y1 := random( y )
+            IF ( x1 > y1 )
+               t := x1
+               x1 := y1
+               y1 := t
+            ENDIF
+            AAdd( apoints, { x1, y1 } )
+         NEXT j
+         r := random( 255 )
+         g := random( 255 )
+         b := random( 255 )
+         FOR j := 1 TO 8
+            apoints1 := flip( AClone( apoints ), x, y, j )
+            drawpolygon( "k", aPoints1, { r, g, b },, { r, g, b } )
+            AAdd( akalai, { AClone( apoints1 ), { r, g, b }, "POLYGON" } )
+         NEXT j
+      ENDIF
+   NEXT i
 
-*------------------------------------------------------------------------------*
-function savewindow1
-*------------------------------------------------------------------------------*
-local filename
+RETURN NIL
 
-if k.show1.value
-   k.timer1.enabled := .f.
-endif
+/*
+ * FUNCTION savewindow1()
+ *
+ * Saves the content of the main window to a bitmap file.
+ *
+ * Purpose:
+ *   This function allows the user to save the current kaleidoscope image displayed in the main window to a BMP file.
+ *   It first disables the timer (if the slideshow is active) to prevent the image from changing during the save process.
+ *   Then, it prompts the user to select a file name and location using the PutFile() function.
+ *   It ensures that the file name has a ".bmp" extension. If the file already exists, it asks the user for confirmation before overwriting.
+ *   Finally, it calls the savewindow() function to save the window content to the specified file.
+ *   After saving, it re-enables the timer if it was previously active.
+ *
+ * Notes:
+ *   The PutFile() function is used to display a standard file save dialog.
+ *   The savewindow() function is an HMG Extended function for saving the content of a window to a bitmap file.
+ *   The msgyesno() function is used to display a confirmation dialog before overwriting an existing file.
+ */
+FUNCTION savewindow1
 
-filename := PutFile ( {{"Bitmap Files (*.bmp)","*.bmp"}} , "Save to bitmap file" ,  , .f. ) 
-if !empty(filename)
-   if at(".bmp",lower(filename)) > 0
-      if .not. right(lower(filename),4) == ".bmp"
+   LOCAL filename
+
+   IF k.show1.value
+      k.timer1.enabled := .F.
+   ENDIF
+
+   filename := PutFile ( { { "Bitmap Files (*.bmp)", "*.bmp" } }, "Save to bitmap file", , .F. )
+   if ! Empty( filename )
+      IF At( ".bmp", Lower( filename ) ) > 0
+         IF .NOT. Right( Lower( filename ), 4 ) == ".bmp"
+            filename := filename + ".bmp"
+         ENDIF
+      ELSE
          filename := filename + ".bmp"
-      endif
-   else
-      filename := filename + ".bmp"
-   endif
+      ENDIF
 
-   if file(filename)
-      if msgyesno("Are you sure to overwrite?","Save to bitmap")
-         savewindow("k",filename,0,0,500,500)
-      endif
-   else
-      savewindow("k",filename,0,0,500,500)
-   endif
-endif
+      IF File( filename )
+         IF msgyesno( "Are you sure to overwrite?", "Save to bitmap" )
+            savewindow( "k", filename, 0, 0, 500, 500 )
+         ENDIF
+      ELSE
+         savewindow( "k", filename, 0, 0, 500, 500 )
+      ENDIF
+   ENDIF
 
-if k.show1.value
-   k.timer1.enabled := .t.
-endif
+   IF k.show1.value
+      k.timer1.enabled := .T.
+   ENDIF
 
-return nil
+RETURN NIL
 
-*------------------------------------------------------------------------------*
-function setbackcolor
-*------------------------------------------------------------------------------*
-backcolor := getcolor(backcolor)
-return nil
+/*
+ * FUNCTION setbackcolor()
+ *
+ * Allows the user to select a new background color for the kaleidoscope.
+ *
+ * Purpose:
+ *   This function opens a color selection dialog using the getcolor() function, allowing the user to choose a new background color.
+ *   The selected color is then assigned to the backcolor variable, which is used by the drawkalai() function to draw the background.
+ *
+ * Notes:
+ *   The getcolor() function is an HMG Extended function for displaying a color selection dialog.
+ *   The backcolor variable is a global variable that stores the current background color.
+ */
+FUNCTION setbackcolor
 
-*------------------------------------------------------------------------------*
-function show1changed
-*------------------------------------------------------------------------------*
-if .not. iscontroldefined(timer1,k)
-   return nil
-endif
-if k.show1.value
-   k.timer1.enabled := .t.
-else   
-   k.timer1.enabled := .f.
-endif
-return nil
+   backcolor := getcolor( backcolor )
 
-*------------------------------------------------------------------------------*
-function showstereowindow
-*------------------------------------------------------------------------------*
-if .not. iswindowdefined(s)
-   define window s at 0,0 width 1100 height 580 title "Stereo Window" modal nosize backcolor {0,0,0} on init drawstereowindow()
-   define button save1
-      row 520
-      col 10
-      width 50
-      caption "Save"
-      action savestereowindow1()
-   end button
-   define button close1
-      row 520
-      col 70
-      width 50
-      caption "Close"
-      action s.release()
-   end button
+RETURN NIL
 
-   on key escape action thiswindow.release()
-   end window
-   s.center
-   s.activate
-else
-   drawstereowindow()   
-endif   
+/*
+ * FUNCTION show1changed()
+ *
+ * Toggles the state of the timer based on the value of the "Slideshow" checkbox.
+ *
+ * Purpose:
+ *   This function is called when the state of the "Slideshow" checkbox changes.
+ *   It enables or disables the timer based on the checkbox's value, effectively starting or stopping the slideshow.
+ *
+ * Notes:
+ *   The iscontroldefined() function checks if the timer control is defined within the window.
+ *   The k.timer1.enabled property is used to enable or disable the timer.
+ */
+FUNCTION show1changed
 
-return nil
+   IF .NOT. iscontroldefined( timer1, k )
+      RETURN NIL
+   ENDIF
+   IF k.show1.value
+      k.timer1.enabled := .T.
+   ELSE
+      k.timer1.enabled := .F.
+   ENDIF
 
-*------------------------------------------------------------------------------*
-function drawstereowindow
-*------------------------------------------------------------------------------*
-local stereobase := 30
-local sdiff, i
-local alpoints1
-local arpoints1
+RETURN NIL
 
-if len(akalai) == 0
-   return nil
-endif
-sdiff := stereobase /len(akalai) * 8
+/*
+ * FUNCTION showstereowindow()
+ *
+ * Displays a separate window showing a stereo (3D) view of the kaleidoscope pattern.
+ *
+ * Purpose:
+ *   This function creates and displays a modal window that presents a stereo view of the kaleidoscope pattern.
+ *   If the window is not already defined, it defines a new window named "s" with buttons to save the stereo image and close the window.
+ *   It then centers and activates the window. If the window is already defined, it simply calls the drawstereowindow() function to redraw the stereo image.
+ *
+ * Notes:
+ *   The iswindowdefined() function checks if the window is already defined.
+ *   The DEFINE WINDOW block defines the properties and controls of the stereo window.
+ *   The drawstereowindow() function is responsible for drawing the stereo image in the window.
+ *   The stereo window is modal, meaning that the user must close it before interacting with the main window.
+ */
+FUNCTION showstereowindow
 
-erase window s
-drawrect("s",0,0,500,1030,backcolor,,backcolor)
+   IF .NOT. iswindowdefined( s )
+      DEFINE WINDOW s AT 0, 0 WIDTH 1100 HEIGHT 580 TITLE "Stereo Window" MODAL NOSIZE backcolor { 0, 0, 0 } ON INIT drawstereowindow()
+         DEFINE BUTTON save1
+            ROW 520
+            COL 10
+            WIDTH 50
+            CAPTION "Save"
+            ACTION savestereowindow1()
+         END BUTTON
+         DEFINE BUTTON close1
+            ROW 520
+            COL 70
+            WIDTH 50
+            CAPTION "Close"
+            ACTION s.release()
+         END BUTTON
 
-for i := 1 to len(akalai)
-   
-   alpoints1 := converttolpoints(aclone(akalai[i,1]),stereobase,sdiff*int((i-1)/8))
-   arpoints1 := converttorpoints(aclone(akalai[i,1]),stereobase)
-   
-   do case 
-      case akalai[i,3] == "TRIANGLE" .or. akalai[i,3] == "POLYGON"
-         drawpolygon("s",alPoints1,akalai[i,2],,akalai[i,2])
-         drawpolygon("s",arPoints1,akalai[i,2],,akalai[i,2])
-      case akalai[i,3] == "CIRCLE" .or. akalai[i,3] == "ELLIPSE"
-         drawellipse("s",alpoints1[1,1],alpoints1[1,2],alpoints1[2,1],alpoints1[2,2],akalai[i,2],,akalai[i,2])
-         drawellipse("s",arpoints1[1,1],arpoints1[1,2],arpoints1[2,1],arpoints1[2,2],akalai[i,2],,akalai[i,2])
-      case akalai[i,3] == "RECTANGLE" .or. akalai[i,3] == "SQUARE"
-         drawrect("s",alpoints1[1,1],alpoints1[1,2],alpoints1[2,1],alpoints1[2,2],akalai[i,2],,akalai[i,2])
-         drawrect("s",arpoints1[1,1],arpoints1[1,2],arpoints1[2,1],arpoints1[2,2],akalai[i,2],,akalai[i,2])
-   endcase   
-         
-next i
+         ON KEY ESCAPE ACTION thiswindow.release()
+      END WINDOW
+      s.center
+      s.activate
+   ELSE
+      drawstereowindow()
+   ENDIF
 
-return nil
+RETURN NIL
 
-*------------------------------------------------------------------------------*
-function converttolpoints(apoints,stereobase,sdiff)
-*------------------------------------------------------------------------------*
-local alpoints := aclone(apoints)
-local i
+/*
+ * FUNCTION drawstereowindow()
+ *
+ * Draws the stereo (3D) view of the kaleidoscope pattern on the stereo window.
+ *
+ * Purpose:
+ *   This function draws the stereo view of the kaleidoscope pattern based on the data stored in the akalai array.
+ *   It calculates the stereo separation based on the stereobase and the number of shapes in the akalai array.
+ *   It then iterates through the akalai array, converting the points of each shape to left and right eye views using the converttolpoints() and converttorpoints() functions.
+ *   Finally, it draws the shapes for both the left and right eyes, creating the stereo effect.
+ *
+ * Notes:
+ *   The akalai array contains the points, colors, and type of each shape drawn in the main window.
+ *   The stereobase variable determines the overall stereo separation.
+ *   The sdiff variable calculates the incremental stereo separation for each shape.
+ *   The converttolpoints() and converttorpoints() functions adjust the y-coordinates of the points to create the left and right eye views.
+ *   The drawrect, drawellipse, and drawpolygon functions are HMG Extended functions for drawing shapes on a window.
+ */
+FUNCTION drawstereowindow
 
-for i := 1 to len(alpoints)
-   alpoints[i,2] := alpoints[i,2] + stereobase - sdiff
-next i
-return alpoints
+   LOCAL stereobase := 30
+   LOCAL sdiff, i
+   LOCAL alpoints1
+   LOCAL arpoints1
 
-*------------------------------------------------------------------------------*
-function converttorpoints(apoints,stereobase)
-*------------------------------------------------------------------------------*
-local arpoints := aclone(apoints)
-local i
+   IF Len( akalai ) == 0
+      RETURN NIL
+   ENDIF
+   sdiff := stereobase / Len( akalai ) * 8
 
-for i := 1 to len(arpoints)
-   arpoints[i,2] := arpoints[i,2] + (2*y) + stereobase
-next i
-return arpoints
+   ERASE WINDOW s
+   drawrect( "s", 0, 0, 500, 1030, backcolor,, backcolor )
 
-*------------------------------------------------------------------------------*
-function savestereowindow1
-*------------------------------------------------------------------------------*
-local filename
+   FOR i := 1 TO Len( akalai )
 
-if k.show1.value
-   k.timer1.enabled := .f.
-endif
+      alpoints1 := converttolpoints( AClone( akalai[ i, 1 ] ), stereobase, sdiff * Int( ( i - 1 ) / 8 ) )
+      arpoints1 := converttorpoints( AClone( akalai[ i, 1 ] ), stereobase )
 
-filename := PutFile ( {{"Bitmap Files (*.bmp)","*.bmp"}} , "Save to bitmap file" ,  , .f. ) 
-if !empty(filename)
-   if at(".bmp",lower(filename)) > 0
-      if .not. right(lower(filename),4) == ".bmp"
+      DO CASE
+      CASE akalai[ i, 3 ] == "TRIANGLE" .OR. akalai[ i, 3 ] == "POLYGON"
+         drawpolygon( "s", alPoints1, akalai[ i, 2 ],, akalai[ i, 2 ] )
+         drawpolygon( "s", arPoints1, akalai[ i, 2 ],, akalai[ i, 2 ] )
+      CASE akalai[ i, 3 ] == "CIRCLE" .OR. akalai[ i, 3 ] == "ELLIPSE"
+         drawellipse( "s", alpoints1[ 1, 1 ], alpoints1[ 1, 2 ], alpoints1[ 2, 1 ], alpoints1[ 2, 2 ], akalai[ i, 2 ],, akalai[ i, 2 ] )
+         drawellipse( "s", arpoints1[ 1, 1 ], arpoints1[ 1, 2 ], arpoints1[ 2, 1 ], arpoints1[ 2, 2 ], akalai[ i, 2 ],, akalai[ i, 2 ] )
+      CASE akalai[ i, 3 ] == "RECTANGLE" .OR. akalai[ i, 3 ] == "SQUARE"
+         drawrect( "s", alpoints1[ 1, 1 ], alpoints1[ 1, 2 ], alpoints1[ 2, 1 ], alpoints1[ 2, 2 ], akalai[ i, 2 ],, akalai[ i, 2 ] )
+         drawrect( "s", arpoints1[ 1, 1 ], arpoints1[ 1, 2 ], arpoints1[ 2, 1 ], arpoints1[ 2, 2 ], akalai[ i, 2 ],, akalai[ i, 2 ] )
+      ENDCASE
+
+   NEXT i
+
+RETURN NIL
+
+/*
+ * FUNCTION converttolpoints()
+ *
+ * Converts a set of points to the left eye view for stereo display.
+ *
+ * Parameters:
+ *   apoints (Array): An array of points, where each point is an array containing the x and y coordinates {x, y}.
+ *   stereobase (Numeric): The base stereo separation value.
+ *   sdiff (Numeric): The incremental stereo separation value for the current shape.
+ *
+ * Returns:
+ *   Array: A new array of points with the y-coordinates adjusted for the left eye view.
+ *
+ * Purpose:
+ *   This function takes an array of points representing a shape and adjusts the y-coordinates of each point to create the left eye view for stereo display.
+ *   The y-coordinate is adjusted by adding the stereobase and subtracting the sdiff value.
+ *
+ * Notes:
+ *   The AClone() function is used to create a copy of the input array to avoid modifying the original array.
+ */
+FUNCTION converttolpoints( apoints, stereobase, sdiff )
+
+   LOCAL alpoints := AClone( apoints )
+   LOCAL i
+
+   FOR i := 1 TO Len( alpoints )
+      alpoints[ i, 2 ] := alpoints[ i, 2 ] + stereobase - sdiff
+   NEXT i
+
+RETURN alpoints
+
+/*
+ * FUNCTION converttorpoints()
+ *
+ * Converts a set of points to the right eye view for stereo display.
+ *
+ * Parameters:
+ *   apoints (Array): An array of points, where each point is an array containing the x and y coordinates {x, y}.
+ *   stereobase (Numeric): The base stereo separation value.
+ *
+ * Returns:
+ *   Array: A new array of points with the y-coordinates adjusted for the right eye view.
+ *
+ * Purpose:
+ *   This function takes an array of points representing a shape and adjusts the y-coordinates of each point to create the right eye view for stereo display.
+ *   The y-coordinate is adjusted by adding stereobase and 2 * y (where y is the vertical center of the main window).
+ *
+ * Notes:
+ *   The AClone() function is used to create a copy of the input array to avoid modifying the original array.
+ */
+FUNCTION converttorpoints( apoints, stereobase )
+
+   LOCAL arpoints := AClone( apoints )
+   LOCAL i
+
+   FOR i := 1 TO Len( arpoints )
+      arpoints[ i, 2 ] := arpoints[ i, 2 ] + ( 2 * y ) + stereobase
+   NEXT i
+
+RETURN arpoints
+
+/*
+ * FUNCTION savestereowindow1()
+ *
+ * Saves the content of the stereo window to a bitmap file.
+ *
+ * Purpose:
+ *   This function allows the user to save the current stereo image displayed in the stereo window to a BMP file.
+ *   It first disables the timer (if the slideshow is active) to prevent the image from changing during the save process.
+ *   Then, it prompts the user to select a file name and location using the PutFile() function.
+ *   It ensures that the file name has a ".bmp" extension. If the file already exists, it asks the user for confirmation before overwriting.
+ *   Finally, it calls the savewindow() function to save the window content to the specified file.
+ *   After saving, it re-enables the timer if it was previously active.
+ *
+ * Notes:
+ *   The PutFile() function is used to display a standard file save dialog.
+ *   The savewindow() function is an HMG Extended function for saving the content of a window to a bitmap file.
+ *   The msgyesno() function is used to display a confirmation dialog before overwriting an existing file.
+ */
+FUNCTION savestereowindow1
+
+   LOCAL filename
+
+   IF k.show1.value
+      k.timer1.enabled := .F.
+   ENDIF
+
+   filename := PutFile ( { { "Bitmap Files (*.bmp)", "*.bmp" } }, "Save to bitmap file", , .F. )
+   if ! Empty( filename )
+      IF At( ".bmp", Lower( filename ) ) > 0
+         IF .NOT. Right( Lower( filename ), 4 ) == ".bmp"
+            filename := filename + ".bmp"
+         ENDIF
+      ELSE
          filename := filename + ".bmp"
-      endif
-   else
-      filename := filename + ".bmp"
-   endif
+      ENDIF
 
-   if file(filename)
-      if msgyesno("Are you sure to overwrite?","Save to bitmap")
-         savewindow("s",filename,0,0,1030,500)
-      endif
-   else
-      savewindow("s",filename,0,0,1030,500)
-   endif
-endif
+      IF File( filename )
+         IF msgyesno( "Are you sure to overwrite?", "Save to bitmap" )
+            savewindow( "s", filename, 0, 0, 1030, 500 )
+         ENDIF
+      ELSE
+         savewindow( "s", filename, 0, 0, 1030, 500 )
+      ENDIF
+   ENDIF
 
-if k.show1.value
-   k.timer1.enabled := .t.
-endif
+   IF k.show1.value
+      k.timer1.enabled := .T.
+   ENDIF
 
-return nil
+RETURN NIL
 
-*------------------------------------------------------------------------------*
-function flip(apoints,nx,ny,i)
-*------------------------------------------------------------------------------*
-local aout := {}
-local j
-local x1 := 0
-local y1 := 0
-local xj
-local yj
-for j := 1 to len(apoints)
-   xj := apoints[j,1]
-   yj := apoints[j,2]
-   do case
-      case i == 1
+/*
+ * FUNCTION flip()
+ *
+ * Flips and rotates a set of points around the center of the main window.
+ *
+ * Parameters:
+ *   apoints (Array): An array of points, where each point is an array containing the x and y coordinates {x, y}.
+ *   nx (Numeric): The x-coordinate of the center of the main window.
+ *   ny (Numeric): The y-coordinate of the center of the main window.
+ *   i (Numeric): The flip/rotation type (1-8).
+ *
+ * Returns:
+ *   Array: A new array of points that have been flipped and/or rotated.
+ *
+ * Purpose:
+ *   This function takes an array of points and performs a flip and/or rotation based on the value of the i parameter.
+ *   It calculates the new coordinates for each point based on the selected flip/rotation type.
+ *   This is used to create the kaleidoscope effect by generating different orientations of the shapes.
+ *
+ * Notes:
+ *   The AClone() function is used to create a copy of the output array to avoid modifying the original array.
+ *   The DO CASE statement handles the different flip/rotation types.
+ */
+FUNCTION flip( apoints, nx, ny, i )
+
+   LOCAL aout := {}
+   LOCAL j
+   LOCAL x1 := 0
+   LOCAL y1 := 0
+   LOCAL xj
+   LOCAL yj
+   FOR j := 1 TO Len( apoints )
+      xj := apoints[ j, 1 ]
+      yj := apoints[ j, 2 ]
+      DO CASE
+      CASE i == 1
          x1 := nx + xj
          y1 := ny + yj
-      case i == 2
+      CASE i == 2
          x1 := nx + xj
          y1 := ny - yj
-      case i == 3
+      CASE i == 3
          x1 := nx - xj
          y1 := ny + yj
-      case i == 4
+      CASE i == 4
          x1 := nx - xj
          y1 := ny - yj
-      case i == 5
+      CASE i == 5
          x1 := ny + yj
          y1 := nx + xj
-      case i == 6
+      CASE i == 6
          x1 := ny + yj
          y1 := nx - xj
-      case i == 7
+      CASE i == 7
          x1 := ny - yj
          y1 := nx + xj
-      case i == 8
+      CASE i == 8
          x1 := ny - yj
          y1 := nx - xj
-   endcase
-   aadd(aout,{x1,y1})
-next j
-return aclone(aout)
+      ENDCASE
+      AAdd( aout, { x1, y1 } )
+   NEXT j
 
-*------------------------------------------------------------------------------*
-FUNCTION SAVEWINDOW ( cWindowName , cFileName , nRow , nCol , nWidth , nHeight )
-*------------------------------------------------------------------------------*
-Local ntop , nleft , nbottom , nright
+RETURN AClone( aout )
 
-	if valtype ( cFileName ) = 'U'
-		cFileName := GetStartupFolder() + "\" + cWindowName + '.bmp'
-	endif
+/*
+ * FUNCTION SAVEWINDOW ( cWindowName, cFileName, nRow, nCol, nWidth, nHeight )
+ *
+ * Saves the content of a window to a bitmap file.
+ *
+ * Parameters:
+ *   cWindowName (Character): The name of the window to save.
+ *   cFileName (Character): The name of the bitmap file to save to. If NIL, defaults to the window name with a .bmp extension in the startup folder.
+ *   nRow (Numeric): The top row of the area to save. If NIL, saves the entire window.
+ *   nCol (Numeric): The left column of the area to save. If NIL, saves the entire window.
+ *   nWidth (Numeric): The width of the area to save. If NIL, saves the entire window.
+ *   nHeight (Numeric): The height of the area to save. If NIL, saves the entire window.
+ *
+ * Returns:
+ *   NIL
+ *
+ * Purpose:
+ *   This function saves a portion or the entirety of a specified window to a bitmap file. It handles cases where the filename or dimensions are not provided,
+ *   defaulting to saving the entire window to a file named after the window in the application's startup folder.
+ *
+ * Notes:
+ *   This function relies on the SAVEWINDOWBYHANDLE function, which performs the actual saving operation.
+ *   If any of the row, column, width, or height parameters are omitted, the entire window is saved.
+ */
+FUNCTION SAVEWINDOW ( cWindowName, cFileName, nRow, nCol, nWidth, nHeight )
 
-	if	valtype ( nRow ) = 'U' ;
-		.or. ;
-		valtype ( nCol ) = 'U' ;
-		.or. ;
-		valtype ( nWidth ) = 'U' ;
-		.or. ;
-		valtype ( nHeight ) = 'U' 
+   LOCAL ntop, nleft, nbottom, nright
 
-		ntop	:= -1
-		nleft	:= -1
-		nbottom	:= -1
-		nright	:= -1
+   IF ValType ( cFileName ) = 'U'
+      cFileName := GetStartupFolder() + "\" + cWindowName + '.bmp'
+   ENDIF
 
-	else
+   IF ValType ( nRow ) = 'U' ;
+         .OR. ;
+         ValType ( nCol ) = 'U' ;
+         .OR. ;
+         ValType ( nWidth ) = 'U' ;
+         .OR. ;
+         ValType ( nHeight ) = 'U'
 
-		ntop	:= nRow
-		nleft	:= nCol
-		nbottom	:= nHeight + nRow
-		nright	:= nWidth + nCol
+      ntop := -1
+      nleft := -1
+      nbottom := -1
+      nright := -1
 
-	endif
+   ELSE
 
-	SAVEWINDOWBYHANDLE ( GetFormHandle ( cWindowName ) , cFileName , ntop , nleft , nbottom , nright )
+      ntop := nRow
+      nleft := nCol
+      nbottom := nHeight + nRow
+      nright := nWidth + nCol
+
+   ENDIF
+
+   SAVEWINDOWBYHANDLE ( GetFormHandle ( cWindowName ), cFileName, ntop, nleft, nbottom, nright )
 
 RETURN NIL

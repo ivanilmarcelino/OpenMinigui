@@ -7,7 +7,7 @@
 #include "fileio.ch"
 
 *=============================================================================*
-*                           Auxiliary Functions
+*                            Auxiliary Functions
 *=============================================================================*
 
 /*
@@ -141,7 +141,7 @@ FUNCTION HMG_ArrayToDbf( aData, cFieldList, bProgress )
 
                IF ! ( cFldType $ '+@' )
                   IF ValType( uVal ) != cFldType
-                     uVal := ConvertType( uVal, cFldType )
+                     uVal := HMG_ConvertType( uVal, cFldType )
                   ENDIF
 
                   IF ! Empty( uVal )
@@ -167,7 +167,7 @@ RETURN lSuccess
 #endif
 
 /*
- * STATIC FUNCTION ConvertType( uVal, cTypeDst )
+ * FUNCTION HMG_ConvertType( uVal, cTypeDst )
  *
  * Converts a value from one data type to another.
  *
@@ -186,10 +186,9 @@ RETURN lSuccess
  * Notes:
  *   The function supports conversions to Character, Date, Logical, Numeric, and DateTime data types.
  *   If the conversion is not possible, the function returns NIL.
- *   This function is declared as STATIC, meaning it is only accessible within the current source file.
  */
 *-----------------------------------------------------------------------------*
-STATIC FUNCTION ConvertType( uVal, cTypeDst )
+FUNCTION HMG_ConvertType( uVal, cTypeDst )
 *-----------------------------------------------------------------------------*
    LOCAL cTypeSrc := ValType( uVal )
 

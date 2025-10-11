@@ -3,13 +3,29 @@
 // Define the fields for the customer database
 FIELD ID, NAME, EMAIL, PHONE, ADDRESS, BIRTHDAY, AGE
 
+/*
+ * FUNCTION Main()
+ *
+ * Initializes the application, defines the main window, and handles user interactions.
+ *
+ * Purpose:
+ *   This is the entry point of the application. It performs the following tasks:
+ *     1. Sets the navigation mode to extended.
+ *     2. Sets the date format to year-month-day.
+ *     3. Creates the database file if it doesn't exist.
+ *     4. Opens the database file.
+ *     5. Defines the main window with its controls (labels, grid, buttons, textboxes).
+ *     6. Sets the color theme for the grid.
+ *     7. Defines event handlers for the controls (e.g., button clicks, textbox changes).
+ *     8. Refreshes the grid with data from the database.
+ *     9. Centers and activates the main window.
+ *
+ * Notes:
+ *   The CreateDBF() function creates the database file and populates it with sample data if it doesn't exist.
+ *   The RefreshGrid() function populates the grid with data from the database.
+ *   The color theme settings are applied to the grid to improve its visual appearance.
+ */
 FUNCTION Main()
-   /*
-    *  Main function of the application.
-    *  This function initializes the application, defines the main window,
-    *  and handles user interactions.
-    */
-
    LOCAL n, bBackColor
    LOCAL cSearch := "" // Local variable to store the search string
 
@@ -79,15 +95,20 @@ FUNCTION Main()
 
 RETURN NIL
 
-// ------------------------
-
+/*
+ * PROCEDURE RefreshGrid()
+ *
+ * Refreshes the data displayed in the grid control with data from the database.
+ *
+ * Purpose:
+ *   This procedure reads all records from the "customers" database and populates the grid with the data.
+ *   It is used to update the grid after changes are made to the database (e.g., adding, editing, or deleting records).
+ *   The grid displays customer information such as ID, Name, Email, Phone, Address, Birthday, and Age.
+ *
+ * Notes:
+ *   The procedure assumes that the "customers" database is open and accessible.
+ */
 PROCEDURE RefreshGrid()
-   /*
-    *  Refreshes the data displayed in the grid control.
-    *  This procedure reads all records from the "customers" database
-    *  and populates the grid with the data.
-    */
-
    LOCAL aRows := {} // Local array to store the data for each row in the grid
 
    GO TOP // Moves the record pointer to the first record in the database
@@ -108,15 +129,20 @@ PROCEDURE RefreshGrid()
 
 RETURN
 
-// ------------------------
-
+/*
+ * PROCEDURE AddCustomer()
+ *
+ * Opens a modal window to add a new customer to the database.
+ *
+ * Purpose:
+ *   This procedure defines a new modal window with textboxes for entering customer information (Name, Email, Phone, Address, Birthday, Age)
+ *   and a button to save the new customer.  The window is displayed modally, preventing interaction with the main window until it is closed.
+ *   The SaveNewCustomer() procedure is called when the "Save" button is clicked to save the new customer data to the database.
+ *
+ * Notes:
+ *   The WinAdd window is released after the SaveNewCustomer() procedure is called.
+ */
 PROCEDURE AddCustomer()
-   /*
-    *  Opens a modal window to add a new customer to the database.
-    *  This procedure defines a new window with textboxes for entering
-    *  customer information and a button to save the new customer.
-    */
-
    DEFINE WINDOW WinAdd ;
          AT 100, 100 WIDTH 400 HEIGHT 400 ;
          MODAL ;
@@ -149,14 +175,21 @@ PROCEDURE AddCustomer()
 
 RETURN
 
+/*
+ * PROCEDURE SaveNewCustomer()
+ *
+ * Saves the new customer data entered in the "Add New Customer" window to the database.
+ *
+ * Purpose:
+ *   This procedure appends a new blank record to the database, populates it with the data from the textboxes in the
+ *   "Add New Customer" window, and then refreshes the grid.  It also calculates the next available ID for the new customer.
+ *   This ensures that each customer has a unique ID.
+ *
+ * Notes:
+ *   The procedure assumes that the "customers" database is open and accessible.
+ *   The WinAdd window object must be defined and active before calling this procedure.
+ */
 PROCEDURE SaveNewCustomer()
-   /*
-    *  Saves the new customer data entered in the "Add New Customer" window
-    *  to the database. This procedure appends a new blank record to the
-    *  database, populates it with the data from the textboxes in the
-    *  "Add New Customer" window, and then refreshes the grid.
-    */
-
    LOCAL nMaxID := 0 // Local variable to store the maximum ID value in the database
 
    GO TOP // Moves the record pointer to the first record in the database
@@ -182,16 +215,21 @@ PROCEDURE SaveNewCustomer()
 
 RETURN
 
-// ------------------------
-
+/*
+ * PROCEDURE EditCustomer()
+ *
+ * Opens a modal window to edit an existing customer in the database.
+ *
+ * Purpose:
+ *   This procedure retrieves the selected record from the grid, populates the textboxes in the "Edit Customer" window with the
+ *   data from the selected record, and then displays the window.  The window is displayed modally, preventing interaction with the main window until it is closed.
+ *   The UpdateCustomer() procedure is called when the "Update" button is clicked to save the changes to the database.
+ *
+ * Notes:
+ *   The WinEdit window is released after the UpdateCustomer() procedure is called.
+ *   If no record is selected in the grid, a warning message is displayed.
+ */
 PROCEDURE EditCustomer()
-   /*
-    *  Opens a modal window to edit an existing customer in the database.
-    *  This procedure retrieves the selected record from the grid,
-    *  populates the textboxes in the "Edit Customer" window with the
-    *  data from the selected record, and then displays the window.
-    */
-
    LOCAL nSelected := MainWindow.Grid_1.VALUE[ 1 ] // Local variable to store the row number of the selected record in the grid
    IF nSelected == 0 // Checks if a record is selected in the grid
       MsgStop( "Please select a record first!", "Warning" ) // Displays a warning message if no record is selected
@@ -232,14 +270,20 @@ PROCEDURE EditCustomer()
 
 RETURN
 
+/*
+ * PROCEDURE UpdateCustomer()
+ *
+ * Updates the customer data in the database with the data entered in the "Edit Customer" window.
+ *
+ * Purpose:
+ *   This procedure replaces the fields in the current record (the record that was being edited) with the values
+ *   from the textboxes in the "Edit Customer" window, and then refreshes the grid.
+ *
+ * Notes:
+ *   The procedure assumes that the "customers" database is open and accessible, and that the record pointer is positioned on the record to be updated.
+ *   The WinEdit window object must be defined and active before calling this procedure.
+ */
 PROCEDURE UpdateCustomer()
-   /*
-    *  Updates the customer data in the database with the data entered in
-    *  the "Edit Customer" window. This procedure replaces the fields in the
-    *  current record (the record that was being edited) with the values
-    *  from the textboxes in the "Edit Customer" window, and then refreshes
-    *  the grid.
-    */
    REPLACE NAME WITH WinEdit.txtName.VALUE // Replaces the Name field with the value from the txtName textbox in the "Edit Customer" window
    REPLACE EMAIL WITH WinEdit.txtEmail.VALUE // Replaces the Email field with the value from the txtEmail textbox in the "Edit Customer" window
    REPLACE PHONE WITH WinEdit.txtPhone.VALUE // Replaces the Phone field with the value from the txtPhone textbox in the "Edit Customer" window
@@ -251,16 +295,20 @@ PROCEDURE UpdateCustomer()
 
 RETURN
 
-// ------------------------
-
+/*
+ * PROCEDURE DeleteCustomer()
+ *
+ * Deletes the selected customer from the database.
+ *
+ * Purpose:
+ *   This procedure retrieves the selected record from the grid, prompts the user for confirmation, and then deletes the record if the user confirms.
+ *   The database is then packed to physically remove the deleted record.
+ *
+ * Notes:
+ *   If no record is selected in the grid, a warning message is displayed.
+ *   The user is prompted for confirmation before deleting the record to prevent accidental data loss.
+ */
 PROCEDURE DeleteCustomer()
-   /*
-    *  Deletes the selected customer from the database.
-    *  This procedure retrieves the selected record from the grid,
-    *  prompts the user for confirmation, and then deletes the record
-    *  if the user confirms.
-    */
-
    LOCAL nSelected := MainWindow.Grid_1.VALUE[ 1 ] // Local variable to store the row number of the selected record in the grid
    IF nSelected == 0 // Checks if a record is selected in the grid
       MsgStop( "Please select a record first!", "Warning" ) // Displays a warning message if no record is selected
@@ -276,19 +324,25 @@ PROCEDURE DeleteCustomer()
 
 RETURN
 
-// ------------------------
-
+/*
+ * PROCEDURE SearchCustomer()
+ *
+ * Searches for customers in the database whose name contains the specified search text.
+ *
+ * Parameters:
+ *   cText - The search text to look for in the customer names (Character).
+ *
+ * Returns:
+ *   None
+ *
+ * Purpose:
+ *   This procedure iterates through all records in the database and adds the records that match the search criteria to a new array, which is then used to update the grid.
+ *   The search is case-insensitive. If the search text is empty, all records are displayed.
+ *
+ * Notes:
+ *   The procedure assumes that the "customers" database is open and accessible.
+ */
 PROCEDURE SearchCustomer( cText )
-   /*
-    *  Searches for customers in the database whose name contains the
-    *  specified search text. This procedure iterates through all records
-    *  in the database and adds the records that match the search criteria
-    *  to a new array, which is then used to update the grid.
-    *
-    *  Parameters:
-    *      cText - The search text to look for in the customer names.
-    */
-
    LOCAL aFound := {} // Local array to store the records that match the search criteria
 
    GO TOP // Moves the record pointer to the first record in the database
@@ -311,15 +365,20 @@ PROCEDURE SearchCustomer( cText )
 
 RETURN
 
-// ------------------------
-
+/*
+ * PROCEDURE CreateDBF()
+ *
+ * Creates the "customers.dbf" database file if it doesn't exist and populates it with sample data.
+ *
+ * Purpose:
+ *   This procedure defines the structure of the database file (fields and their data types) and populates it with some example data.
+ *   It is called at the beginning of the program to ensure that the database file exists and contains some initial data.
+ *   The database file is created using the DBFNTX driver.
+ *
+ * Notes:
+ *   If the database file already exists, this procedure does nothing.
+ */
 PROCEDURE CreateDBF()
-    /*
-     *  Creates the "customers.dbf" database file if it doesn't exist.
-     *  This procedure defines the structure of the database file (fields
-     *  and their data types) and populates it with some example data.
-     */
-
    // Define the structure of the DBF file
    LOCAL aFields := { ;
       { "ID", "N", 5, 0 }, ;
@@ -395,15 +454,24 @@ PROCEDURE CreateDBF()
 
 RETURN
 
-STATIC FUNCTION Age( dWhen, dBirth )
 /*
- *  Calculates the age based on the current date and the date of birth.
+ * STATIC FUNCTION Age()
  *
- *  Parameters:
- *      dWhen   - The current date.
- *      dBirth  - The date of birth.
+ * Calculates the age based on the current date and the date of birth.
  *
- *  Return:
- *      The age as a numeric value.
+ * Parameters:
+ *   dWhen  - The current date (Date).
+ *   dBirth - The date of birth (Date).
+ *
+ * Returns:
+ *   The age as a numeric value (Numeric).
+ *
+ * Purpose:
+ *   This function calculates the age of a person given their date of birth and the current date.
+ *   It is used to populate the Age field in the database.
+ *
+ * Notes:
+ *   The function uses the Year() and DToS() functions to extract the year from the dates and compare them.
  */
+STATIC FUNCTION Age( dWhen, dBirth )
 RETURN Year( dWhen ) - Year( dBirth ) - iif( Right( DToS( dBirth ), 4 ) > Right( DToS( dWhen ), 4 ), 1, 0 )

@@ -459,7 +459,7 @@ HB_FUNC( INITOWNERBUTTON )
       );
 
    // Subclass the button to use a custom window procedure
-   SetProp( ( HWND ) hbutton, TEXT( "oldbtnproc" ), ( HANDLE ) GetWindowLongPtr( ( HWND ) hbutton, GWLP_WNDPROC ) );
+   SetProp( hbutton, TEXT( "oldbtnproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hbutton, GWLP_WNDPROC ) );
    SubclassWindow2( hbutton, OwnButtonProc );
 
    // Check if using a bitmap or icon and load accordingly
@@ -1030,7 +1030,7 @@ LRESULT CALLBACK OwnButtonProc( HWND hButton, UINT Msg, WPARAM wParam, LPARAM lP
    TRACKMOUSEEVENT   tme;
    WNDPROC           OldWndProc;
 
-   OldWndProc = ( WNDPROC ) ( HB_PTRUINT ) GetProp( hButton, TEXT( "oldbtnproc" ) );
+   OldWndProc = ( WNDPROC ) ( LONG_PTR ) GetProp( hButton, TEXT( "oldbtnproc" ) );
 
    switch( Msg )
    {

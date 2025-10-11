@@ -43,7 +43,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
    "HWGUI"
    Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
----------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 
 #include "SET_COMPILE_HMG_UNICODE.ch"
 
@@ -1015,10 +1015,10 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
 
                      *ELSEIF _HMG_aControlType [x] == 'TOOLBAR'
 
-                       * MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
+                     *   MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
 
                      ELSE
-                        
+
                         _HMG_aControlCol [x] := IIF(_HMG_aControlCol [x]=Nil,0,_HMG_aControlCol [x])
                         _HMG_aControlRow [x] := IIF(_HMG_aControlRow [x]=Nil,0,_HMG_aControlRow [x])
                         MoveWindow ( _HMG_aControlhandles [x] , _HMG_aControlCol [x] - NewHPos , _HMG_aControlRow [x] - NewPos , _HMG_aControlWidth [x] , _HMG_aControlHeight [x] , .T. )
@@ -1303,10 +1303,10 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
 
                      *ELSEIF _HMG_aControlType [x] == 'TOOLBAR'
 
-                      *  MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
+                     *   MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
 
                      ELSE
-                        
+
                         _HMG_aControlCol [x] := IIF(_HMG_aControlCol [x]=Nil,0,_HMG_aControlCol [x])
                         _HMG_aControlRow [x] := IIF(_HMG_aControlRow [x]=Nil,0,_HMG_aControlRow [x])
                         MoveWindow ( _HMG_aControlhandles [x] , _HMG_aControlCol [x] - NewHPos , _HMG_aControlRow [x] - NewVPos , _HMG_aControlWidth [x] , _HMG_aControlHeight [x] , .T. )
@@ -4205,7 +4205,7 @@ STATIC PROCEDURE _ProcessSliderEvents ( lParam, wParam )
 RETURN
 
 *-----------------------------------------------------------------------------*
-STATIC PROCEDURE RetDayState( i, lParam )
+STATIC PROCEDURE RetDayState ( i, lParam )
 *-----------------------------------------------------------------------------*
    LOCAL aData
    LOCAL aDays
@@ -4226,6 +4226,8 @@ STATIC PROCEDURE RetDayState( i, lParam )
    IF nCount < 1 .OR. Empty( Len( aBoldDays ) )
       RETURN
    ENDIF
+
+   _HMG_aControlMiscData1[ i ] := lParam
 
    aDays := Array( nCount * 32 )
    AFill( aDays, 0 )

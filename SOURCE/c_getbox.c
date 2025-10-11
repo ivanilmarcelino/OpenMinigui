@@ -212,7 +212,7 @@ HB_FUNC( INITGETBOX )
          NULL
       );
 
-   SetProp( ( HWND ) hedit, TEXT( "OldWndProc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hedit, GWLP_WNDPROC ) );
+   SetProp( hedit, TEXT( "OldWndProc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hedit, GWLP_WNDPROC ) );
    SubclassWindow2( hedit, OwnGetProc );
 
    SendMessage( hedit, EM_LIMITTEXT, hmg_par_WPARAM( 9 ), ( LPARAM ) 0 );
@@ -621,7 +621,7 @@ LRESULT CALLBACK OwnGetProc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam )
    static PHB_SYMB   pSymbol = NULL;
    LRESULT           r;
    WNDPROC           OldWndProc;
-   OldWndProc = ( WNDPROC ) ( HB_PTRUINT ) GetProp( hwnd, TEXT( "OldWndProc" ) );
+   OldWndProc = ( WNDPROC ) ( LONG_PTR ) GetProp( hwnd, TEXT( "OldWndProc" ) );
    switch( Msg )
    {
       case WM_NCDESTROY:

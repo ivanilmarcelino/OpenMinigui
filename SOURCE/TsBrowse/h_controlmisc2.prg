@@ -116,7 +116,6 @@ FUNCTION SBrowse( uAlias, cTitle, bSetUp, aCols, nWidth, nHeight, lSql, lModal, 
 #ifdef __XHARBOUR__
    ELSEIF ValType( uAlias ) == "H"
       uAlias := aHash2Array( uAlias )
-
 #endif
    ENDIF
 
@@ -158,7 +157,7 @@ FUNCTION SBrowse( uAlias, cTitle, bSetUp, aCols, nWidth, nHeight, lSql, lModal, 
    nWidth := This.ClientWidth - nX * 2
    nHeight := This.ClientHeight - nY * 2 - oApp:H1 - nGh
 
-      IF lParam .AND. IsBlock(uParam:bWindow) ; EVal( uParam:bWindow )
+      IF lParam .AND. IsBlock(uParam:bWindow) ; Eval( uParam:bWindow )
       ENDIF
 
       DEFINE TBROWSE oBrw AT nY, nX Alias ( uAlias ) WIDTH nWidth HEIGHT nHeight ;
@@ -325,7 +324,7 @@ FUNCTION SBrowse( uAlias, cTitle, bSetUp, aCols, nWidth, nHeight, lSql, lModal, 
    ELSE ; Eval( bSetUp, oBrw, .T. )
    ENDIF
 
-   IF lParam .AND. IsBlock(uParam:bWindow) ; EVal( uParam:bWindow, .T. )
+   IF lParam .AND. IsBlock(uParam:bWindow) ; Eval( uParam:bWindow, .T. )
    ENDIF
 
    END WINDOW
@@ -397,7 +396,7 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
    LOCAL oBrw, aTmp, aBrush, aHead, aField, aFoot, aColor
    LOCAL cForm, hForm, lSpecHd, bInit, bEnd, lSuperHd
    LOCAL lZebra, aZebra, lChess, aChess
-   LOCAL i, j, o
+   LOCAL a, i, j, o
 
    DEFAULT oParam := oHmgData()
    DEFAULT oParam:cForm := oParam:cFormName
@@ -418,8 +417,8 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
    DEFAULT lSpecHd := .F.
 
    lSuperHd := !Empty( oParam:lSuperHd ) .OR. !Empty( oParam:lSuperHead )
-   lZebra   := !Empty( oParam:lZebra   ) .OR. !Empty( oParam:lZebraLine ) ;
-                                         .OR. !Empty( oParam:lZebraRow  )
+   lZebra   := !Empty( oParam:lZebra   ) .OR. !Empty( oParam:lZebraRow  ) ;
+                                         .OR. !Empty( oParam:lZebraLine )
    lChess   := !Empty( oParam:lChess   ) .OR. !Empty( oParam:lChessLine ) ;
                                          .OR. !Empty( oParam:lChessRow  )
 
@@ -461,7 +460,7 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
          ASize( oParam:aFont, 5 )
       ENDIF
       FOR i := 1 TO Len( oParam:aFont )
-         IF Empty( oParam:aFont ) ; oParam:aFont[ i ] := oParam:aFont[ 1 ]
+         IF Empty( oParam:aFont[ i ] ) ; oParam:aFont[ i ] := oParam:aFont[ 1 ]
          ENDIF
       NEXT
    ELSE
@@ -491,6 +490,21 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
    aHead  := oParam:aHead  ; DEFAULT aHead  := oParam:aHeader
    aField := oParam:aField ; DEFAULT aField := oParam:aFields
    aFoot  := oParam:aFoot  ; DEFAULT aFoot  := oParam:aFooter
+   // Convert character width (oParam:aSizeLen) to pixel width (oParam:aSize)
+   DEFAULT oParam:aSizeLen := oParam:aSizeChar
+   DEFAULT oParam:aSizeLen := oParam:aSizeChars
+   IF IsArray( oParam:aSizeLen ) .AND. Len( oParam:aSizeLen ) > 0
+      j := Len( oParam:aSizeLen )
+      oParam:aSize := array( j )    ; AFill( oParam:aSize, 10 )
+      IF Len( oParam:aSizeLen ) < j ; ASize( oParam:aSizeLen, j )
+      ENDIF
+      j := oParam:aFont[1]
+      FOR i := 1 TO Len( oParam:aSize )
+          IF IsNumeric( oParam:aSizeLen[ i ] ) .AND. oParam:aSizeLen[ i ] > 0
+             oParam:aSize[ i ] := GetFontWidth( j, oParam:aSizeLen[ i ] )
+          ENDIF
+      NEXT
+   ENDIF
 
    DEFAULT aFoot := ! Empty( aFoot ), ;
       nY := 0, ;
@@ -520,6 +534,21 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
                                         iif( b:nAt % 2 == 0, c, n ) } } )
          ENDIF
       ENDIF
+      IF !Empty(oParam:lZebraGroup) .AND. !Empty(oParam:cZebraGroup)
+         DEFAULT oParam:lZebraLine := oParam:lZebraRow
+         DEFAULT oParam:lZebraLine := .F.
+         a := oParam:aZebraGroup ; DEFAULT a := oParam:aZebraGroupColor
+         IF IsArray( a ) .AND. Len( a ) > 1
+            FOR i := 1 TO Len( a )
+                IF IsArray( a[ i ] ) .AND. IsArrayRGB( a[ i ] )
+                   a[ i ] := HMG_RGB2n( a[ i ] )
+                ENDIF
+            NEXT
+            oParam:aZebraGroup := a
+         ENDIF
+         DEFAULT oParam:aZebraGroup := { CLR_HGRAY, CLR_WHITE }
+      ENDIF
+
    ELSEIF lChess
       aChess := oParam:aChess ; DEFAULT aChess := oParam:aChessColor
       DEFAULT aChess := { GetSysColor( COLOR_WINDOW ), GetSysColor( COLOR_BTNFACE ) }
@@ -551,111 +580,23 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
           ENDIF
       NEXT
    ENDIF
-
-#ifndef __XHARBOUR__
-   DEFAULT oParam:bSpecHdEnum := {|ob, op, cChar|  // renumbering SpecHeader
-        LOCAL oCol, cCnt, nCnt := 0
-        LOCAL cName := iif( ob:lIsDbf, "ORDKEYNO", "ARRAYNO" )
-        IF ob:lDrawSpecHd
-          DEFAULT cChar := op:cSpecHdChar
-          DEFAULT cChar := "."
-          FOR EACH oCol IN ob:aColumns
-            IF oCol:cName == "SELECTOR" ; LOOP
-            ENDIF
-            cCnt := cChar
-            IF oCol:cName != cName .AND. oCol:lVisible
-              cCnt := hb_ntos( ++nCnt )
-            ENDIF
-            oCol:cSpcHeading := cCnt
-          NEXT
-        ENDIF
-        RETURN Nil
-        }
-
-   DEFAULT oParam:bAdjColumns := {|ob|     // adjusting all columns
-        LOCAL aCol, nI, nK
-        LOCAL cName := iif( ob:lIsDbf, "ORDKEYNO", "ARRAYNO" )
-        // exception for SELECTOR and ORDKEYNO width
-        nK := Max( ob:nColumn( "SELECTOR", .T. ), ob:nColumn( cName, .T. ) )
-        IF nK > 0
-          aCol := {}
-          FOR nI := nK TO Len( ob:aColumns )
-            IF ob:aColumns[ nI ]:lVisible
-              AAdd( aCol, nI )
-            ENDIF
-           NEXT
-        ENDIF
-        ob:AdjColumns( aCol )
-        RETURN Nil
-        }
-
-   DEFAULT bEnd  := {|ob, op|
-        // no HScroll but there is SELECTOR
-        IF op:uSelector != NIL .AND. op:lAdjust == NIL .AND. ob:lNoHScroll
-           IF HB_ISBLOCK( op:bAdjColumns )
-              EVal( op:bAdjColumns, ob, op )
-           ENDIF
-        ENDIF
-        IF ob:nLen > ob:nRowCount()     // need VScroll
-           ob:ResetVScroll( .T. )
-        ENDIF
-        ob:SetNoHoles()
-        ob:SetFocus()
-        RETURN Nil
-        }
-#else
-   DEFAULT oParam:bSpecHdEnum := <|ob, op, cChar|  // renumbering SpecHeader
-        LOCAL oCol, cCnt, nCnt := 0
-        LOCAL cName := iif( ob:lIsDbf, "ORDKEYNO", "ARRAYNO" )
-        IF ob:lDrawSpecHd
-          DEFAULT cChar := op:cSpecHdChar
-          DEFAULT cChar := "."
-          FOR EACH oCol IN ob:aColumns
-             IF oCol:cName == "SELECTOR" ; LOOP
-             ENDIF
-             cCnt := cChar
-             IF oCol:cName != cName .AND. oCol:lVisible
-                cCnt := hb_ntos( ++nCnt )
-             ENDIF
-             oCol:cSpcHeading := cCnt
-          NEXT
-        ENDIF
-        RETURN Nil
-        >
-
-   DEFAULT oParam:bAdjColumns := <|ob|     // adjusting all columns
-        LOCAL aCol, nI, nK
-        LOCAL cName := iif( ob:lIsDbf, "ORDKEYNO", "ARRAYNO" )
-        // exception for SELECTOR and ORDKEYNO width
-        nK := Max( ob:nColumn( "SELECTOR", .T. ), ob:nColumn( cName, .T. ) )
-        IF nK > 0
-          aCol := {}
-          FOR nI := nK TO Len( ob:aColumns )
-            IF ob:aColumns[ nI ]:lVisible
-               AAdd( aCol, nI )
-            ENDIF
-          NEXT
-        ENDIF
-        ob:AdjColumns( aCol )
-        RETURN Nil
-        >
-
-   DEFAULT bEnd  := <|ob, op|
-        // no HScroll but there is SELECTOR
-        IF op:uSelector != NIL .AND. op:lAdjust == NIL .AND. ob:lNoHScroll
-           IF HB_ISBLOCK( op:bAdjColumns )
-              EVal( op:bAdjColumns, ob, op )
-           ENDIF
-        ENDIF
-        IF ob:nLen > ob:nRowCount()     // need VScroll
-           ob:ResetVScroll( .T. )
-        ENDIF
-        ob:SetNoHoles()
-        ob:SetFocus()
-        RETURN Nil
-        >
-#endif
-
+   // log out
+   IF !Empty( oParam:l_Log_Out ) .AND. IsBlock( oParam:b_Log_Out )
+      Eval( oParam:b_Log_Out, uAlias, oParam, ProcName() ) 
+   ENDIF
+   // renumbering SpecHeader
+   DEFAULT oParam:bSpecHdEnum := {|ob,op,cChar| _TBrowse_bSpecHdEnum(ob,op,cChar) }
+   // adjusting all columns
+   DEFAULT oParam:bAdjColumns := {|ob,op| _TBrowse_bAdjColumns(ob,op) }
+   // block code after DEFINE TBROWSE
+   DEFAULT bInit := {|ob,op| _TBrowse_bInit(ob,op) }
+   // block code before END TBROWSE, after bInit
+   DEFAULT oParam:bBody  := {|ob,op| _TBrowse_bBody(ob,op) }
+   // block code after END TBROWSE
+   DEFAULT oParam:bAfter := {|ob,op| _TBrowse_bAfter(ob,op) }
+   // final block of code after oParam:bAfter
+   DEFAULT bEnd  := {|ob,op| _TBrowse_bEnd(ob,op) }
+   //
    DEFINE TBROWSE &cBrw OBJ oBrw AT nY, nX WIDTH nW HEIGHT nH CELL ;
       PARENT &(cForm) ;
       HEADERS aHead ;
@@ -737,8 +678,8 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
              ENDIF
          NEXT
       ENDIF
-
-      IF :lDrawSpecHd .AND. ! Empty( oParam:aNumber ) .AND. HB_ISBLOCK( oParam:bSpecHdEnum ) // renumbering SpecHeader
+      // renumbering SpecHeader
+      IF :lDrawSpecHd .AND. ! Empty( oParam:aNumber ) .AND. HB_ISBLOCK( oParam:bSpecHdEnum ) 
          Eval( oParam:bSpecHdEnum, oBrw, oParam )
       ENDIF
 
@@ -822,7 +763,7 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
       oBrw:bChange := oParam:bChange         // :bChange := {|ob| ... }
    ENDIF
 
-   IF HB_ISBLOCK( oParam:bAfter ) ; EVal( oParam:bAfter, oBrw, oParam ) // 3. call your After function
+   IF HB_ISBLOCK( oParam:bAfter ) ; Eval( oParam:bAfter, oBrw, oParam ) // 3. call your After function
    ENDIF
 
    IF HB_ISBLOCK( bEnd ) ; Eval( bEnd, oBrw, oParam )                   // 4. call default End function if this is not redefined
@@ -838,3 +779,268 @@ STATIC FUNCTION _TBrowse_Create( oParam, uAlias, cBrw, nY, nX, nW, nH )
 
 RETURN oBrw
 
+STATIC FUNCTION _TBrowse_bSpecHdEnum( ob, op, cChar ) // renumbering SpecHeader
+   LOCAL oCol, cCnt, nCnt := 0
+   LOCAL cName := iif( ob:lIsDbf, "ORDKEYNO", "ARRAYNO" )
+
+   IF ob:lDrawSpecHd
+     DEFAULT cChar := op:cSpecHdChar
+     DEFAULT cChar := "."
+     FOR EACH oCol IN ob:aColumns
+       IF oCol:cName == "SELECTOR" ; LOOP
+       ENDIF
+       cCnt := cChar
+       IF oCol:cName != cName .AND. oCol:lVisible
+         cCnt := hb_ntos( ++nCnt )
+       ENDIF
+       oCol:cSpcHeading := cCnt
+     NEXT
+   ENDIF
+
+RETURN Nil
+
+STATIC FUNCTION _TBrowse_bAdjColumns( ob, op ) // adjusting all columns  
+   LOCAL aCol, nI, nK, lAdj := .T.
+   LOCAL cName := iif( ob:lIsDbf, "ORDKEYNO", "ARRAYNO" )
+   
+   IF IsBlock( op:b_AdjColumns )      // user code block 
+      nK := Eval( op:b_AdjColumns, ob, op )
+      IF IsLogical( nK ) ; lAdj := nK
+      ENDIF
+   ENDIF
+   IF lAdj
+      // exception for SELECTOR and ORDKEYNO width
+      nK := Max( ob:nColumn( "SELECTOR", .T. ), ob:nColumn( cName, .T. ) )
+      IF nK > 0
+        aCol := {}
+        FOR nI := nK TO Len( ob:aColumns )
+          IF ob:aColumns[ nI ]:lVisible
+            AAdd( aCol, nI )
+          ENDIF
+         NEXT
+      ENDIF
+      ob:AdjColumns( aCol )
+   ENDIF
+                        
+RETURN Nil
+
+STATIC FUNCTION _TBrowse_bInit( ob, op )
+   LOCAL a, cCol, nPos
+   //
+   IF !Empty(op:lHide)  ; ob:Hide()
+   ENDIF
+   // set relation to ... into ... OR in ob:bOnDrawLine -> dbGoTo(...)
+   IF IsArray(op:aRelation) .AND. Len(op:aRelation) > 0
+      nPos := 0
+      FOR EACH a IN iif( IsArray(op:aRelation[1]), op:aRelation, {op:aRelation} )
+          a := AClone(a)
+          IF Len(a) < 6  ; ASize(a, 6)
+          ENDIF
+          cCol := a[1]                            // FieldName for relation
+          a[2] := !Empty(a[2])                    // .T. lock area
+          IF Empty(a[3]) .or. Empty(Select(a[3])) // no alias specified for relation
+             LOOP
+          ELSEIF Empty(cCol)                      // empty FieldName for relation
+             LOOP
+          ENDIF
+          nPos += iif( a[2], 1, 0 )
+          ob:LoadFields(!Empty(a[2]), a[4], a[3], a[5], a[6]) 
+          IF ob:nColumn(cCol, .T.) > 0
+             ob:DelColumn(cCol)                   // delete FieldName for relation
+          ENDIF
+          DO EVENTS
+      NEXT
+      IF nPos > 0 ; ob:lRecLockArea := .T.
+      ENDIF
+   ENDIF
+   // aNumber column, user code block 
+   IF IsBlock( op:b_aNumber )
+      cCol := iif( ob:lIsDbf, "ORDKEYNO", "ARRAYNO" )
+      IF ( nPos := ob:nColumn( cCol, .T. ) ) > 0 
+         Eval( op:b_aNumber, ob, op, nPos, cCol )
+      ENDIF
+   ENDIF
+   // user code block 
+   IF IsBlock( op:b_Init_Def ) ; Eval( op:b_Init_Def, ob, op ) 
+   ENDIF
+   // log out
+   IF !Empty( op:l_Log_Out ) .AND. IsBlock( op:b_Log_Out )
+      Eval( op:b_Log_Out, ob, op, ProcName() ) 
+   ENDIF
+
+RETURN Nil
+
+STATIC FUNCTION _TBrowse_bBody( ob, op )
+   LOCAL a, blk, aCol, cCol, nCol, nPos
+   LOCAL obc := ob:Cargo, oc
+   // user code block 
+   IF IsBlock( op:b_Body_Def ) ; Eval( op:b_Body_Def, ob, op ) 
+   ENDIF
+   // delete columns
+   aCol := op:aDelCol ; DEFAULT aCol := op:aDelColumn
+                        DEFAULT aCol := op:aDelColumns
+   IF IsArray( aCol ) .AND. Len( aCol ) > 0
+      FOR EACH cCol IN aCol
+          IF ( nPos := ob:nColumn(cCol, .T.) ) > 0
+             ob:DelColumn( nPos ) ; DO EVENTS
+          ENDIF
+      NEXT
+   ENDIF
+   // move columns
+   aCol := op:aMoveCol  ; DEFAULT aCol := op:aMoveColumn
+                          DEFAULT aCol := op:aMoveColumns
+   IF IsArray(aCol) .AND. Len(aCol) > 0
+      IF !IsArray(aCol[1]) ; aCol := { aCol }
+      ENDIF
+      FOR EACH a IN aCol
+          nCol := iif( IsChar( a[1] ), ob:nColumn( a[1], .T. ), a[1] )
+          nPos := iif( IsChar( a[2] ), ob:nColumn( a[2], .T. ), a[2] )
+          IF nCol > 0 .AND. nCol < Len( ob:aColumns ) .AND. nPos > 0 .AND. nPos < Len( ob:aColumns )
+             ob:MoveColumn( nCol, nPos ) ; DO EVENTS
+          ENDIF
+      NEXT
+   ENDIF
+   // hide columns
+   aCol := op:aHideCol  ; DEFAULT aCol := op:aHideColumn
+                          DEFAULT aCol := op:aHideColumns
+   IF IsArray( aCol ) .AND. Len( aCol ) > 0
+      a := {}
+      FOR EACH cCol IN aCol
+           nCol := iif( IsChar( cCol ), ob:nColumn( cCol, .T. ), cCol ) 
+           IF nCol > 0 ; AAdd( a, nCol ) 
+           ENDIF 
+      NEXT
+      IF Len( a ) > 0 ; ob:HideColumns( a, .T. ) ; DO EVENTS
+      ENDIF
+   ENDIF
+   // code block for the super title
+   blk := op:b_Super_Hd ; DEFAULT blk := op:b_Super_Head
+   IF IsBlock( blk )    ; Eval( blk, ob, op ) 
+   ENDIF
+   // group shading of rows or columns
+   IF !Empty(op:lZebraGroup) .AND. !Empty(op:cZebraGroup) .AND. ob:nColumn(op:cZebraGroup, .T.) > 0
+      obc:lZebraGroup := .T.
+      obc:nZebraGroup := 1                               // 
+      obc:lZebraLine  := !Empty(op:lZebraLine )
+      obc:cZebraGroup := op:cZebraGroup
+      obc:uZebraGroup := ob:GetValue(obc:cZebraGroup)
+      obc:oZebraGroup := oHmgData()                      // 
+      obc:oZebraGroup:Set(obc:uZebraGroup, obc:nZebraGroup)
+      obc:aZebraGroup := op:aZebraGroup
+      DEFAULT obc:aZebraGroup  := { CLR_HGRAY, CLR_WHITE }
+      obc:bZebraGroup_nClrBack := {|clr,nat,ncol,obr|  
+                 Local obc
+                 IF pCount() < 4 ; obr := ncol ; ncol := nat
+                 ENDIF
+                 obc := obr:Cargo
+                 clr := obc:aZebraGroup[ obc:nZebraGroup ]
+                 Return clr
+                 }
+      IF obc:lZebraLine                                 // all columns
+         FOR EACH oc IN ob:aColumns
+             oc:nClrBack := obc:bZebraGroup_nClrBack
+         NEXT
+      ELSE                                              // only column
+         oc := ob:GetColumn(obc:cZebraGroup)
+         oc:nClrBack := obc:bZebraGroup_nClrBack
+      ENDIF
+      blk := {|obr| // |obr,row|             // before draw line
+              Local obc := obr:Cargo
+              Local uVal, nPos, lNo
+              uVal := obr:GetValue(obc:cZebraGroup)
+              nPos := obc:oZebraGroup:Get(uVal, 0)
+              IF ( lNo := nPos == 0 )
+                 nPos := obc:nZebraGroup
+                 nPos := iif( ++nPos > Len(obc:aZebraGroup), 1, nPos )
+              ENDIF
+              obc:nZebraGroup := nPos
+              IF uVal != obc:uZebraGroup ; obc:uZebraGroup := uVal
+              ENDIF
+              IF lNo ; obc:oZebraGroup:Set(obc:uZebraGroup, nPos)
+              ENDIF
+              Return Nil
+              }
+      // before draw line
+      IF IsArray(ob:bOnDrawLine) ; AAdd(ob:bOnDrawLine, blk)
+      ELSE                       ; ob:bOnDrawLine := blk            
+      ENDIF
+   ENDIF
+   // log out
+   IF !Empty( op:l_Log_Out ) .AND. IsBlock( op:b_Log_Out )
+      Eval( op:b_Log_Out, ob, op, ProcName() ) 
+   ENDIF
+
+RETURN Nil
+
+STATIC FUNCTION _TBrowse_bAfter( ob, op )
+   LOCAL ni, oc
+   //
+   IF ob:lIsdbf 
+      oc := ob:aColumns[1]
+      oc:nClrBack := {|na,nc,obr|
+                      Local ocol := obr:aColumns[nc]
+                      Local nclr := oCol:nClrHeadBack
+                      IF (obr:cAlias)->( Deleted() )
+                         nclr := CLR_GRAY
+                         na := nc
+                      ENDIF
+                      Return nclr
+                      }
+   ENDIF
+   // mouse click events
+   IF IsBlock(op:bRClicked) ; ob:bRClicked := op:bRClicked
+   ENDIF
+   IF IsBlock(op:bLClicked) ; ob:bLClicked := op:bLClicked
+   ENDIF                              
+   FOR ni := 1 TO Len(ob:aColumns)
+       oc := ob:aColumns[ ni ]
+       IF IsBlock(op:bHLClicked) ; oc:bHLClicked := op:bHLClicked
+       ENDIF      
+       IF IsBlock(op:bHRClicked) ; oc:bHRClicked := op:bHRClicked
+       ENDIF      
+       IF IsBlock(op:bSLClicked) ; oc:bSLClicked := op:bSLClicked
+       ENDIF      
+       IF IsBlock(op:bSRClicked) ; oc:bSRClicked := op:bSRClicked
+       ENDIF      
+       IF IsBlock(op:bFLClicked) ; oc:bFLClicked := op:bFLClicked
+       ENDIF      
+       IF IsBlock(op:bFRClicked) ; oc:bFRClicked := op:bFRClicked
+       ENDIF      
+   NEXT
+   // user code block 
+   IF IsBlock( op:b_After_Def ) ; Eval( op:b_After_Def, ob, op ) 
+   ENDIF
+   // log out
+   IF !Empty( op:l_Log_Out ) .AND. IsBlock( op:b_Log_Out )
+      Eval( op:b_Log_Out, ob, op, ProcName() ) 
+   ENDIF
+
+RETURN Nil
+
+STATIC FUNCTION _TBrowse_bEnd( ob, op )
+   LOCAL lEnd := .T., lRet
+   // user code block 
+   IF IsBlock( op:b_End_Def ) 
+      IF ( lRet := Eval( op:b_End_Def, ob, op ) ) .AND. IsLogical( lRet )
+         lEnd := lRet
+      ENDIF
+   ENDIF
+   IF lEnd
+      // no HScroll but there is SELECTOR
+      IF op:uSelector != NIL .AND. op:lAdjust == NIL .AND. ob:lNoHScroll
+         IF HB_ISBLOCK( op:bAdjColumns )
+            Eval( op:bAdjColumns, ob, op )
+         ENDIF
+      ENDIF
+      IF ob:nLen > ob:nRowCount()     // need VScroll
+         ob:ResetVScroll( .T. )
+      ENDIF
+      ob:SetNoHoles()
+      ob:SetFocus()
+   ENDIF
+   // log out
+   IF !Empty( op:l_Log_Out ) .AND. IsBlock( op:b_Log_Out )
+      Eval( op:b_Log_Out, ob, op, ProcName() ) 
+   ENDIF
+
+RETURN Nil

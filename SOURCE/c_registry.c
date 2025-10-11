@@ -250,7 +250,7 @@ HB_FUNC( REGSETVALUEEXA )
          return;
       }
 
-      lError = _setRegValue( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), dwType, cValue, hb_parclen( 5 ) + 1 );
+      lError = _setRegValue( ( HKEY ) HB_PARNL( 1 ), hb_parc( 2 ), dwType, cValue, ( DWORD ) hb_parclen( 5 ) + 1 );
    }
 
    hb_retnl( ( lError == ERROR_SUCCESS ) ? 0 : -1 );

@@ -1,0 +1,41 @@
+# Keys compile
+-prgflag=-w2 -es1 -dKEY_ENG
+
+
+# Enable multi/single-thread Harbour VM
+#-mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-odemo
+
+# to list all * .prg
+demo.prg
+demo_start.prg
+demo_util.prg
+demo_ErrorLog.prg
+user2log.prg
+user2tsb.prg
+user2card.prg
+user2filter.prg
+user2fltrEvent2.prg
+user2report.prg
+user2report_tsb.prg
+user2report_excel.prg
+user2ListDbf.prg
+user2Index.prg
+util_button4.prg
+menu_context4.prg
+menu_topButton.prg
+alert_tsb7.prg
+zTsb8xlsOle.prg
+zTsb7odsCalc.prg
+overlay.cpp
+
+# project Resources
+#demo.rc

@@ -134,7 +134,8 @@ _ColorMenu ( <hWnd>, <argb> [, <lSubMenu> ] )
 #xtranslate HMG_ISUTF8 ( <x> ) => hb_StrIsUTF8 ( <x> )
 #xtranslate HMG_UNICODE_TO_ANSI( <x> ) => hb_Translate( <x>, "UTF8", hb_cdpOS() )
 
-#xtranslate _HMG_PARSEGRIDCONTROLS( <a>, <b> ) => _PARSEGRIDCONTROLS( <a>, <b> )
+#xtranslate _HMG_PARSEGRIDCONTROLS( <x>, <y> ) => _PARSEGRIDCONTROLS( <x>, <y> )
+#xtranslate HMG_LoadResourceRawFile( <x>, <y> ) => RCDataToMem( <x>, <y> )
 
 #xtranslate GetDesktopRealLeft() => GetDesktopArea() \[ 1 ]
 #xtranslate GetDesktopRealTop()  => GetDesktopArea() \[ 2 ]

@@ -10,34 +10,12 @@
 
 REQUEST DBFCDX
 
-/*
- * FUNCTION Main()
- *
- * Demonstrates the use of TBrowse controls with data selection, relation, and editing capabilities.
- *
- * Purpose:
- *   This function demonstrates the use of two TBrowse controls to display and interact with data from a DBF file.
- *   It performs the following steps:
- *     1. Sets up the TBrowse environment using Sets_TSB().
- *     2. Opens two instances of the "CUSTOMER2" DBF file with different aliases and selection criteria.
- *     3. Creates two memory tables based on the selection criteria.
- *     4. Defines a main window with two TBrowse controls, each displaying data from one of the memory tables.
- *     5. Configures the TBrowse controls with specific properties, including aliases, relation fields, and editability.
- *     6. Sets up key bindings for navigation and exiting the application.
- *     7. Activates the main window, making it visible to the user.
- *
- * Notes:
- *   - The "CUSTOMER2" DBF file is assumed to exist in the application's directory.
- *   - The Sets_TSB() function is responsible for initializing the TBrowse environment and setting default properties.
- *   - The Select2Mem() function creates a memory table based on a selection criteria.
- *   - The application uses the App.Cargo object to store application-wide data, such as the TBrowse objects and file paths.
- */
 FUNCTION Main()
    LOCAL cForm := "wMain"
    LOCAL nY, nX, nH, nW
    LOCAL oTsb1, oTsb2, aFile := {}, cFile, aAls := {}
    LOCAL cAls1 := "CUST_1" , cAls2 := "CUST_2"
-   LOCAL cDbf  := "CUSTOMER2", cID := "CUSTNO"
+   LOCAL cDbf  := "CUSTOMER3", cID := "CUSTNO"
    LOCAL cSel1 := "RecNo() %2 != 0"
    LOCAL cSel2 := "RecNo() %2 == 0"
    LOCAL cTitl := " Select, Relation and Edit. " + MiniGuiVersion()
@@ -61,7 +39,7 @@ FUNCTION Main()
    USE ( aFile[2] ) ALIAS ( aAls[2] ) NEW 
    GO TOP 
 
-   DEFINE WINDOW &cForm TITLE "Demo 2 TBrowse." + cTitl ;
+   DEFINE WINDOW &cForm TITLE "Demo 2 TBrowse. DEMO9 " + cTitl ;
           MAIN NOSIZE TOPMOST ;
           ON INIT    ( This.Topmost := .F., _wPost(0) ) ;
           ON RELEASE ( This.Hide, _wSend(90) )
@@ -78,22 +56,24 @@ FUNCTION Main()
       oTsb1 := App.Cargo:oTsb:Clone()
       oTsb1:cBrw     := "Brw_1"
       oTsb1:uAlias   := aAls[1]
-      oTsb1:cAlsFld  := cAls1                 // relation
-      oTsb1:cAlsKey  := NIL                   // field relation
-      oTsb1:lAlsEdit := !Empty(oTsb1:cAlsKey) // lock edit
-    //oTsb1:aSelFld  := NIL                   // FieldNames relation, array
-      oTsb1:aSelFld  := {"COUNTRY", "STATE", "CITY", "COMPANY", "ADDR1"}
+      // SET RELATION ...
+      oTsb1:cAlsFld  := cAls1      // relation alias
+      oTsb1:aRelation := {cID  , ; // field name by relationship
+                          .T.  , ; // lock edit
+                          cAls1, ; // alias relation
+                          NIL  , ; // array of field names by relationship
+                          NIL  , ; // array of column names
+                          NIL }    // column headers array
       oTsb1:nY := nY
       oTsb1:nX := nX
       oTsb1:nW := nW
       oTsb1:nH := nH
-      oTsb1:lSuperHd := .T.
       oTsb1:cSuperHd := oTsb1:cBrw + "." + oTsb1:uAlias + " -> " + ;
                         Lower((oTsb1:uAlias)->( dbInfo( DBI_FULLPATH ) )) + ;
                         space(3) + "SELECT: " + cSel1 + space(3) + ;
                         "RELATION: TO ROWID INTO " +oTsb1:cAlsFld + ;
                         space(3) + "EDIT: "
-      oTsb1:cSuperHd += iif( oTsb1:lAlsEdit, "TRUE", "FALSE" ) 
+      oTsb1:cSuperHd += iif( oTsb1:aRelation[2], "TRUE", "FALSE" ) 
       oTsb1:aSuperHdColor := {CLR_YELLOW, CLR_HBLUE}
 
       nY += nH 
@@ -102,21 +82,22 @@ FUNCTION Main()
       oTsb2 := App.Cargo:oTsb:Clone()
       oTsb2:cBrw     := "Brw_2"
       oTsb2:uAlias   := aAls[2]
-      oTsb2:cAlsFld  := cAls2                 // relation
-      oTsb2:cAlsKey  := cID                   // field relation
-      oTsb2:lAlsEdit := !Empty(oTsb2:cAlsKey) // lock edit
-      oTsb2:aSelFld  := NIL                   // FieldNames relation, array 
-      oTsb2:lZebra   := .F.
-      oTsb2:lChess   := .T.
+      // SET RELATION ...
+      oTsb2:cAlsFld   := cAls2     // relation alias
+      oTsb2:aRelation := {cID  , ; // field name by relationship
+                          .T.  , ; // lock edit
+                          cAls2, ; // alias relation
+                          NIL  , ; // array of field names by relationship
+                          NIL  , ; // array of column names
+                          NIL }    // column headers array
       oTsb2:nY := nY
       oTsb2:nH := nH
-      oTsb2:lSuperHd := .T.
       oTsb2:cSuperHd := oTsb2:cBrw + "." + oTsb2:uAlias + " -> " + ;
                         Lower((oTsb2:uAlias)->( dbInfo( DBI_FULLPATH ) )) + ;
                         space(3) + "SELECT: " + cSel2 + space(3) + ;
                         "RELATION: TO ROWID INTO " +oTsb2:cAlsFld + ;
                         space(3) + "EDIT: "
-      oTsb2:cSuperHd += iif( oTsb2:lAlsEdit, "TRUE", "FALSE" )
+      oTsb2:cSuperHd += iif( oTsb2:aRelation[2], "TRUE", "FALSE" )
       oTsb2:aSuperHdColor := {CLR_HBLUE, CLR_YELLOW}
 
       This.Cargo:aBrw := _TBrowse({ oTsb1, oTsb2 })
@@ -160,38 +141,10 @@ FUNCTION Main()
 
 RETURN NIL
 
-/*
- * STATIC FUNCTION Select2Mem(bMode, cFld)
- *
- * Creates a memory table containing records selected from the current database based on a given condition.
- *
- * Parameters:
- *   bMode (BLOCK or CHARACTER): A code block or character expression that defines the selection criteria.
- *                               If a code block, it should evaluate to .T. for records to be included.
- *                               If a character expression, it is converted to a code block.
- *   cFld (CHARACTER, optional): The name of the field to be used as the ROWID in the memory table. Defaults to "CUSTNO".
- *
- * Returns:
- *   CHARACTER: The alias of the newly created memory table.
- *
- * Purpose:
- *   This function is used to create a temporary memory table containing a subset of records from a DBF file,
- *   based on a specified selection criteria. This allows for filtering and manipulating data without directly
- *   modifying the original DBF file. The memory table includes a "ROWNR" field that stores the original record number
- *   from the DBF file, enabling a relation between the memory table and the original DBF.
- *
- * Notes:
- *   - The function uses dbCreate() to create the memory table, which is automatically opened.
- *   - The function uses dbAppend() and FieldPut() to add records to the memory table.
- *   - The function uses dbDelete() to mark records as deleted in the memory table if they were deleted in the original DBF.
- *   - The function uses dbDrop() to delete the memory table if it already exists.
- *   - The function uses dbCloseArea() to close the memory table after it has been created.
- *   - The function uses dbSelectArea() to restore the original selected work area.
- */
 STATIC FUNCTION Select2Mem(bMode, cFld)
-   LOCAL nOld  := Select()
+   LOCAL nOld  := Select(), nFld, aRec, nRec
    LOCAL aRecs := {}, cAls := Alias()
-   LOCAL cFile := "mem:" + cAls, nFld, aRec, nRec
+   LOCAL cFile := "mem:" + "Demo9_" + cAls
    Default cFld := "CUSTNO"
 
    IF IsChar( bMode ) ; bMode := &("{|| "+bMode + " }")
@@ -225,67 +178,32 @@ STATIC FUNCTION Select2Mem(bMode, cFld)
 
 RETURN cFile
 
-/*
- * STATIC FUNCTION Sets_TSB( oTsb )
- *
- * Configures the default settings and event handlers for TBrowse objects used in the application.
- *
- * Parameters:
- *   oTsb (OBJECT, optional): An existing TBrowse object to configure. If not provided, a new oHmgData() object is created.
- *
- * Returns:
- *   OBJECT: The configured TBrowse object (either the provided object or the newly created one).
- *
- * Purpose:
- *   This function centralizes the configuration of TBrowse objects, ensuring consistency across the application.
- *   It sets default properties such as editability, footer visibility, zebra striping, and column numbering.
- *   It also defines event handlers for initialization, drawing lines, and gaining focus.
- *   This function promotes code reusability and simplifies the creation of TBrowse controls.
- *
- * Notes:
- *   - The function uses the App.Cargo object to store application-wide data, such as the default TBrowse settings.
- *   - The bInit codeblock is executed when the TBrowse object is initialized. It loads the fields to be displayed and sets up the record locking area.
- *   - The bOnDrawLine codeblock is executed when a line is drawn in the TBrowse object. It positions the cursor in the related DBF file.
- *   - The bAfter codeblock is executed after the TBrowse object is displayed. It sets the background color of deleted records.
- *   - The bGotFocus codeblock is executed when the TBrowse object gains focus. It sets the active window and updates the application's current TBrowse object.
- */
 STATIC FUNCTION Sets_TSB( oTsb )
    LOCAL oac := App.Cargo
 
-   DEFAULT oac:oTsb := oTsb, oac:oTsb := oHmgData()
+   DEFAULT oac:oTsb := oTsb
+   DEFAULT oac:oTsb := oHmgData()
 
-   oac:oTsb:aEdit     := .F.
-   oac:oTsb:aFoot     := .T.
-   oac:oTsb:lZebra    := .T.
-   oac:oTsb:aNumber   := { 1, App.Object:W(0.5) }
-   oac:oTsb:uSelector := 20
-   oac:oTsb:bInit     := {|ob,op|
-                           Local cn := op:cAlsKey, lEdit, oc
-                           ob:Hide()
-                           lEdit := !Empty(op:lAlsEdit)
-                           ob:LoadFields(lEdit, op:aSelFld, op:cAlsFld)
-                           IF lEdit ; ob:lRecLockArea := lEdit
-                           ENDIF
-                           ob:bOnDrawLine := {|obr|
-                                     Local cAls := obr:Cargo:oParam:cAlsFld
-                                     (cAls)->( dbGoTo((obr:cAlias)->ROWNR) )
-                                     Return Nil
-                                     }
-                           Return Nil
-                           }
-   oac:oTsb:bAfter    := {|ob|
-                           Local oc := ob:aColumns[1]
-                           oc:nClrBack := {|na,nc,obr|
-                                           Local ocol := obr:aColumns[nc]
-                                           Local nclr := ocol:nClrHeadBack
-                                           IF (obr:cAlias)->( Deleted() )
-                                              nclr := CLR_HGRAY
-                                              na := nc
-                                           ENDIF
-                                           Return nclr
-                                           }
-                           Return Nil
-                           }
+   oac:oTsb:aEdit       := .F.
+   oac:oTsb:aFoot       := .T.
+   oac:oTsb:aNumber     := { 1, App.Object:W(0.6), DT_RIGHT, 7 }
+   oac:oTsb:uSelector   := 20
+   oac:oTsb:lHide       := .T.
+   oac:oTsb:lZebra      := .T.
+   oac:oTsb:lZebraLine  := .T.                      // all columns
+   oac:oTsb:lZebraGroup := .T.
+   oac:oTsb:cZebraGroup :=  "COUNTRY"
+   oac:oTsb:aMoveCol    := {"COUNTRY", "ADDR1"}
+   oac:oTsb:lSuperHd    := .T.
+   oac:oTsb:b_Init_Def  := {|ob|
+                             Local blk := {|obr|
+                                       Local cAls := obr:Cargo:oParam:cAlsFld
+                                       (cAls)->( dbGoTo((obr:cAlias)->ROWNR) )
+                                       Return Nil
+                                       }
+                             ob:bOnDrawLine := { blk }
+                             Return Nil
+                             }
    oac:oTsb:bGotFocus := {|ob|
                            Local owc
                            IF IsObject(ob)
@@ -296,33 +214,15 @@ STATIC FUNCTION Sets_TSB( oTsb )
                            ENDIF
                            Return Nil
                            }
-
-   oac:oTsb:nHeightCell := App.Object:H(1.2)
-   oac:oTsb:nHeightHead := App.Object:H(1.2)
+   oac:oTsb:nHeightHead  := App.Object:H(1.1)
+   oac:oTsb:nHeightCell  := App.Object:H(1.1)
+   oac:oTsb:nHeightFoot  := App.Object:H(1.1)
+   oac:oTsb:nHeightSuper := App.Object:H(1.2)
 
    oTsb := oac:oTsb
 
 RETURN oTsb
 
-/*
- * INIT PROCEDURE Sets_ENV()
- *
- * Initializes the application environment, setting various system settings and defining fonts.
- *
- * Purpose:
- *   This procedure sets up the application's environment by configuring various system settings,
- *   such as the default RDD, date format, decimal precision, and font settings. It also defines
- *   application-specific settings, such as the log file path and whether to delete the log file on startup.
- *   This ensures that the application runs consistently across different systems and configurations.
- *
- * Notes:
- *   - The procedure sets the default RDD to DBFCDX, which is a common RDD for DBF files.
- *   - The procedure sets the date format to German.
- *   - The procedure sets various other system settings, such as SET DELETED OFF, SET EXACT ON, and SET SOFTSEEK ON.
- *   - The procedure defines three fonts: "Normal", "Bold", and "Italic".
- *   - The procedure creates an oHmgData() object and stores it in App.Cargo for application-wide data storage.
- *   - The procedure sets the log file path and whether to delete the log file on startup.
- */
 INIT PROCEDURE Sets_ENV()
    LOCAL cFont := "Arial", nSize := 12, oac
 

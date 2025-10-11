@@ -52,7 +52,7 @@
 
 // Borland C++ compiler-specific warnings and configurations
 #if defined( __BORLANDC__ ) && !defined( _WIN64 )
-#pragma warn -use                      // Disable warnings about unused variables for 32-bit Borland C++
+#pragma warn - use                     // Disable warnings about unused variables for 32-bit Borland C++
 #endif
 #if defined( __BORLANDC__ ) && defined( _WIN64 )
 #ifndef UNICODE
@@ -137,7 +137,7 @@ HB_FUNC( MESSAGEBEEP )
  */
 HB_FUNC( C_PLAYWAVE )
 {
-   DWORD    Style = SND_ASYNC;         // Default style for asynchronous play
+   DWORD    Style = SND_ASYNC;
    HMODULE  hmod = NULL;
 
 #ifndef UNICODE
@@ -160,29 +160,32 @@ HB_FUNC( C_PLAYWAVE )
    // Set additional flags based on function parameters
    if( hb_parl( 3 ) )
    {
-      Style |= SND_SYNC;
-   }  // Play synchronously
+      Style = ( Style &~SND_ASYNC ) | SND_SYNC;
+   }
 
+   // Do not stop other sounds
    if( hb_parl( 4 ) )
    {
       Style |= SND_NOSTOP;
-   }  // Do not stop other sounds
+   }
 
-   if( hb_parl( 5 ) )
+   // Loop the sound
+   if( hb_parl( 5 ) && !( Style & SND_SYNC ) )
    {
       Style |= SND_LOOP;
-   }  // Loop the sound
+   }
 
+   // No default sound if file/resource not found
    if( hb_parl( 6 ) )
    {
       Style |= SND_NODEFAULT;
-   }  // No default sound if file/resource not found
+   }
 
    // Play the sound and return success/failure
    hb_retl( PlaySound( pszSound, hmod, Style ) );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) pszSound );            // Free converted Wide string memory
+   hb_xfree( ( TCHAR * ) pszSound );                     // Free converted Wide string memory
 #endif
 }
 
@@ -256,13 +259,12 @@ HB_FUNC( STOPWAVE )
 HB_FUNC( INITPLAYER )
 {
    HWND     hwnd;
-
+   DWORD    Style = WS_VISIBLE | WS_CHILD | WS_BORDER;   // Default window styles
 #ifndef UNICODE
    LPCSTR   szFile = hb_parc( 2 );  // File name in ANSI format
 #else
    LPCWSTR  szFile = AnsiToWide( ( char * ) hb_parc( 2 ) ); // Convert to Wide string for Unicode
 #endif
-   DWORD    Style = WS_VISIBLE | WS_CHILD | WS_BORDER;      // Default window styles
 
    // Configure additional MCI (Media Control Interface) window styles based on parameters
    if( hb_parl( 7 ) )
@@ -321,11 +323,12 @@ HB_FUNC( INITPLAYER )
    hwnd = MCIWndCreate( hmg_par_raw_HWND( 1 ), NULL, Style, szFile );
 #endif
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) szFile );                    // Free converted Wide string memory
+   hb_xfree( ( TCHAR * ) szFile );        // Free converted Wide string memory
 #endif
-   if( hwnd == NULL )
+   if( !hwnd )
    {
       MessageBox( 0, TEXT( "Player Creation Failed!" ), TEXT( "Error!" ), MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      hb_retnl( 0 );
       return;
    }
 
@@ -372,6 +375,11 @@ HB_FUNC( MCIFUNC )
 {
    HWND  mcihand = hmg_par_raw_HWND( 1 ); // Retrieve the MCI window handle
    int   func = hb_parni( 2 );            // Function code to execute
+   if( !mcihand )
+   {
+      hb_retnl( 0 );
+      return;
+   }
 
    // Execute the requested MCI action based on the function code
    switch( func )
@@ -410,8 +418,22 @@ HB_FUNC( MCIFUNC )
          break;
 
       case 9:
-         hb_retnl( MCIWndOpen( mcihand, hb_parc( 3 ), ( UINT ) 0 ) );
-         break;
+         {
+   #ifndef UNICODE
+            LPCSTR   szFile = hb_parc( 3 );
+   #else
+            LPCWSTR  szFile = AnsiToWide( ( char * ) hb_parc( 3 ) );
+   #endif
+            LONG     result = szFile ? MCIWndOpen( mcihand, szFile, 0 ) : -1;
+   #ifdef UNICODE
+            if( szFile )
+            {
+               hb_xfree( ( TCHAR * ) szFile );
+            }
+   #endif
+            hb_retnl( result );
+            break;
+         }
 
       case 10:
          hb_retnl( MCIWndOpenDialog( mcihand ) );
@@ -531,9 +553,10 @@ HB_FUNC( INITANIMATE )
    }
 
    hwnd = Animate_Create( hmg_par_raw_HWND( 1 ), NULL, Style, GetResources() );  // Create the animation window
-   if( hwnd == NULL )
+   if( !hwnd )
    {
       MessageBox( 0, TEXT( "AnimateBox Creation Failed!" ), TEXT( "Error!" ), MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      hb_retnl( 0 );
       return;
    }
 
@@ -574,7 +597,7 @@ HB_FUNC( OPENANIMATE )
 #endif
    Animate_Open( hmg_par_raw_HWND( 1 ), szName );           // Open the animation
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) szName );  // Free converted Wide string memory
+   hb_xfree( ( TCHAR * ) szName );                    // Free converted Wide string memory
 #endif
 }
 
@@ -601,7 +624,7 @@ HB_FUNC( OPENANIMATE )
  */
 HB_FUNC( PLAYANIMATE )
 {
-   Animate_Play( hmg_par_raw_HWND( 1 ), 0, -1, 1 );      // Play from beginning to end, once
+   Animate_Play( hmg_par_raw_HWND( 1 ), 0, -1, 1 );   // Play from beginning to end, once
 }
 
 /*

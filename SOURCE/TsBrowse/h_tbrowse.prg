@@ -769,6 +769,7 @@ CLASS TSBrowse FROM TControl
    DATA aColors // the whole colors kit
    DATA aColSel // automatic selected columns creation with databases or recordsets
    DATA aArray AS ARRAY // browsed array
+   DATA aArray_FTS      // browsed array for filter FTS
    DATA aBitmaps AS ARRAY INIT {} // array with bitmaps handles
    DATA aDefault AS ARRAY INIT {} // default values in append mode
    DATA aClipBoard // used by RButtonDown method
@@ -1433,6 +1434,7 @@ CLASS TSBrowse FROM TControl
    METHOD FilterData( cFilter, lBottom, lFocus )
    METHOD FilterFTS( cFind, lUpper, lBottom, lFocus, lAll )
    METHOD FilterFTS_Line( cFind, lUpper, lAll )
+   METHOD CalcTotal( cTotal, cNoTotal, lDraw )
 
    METHOD SeekRec( xVal, lSoftSeek, lFindLast, nRowPos )
    METHOD FindRec( Block, lNext, nRowPos )
@@ -1871,7 +1873,7 @@ METHOD FastDrawClear( cCell ) CLASS TSBrowse
 
    IF ! ::lFastDrawCell
 
-   ELSEIF ISLOGICAL( cCell ) .and. cCell
+   ELSEIF ISLOGICAL( cCell ) .AND. cCell
       ::aFastDrawCell := hb_Hash()
 
    ELSEIF ISCHAR( cCell )
@@ -4215,7 +4217,15 @@ METHOD DrawLine( xRow, lDrawCell ) CLASS TSBrowse
          ::nColPos - ::nFreeze ), ::nColPos - ::nFreeze ), nLastCol )
 
       IF ::bOnDrawLine != NIL
-         IF ! Empty( Eval( ::bOnDrawLine, Self, xRow ) )
+         IF IsArray( ::bOnDrawLine )
+            FOR nI := 1 TO Len( ::bOnDrawLine )
+                IF IsBlock( ::bOnDrawLine[ nI ] )
+                   IF ! Empty( Eval( ::bOnDrawLine[ nI ], Self, xRow ) )
+                      RETURN Self
+                   ENDIF
+                ENDIF
+            NEXT
+         ELSEIF ! Empty( Eval( ::bOnDrawLine, Self, xRow ) )
             RETURN Self
          ENDIF
       ENDIF
@@ -4507,7 +4517,7 @@ METHOD CellMarginLeftRight( nJ, cData, oColumn, nAlign, lMultiLine, nOut ) CLASS
    ENDIF
 
    IF HB_ISCHAR( cBuf ) .AND. Len( cBuf ) > 0
-      DEFAULT cData := ""
+      DEFAULT cData := "", lMultiLine := ( CRLF $ cData )
       IF lMultiLine
          aTmp := hb_ATokens( cData, CRLF )
          cData := ''
@@ -4696,7 +4706,15 @@ METHOD DrawSelect( xRow, lDrawCell ) CLASS TSBrowse
       ENDIF
 
       IF ::bOnDrawLine != NIL
-         IF ! Empty( Eval( ::bOnDrawLine, Self, xRow ) )
+         IF IsArray( ::bOnDrawLine )
+            FOR nI := 1 TO Len( ::bOnDrawLine )
+                IF IsBlock( ::bOnDrawLine[ nI ] )
+                   IF ! Empty( Eval( ::bOnDrawLine[ nI ], Self, xRow ) )
+                      RETURN Self
+                   ENDIF
+                ENDIF
+            NEXT
+         ELSEIF ! Empty( Eval( ::bOnDrawLine, Self, xRow ) )
             RETURN Self
          ENDIF
       ENDIF
@@ -10069,7 +10087,7 @@ METHOD InsColNumber( nWidth, nColumn, cName, nAlign, uBitmap ) CLASS TSBrowse
       oCol:cAlias := ::cAlias
       oCol:cFooting := {| nc, ob | nc := ob:nLen, iif( Empty( nc ), '', hb_ntos( nc ) ) }
 
-      IF !Empty( uBitmap ) .and. Valtype( uBitmap ) $ "NC"
+      IF !Empty( uBitmap ) .AND. Valtype( uBitmap ) $ "NC"
          IF Valtype( uBitmap ) == "N"
             oCol:aBitMaps := { Nil, StockBmp ( uBitmap ) }
          ELSE
@@ -10108,13 +10126,13 @@ METHOD InsColNumber( nWidth, nColumn, cName, nAlign, uBitmap ) CLASS TSBrowse
    oCol:nFieldLen := 10
    oCol:nFieldDec := 0
 
-   IF HB_ISNUMERIC( nAlign ) .and. nAlign >= DT_LEFT .and. nAlign <= DT_RIGHT
+   IF HB_ISNUMERIC( nAlign ) .AND. nAlign >= DT_LEFT .AND. nAlign <= DT_RIGHT
       oCol:nSAlign := nAlign
       oCol:nAlign  := nAlign
       oCol:nFAlign := nAlign
    ENDIF
 
-   IF nColumn > 0 .and. nColumn <= Len( ::aColumns )
+   IF nColumn > 0 .AND. nColumn <= Len( ::aColumns )
       ::InsColumn( nColumn, oCol )
    ENDIF
 
@@ -14057,36 +14075,102 @@ RETURN NIL
 METHOD FilterFTS( cFind, lUpper, lBottom, lFocus, lAll ) CLASS TSBrowse
 
    LOCAL nLen := 0, cAlias := ::cAlias, ob := Self
+   LOCAL aArray, aLine, nLine, nCol, oCol, xVal, lRet, nFind
+   LOCAL nAtPos, nLastPos
    DEFAULT lUpper := .T., lAll := .F.
 
    IF lUpper .AND. HB_ISCHAR( cFind )
       cFind := Upper( cFind )
    ENDIF
 
-   IF ! Empty( cFind )
-      ( cAlias )->( dbSetFilter( {|| ob:FilterFTS_Line( cFind, lUpper, lAll, ob ) }, ;
-         "ob:FilterFTS_Line( cFind, lUpper, lAll, ob)" ) )
-   ELSE
-      ( cAlias )->( dbClearFilter() )
+   IF ::lIsDbf
+      IF ! Empty( cFind )
+         ( cAlias )->( dbSetFilter( {|| ob:FilterFTS_Line( cFind, lUpper, lAll, ob ) }, ;
+            "ob:FilterFTS_Line( cFind, lUpper, lAll, ob)" ) )
+      ELSE
+         ( cAlias )->( dbClearFilter() )
+      ENDIF
+
+      ( cAlias )->( dbGoTop() )
+      DO While !( cAlias )->( Eof() )
+         SysRefresh()
+         nLen++
+         ( cAlias )->( dbSkip( 1 ) )
+      ENDDO
+
+      nFind := nLen
+
+      ::bLogicLen := {|| nLen }
+
+      ::lInitGoTop := .T.
+
+      ::Reset( lBottom )
+
+   ELSEIF ::lIsArr .AND. ! Empty( cFind )
+      IF ::aArray_FTS == NIL
+         ::aArray_FTS := ::aArray
+      ELSE
+         ::aArray := ::aArray_FTS
+      ENDIF
+      nAtPos   := ::nAt
+      nLastPos := ::nLastPos
+      aArray   := {}
+      FOR EACH aLine IN ::aArray
+          nLine := hb_enumindex( aLine )
+          ::nAt := nLine
+          FOR EACH oCol IN ::aColumns
+              nCol := hb_enumindex( oCol )
+              IF nCol == 1 .AND. ::lSelector ; LOOP
+              ELSEIF ! oCol:lVisible ; LOOP
+              ELSEIF oCol:lBitMap ; LOOP
+              ENDIF
+              xVal := ob:bDataEval( oCol, , nCol )
+              IF lAll .AND. ! HB_ISCHAR( xVal )
+                 IF HB_ISLOGICAL( xVal )
+                    xVal := iif( xVal, ".T.", ".F." )
+                 ELSE
+                    xVal := cValToChar( xVal )
+                 ENDIF
+              ENDIF
+              IF HB_ISCHAR( xVal )
+                 IF lUpper
+                    lRet := cFind $ Upper( xVal )
+                 ELSE
+                    lRet := cFind $ xVal
+                 ENDIF
+                 IF lRet
+                    AAdd( aArray, aLine )
+                    EXIT
+                 ENDIF
+              ENDIF
+          NEXT
+          ::Skip()
+      NEXT
+      ::nAt      := nAtPos
+      ::nLastPos := nLastPos
+      IF ( nFind := Len( aArray ) ) > 0
+         ::aArray := aArray
+         ::Reset( lBottom )
+      ELSEIF IsArray( ::aArray_FTS )
+         ::aArray := { Array( Len( ::aArray_FTS[1] ) ) }
+         ::Reset( lBottom )
+      ENDIF
+
+   ELSEIF ::lIsArr .AND. Empty( cFind )
+      IF IsArray( ::aArray_FTS )
+         ::aArray := ::aArray_FTS
+         ::aArray_FTS := NIL
+      ENDIF
+      nFind := Len( ::aArray )
+      ::Reset( lBottom )
+
    ENDIF
-
-   ( cAlias )->( dbGoTop() )
-   DO While !( cAlias )->( Eof() )
-      SysRefresh()
-      nLen++
-      ( cAlias )->( dbSkip( 1 ) )
-   ENDDO
-
-   ::bLogicLen := {|| nLen }
-
-   ::lInitGoTop := .T.
-   ::Reset( lBottom )
 
    IF ! Empty( lFocus )
       ::SetFocus()
    ENDIF
 
-RETURN NIL
+RETURN nFind
 
 * ============================================================================
 * METHOD TSBrowse:FilterFTS_Line()  by SergKis
@@ -14105,7 +14189,11 @@ METHOD FilterFTS_Line( cFind, lUpper, lAll ) CLASS TSBrowse
       ENDIF
       xVal := ::bDataEval( oCol, , nCol )
       IF lAll .AND. ! HB_ISCHAR( xVal )
-         xVal := cValToChar( xVal )
+         IF HB_ISLOGICAL( xVal )
+            xVal := iif( xVal, ".T.", ".F." )
+         ELSE
+            xVal := cValToChar( xVal )
+         ENDIF
       ENDIF
       IF HB_ISCHAR( xVal )
          IF lUpper
@@ -14120,6 +14208,133 @@ METHOD FilterFTS_Line( cFind, lUpper, lAll ) CLASS TSBrowse
    NEXT
 
 RETURN lRet
+
+* ============================================================================
+* METHOD TSBrowse:CalcTotal()  by SergKis
+* ============================================================================
+
+METHOD CalcTotal( cTotal, cNoTotal, lDraw ) CLASS TSBrowse
+   LOCAL nCols := Len( ::aColumns )
+   LOCAL lToT := .F., cToT, aSum := Array( nCols )
+   LOCAL lNoT := .F., cNoT, aToT := Array( nCols )
+   LOCAL nSum := 0, nRec, oCol, nI, nK
+   LOCAL cNam, xVal, nAtPos, nLastPos
+
+   IF IsLogical( cNoTotal )
+      lDraw    := cNoTotal
+      cNoTotal := NIL
+   ELSEIF IsLogical( cTotal )
+      lDraw  := cTotal
+      cTotal := NIL
+   ENDIF
+
+   DEFAULT lDraw := .T.
+
+   aFill( aSum, 0 )
+   aFill( aToT, .F. )
+
+   IF IsArray( cTotal )
+      cToT := ""
+      nK := Len( cTotal )
+      FOR nI := 1 TO nK
+          IF !Empty( cTotal[ nI ] )
+             cToT += cTotal[ nI ] + iif( nI < nK, ",", "" )
+          ENDIF
+      NEXT
+      cTotal := cToT
+      cToT := NIL
+   ENDIF
+
+   IF IsArray( cNoTotal )
+      cNoT := ""
+      nK := Len( cNoTotal )
+      FOR nI := 1 TO nK
+          IF !Empty( cNoTotal[ nI ] )
+             cNoT += cNoTotal[ nI ] + iif( nI < nK, ",", "" )
+          ENDIF
+      NEXT
+      cNoTotal := cNoT
+      cNoT := NIL
+   ENDIF
+   
+   IF IsChar( cTotal )
+      cToT := Upper( StrTran( cTotal, " ", "" ) )
+      IF lToT := ( !Empty( cToT ) .AND. IsChar( cToT ) )
+         cToT := "," + Upper( cToT ) + ","
+      ENDIF
+   ENDIF
+   IF IsChar( cNoTotal )
+      cNoT := Upper( StrTran( cNoTotal, " ", "" ) )
+      IF lNoT := ( !Empty( cNoT ) .AND. IsChar( cNoT ) )
+         cNoT := "," + Upper( cNoT ) + ","
+      ENDIF
+   ENDIF
+
+   FOR nK := 1 TO nCols
+       oCol := ::aColumns[nK]
+       IF !oCol:lVisible ; LOOP
+       ENDIF
+       cNam := "," + Upper( oCol:cName ) + ","
+       IF cNam $ ",SELECTOR,ORDKEYNO,ARRAYNO," ; LOOP
+       ENDIF
+       IF lNoT .AND.  cNam $ cNoT ; LOOP
+       ENDIF
+       IF lToT .AND. !cNam $ cToT ; LOOP
+       ENDIF
+       xVal := ::bDataEval( oCol, , nK )
+       IF IsNumeric( xVal )
+          aToT[nK] := .T.
+          nSum ++
+       ENDIF
+   NEXT
+
+   IF nSum > 0
+      nAtPos   := ::nAt
+      nLastPos := ::nLastPos
+
+      IF ::lIsDbf
+         nRec := ( ::cAlias )->( RecNo() )
+         ( ::cAlias )->( dbGoTop() )
+      ENDIF
+
+      FOR nI := 1 TO ::nLen
+          ::nAt := nI
+          FOR nK := 1 TO Len( ::aColumns )
+              IF !aToT[nK] ; LOOP
+              ENDIF
+              oCol := ::aColumns[nK]
+              xVal := ::bDataEval( oCol, , nK )
+              IF IsNumeric( xVal ) .AND. !Empty( xVal ) ; aSum[nK] += xVal
+              ENDIF
+          NEXT
+          ::Skip()
+          DO EVENTS
+      NEXT
+
+      IF ::lIsDbf
+         ( ::cAlias )->( dbGoTo( nRec ) )
+         DO EVENTS
+      ENDIF
+
+      ::nAt      := nAtPos
+      ::nLastPos := nLastPos
+
+      IF lDraw
+         FOR nK := 1 TO nCols
+             oCol := ::aColumns[nK]
+             IF !aTot[nK] ; LOOP
+             ENDIF
+             IF Empty( aSum[nK] ) ; xVal := ""
+             ELSE                 ; xVal := hb_ntos( aSum[nK] )
+             ENDIF
+             oCol:cFooting := xVal
+         NEXT
+         ::Refresh( .F. )
+         DO EVENTS
+      ENDIF
+   ENDIF
+
+RETURN aSum
 
 * ============================================================================
 * METHOD TSBrowse:SetFont() Version 7.0 Jul/15/2004
@@ -15427,36 +15642,36 @@ STATIC FUNCTION BuildSkip( cAlias, cField, uValue1, uValue2, oTb )
    DO CASE
    CASE cType == "C"
       IF ! lDescend
-         bSkipBlock := &( "{|| " + cField + ">= '" + uValue1 + "' .and. " + ;
+         bSkipBlock := &( "{|| " + cField + ">= '" + uValue1 + "' .AND. " + ;
             cField + "<= '" + uValue2 + "' }" )
       ELSE
-         bSkipBlock := &( "{|| " + cField + "<= '" + uValue1 + "' .and. " + ;
+         bSkipBlock := &( "{|| " + cField + "<= '" + uValue1 + "' .AND. " + ;
             cField + ">= '" + uValue2 + "' }" )
       ENDIF
    CASE cType == "D"
       IF ! lDescend
-         bSkipBlock := &( "{|| " + cField + ">= CToD( '" + DToC( uValue1 ) + "') .and. " + ;
+         bSkipBlock := &( "{|| " + cField + ">= CToD( '" + DToC( uValue1 ) + "') .AND. " + ;
             cField + "<= CToD( '" + DToC( uValue2 ) + "') }" )
       ELSE
-         bSkipBlock := &( "{|| " + cField + "<= CToD( '" + DToC( uValue1 ) + "') .and. " + ;
+         bSkipBlock := &( "{|| " + cField + "<= CToD( '" + DToC( uValue1 ) + "') .AND. " + ;
             cField + ">= CToD( '" + DToC( uValue2 ) + "') }" )
       ENDIF
 
    CASE cType == "N"
       IF ! lDescend
-         bSkipBlock := &( "{|| " + cField + ">= " + cValToChar( uValue1 ) + " .and. " + ;
+         bSkipBlock := &( "{|| " + cField + ">= " + cValToChar( uValue1 ) + " .AND. " + ;
             cField + "<= " + cValToChar( uValue2 ) + " }" )
       ELSE
-         bSkipBlock := &( "{|| " + cField + "<= " + cValToChar( uValue1 ) + " .and. " + ;
+         bSkipBlock := &( "{|| " + cField + "<= " + cValToChar( uValue1 ) + " .AND. " + ;
             cField + ">= " + cValToChar( uValue2 ) + " }" )
       ENDIF
 
    CASE cType == "L"
       IF ! lDescend
-         bSkipBlock := &( "{|| " + cField + ">= " + cValToChar( uValue1 ) + " .and. " + ;
+         bSkipBlock := &( "{|| " + cField + ">= " + cValToChar( uValue1 ) + " .AND. " + ;
             cField + "<= " + cValToChar( uValue2 ) + " }" )
       ELSE
-         bSkipBlock := &( "{|| " + cField + "<= " + cValToChar( uValue1 ) + " .and. " + ;
+         bSkipBlock := &( "{|| " + cField + "<= " + cValToChar( uValue1 ) + " .AND. " + ;
             cField + ">= " + cValToChar( uValue2 ) + " }" )
       ENDIF
    ENDCASE
@@ -15476,36 +15691,36 @@ STATIC FUNCTION BuildFiltr( cField, uValue1, uValue2, oTb )
    DO CASE
    CASE cType == "C"
       IF ! lDescend
-         cFiltrBlock := "{||" + cField + ">= '" + uValue1 + "' .and." + ;
+         cFiltrBlock := "{||" + cField + ">= '" + uValue1 + "' .AND." + ;
             cField + "<= '" + uValue2 + "' }"
       ELSE
-         cFiltrBlock := "{||" + cField + "<= '" + uValue1 + "' .and." + ;
+         cFiltrBlock := "{||" + cField + "<= '" + uValue1 + "' .AND." + ;
             cField + ">= '" + uValue2 + "' }"
       ENDIF
    CASE cType == "D"
       IF ! lDescend
-         cFiltrBlock := "{||" + cField + ">= CToD( '" + DToC( uValue1 ) + "') .and." + ;
+         cFiltrBlock := "{||" + cField + ">= CToD( '" + DToC( uValue1 ) + "') .AND." + ;
             cField + "<= CToD( '" + DToC( uValue2 ) + "') }"
       ELSE
-         cFiltrBlock := "{||" + cField + "<= CToD( '" + DToC( uValue1 ) + "') .and." + ;
+         cFiltrBlock := "{||" + cField + "<= CToD( '" + DToC( uValue1 ) + "') .AND." + ;
             cField + ">= CToD( '" + DToC( uValue2 ) + "') }"
       ENDIF
 
    CASE cType == "N"
       IF ! lDescend
-         cFiltrBlock := "{||" + cField + ">= " + cValToChar( uValue1 ) + " .and." + ;
+         cFiltrBlock := "{||" + cField + ">= " + cValToChar( uValue1 ) + " .AND." + ;
             cField + "<= " + cValToChar( uValue2 ) + " }"
       ELSE
-         cFiltrBlock := "{||" + cField + "<= " + cValToChar( uValue1 ) + " .and." + ;
+         cFiltrBlock := "{||" + cField + "<= " + cValToChar( uValue1 ) + " .AND." + ;
             cField + ">= " + cValToChar( uValue2 ) + " }"
       ENDIF
 
    CASE cType == "L"
       IF ! lDescend
-         cFiltrBlock := "{||" + cField + ">= " + cValToChar( uValue1 ) + " .and." + ;
+         cFiltrBlock := "{||" + cField + ">= " + cValToChar( uValue1 ) + " .AND." + ;
             cField + "<= " + cValToChar( uValue2 ) + " }"
       ELSE
-         cFiltrBlock := "{||" + cField + "<= " + cValToChar( uValue1 ) + " .and." + ;
+         cFiltrBlock := "{||" + cField + "<= " + cValToChar( uValue1 ) + " .AND." + ;
             cField + ">= " + cValToChar( uValue2 ) + " }"
       ENDIF
    ENDCASE
@@ -15548,13 +15763,13 @@ STATIC FUNCTION BuildAutoSeek( oTb )
                CASE cType == "C"
                   uValue := RTrim( uValue )
                   nLen := Len( uValue )
-                  cLocateBlock += " .and. substr(x[" + LTrim( Str( nCol ) ) + "],1," + ;
+                  cLocateBlock += " .AND. substr(x[" + LTrim( Str( nCol ) ) + "],1," + ;
                      LTrim( Str( nLen ) ) + " ) == '" + uValue + "'"
                CASE cType == "N" .OR. cType == "L"
-                  cLocateBlock = " .and. x[" + LTrim( Str( nCol ) ) + "] == " + ;
+                  cLocateBlock = " .AND. x[" + LTrim( Str( nCol ) ) + "] == " + ;
                      cValToChar( uValue )
                CASE cType == "D"
-                  cLocateBlock += " .and. x[" + LTrim( Str( nCol ) ) + "] == " + ;
+                  cLocateBlock += " .AND. x[" + LTrim( Str( nCol ) ) + "] == " + ;
                      "CToD( '" + DToC( uValue ) + "' )"
                ENDCASE
             ENDIF

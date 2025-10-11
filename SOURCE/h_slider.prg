@@ -67,8 +67,8 @@ FUNCTION _DefineSlider ( ControlName, ParentFormName, x, y, w, h, lo, hi, value,
 
    hb_default( @w, iif( vertical, 35 + iif( both, 5, 0 ), 120 ) )
    hb_default( @h, iif( vertical, 120, 35 + iif( both, 5, 0 ) ) )
-   hb_default( @lo,  0 )
-   hb_default( @hi,100 )
+   hb_default( @lo, 0 )
+   hb_default( @hi, 100 )
    hb_default( @value, Int( ( hi - lo ) / 2 ) )
 
    hb_default( @enableselrange, .F. ) /* P.Ch. 16.10. */

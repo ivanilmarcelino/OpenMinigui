@@ -46,13 +46,13 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  ---------------------------------------------------------------------------*/
 
 #ifdef __XHARBOUR__
-  #define __MINIPRINT__
+#define __MINIPRINT__
 #endif
 
 #include "hmg.ch"
 
 #ifndef HMG_LEGACY_OFF
-  #undef _BT_
+#undef _BT_
 #endif
 
 #include "i_winuser.ch"
@@ -726,10 +726,10 @@ FUNCTION _AddItem ( ControlName , ParentForm , Value , Parent , aImage , Id )
 
          IF ImgDef == 0
             iUnsel := 2  // Pointer to defalut Node Bitmaps, no Bitmap loaded
-            iSel   := 3
+            iSel := 3
          ELSE
             iUnSel := AddTreeViewBitmap ( c, aImage [1], _HMG_aControlMiscData1[ ix, 4 ] ) - 1
-            iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap ( c, aImage [2], _HMG_aControlMiscData1[ ix, 4 ] ) - 1 )
+            iSel := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap ( c, aImage [2], _HMG_aControlMiscData1[ ix, 4 ] ) - 1 )
             // If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
          ENDIF
 
@@ -810,10 +810,10 @@ FUNCTION _AddItem ( ControlName , ParentForm , Value , Parent , aImage , Id )
 
          IF ImgDef == 0
             iUnsel := 0  // Pointer to defalut Node Bitmaps, no Bitmap loaded
-            iSel   := 1
+            iSel := 1
          ELSE
             iUnSel := AddTreeViewBitmap ( c, aImage [1], _HMG_aControlMiscData1[ ix, 4 ] ) - 1
-            iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap ( c, aImage [2], _HMG_aControlMiscData1[ ix, 4 ] ) - 1 )
+            iSel := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap ( c, aImage [2], _HMG_aControlMiscData1[ ix, 4 ] ) - 1 )
             // If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
          ENDIF
 
@@ -1932,7 +1932,7 @@ FUNCTION _SetItem ( ControlName , ParentForm , Item , Value , index )
       IF _IsOwnerDrawStatusBarItem ( c , Item , Value , .T. )
          MoveWindow ( c , 0 , 0 , 0 , 0 , .T. )
       ELSE
-         SetItemBar ( c , Value , Item - 1 )
+         SetItemBar ( c , Value , Item )
       ENDIF
 
    ENDCASE
@@ -2882,7 +2882,6 @@ STATIC PROCEDURE TreeItemChangeImage ( ControlName, ParentForm, nItem, aImage )
    IF ItemHandle > 0 .AND. ISARRAY( aImage ) .AND. ( ImgDef := Len( aImage ) ) > 0
 
       i := GetControlIndex ( ControlName, ParentForm )
-
       iUnSel := AddTreeViewBitmap( TreeHandle, aImage[ 1 ], _HMG_aControlMiscData1[ i, 4 ] ) - 1
       iSel := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap( TreeHandle, aImage[ 2 ], _HMG_aControlMiscData1[ i, 4 ] ) - 1 )
 
@@ -3771,7 +3770,11 @@ FUNCTION _ReleaseControl ( ControlName, ParentForm )
 
       IF ( z := SendMessage( _HMG_aControlHandles [i], SB_GETPARTS, 0, 0 ) ) > 0
          FOR x := 1 TO z
-            SetStatusItemIcon ( _HMG_aControlHandles [i] , x , Nil , Nil )
+            r := SendMessage( _HMG_aControlHandles [i], SB_GETICON, x - 1, 0 )
+            // Removes the current icon from the specified status bar item
+            IF IsHIcon( r )
+               DestroyIcon( r )
+            ENDIF
          NEXT x
       ENDIF
 
@@ -3782,14 +3785,13 @@ FUNCTION _ReleaseControl ( ControlName, ParentForm )
       ReleaseControl ( _HMG_aControlHandles [i] )
 
       IF _HMG_aControlIds [i] != 0
-
          ReleaseControl ( _HMG_aControlIds [i] )
          ReleaseControl ( _HMG_aControlMiscData1 [i] [1] )
-
       ENDIF
 #endif
 
    CASE t == "TAB"
+
       FOR r := 1 TO Len ( _HMG_aControlPageMap [i] )
 
          FOR w := 1 TO Len ( _HMG_aControlPageMap [i] [r] )
@@ -3951,6 +3953,11 @@ FUNCTION _EraseControl ( i, p )
    t := _HMG_aControlType [i]
 
    DO CASE
+
+   CASE t == 'MONTHCAL'
+      IF ! Empty ( _HMG_aControlMiscData1 [i] )
+         FreeDayState ( win_N2P ( _HMG_aControlMiscData1 [i] ) )
+      ENDIF
 
    CASE t == 'HOTKEY'
       ReleaseHotKey ( _HMG_aControlParentHandles [i] , _HMG_aControlIds [i] )
@@ -4131,6 +4138,11 @@ PROCEDURE SetProperty( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 )
 #ifdef _USERINIT_
    LOCAL cMacro, cProc
 #endif
+
+   __defaultNIL( @Arg1, _HMG_ThisFormName )
+   IF PCount() > 3
+      __defaultNIL( @Arg2, _HMG_ThisControlName )
+   ENDIF
 
 #ifdef _HMG_COMPAT_
    IF _RichEditBox_SetProperty ( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8 )
@@ -5038,13 +5050,18 @@ FUNCTION GetProperty ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 )
 #ifdef _HMG_COMPAT_
    LOCAL cHeader, nAlignHeader, cFooter, nAlingFooter, nState
 
-   IF _RichEditBox_GetProperty ( @xDATA, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8 )
+   IF _RichEditBox_GetProperty ( @xData, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8 )
       RETURN xData
    ENDIF
 #endif
 
+   __defaultNIL( @Arg1, _HMG_ThisFormName )
+   IF PCount() > 2
+      __defaultNIL( @Arg2, _HMG_ThisControlName )
+   ENDIF
+
 #ifdef _BT_
-   IF _ProgressWheel_GetProperty ( @xDATA, Arg1, Arg2, Arg3 )
+   IF _ProgressWheel_GetProperty ( @xData, Arg1, Arg2, Arg3 )
       RETURN xData
    ENDIF
 #endif
@@ -5989,6 +6006,11 @@ FUNCTION DoMethod ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9
    LOCAL cMacro, cProc
 #endif
 
+   __defaultNIL( @Arg1, _HMG_ThisFormName )
+   IF PCount() > 2
+      __defaultNIL( @Arg2, _HMG_ThisControlName )
+   ENDIF
+
 #ifdef _HMG_COMPAT_
    IF _RichEditBox_DoMethod ( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9 )
       RETURN NIL
@@ -6758,7 +6780,7 @@ RETURN RetVal
 STATIC PROCEDURE VerifyControlDefined ( cParentName , cControlName )
 *-----------------------------------------------------------------------------*
 
-   IF ! Empty ( cControlName ) .AND. ! _IsControlDefined ( cControlName , cParentName )
+   IF Set( _SET_DEBUG ) .AND. !Empty ( cControlName ) .AND. !_IsControlDefined ( cControlName , cParentName )
       MsgMiniGuiError ( "Control: " + cControlName + " Of " + cParentName + " Not defined." )
    ENDIF
 
@@ -8860,11 +8882,11 @@ FUNCTION HMG_GetFormControls( cFormName, aUserType )
                GetParentFormName( nCtrlIndex ) ) == cUserType )
 
             IF ISNUMERIC( _HMG_aControlHandles[ nCtrlIndex ] )
-               AddIfUnique( aRetVal, _HMG_aControlNames[ nCtrlIndex ] )
+               HMG_AddIfUnique( aRetVal, _HMG_aControlNames[ nCtrlIndex ] )
 
             ELSEIF ISARRAY( _HMG_aControlHandles[ nCtrlIndex ] )
                AEval( _HMG_aControlHandles[ nCtrlIndex ], {|| ;
-                  AddIfUnique( aRetVal, _HMG_aControlNames[ nCtrlIndex ] ) } )
+                  HMG_AddIfUnique( aRetVal, _HMG_aControlNames[ nCtrlIndex ] ) } )
             ENDIF
 
          ENDIF
@@ -8874,13 +8896,14 @@ FUNCTION HMG_GetFormControls( cFormName, aUserType )
 RETURN ASort( aRetVal )
 
 *-----------------------------------------------------------------------------*
-STATIC PROCEDURE AddIfUnique( aList, cName )
+FUNCTION HMG_AddIfUnique( aList, cName )
 *-----------------------------------------------------------------------------*
-   IF ! Empty( cName ) .AND. AScan( aList, cName, , , .T. ) == 0
+   IF !Empty( cName ) .AND. AScan( aList, cName, , , .T. ) == 0
       AAdd( aList, cName )
+      RETURN .T.
    ENDIF
 
-RETURN
+RETURN .F.
 
 *-----------------------------------------------------------------------------*
 FUNCTION HMG_GetAllFonts( lObj )
@@ -9319,5 +9342,17 @@ STATIC FUNCTION HasTimePart( tDate )
    ENDIF
 
 RETURN HB_ISDATETIME( tDate )
+
+#pragma BEGINDUMP
+
+#include <windows.h>   // Windows API functions
+#include "hbapi.h"     // Harbour API functions
+
+HB_FUNC( WIN_N2P )
+{
+   hb_retptr( ( void * ) ( HB_PTRUINT ) hb_parnint( 1 ) );
+}
+
+#pragma ENDDUMP
 
 #endif

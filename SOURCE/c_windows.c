@@ -2159,7 +2159,7 @@ HB_FUNC( REBAR_SETMINCHILDSIZE )
    rbbi.cxMinChild = 0;
    rbbi.cyMinChild = yMin;
    rbbi.cx = 0;
-   hb_retl( SendMessage( hWnd, RB_SETBANDINFO, ( WPARAM ) nBand, ( LPARAM ) & rbbi ) );
+   hb_retl( ( BOOL ) SendMessage( hWnd, RB_SETBANDINFO, ( WPARAM ) nBand, ( LPARAM ) & rbbi ) );
 }
 
 /*

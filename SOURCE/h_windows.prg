@@ -2046,7 +2046,10 @@ FUNCTION _DoControlEventProcedure ( bBlock, i, cEventType, nParam, nParam2 )
       _HMG_ThisControlName := _HMG_aControlNames[ _HMG_ThisIndex ]
 
       IF _HMG_BeginWindowActive == .F. .OR. !( hb_defaultValue( cEventType, '' ) == 'CONTROL_ONCHANGE' ) .OR. _HMG_MainClientMDIHandle != 0
-         lRetVal := Eval ( bBlock, hb_defaultValue( nParam, 0 ), nParam2 )
+#ifdef _OBJECT_
+         i := _WindowObj( _HMG_aFormHandles[ _HMG_ThisFormIndex ] )
+#endif
+         lRetVal := Eval ( bBlock, hb_defaultValue( nParam, 0 ), nParam2, _HMG_ThisControlName, i )
       ENDIF
 
       _PopEventInfo()
@@ -2079,7 +2082,10 @@ FUNCTION _DoWindowEventProcedure ( bBlock, i, cEventType )
       _HMG_ThisFormName := _HMG_aFormNames[ _HMG_ThisFormIndex ]
       _HMG_ThisControlName :=  ""
 
-      lRetVal := Eval ( bBlock )
+#ifdef _OBJECT_
+      i := _WindowObj( _HMG_aFormHandles[ _HMG_ThisFormIndex ] )
+#endif
+      lRetVal := Eval ( bBlock, _HMG_ThisFormName, i )
 
       _PopEventInfo()
    ENDIF

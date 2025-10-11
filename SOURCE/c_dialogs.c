@@ -44,12 +44,8 @@
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
  ---------------------------------------------------------------------------*/
-#define _WIN32_IE 0x0501
-#ifdef __POCC__
+#define _WIN32_IE    0x0501
 #define _WIN32_WINNT 0x0500
-#else
-#define _WIN32_WINNT 0x0400
-#endif
 #include <mgdefs.h>
 #include <commdlg.h>
 #include <shlobj.h>
@@ -99,9 +95,9 @@ HB_FUNC( CHOOSEFONT )
    CHOOSEFONT  cf;
    LOGFONT     lf;
    long        PointSize;
-   HDC         hdc;
-   HWND        hwnd;
-   int         dpiY;
+   HWND        hwnd = GetActiveWindow();
+   HDC         hdc = GetDC( hwnd );
+   int         dpiY = GetDeviceCaps( hdc, LOGPIXELSY );
 
 #ifdef UNICODE
    LPSTR       pStr;
@@ -111,9 +107,6 @@ HB_FUNC( CHOOSEFONT )
 #else
    lstrcpy( lf.lfFaceName, hb_parc( 1 ) );
 #endif
-   hwnd = GetActiveWindow();
-   hdc = GetDC( hwnd );
-   dpiY = GetDeviceCaps( hdc, LOGPIXELSY );
 
    // Calculate font height in pixels
    lf.lfHeight = -MulDiv( hb_parnl( 2 ), dpiY, 72 );
@@ -139,7 +132,6 @@ HB_FUNC( CHOOSEFONT )
    // Set font dialog properties
    cf.lStructSize = sizeof( CHOOSEFONT );
    cf.hwndOwner = hwnd;
-   cf.hDC = ( HDC ) NULL;
    cf.lpLogFont = &lf;                    // Assign the LOGFONT structure
    cf.Flags = HB_ISNUM( 9 ) ? hb_parni( 9 ) : CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT;
    cf.rgbColors = hmg_par_COLORREF( 5 );  // Set initial color
@@ -147,7 +139,8 @@ HB_FUNC( CHOOSEFONT )
 
    if( !ChooseFont( &cf ) )
    {
-      hb_reta( 8 );                     // Return an empty array if dialog fails or is canceled
+      ReleaseDC( hwnd, hdc );
+      hb_reta( 8 );                 // Return an empty array if dialog fails or is canceled
       HB_STORC( "", -1, 1 );
       HB_STORVNL( ( LONG ) 0, -1, 2 );
       HB_STORL( 0, -1, 3 );
@@ -156,7 +149,6 @@ HB_FUNC( CHOOSEFONT )
       HB_STORL( 0, -1, 6 );
       HB_STORL( 0, -1, 7 );
       HB_STORNI( 0, -1, 8 );
-      ReleaseDC( hwnd, hdc );
       return;
    }
 
@@ -173,7 +165,7 @@ HB_FUNC( CHOOSEFONT )
    hb_xfree( pStr );
 #endif
    HB_STORVNL( ( LONG ) PointSize, -1, 2 );
-   HB_STORL( lf.lfWeight == FW_BOLD ? TRUE : FALSE, -1, 3 );
+   HB_STORL( lf.lfWeight >= FW_BOLD, -1, 3 );
    HB_STORL( lf.lfItalic, -1, 4 );
    HB_STORVNL( cf.rgbColors, -1, 5 );
    HB_STORL( lf.lfUnderline, -1, 6 );
@@ -206,7 +198,7 @@ static TCHAR   s_szWinName[MAX_PATH + 1];
  */
 int CALLBACK BrowseCallbackProc( HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData )
 {
-   TCHAR szPath[MAX_PATH];
+   TCHAR szPath[MAX_PATH] = { 0 };
 
    switch( uMsg )
    {
@@ -214,11 +206,7 @@ int CALLBACK BrowseCallbackProc( HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpD
          if( lpData )
          {
             SendMessage( hWnd, BFFM_SETSELECTION, TRUE, lpData );
-   #ifndef UNICODE
-            SetWindowText( hWnd, ( LPCSTR ) s_szWinName );
-   #else
-            SetWindowText( hWnd, ( LPCWSTR ) s_szWinName );
-   #endif
+            SetWindowText( hWnd, s_szWinName );
          }
          break;
 
@@ -227,9 +215,8 @@ int CALLBACK BrowseCallbackProc( HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpD
          return 1;
 
       case BFFM_SELCHANGED:
-         if( lpData )
+         if( lpData && SHGetPathFromIDList( ( LPITEMIDLIST ) lParam, szPath ) )
          {
-            SHGetPathFromIDList( ( LPITEMIDLIST ) lParam, szPath );
             SendMessage( hWnd, BFFM_SETSTATUSTEXT, 0, ( LPARAM ) szPath );
          }
    }
@@ -259,64 +246,45 @@ int CALLBACK BrowseCallbackProc( HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpD
  */
 HB_FUNC( C_BROWSEFORFOLDER )
 {
-   HWND           hWnd = HB_ISNIL( 1 ) ? GetActiveWindow() : hmg_par_raw_HWND( 1 );
-   BROWSEINFO     BrowseInfo;
-   TCHAR          lpBuffer[MAX_PATH];
-   LPITEMIDLIST   pidlRoot, pidlResult;
+   HWND           hwnd = HB_ISNIL( 1 ) ? GetActiveWindow() : hmg_par_raw_HWND( 1 );
+   BROWSEINFO     bi = { 0 };
+   TCHAR          lpBuffer[MAX_PATH] = { 0 };
+   LPITEMIDLIST   pidlRoot = NULL, pidlResult;
 
 #ifdef UNICODE
-   LPWSTR         pW, pW2;
-   LPSTR          pStr;
+   LPWSTR         pWTitle = AnsiToWide( hb_parc( 2 ) );
+   LPWSTR         pWInitPath = AnsiToWide( hb_parc( 5 ) );
+#else
+   LPCSTR         pWTitle = hb_parc( 2 );
+   LPCSTR         pWInitPath = hb_parc( 5 );
 #endif
    if( HB_ISCHAR( 5 ) )
    {
-#ifndef UNICODE
-      GetWindowText( hWnd, ( LPSTR ) s_szWinName, MAX_PATH );
-#else
-      GetWindowText( hWnd, ( LPWSTR ) s_szWinName, MAX_PATH );
-#endif
+      GetWindowText( hwnd, s_szWinName, MAX_PATH );
    }
 
-   // Get special folder location to start the browse dialog
-   SHGetSpecialFolderLocation( hWnd, HB_ISNIL( 4 ) ? CSIDL_DRIVES : hb_parni( 4 ), &pidlRoot );
+   SHGetSpecialFolderLocation( hwnd, HB_ISNIL( 4 ) ? CSIDL_DRIVES : hb_parni( 4 ), &pidlRoot );
 
-   // Setup browse dialog info
-   BrowseInfo.hwndOwner = hWnd;
-   BrowseInfo.pidlRoot = pidlRoot;
-   BrowseInfo.pszDisplayName = lpBuffer;
-#ifndef UNICODE
-   BrowseInfo.lpszTitle = HB_ISNIL( 2 ) ? "Select a Folder" : hb_parc( 2 );
-#else
-   pW = AnsiToWide( hb_parc( 2 ) );
-   BrowseInfo.lpszTitle = HB_ISNIL( 2 ) ? TEXT( "Select a Folder" ) : pW;
-#endif
-   BrowseInfo.ulFlags = hb_parni( 3 ) | ( HB_ISCHAR( 5 ) ? BIF_STATUSTEXT | BIF_RETURNONLYFSDIRS : 0 );
-   BrowseInfo.lpfn = BrowseCallbackProc;
-#ifndef UNICODE
-   BrowseInfo.lParam = HB_ISCHAR( 5 ) ? ( LPARAM ) ( char * ) hb_parc( 5 ) : 0;
-#else
-   pW2 = AnsiToWide( hb_parc( 5 ) );
-   BrowseInfo.lParam = HB_ISCHAR( 5 ) ? ( LPARAM ) pW2 : 0;
-#endif
-   BrowseInfo.iImage = 0;
+   bi.hwndOwner = hwnd;
+   bi.pidlRoot = pidlRoot;
+   bi.pszDisplayName = lpBuffer;
+   bi.lpszTitle = HB_ISNIL( 2 ) ? TEXT( "Select a Folder" ) : pWTitle;
+   bi.ulFlags = hb_parni( 3 ) | ( HB_ISCHAR( 5 ) ? BIF_STATUSTEXT | BIF_RETURNONLYFSDIRS : 0 );
+   bi.lpfn = BrowseCallbackProc;
+   bi.lParam = HB_ISCHAR( 5 ) ? ( LPARAM ) pWInitPath : 0;
 
-   pidlResult = SHBrowseForFolder( &BrowseInfo );
+   pidlResult = SHBrowseForFolder( &bi );
 
-   // If folder selected, retrieve path
-   if( pidlResult )
+   if( pidlResult && SHGetPathFromIDList( pidlResult, lpBuffer ) )
    {
-      SHGetPathFromIDList( pidlResult, lpBuffer );
-#ifndef UNICODE
-      hb_retc( lpBuffer );
-#else
-      pStr = hb_osStrU16Decode( lpBuffer );
-      hb_retc( pStr );
+#ifdef UNICODE
+      LPSTR pStr = hb_osStrU16Decode( lpBuffer );
+      hb_retc( pStr ? pStr : "" );
       hb_xfree( pStr );
+#else
+      hb_retc( lpBuffer );
 #endif
-      if( pidlResult )
-      {
-         CoTaskMemFree( pidlResult );  // Free memory allocated by SHBrowseForFolder
-      }
+      CoTaskMemFree( pidlResult );
    }
    else
    {
@@ -325,12 +293,12 @@ HB_FUNC( C_BROWSEFORFOLDER )
 
    if( pidlRoot )
    {
-      CoTaskMemFree( pidlRoot );       // Free memory allocated by SHGetSpecialFolderLocation
+      CoTaskMemFree( pidlRoot );
    }
 
 #ifdef UNICODE
-   hb_xfree( pW );
-   hb_xfree( pW2 );
+   hb_xfree( pWTitle );
+   hb_xfree( pWInitPath );
 #endif
 }
 
@@ -369,7 +337,7 @@ HB_FUNC( CHOOSECOLOR )
       crCustClr[i] = ( HB_ISARRAY( 3 ) ? hmg_parv_COLORREF( 3, i + 1 ) : GetSysColor( COLOR_BTNFACE ) );
    }
 
-   memset( &cc, 0, sizeof( cc ) );     // Zero out CHOOSECOLOR structure
+   memset( &cc, 0, sizeof( cc ) );  // Zero out CHOOSECOLOR structure
    cc.lStructSize = sizeof( CHOOSECOLOR );
    cc.hwndOwner = HB_ISNIL( 1 ) ? GetActiveWindow() : hmg_par_raw_HWND( 1 );
    cc.rgbResult = hmg_par_COLORREF( 2 );  // Set initial color
@@ -380,31 +348,31 @@ HB_FUNC( CHOOSECOLOR )
    if( ChooseColor( &cc ) )
    {
       hmg_ret_COLORREF( cc.rgbResult );
+
+      // Update custom color array if passed by reference
+      if( HB_ISBYREF( 3 ) )
+      {
+         PHB_ITEM pArray = hb_param( 3, HB_IT_ANY );
+         PHB_ITEM pSubarray = hb_itemNew( NULL );
+
+         hb_arrayNew( pArray, CUSTOM_COLOR_COUNT );
+
+         for( i = 0; i < CUSTOM_COLOR_COUNT; i++ )
+         {
+            hb_arrayNew( pSubarray, 3 );
+            hb_arraySetNL( pSubarray, 1, GetRValue( crCustClr[i] ) );
+            hb_arraySetNL( pSubarray, 2, GetGValue( crCustClr[i] ) );
+            hb_arraySetNL( pSubarray, 3, GetBValue( crCustClr[i] ) );
+
+            hb_arraySet( pArray, i + 1, pSubarray );
+         }
+
+         hb_itemRelease( pSubarray );
+      }
    }
    else
    {
       hb_retni( -1 );
-   }
-
-   // Update custom color array if passed by reference
-   if( HB_ISBYREF( 3 ) )
-   {
-      PHB_ITEM pArray = hb_param( 3, HB_IT_ANY );
-      PHB_ITEM pSubarray = hb_itemNew( NULL );
-
-      hb_arrayNew( pArray, CUSTOM_COLOR_COUNT );
-
-      for( i = 0; i < CUSTOM_COLOR_COUNT; i++ )
-      {
-         hb_arrayNew( pSubarray, 3 );
-         hb_arraySetNL( pSubarray, 1, GetRValue( crCustClr[i] ) );
-         hb_arraySetNL( pSubarray, 2, GetGValue( crCustClr[i] ) );
-         hb_arraySetNL( pSubarray, 3, GetBValue( crCustClr[i] ) );
-
-         hb_arraySet( pArray, i + 1, pSubarray );
-      }
-
-      hb_itemRelease( pSubarray );
    }
 }
 

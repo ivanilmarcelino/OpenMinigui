@@ -150,7 +150,7 @@ LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
    if( msg == WM_MOUSEWHEEL )
    {
       // Scroll up or down based on the wheel delta
-      if( ( short ) HIWORD( wParam ) > 0 )
+      if( GET_WHEEL_DELTA_WPARAM( wParam ) > 0 )
       {
          keybd_event( VK_UP, 0, 0, 0 );   // Simulate UP arrow key press
       }
@@ -189,18 +189,18 @@ HB_FUNC( INITVSCROLLBAR )
 
    hScrollbar = CreateWindowEx
       (
-         0,                                  // No extended styles
-         WC_SCROLLBAR,                       // Scrollbar control class
-         TEXT( "" ),                         // No window text
+         0,             // No extended styles
+         WC_SCROLLBAR,  // Scrollbar control class
+         TEXT( "" ),    // No window text
          WS_CHILD | WS_VISIBLE | SBS_VERT,   // Style for visible vertical scrollbar
-         hb_parni( 2 ),                      // X position
-         hb_parni( 3 ),                      // Y position
-         hb_parni( 4 ),                      // Width
-         hb_parni( 5 ),                      // Height
-         hmg_par_raw_HWND( 1 ),              // Parent window handle
-         ( HMENU ) NULL,                     // No menu handle
-         GetInstance(),                      // Module instance handle
-         NULL                                // Additional parameters
+         hb_parni( 2 ),                         // X position
+         hb_parni( 3 ),                         // Y position
+         hb_parni( 4 ),                         // Width
+         hb_parni( 5 ),                         // Height
+         hmg_par_raw_HWND( 1 ),                 // Parent window handle
+         ( HMENU ) NULL,                        // No menu handle
+         GetInstance(),                         // Module instance handle
+         NULL                                   // Additional parameters
       );
 
    // Set scroll range from 1 to 100, and allow immediate redraw
@@ -259,14 +259,14 @@ HB_FUNC( INITVSCROLLBARBUTTON )
             WC_STATIC,                          // Static control class
             TEXT( "" ),                         // No text
             WS_CHILD | WS_VISIBLE | SS_SUNKEN,  // Styles to display sunken look
-            hb_parni( 2 ),                      // X position
-            hb_parni( 3 ),                      // Y position
-            hb_parni( 4 ),                      // Width
-            hb_parni( 5 ),                      // Height
-            hmg_par_raw_HWND( 1 ),              // Parent window handle
-            ( HMENU ) NULL,                     // No menu handle
-            GetInstance(),                      // Module instance handle
-            NULL                                // Additional parameters
+            hb_parni( 2 ),          // X position
+            hb_parni( 3 ),          // Y position
+            hb_parni( 4 ),          // Width
+            hb_parni( 5 ),          // Height
+            hmg_par_raw_HWND( 1 ),  // Parent window handle
+            ( HMENU ) NULL,         // No menu handle
+            GetInstance(),          // Module instance handle
+            NULL                    // Additional parameters
          )
    );
 }
@@ -291,7 +291,8 @@ HB_FUNC( INITVSCROLLBARBUTTON )
  */
 HB_FUNC( SETSCROLLINFO )
 {
-   SCROLLINFO  si = { 0 };
+   SCROLLINFO  si;
+   ZeroMemory( &si, sizeof( si ) );
 
    // Configure scroll information
    si.cbSize = sizeof( SCROLLINFO );

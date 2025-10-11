@@ -50,7 +50,7 @@ PROCEDURE Main
       WIDTH 120 HEIGHT 21 ;
       FONT 'Tahoma' SIZE 9 ;
       TOOLTIP "HotkeyBox Control 1" ;
-      ON CHANGE AddText( GetHotKeyName( HotKey_1, Form_Main ) )
+      ON CHANGE AddText( GetHotKeyName( "HotKey_1", "Form_Main" ) )
 
    @ 20, 20 EDITBOX Editbox_1 VALUE "" WIDTH 150 HEIGHT 400
 
@@ -138,7 +138,7 @@ RETURN NIL
  */
 FUNCTION SetNewHotKey()
    LOCAL cKeyName
-   LOCAL aKey := GetHotKeyValue( HotKey_1, Form_Main )
+   LOCAL aKey := GetHotKeyValue( "HotKey_1", "Form_Main" )
 
    IF !Empty( nKey )
       _ReleaseHotKey( "Form_Main", nModif, nKey )
@@ -146,7 +146,7 @@ FUNCTION SetNewHotKey()
 
    nKey := aKey[ 1 ]
    nModif := aKey[ 2 ]
-   cKeyName := GetHotKeyName( HotKey_1, Form_Main )
+   cKeyName := GetHotKeyName( "HotKey_1", "Form_Main" )
 
    _DefineHotKey( "Form_Main", nModif, nKey, {|| MsgInfo( StrTran( cKeyName, " ", "" ) + " is pressed" ) } )
 

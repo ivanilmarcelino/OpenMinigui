@@ -207,7 +207,8 @@ HB_FUNC( INITCHECKBUTTON )
 HB_FUNC( INITIMAGECHECKBUTTON )
 {
    HWND        hbutton;
-   HWND        himage;
+   HWND        hwnd = hmg_par_raw_HWND( 1 );
+   HBITMAP     himage;
    HIMAGELIST  himl;
 
 #ifndef UNICODE
@@ -215,7 +216,6 @@ HB_FUNC( INITIMAGECHECKBUTTON )
 #else
    LPWSTR      lpWindowName = AnsiToWide( ( char * ) hb_parc( 2 ) );
 #endif
-   HWND        hwnd = hmg_par_raw_HWND( 1 );
    DWORD       Style = BS_NOTIFY | BS_BITMAP | WS_CHILD | BS_AUTOCHECKBOX | BS_PUSHLIKE;
 
    // Adjust styles based on parameters
@@ -248,7 +248,7 @@ HB_FUNC( INITIMAGECHECKBUTTON )
    // Load image either as a bitmap or image list based on parameter
    if( !hb_parl( 13 ) )
    {
-      himage = ( HWND ) HMG_LoadPicture( hb_parc( 8 ), -1, -1, hwnd, 0, hb_parl( 7 ) ? 0 : 1, -1, 0, HB_FALSE, 255 );
+      himage = HMG_LoadPicture( hb_parc( 8 ), -1, -1, hwnd, 0, hb_parl( 7 ) ? 0 : 1, -1, 0, HB_FALSE, 255 );
       SendMessage( hbutton, BM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) himage );
       hb_reta( 2 );
       hmg_storvnl_HANDLE( hbutton, -1, 1 );

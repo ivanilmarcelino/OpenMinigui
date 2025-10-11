@@ -1,0 +1,7 @@
+//               
+// Resource        Resource        Resource
+// Name             Type            FileName
+//                 
+bMgCheckF20         BITMAP         res\check_circle_false20.bmp
+bMgCheckT20         BITMAP         res\check_circle_true20.bmp
+bDelRed24           BITMAP         res\bDelRed24.bmp

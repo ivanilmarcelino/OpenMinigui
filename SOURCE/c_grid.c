@@ -57,7 +57,6 @@ typedef wchar_t   HB_WCHAR;
 #else
 #include "hbapicdp.h"
 #endif
-
 extern BOOL       _isValidCtrlClass( HWND, LPCTSTR );
 
 HIMAGELIST        HMG_ImageListLoadFirst( const char *FileName, int cGrow, int Transparent, int *nWidth, int *nHeight );
@@ -67,7 +66,6 @@ void              HMG_ImageListAdd( HIMAGELIST himl, char *FileName, int Transpa
 LPWSTR            AnsiToWide( LPCSTR );
 LPSTR             WideToAnsi( LPWSTR );
 #endif
-
 HINSTANCE         GetInstance( void );
 HINSTANCE         GetResources( void );
 
@@ -222,8 +220,8 @@ typedef struct tagLVGROUP
  */
 HB_FUNC( INITLISTVIEW )
 {
-   HWND hbutton;
-   DWORD style;
+   HWND                 hbutton;
+   DWORD                style;
 
    INITCOMMONCONTROLSEX i;
 
@@ -258,20 +256,20 @@ HB_FUNC( INITLISTVIEW )
    }
 
    hbutton = CreateWindowEx
-   (
-      WS_EX_CLIENTEDGE,
-      WC_LISTVIEW,
-      TEXT( "" ),
-      style,
-      hb_parni( 3 ),
-      hb_parni( 4 ),
-      hb_parni( 5 ),
-      hb_parni( 6 ),
-      hmg_par_raw_HWND( 1 ),
-      hmg_par_raw_HMENU( 2 ),
-      GetInstance(),
-      NULL
-   );
+      (
+         WS_EX_CLIENTEDGE,
+         WC_LISTVIEW,
+         TEXT( "" ),
+         style,
+         hb_parni( 3 ),
+         hb_parni( 4 ),
+         hb_parni( 5 ),
+         hb_parni( 6 ),
+         hmg_par_raw_HWND( 1 ),
+         hmg_par_raw_HMENU( 2 ),
+         GetInstance(),
+         NULL
+      );
 
    if( hb_parl( 7 ) )
    {
@@ -291,7 +289,7 @@ HB_FUNC( INITLISTVIEW )
  *   ItemCount: The number of items in the list view control.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the number of items in a list view control.
@@ -321,15 +319,15 @@ HB_FUNC( LISTVIEW_SETITEMCOUNT )
  * Notes:
  *   The function checks for various conditions and ensures that the bitmap is properly added to the list view control.
  */
-HB_FUNC( ADDLISTVIEWBITMAP ) // Grid+
+HB_FUNC( ADDLISTVIEWBITMAP )                 // Grid+
 {
-   HIMAGELIST himl = ( HIMAGELIST ) NULL;
-   PHB_ITEM hArray;
-   char *FileName;
-   int nCount;
-   int s;
-   int cx = -1;
-   int cy = -1;
+   HIMAGELIST  himl = ( HIMAGELIST ) NULL;
+   PHB_ITEM    hArray;
+   char        *FileName;
+   int         nCount;
+   int         s;
+   int         cx = -1;
+   int         cy = -1;
 
    nCount = ( int ) hb_parinfa( 2, 0 );
 
@@ -379,16 +377,16 @@ HB_FUNC( ADDLISTVIEWBITMAP ) // Grid+
  * Notes:
  *   The function checks for various conditions and ensures that the bitmap is properly added to the list view control header.
  */
-HB_FUNC( ADDLISTVIEWBITMAPHEADER ) // Grid+
+HB_FUNC( ADDLISTVIEWBITMAPHEADER )           // Grid+
 {
-   HWND hheader;
-   HIMAGELIST himl = ( HIMAGELIST ) NULL;
-   PHB_ITEM hArray;
-   char *FileName;
-   int nCount;
-   int s;
-   int cx = -1;
-   int cy = -1;
+   HWND        hheader;
+   HIMAGELIST  himl = ( HIMAGELIST ) NULL;
+   PHB_ITEM    hArray;
+   char        *FileName;
+   int         nCount;
+   int         s;
+   int         cx = -1;
+   int         cy = -1;
 
    hheader = ListView_GetHeader( hmg_par_raw_HWND( 1 ) );
 
@@ -477,7 +475,7 @@ HB_FUNC( LISTVIEW_GETFIRSTITEM )
  *   aJustify: An array of column justification values.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function initializes the columns of a list view control with the specified captions, widths, and justification values.
@@ -486,23 +484,23 @@ HB_FUNC( LISTVIEW_GETFIRSTITEM )
  * Notes:
  *   The function checks for various conditions and ensures that the columns are properly initialized.
  */
-HB_FUNC( INITLISTVIEWCOLUMNS ) // code INITLISTVIEWCOLUMNS function was borrowed from ooHG
+HB_FUNC( INITLISTVIEWCOLUMNS )               // code INITLISTVIEWCOLUMNS function was borrowed from ooHG
 {
-   PHB_ITEM wArray;
-   PHB_ITEM hArray;
-   PHB_ITEM jArray;
+   PHB_ITEM    wArray;
+   PHB_ITEM    hArray;
+   PHB_ITEM    jArray;
 
-   HWND hc;
+   HWND        hc;
 
 #ifndef UNICODE
-   LPSTR lpText;
+   LPSTR       lpText;
 #else
-   LPWSTR lpText;
+   LPWSTR      lpText;
 #endif
-   LV_COLUMN COL;
-   int iLen;
-   int s;
-   int iColumn = 0;
+   LV_COLUMN   COL;
+   int         iLen;
+   int         s;
+   int         iColumn = 0;
 
    hc = hmg_par_raw_HWND( 1 );
 
@@ -557,7 +555,7 @@ HB_FUNC( INITLISTVIEWCOLUMNS ) // code INITLISTVIEWCOLUMNS function was borrowed
  *   nRow: The row index to insert the items.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function adds items to a list view control with the specified captions and image index.
@@ -566,21 +564,21 @@ HB_FUNC( INITLISTVIEWCOLUMNS ) // code INITLISTVIEWCOLUMNS function was borrowed
  * Notes:
  *   The function checks for various conditions and ensures that the items are properly added to the list view control.
  */
-HB_FUNC( ADDLISTVIEWITEMS ) // AddListViewItems( hWnd, aItem, iImage, [nRow] )
+HB_FUNC( ADDLISTVIEWITEMS )                  // AddListViewItems( hWnd, aItem, iImage, [nRow] )
 {
    PHB_ITEM hArray;
-   char *caption;
+   char     *caption;
 
 #ifndef UNICODE
-   LPSTR lpText;
+   LPSTR    lpText;
 #else
-   LPWSTR lpText;
+   LPWSTR   lpText;
 #endif
-   LV_ITEM LI;
-   HWND h;
-   int l; // ColumnCount
-   int s; // Col
-   int c; // Row
+   LV_ITEM  LI;
+   HWND     h;
+   int      l;          // ColumnCount
+   int      s;          // Col
+   int      c;          // Row
    h = hmg_par_raw_HWND( 1 );
    l = ( int ) hb_parinfa( 2, 0 ) - 1;
    hArray = hb_param( 2, HB_IT_ARRAY );
@@ -627,7 +625,7 @@ HB_FUNC( ADDLISTVIEWITEMS ) // AddListViewItems( hWnd, aItem, iImage, [nRow] )
  *   Item: The index of the item to select.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the current selection in a list view control to the specified item.
@@ -655,10 +653,10 @@ HB_FUNC( LISTVIEW_SETCURSEL )
  */
 HB_FUNC( LISTVIEWGETMULTISEL )
 {
-   HWND hwnd = hmg_par_raw_HWND( 1 );
-   int i = -1;
-   int n;
-   int j = 0;
+   HWND  hwnd = hmg_par_raw_HWND( 1 );
+   int   i = -1;
+   int   n;
+   int   j = 0;
 
    n = ( int ) SendMessage( hwnd, LVM_GETSELECTEDCOUNT, 0, 0 );
 
@@ -691,7 +689,7 @@ HB_FUNC( LISTVIEWGETMULTISEL )
  *   aItems: An array of item indices to select.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the selected items in a list view control to the specified item indices.
@@ -700,9 +698,9 @@ HB_FUNC( LISTVIEWGETMULTISEL )
 HB_FUNC( LISTVIEWSETMULTISEL )
 {
    PHB_ITEM wArray;
-   HWND hwnd = hmg_par_raw_HWND( 1 );
-   int i = -1;
-   int l;
+   HWND     hwnd = hmg_par_raw_HWND( 1 );
+   int      i = -1;
+   int      l;
 
    wArray = hb_param( 2, HB_IT_ARRAY );
 
@@ -741,7 +739,7 @@ HB_FUNC( LISTVIEWSETMULTISEL )
  *   Row: The row index of the item.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the text of an item in a list view control to the specified text strings.
@@ -750,17 +748,17 @@ HB_FUNC( LISTVIEWSETMULTISEL )
 HB_FUNC( LISTVIEWSETITEM )
 {
    PHB_ITEM hArray;
-   char *caption;
+   char     *caption;
 
 #ifndef UNICODE
-   LPSTR lpText;
+   LPSTR    lpText;
 #else
-   LPWSTR lpText;
+   LPWSTR   lpText;
 #endif
-   HWND h = hmg_par_raw_HWND( 1 );
-   int l = ( int ) hb_parinfa( 2, 0 ) - 1;
-   int c = hb_parni( 3 ) - 1;
-   int s;
+   HWND     h = hmg_par_raw_HWND( 1 );
+   int      l = ( int ) hb_parinfa( 2, 0 ) - 1;
+   int      c = hb_parni( 3 ) - 1;
+   int      s;
 
    hArray = hb_param( 2, HB_IT_ARRAY );
 
@@ -800,13 +798,13 @@ HB_FUNC( LISTVIEWSETITEM )
 static TCHAR *GetLVItemText( HWND hListView, int i, int iSubItem_ )
 {
 #ifndef UNICODE
-   LPSTR lpText = '\0';
+   LPSTR    lpText = '\0';
 #else
-   LPWSTR lpText = TEXT( '\0' );
+   LPWSTR   lpText = TEXT( '\0' );
 #endif
-   int nLen = 64;
-   int nRes;
-   LV_ITEM lvi;
+   int      nLen = 64;
+   int      nRes;
+   LV_ITEM  lvi;
 
    lvi.iSubItem = iSubItem_;
 
@@ -845,10 +843,10 @@ HB_FUNC( LISTVIEWGETITEM )
 #ifdef UNICODE
    LPSTR pStr;
 #endif
-   HWND h = hmg_par_raw_HWND( 1 );
-   int c = hb_parni( 2 ) - 1;
-   int l = hb_parni( 3 );
-   int s;
+   HWND  h = hmg_par_raw_HWND( 1 );
+   int   c = hb_parni( 2 ) - 1;
+   int   l = hb_parni( 3 );
+   int   s;
    TCHAR *pszRet;
 
    hb_reta( l );
@@ -923,7 +921,7 @@ HB_FUNC( LISTVIEWGETITEMCOUNT )
  *   Justify: The justification value for the column.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the justification of a column in a list view control.
@@ -931,7 +929,7 @@ HB_FUNC( LISTVIEWGETITEMCOUNT )
  */
 HB_FUNC( SETGRIDCOLUMNJUSTIFY )
 {
-   LV_COLUMN COL;
+   LV_COLUMN   COL;
 
    COL.mask = LVCF_FMT;
    COL.fmt = hb_parni( 3 );
@@ -951,7 +949,7 @@ HB_FUNC( SETGRIDCOLUMNJUSTIFY )
  *   Justify: The justification value for the column header.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the header text and justification of a column in a list view control.
@@ -960,11 +958,11 @@ HB_FUNC( SETGRIDCOLUMNJUSTIFY )
 HB_FUNC( SETGRIDCOLUMNHEADER )
 {
 #ifndef UNICODE
-   LPSTR lpText = ( char * ) hb_parc( 3 );
+   LPSTR       lpText = ( char * ) hb_parc( 3 );
 #else
-   LPWSTR lpText = AnsiToWide( ( char * ) hb_parc( 3 ) );
+   LPWSTR      lpText = AnsiToWide( ( char * ) hb_parc( 3 ) );
 #endif
-   LV_COLUMN COL;
+   LV_COLUMN   COL;
 
    COL.mask = LVCF_FMT | LVCF_TEXT;
    COL.pszText = lpText;
@@ -989,7 +987,7 @@ HB_FUNC( SETGRIDCOLUMNHEADER )
  *   Right: If .T., the image is displayed on the right side of the header.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the header image and justification of a column in a list view control.
@@ -997,8 +995,8 @@ HB_FUNC( SETGRIDCOLUMNHEADER )
  */
 HB_FUNC( SETGRIDCOLUMNHEADERIMAGE )
 {
-   LV_COLUMN COL;
-   int fmt = LVCFMT_IMAGE | LVCFMT_COL_HAS_IMAGES;
+   LV_COLUMN   COL;
+   int         fmt = LVCFMT_IMAGE | LVCFMT_COL_HAS_IMAGES;
 
    COL.mask = LVCF_FMT | LVCF_IMAGE;
 
@@ -1047,7 +1045,7 @@ HB_FUNC( LISTVIEWGETCOUNTPERPAGE )
  *   Item: The index of the item to ensure is visible.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function ensures that an item in a list view control is visible, scrolling the list view if necessary.
@@ -1069,7 +1067,7 @@ HB_FUNC( LISTVIEW_ENSUREVISIBLE )
  *   Image: The index of the image to set.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the image for an item in a list view control.
@@ -1077,8 +1075,8 @@ HB_FUNC( LISTVIEW_ENSUREVISIBLE )
  */
 HB_FUNC( SETIMAGELISTVIEWITEMS )
 {
-   HWND h = hmg_par_raw_HWND( 1 );
-   LV_ITEM LI;
+   HWND     h = hmg_par_raw_HWND( 1 );
+   LV_ITEM  LI;
 
    LI.mask = LVIF_IMAGE;
    LI.state = 0;
@@ -1108,9 +1106,9 @@ HB_FUNC( SETIMAGELISTVIEWITEMS )
  */
 HB_FUNC( GETIMAGELISTVIEWITEMS )
 {
-   HWND h = hmg_par_raw_HWND( 1 );
-   LV_ITEM LI;
-   int i;
+   HWND     h = hmg_par_raw_HWND( 1 );
+   LV_ITEM  LI;
+   int      i;
 
    LI.mask = LVIF_IMAGE;
    LI.state = 0;
@@ -1187,19 +1185,19 @@ HB_FUNC( LISTVIEW_REDRAWITEMS )
 HB_FUNC( LISTVIEW_HITTEST )
 {
    POINT          point;
-   LVHITTESTINFO lvhti;
+   LVHITTESTINFO  lvhti;
 
    point.y = hb_parni( 2 );
    point.x = hb_parni( 3 );
    lvhti.pt = point;
 
-   if( hb_parni( 4 ) ) // checkbox area.
+   if( hb_parni( 4 ) )  // checkbox area.
    {
       ListView_HitTest( hmg_par_raw_HWND( 1 ), &lvhti );
 
       hmg_ret_L( lvhti.flags & LVHT_ONITEMSTATEICON );
    }
-   else // item area.
+   else                 // item area.
    {
       ListView_SubItemHitTest( hmg_par_raw_HWND( 1 ), &lvhti );
 
@@ -1237,7 +1235,7 @@ HB_FUNC( LISTVIEW_HITTEST )
  */
 HB_FUNC( LISTVIEW_GETSUBITEMRECT )
 {
-   RECT *pRect;
+   RECT  *pRect;
 
    pRect = ( RECT * ) hb_xgrab( sizeof( RECT ) );
 
@@ -1270,7 +1268,7 @@ HB_FUNC( LISTVIEW_GETSUBITEMRECT )
  */
 HB_FUNC( LISTVIEW_GETITEMRECT )
 {
-   RECT *pRect;
+   RECT  *pRect;
 
    pRect = ( RECT * ) hb_xgrab( sizeof( RECT ) );
 
@@ -1295,7 +1293,7 @@ HB_FUNC( LISTVIEW_GETITEMRECT )
  *   Item: The index of the item to update.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function updates an item in a list view control.
@@ -1317,7 +1315,7 @@ HB_FUNC( LISTVIEW_UPDATE )
  *   dy: The number of pixels to scroll vertically.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function scrolls the contents of a list view control by the specified number of pixels.
@@ -1340,7 +1338,7 @@ HB_FUNC( LISTVIEW_SCROLL )
  *   Blue: The blue component of the background color.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the background color of a list view control.
@@ -1363,7 +1361,7 @@ HB_FUNC( LISTVIEW_SETBKCOLOR )
  *   Blue: The blue component of the background color.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the background color of the text in a list view control.
@@ -1386,7 +1384,7 @@ HB_FUNC( LISTVIEW_SETTEXTBKCOLOR )
  *   Blue: The blue component of the text color.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the text color of a list view control.
@@ -1474,7 +1472,7 @@ HB_FUNC( LISTVIEW_GETHEADER )
  */
 HB_FUNC( GETHEADERLISTVIEWITEM )
 {
-   LPNMHEADER lpnmheader = ( LPNMHEADER ) HB_PARNL( 1 );
+   LPNMHEADER  lpnmheader = ( LPNMHEADER ) HB_PARNL( 1 );
 
    hmg_ret_NINT( lpnmheader->iItem );
 }
@@ -1496,7 +1494,7 @@ HB_FUNC( GETHEADERLISTVIEWITEM )
  */
 HB_FUNC( GETHEADERLISTVIEWITEMCX )
 {
-   LPNMHEADER lpnmheader = ( LPNMHEADER ) HB_PARNL( 1 );
+   LPNMHEADER  lpnmheader = ( LPNMHEADER ) HB_PARNL( 1 );
 
    if( lpnmheader->pitem->mask == HDI_WIDTH )
    {
@@ -1521,7 +1519,7 @@ HB_FUNC( GETHEADERLISTVIEWITEMCX )
  *   Justify: The justification of the column header.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function adds a column to a list view control with the specified width, text, and justification.
@@ -1530,14 +1528,14 @@ HB_FUNC( GETHEADERLISTVIEWITEMCX )
 HB_FUNC( LISTVIEW_ADDCOLUMN )
 {
 #ifndef UNICODE
-   LPSTR lpText;
+   LPSTR       lpText;
 #else
-   LPWSTR lpText;
+   LPWSTR      lpText;
 #endif
-   LV_COLUMN COL;
-   HWND hwnd = hmg_par_raw_HWND( 1 );
-   int iColumn = hb_parni( 2 ) - 1;
-   PHB_ITEM pValue = hb_itemNew( NULL );
+   LV_COLUMN   COL;
+   HWND        hwnd = hmg_par_raw_HWND( 1 );
+   int         iColumn = hb_parni( 2 ) - 1;
+   PHB_ITEM    pValue = hb_itemNew( NULL );
 
    hb_itemCopy( pValue, hb_param( 4, HB_IT_STRING ) );
 
@@ -1579,7 +1577,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
  *   Column: The index of the column to delete.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function deletes a column from a list view control.
@@ -1587,7 +1585,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
  */
 HB_FUNC( LISTVIEW_DELETECOLUMN )
 {
-   HWND hwnd = hmg_par_raw_HWND( 1 );
+   HWND  hwnd = hmg_par_raw_HWND( 1 );
 
    ListView_DeleteColumn( hwnd, hb_parni( 2 ) - 1 );
 
@@ -1634,7 +1632,7 @@ HB_FUNC( LISTVIEW_GETCOLUMNWIDTH )
  *   This function sets the width of a column in a list view control.
  *   It is used to customize the appearance of the list view control.
  */
-HB_FUNC( LISTVIEW_SETCOLUMNWIDTH ) // (JK) HMG Experimental Build 6
+HB_FUNC( LISTVIEW_SETCOLUMNWIDTH )        // (JK) HMG Experimental Build 6
 {
    hb_retl( ListView_SetColumnWidth( hmg_par_raw_HWND( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
 }
@@ -1657,7 +1655,7 @@ HB_FUNC( LISTVIEW_SETCOLUMNWIDTH ) // (JK) HMG Experimental Build 6
  */
 HB_FUNC( LISTVIEW_GETCHECKSTATE )
 {
-   HWND hwndLV = hmg_par_raw_HWND( 1 );
+   HWND  hwndLV = hmg_par_raw_HWND( 1 );
 
    if( _isValidCtrlClass( hwndLV, WC_LISTVIEW ) )
    {
@@ -1688,7 +1686,7 @@ HB_FUNC( LISTVIEW_GETCHECKSTATE )
  */
 HB_FUNC( LISTVIEW_SETCHECKSTATE )
 {
-   HWND hwndLV = hmg_par_raw_HWND( 1 );
+   HWND  hwndLV = hmg_par_raw_HWND( 1 );
 
    if( _isValidCtrlClass( hwndLV, WC_LISTVIEW ) )
    {
@@ -1717,9 +1715,9 @@ HB_FUNC( LISTVIEW_SETCHECKSTATE )
  *   This function retrieves the number of columns in a list view control.
  *   It is used to determine the total number of columns in the list view control.
  */
-HB_FUNC( LISTVIEW_GETCOLUMNCOUNT ) // Dr. Claudio Soto 2016/APR/07
+HB_FUNC( LISTVIEW_GETCOLUMNCOUNT )        // Dr. Claudio Soto 2016/APR/07
 {
-   HWND hwndLV = hmg_par_raw_HWND( 1 );
+   HWND  hwndLV = hmg_par_raw_HWND( 1 );
 
    if( _isValidCtrlClass( hwndLV, WC_LISTVIEW ) )
    {
@@ -1749,12 +1747,12 @@ HB_FUNC( LISTVIEW_GETCOLUMNCOUNT ) // Dr. Claudio Soto 2016/APR/07
  */
 HB_FUNC( LISTVIEW_GETCOLUMNORDERARRAY )
 {
-   int iCols = hb_parni( 2 );
+   int   iCols = hb_parni( 2 );
 
    if( iCols )
    {
-      int i;
-      int *iArray = ( int * ) hb_xgrab( iCols * sizeof( int ) );
+      int      i;
+      int      *iArray = ( int * ) hb_xgrab( iCols * sizeof( int ) );
       PHB_ITEM pArray = hb_itemArrayNew( ( HB_SIZE ) iCols );
 
       ListView_GetColumnOrderArray( hmg_par_raw_HWND( 1 ), iCols, ( int * ) iArray );
@@ -1785,7 +1783,7 @@ HB_FUNC( LISTVIEW_GETCOLUMNORDERARRAY )
  *   OrderArray: An array of column indices in the new order.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function sets the order of columns in a list view control.
@@ -1797,12 +1795,12 @@ HB_FUNC( LISTVIEW_SETCOLUMNORDERARRAY )
 
    if( NULL != pOrder )
    {
-      int iColumn = hb_parni( 2 );
+      int   iColumn = hb_parni( 2 );
 
       if( iColumn )
       {
-         int i;
-         int *iArray = ( int * ) hb_xgrab( iColumn * sizeof( int ) );
+         int   i;
+         int   *iArray = ( int * ) hb_xgrab( iColumn * sizeof( int ) );
 
          for( i = 0; i < iColumn; i++ )
          {
@@ -1833,9 +1831,9 @@ HB_FUNC( LISTVIEW_SETCOLUMNORDERARRAY )
  *   This function changes the extended style of a list view control by adding or removing styles.
  *   It is used to customize the appearance and behavior of the list view control.
  */
-HB_FUNC( LISTVIEW_CHANGEEXTENDEDSTYLE ) // Dr. Claudio Soto
+HB_FUNC( LISTVIEW_CHANGEEXTENDEDSTYLE )   // Dr. Claudio Soto
 {
-   HWND hWnd = hmg_par_raw_HWND( 1 );
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
    DWORD Add = hmg_par_DWORD( 2 );
    DWORD Remove = hmg_par_DWORD( 3 );
    DWORD OldStyle, NewStyle;
@@ -1862,9 +1860,9 @@ HB_FUNC( LISTVIEW_CHANGEEXTENDEDSTYLE ) // Dr. Claudio Soto
  *   This function retrieves the extended style of a list view control.
  *   It is used to determine the current extended style of the list view control.
  */
-HB_FUNC( LISTVIEW_GETEXTENDEDSTYLE ) // Dr. Claudio Soto
+HB_FUNC( LISTVIEW_GETEXTENDEDSTYLE )      // Dr. Claudio Soto
 {
-   HWND hWnd = hmg_par_raw_HWND( 1 );
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
    DWORD ExStyle = hmg_par_DWORD( 2 );
    DWORD OldStyle = ListView_GetExtendedListViewStyle( hWnd );
 
@@ -1903,10 +1901,10 @@ HB_FUNC( LISTVIEW_GETEXTENDEDSTYLE ) // Dr. Claudio Soto
  */
 HB_FUNC( LISTVIEW_SETSORTHEADER )
 {
-   HWND hWndHD = ( HWND ) SendMessage( hmg_par_raw_HWND( 1 ), LVM_GETHEADER, 0, 0 );
-   INT nItem = hb_parni( 2 ) - 1;
-   INT nType;
-   HDITEM hdItem;
+   HWND     hWndHD = ( HWND ) SendMessage( hmg_par_raw_HWND( 1 ), LVM_GETHEADER, 0, 0 );
+   INT      nItem = hb_parni( 2 ) - 1;
+   INT      nType;
+   HDITEM   hdItem;
 
    if( hb_parl( 4 ) )
    {
@@ -2023,14 +2021,14 @@ HB_FUNC( LISTVIEW_SETSORTHEADER )
  */
 HB_FUNC( LISTVIEW_GROUPITEMSETID )
 {
-   HWND hWnd = hmg_par_raw_HWND( 1 );
-   INT nRow = hmg_par_INT( 2 );
-   INT GroupID = hmg_par_INT( 3 );
+   HWND     hWnd = hmg_par_raw_HWND( 1 );
+   INT      nRow = hmg_par_INT( 2 );
+   INT      GroupID = hmg_par_INT( 3 );
 
 #if ( ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 ) )
-   _LVITEM LVI;
+   _LVITEM  LVI;
 #else
-   LVITEM LVI;
+   LVITEM   LVI;
 #endif
    LVI.mask = LVIF_GROUPID;
    LVI.iItem = nRow;
@@ -2058,13 +2056,13 @@ HB_FUNC( LISTVIEW_GROUPITEMSETID )
  */
 HB_FUNC( LISTVIEW_GROUPITEMGETID )
 {
-   HWND hWnd = hmg_par_raw_HWND( 1 );
-   INT nRow = hmg_par_INT( 2 );
+   HWND     hWnd = hmg_par_raw_HWND( 1 );
+   INT      nRow = hmg_par_INT( 2 );
 
 #if ( ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 ) )
-   _LVITEM LVI;
+   _LVITEM  LVI;
 #else
-   LVITEM LVI;
+   LVITEM   LVI;
 #endif
    LVI.mask = LVIF_GROUPID;
    LVI.iItem = nRow;
@@ -2104,7 +2102,7 @@ HB_FUNC( LISTVIEW_ISGROUPVIEWENABLED )
  *   Enable: If .T., enables group view; otherwise, disables group view.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function enables or disables group view in a list view control.
@@ -2124,7 +2122,7 @@ HB_FUNC( LISTVIEW_ENABLEGROUPVIEW )
  *   hWnd: Handle to the list view control.
  *
  * Returns:
- *   NIL.
+ *   NIL
  *
  * Purpose:
  *   This function deletes all groups in a list view control.
@@ -2175,11 +2173,11 @@ HB_FUNC( LISTVIEW_GROUPDELETE )
  */
 HB_FUNC( LISTVIEW_GROUPADD )
 {
-   HWND hWnd = hmg_par_raw_HWND( 1 );
-   INT GroupID = hmg_par_INT( 2 );
-   INT nIndex = HB_ISNUM( 3 ) ? hmg_par_INT( 3 ) : ( INT ) - 1;
+   HWND     hWnd = hmg_par_raw_HWND( 1 );
+   INT      GroupID = hmg_par_INT( 2 );
+   INT      nIndex = HB_ISNUM( 3 ) ? hmg_par_INT( 3 ) : ( INT ) - 1;
 
-   LVGROUP LVG;
+   LVGROUP  LVG;
 
    LVG.cbSize = sizeof( LVGROUP );
    LVG.stateMask = LVM_SETGROUPINFO;
@@ -2216,18 +2214,23 @@ HB_FUNC( LISTVIEW_GROUPADD )
  */
 HB_FUNC( LISTVIEW_GROUPSETINFO )
 {
-   HWND hWnd = hmg_par_raw_HWND( 1 );
-   INT GroupID = hmg_par_INT( 2 );
-   HB_WCHAR *cHeader = ( HB_WCHAR * ) ( ( hb_parclen( 3 ) == 0 ) ? NULL : hb_mbtowc( hb_parc( 3 ) ) );
-   UINT nAlignHeader = hmg_par_UINT( 4 );
-   HB_WCHAR *cFooter = hb_parclen( 5 ) == 0 ? NULL : hb_mbtowc( hb_parc( 5 ) );
-   UINT nAlignFooter = hmg_par_UINT( 6 );
-   UINT nState = hmg_par_UINT( 7 );
+   HWND     hWnd = hmg_par_raw_HWND( 1 );
+   INT      GroupID = hmg_par_INT( 2 );
+#ifdef UNICODE
+   HB_WCHAR *cHeader = ( HB_WCHAR * ) ( hb_parclen( 3 ) == 0 ? NULL : AnsiToWide( hb_parc( 3 ) ) );
+   HB_WCHAR *cFooter = ( HB_WCHAR * ) ( hb_parclen( 5 ) == 0 ? NULL : AnsiToWide( hb_parc( 5 ) ) );
+#else
+   HB_WCHAR *cHeader = ( HB_WCHAR * ) ( hb_parclen( 3 ) == 0 ? NULL : hb_mbtowc( hb_parc( 3 ) ) );
+   HB_WCHAR *cFooter = ( HB_WCHAR * ) ( hb_parclen( 5 ) == 0 ? NULL : hb_mbtowc( hb_parc( 5 ) ) );
+#endif
+   UINT     nAlignHeader = hmg_par_UINT( 4 );
+   UINT     nAlignFooter = hmg_par_UINT( 6 );
+   UINT     nState = hmg_par_UINT( 7 );
 
    HB_WCHAR cHeaderBuffer[MAX_GROUP_BUFFER];
    HB_WCHAR cFooterBuffer[MAX_GROUP_BUFFER];
 
-   LVGROUP LVG;
+   LVGROUP  LVG;
 
    LVG.cbSize = sizeof( LVGROUP );
    LVG.stateMask = LVM_GETGROUPINFO;
@@ -2239,7 +2242,7 @@ HB_FUNC( LISTVIEW_GROUPSETINFO )
 
    if( ListView_GetGroupInfo( hWnd, GroupID, &LVG ) != -1 )
    {
-      UINT nAlign = 0;
+      UINT  nAlign = 0;
       LVG.stateMask = LVM_SETGROUPINFO;
       LVG.pszHeader = ( cHeader != NULL ) ? cHeader : cHeaderBuffer;
       LVG.pszFooter = ( cFooter != NULL ) ? cFooter : cFooterBuffer;
@@ -2279,14 +2282,14 @@ HB_FUNC( LISTVIEW_GROUPSETINFO )
  */
 HB_FUNC( LISTVIEW_GROUPGETINFO )
 {
-   HWND hWnd = hmg_par_raw_HWND( 1 );
-   INT GroupID = hmg_par_INT( 2 );
+   HWND     hWnd = hmg_par_raw_HWND( 1 );
+   INT      GroupID = hmg_par_INT( 2 );
 
-   int nRet;
+   int      nRet;
    HB_WCHAR cHeaderBuffer[MAX_GROUP_BUFFER];
    HB_WCHAR cFooterBuffer[MAX_GROUP_BUFFER];
 
-   LVGROUP LVG;
+   LVGROUP  LVG;
 
    LVG.cbSize = sizeof( LVGROUP );
    LVG.stateMask = LVM_GETGROUPINFO;
@@ -2298,9 +2301,9 @@ HB_FUNC( LISTVIEW_GROUPGETINFO )
 
    if( ( nRet = ( int ) ListView_GetGroupInfo( hWnd, GroupID, &LVG ) ) != -1 )
    {
-      HB_STORC( hb_wctomb( cHeaderBuffer ), 3 );
+      hb_storc( hb_wctomb( cHeaderBuffer ), 3 );
       hb_storni( ( LVG.uAlign & 0x07 ), 4 );
-      HB_STORC( hb_wctomb( cFooterBuffer ), 5 );
+      hb_storc( hb_wctomb( cFooterBuffer ), 5 );
       hb_storni( ( ( LVG.uAlign & 0x38 ) >> 3 ), 6 );
       hb_storni( LVG.state != 0 ? ( LVG.state << 1 ) : 1, 7 );
    }
@@ -2326,8 +2329,8 @@ HB_FUNC( LISTVIEW_GROUPGETINFO )
  */
 HB_FUNC( LISTVIEW_HASGROUP )
 {
-   HWND hWnd = hmg_par_raw_HWND( 1 );
-   INT GroupID = hmg_par_INT( 2 );
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
+   INT   GroupID = hmg_par_INT( 2 );
 
    hb_retl( ( BOOL ) ListView_HasGroup( hWnd, GroupID ) );
 }
@@ -2349,7 +2352,7 @@ HB_FUNC( LISTVIEW_HASGROUP )
  */
 HB_FUNC( HEADER_CUSTOMDRAW_GETITEM )
 {
-   LPARAM lParam = hmg_par_raw_LPARAM( 1 );
+   LPARAM         lParam = hmg_par_raw_LPARAM( 1 );
    LPNMCUSTOMDRAW lpNMCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
 
    hmg_ret_DWORD( lpNMCustomDraw->dwItemSpec );
@@ -2372,7 +2375,7 @@ HB_FUNC( HEADER_CUSTOMDRAW_GETITEM )
  */
 HB_FUNC( HEADER_CUSTOMDRAW_GETACTION )
 {
-   LPARAM lParam = hmg_par_raw_LPARAM( 1 );
+   LPARAM         lParam = hmg_par_raw_LPARAM( 1 );
    LPNMCUSTOMDRAW lpNMCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
 
    if( lpNMCustomDraw->dwDrawStage == CDDS_PREPAINT )
@@ -2409,23 +2412,21 @@ HB_FUNC( HEADER_CUSTOMDRAW_GETACTION )
  */
 HB_FUNC( HEADER_SETFONT )
 {
-   LPARAM lParam = hmg_par_raw_LPARAM( 1 );
+   LPARAM         lParam = hmg_par_raw_LPARAM( 1 );
    LPNMCUSTOMDRAW lpNMCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
-   HFONT hFont = hmg_par_raw_HFONT( 4 );
-   RECT rect = lpNMCustomDraw->rc;
-   HBRUSH hBrush;
+   COLORREF       BackColor = hmg_par_COLORREF( 2 );
+   COLORREF       TextColor = hmg_par_COLORREF( 3 );
+   HFONT          hFont = hmg_par_raw_HFONT( 4 );
+   RECT           rect = lpNMCustomDraw->rc;
+   HBRUSH         hBrush = CreateSolidBrush( BackColor );
 
-   SetBkColor( lpNMCustomDraw->hdc, hb_parni( 2 ) );
-   SetTextColor( lpNMCustomDraw->hdc, hb_parni( 3 ) );
-
-   hBrush = CreateSolidBrush( hb_parni( 2 ) );
-
+   SetBkColor( lpNMCustomDraw->hdc, BackColor );
+   SetTextColor( lpNMCustomDraw->hdc, TextColor );
    SetBkMode( lpNMCustomDraw->hdc, TRANSPARENT );
-   SelectObject( lpNMCustomDraw->hdc, hBrush );
    FillRect( lpNMCustomDraw->hdc, &rect, hBrush );
    DeleteObject( hBrush );
 
-   if( hFont != NULL )
+   if( hFont )
    {
       SelectObject( lpNMCustomDraw->hdc, hFont );
    }

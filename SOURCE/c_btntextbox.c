@@ -154,7 +154,7 @@ HB_FUNC( INITBTNTEXTBOX )
          NULL
       );
 
-   SetProp( ( HWND ) hedit, TEXT( "OldBtnTextProc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hedit, GWLP_WNDPROC ) );
+   SetProp( hedit, TEXT( "OldBtnTextProc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hedit, GWLP_WNDPROC ) );
    SubclassWindow2( hedit, OwnBtnTextProc );
 
    SendMessage( hedit, EM_LIMITTEXT, hmg_par_WPARAM( 9 ), ( LPARAM ) 0 );
@@ -346,7 +346,7 @@ HB_FUNC( REDEFBTNTEXTBOX )
    width = hb_parni( 6 );
    height = hb_parni( 7 );
 
-   SetProp( ( HWND ) hedit, TEXT( "oldbtntextproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hedit, GWLP_WNDPROC ) );
+   SetProp( hedit, TEXT( "oldbtntextproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hedit, GWLP_WNDPROC ) );
    SubclassWindow2( hedit, OwnBtnTextProc );
 
    if( hb_parc( 2 ) != NULL )
@@ -520,7 +520,7 @@ LRESULT CALLBACK OwnBtnTextProc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lPar
    LRESULT           r;
    WNDPROC           OldWndProc;
 
-   OldWndProc = ( WNDPROC ) ( HB_PTRUINT ) GetProp( hwnd, TEXT( "oldbtntextproc" ) );
+   OldWndProc = ( WNDPROC ) ( LONG_PTR ) GetProp( hwnd, TEXT( "oldbtntextproc" ) );
 
    switch( Msg )
    {

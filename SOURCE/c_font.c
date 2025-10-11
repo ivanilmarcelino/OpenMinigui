@@ -111,7 +111,7 @@ HFONT PrepareFont( TCHAR *FontName, int FontSize, int Weight, DWORD Italic, DWOR
          FontSize,                        // Height of font
          0,                               // Width of font
          Angle,                           // Text rotation angle
-         0,                               // Baseline rotation angle
+         Angle,                           // Baseline rotation angle
          Weight,                          // Font weight (bold or normal)
          Italic,                          // Italic setting
          Underline,                       // Underline setting

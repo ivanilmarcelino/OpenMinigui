@@ -1,0 +1,7 @@
+#define IDI_MAIN 1001
+AAAAAA      ICON        demo.ico
+IDI_MAIN    ICON        demo.ico
+Igear       ICON        Igear32.ico
+br_no       BITMAP      br_no.bmp
+br_ok       BITMAP      br_ok.bmp
+hide        BITMAP      hide.bmp

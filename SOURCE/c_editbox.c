@@ -145,7 +145,7 @@ HB_FUNC( INITEDITBOX )
    SendMessage( hbutton, EM_LIMITTEXT, hmg_par_WPARAM( 9 ), ( LPARAM ) 0 );
 
    // Set up a custom window procedure for the edit box
-   SetProp( ( HWND ) hbutton, TEXT( "oldeditproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hbutton, GWLP_WNDPROC ) );
+   SetProp( hbutton, TEXT( "oldeditproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hbutton, GWLP_WNDPROC ) );
    SubclassWindow2( hbutton, OwnEditProc );
 
    // Return the handle to the edit box control

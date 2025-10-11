@@ -1271,7 +1271,9 @@ Get Box
    _HMG_ActiveControlOnChange      := Nil ;;
    _HMG_ActiveControlRightAlign    := .f. ;;
    _HMG_ActiveControlReadonly      := .f. ;;
+   _HMG_ActiveControlNumeric       := .f. ;;
    _HMG_ActiveControlDateType      := .f. ;;
+   _HMG_ActiveControlMaxLength     := Nil ;;
    _HMG_ActiveControlHelpId        := Nil ;;
    _HMG_ActiveControlInputMask     := Nil ;;
    _HMG_ActiveControlFormat        := Nil ;;

@@ -160,7 +160,7 @@ HB_FUNC( INITSPINNER )
    SendMessage( hupdown, UDM_SETRANGE32, ( WPARAM ) hb_parni( 8 ), ( LPARAM ) hb_parni( 9 ) );
 
    // Store the old window procedure, then subclass the edit control to handle custom messages
-   SetProp( hedit, TEXT( "oldspinproc" ), ( HWND ) GetWindowLongPtr( hedit, GWLP_WNDPROC ) );
+   SetProp( hedit, TEXT( "oldspinproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hedit, GWLP_WNDPROC ) );
    SubclassWindow2( hedit, OwnSpinProc );
 
    // Return handles of the edit and spinner controls
@@ -201,7 +201,7 @@ LRESULT CALLBACK OwnSpinProc( HWND hedit, UINT Msg, WPARAM wParam, LPARAM lParam
    LRESULT           r;
    WNDPROC           OldWndProc;
 
-   OldWndProc = ( WNDPROC ) ( HB_PTRUINT ) GetProp( hedit, TEXT( "oldspinproc" ) );
+   OldWndProc = ( WNDPROC ) ( LONG_PTR ) GetProp( hedit, TEXT( "oldspinproc" ) );
 
    switch( Msg )
    {

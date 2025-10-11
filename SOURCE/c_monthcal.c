@@ -146,11 +146,22 @@ HB_FUNC( INITMONTHCAL )
       Style |= WS_TABSTOP;
    }
 
+   /* create month calendar */
    hmonthcal = CreateWindowEx( 0, MONTHCAL_CLASS, TEXT( "" ), Style, 0, 0, 0, 0, hmg_par_raw_HWND( 1 ), hmg_par_raw_HMENU( 2 ), GetInstance(), NULL );
 
-   SetProp( ( HWND ) hmonthcal, TEXT( "oldmcproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hmonthcal, GWLP_WNDPROC ) );
-   SubclassWindow2( hmonthcal, OwnMCProc );
+   if( hmonthcal )
+   {
+      /* store original WndProc in a window property safely:
+         GetWindowLongPtr returns a pointer-sized integer (the original WndProc).
+         Store it as a HANDLE by converting via LONG_PTR to avoid pointer/handle mismatches.
+      */
+      SetProp( hmonthcal, TEXT( "oldmcproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hmonthcal, GWLP_WNDPROC ) );
 
+      /* subclass the control (your helper SubclassWindow2 used previously) */
+      SubclassWindow2( hmonthcal, OwnMCProc );
+   }
+
+   /* font attributes */
    if( hb_parl( 14 ) )
    {
       bold = FW_BOLD;
@@ -178,7 +189,12 @@ HB_FUNC( INITMONTHCAL )
 #else
    hfont = PrepareFont( ( TCHAR * ) hb_parc( 7 ), hb_parni( 8 ), bold, italic, underline, strikeout, angle, DEFAULT_CHARSET );
 #endif
-   SetWindowFont( hmonthcal, hfont, TRUE );
+   if( hfont )
+   {
+      SetWindowFont( hmonthcal, hfont, TRUE );
+   }
+
+   /* size to minimum required rectangle */
    MonthCal_GetMinReqRect( hmonthcal, &rc );
    SetWindowPos( hmonthcal, NULL, hb_parni( 3 ), hb_parni( 4 ), rc.right, rc.bottom, SWP_NOZORDER );
 
@@ -213,7 +229,7 @@ HB_FUNC( SETMONTHCALVALUE )
    sysTime.wYear = hmg_par_WORD( 2 );
    sysTime.wMonth = hmg_par_WORD( 3 );
    sysTime.wDay = hmg_par_WORD( 4 );
-   sysTime.wDayOfWeek = LOWORD( SendMessage( hwnd, MCM_GETFIRSTDAYOFWEEK, 0, 0 ) );
+   sysTime.wDayOfWeek = 0;
    sysTime.wHour = 0;
    sysTime.wMinute = 0;
    sysTime.wSecond = 0;
@@ -431,6 +447,12 @@ HB_FUNC( C_RETDAYSTATE )
    LPMONTHDAYSTATE   rgMonths;
    int               i, j, iSize;
 
+   if( pData == NULL || iCount <= 0 || hArray == NULL )
+   {
+      /* nothing to do */
+      return;
+   }
+
    iSize = sizeof( MONTHDAYSTATE ) * iCount;
    rgMonths = ( LPMONTHDAYSTATE ) hb_xgrab( iSize );
    memset( rgMonths, 0, iSize );
@@ -446,8 +468,35 @@ HB_FUNC( C_RETDAYSTATE )
       }
    }
 
+   /* assign buffer to notification structure - do NOT free rgMonths here.
+      The caller or appropriate cleanup code must free it after Windows is done. */
    pData->prgDayState = rgMonths;
-   hb_xfree( rgMonths );
+}
+
+/*
+ * FUNCTION: FREEDAYSTATE
+ *
+ * Frees the memory previously allocated and assigned to pData->prgDayState
+ * in C_RETDAYSTATE.
+ *
+ * Parameters:
+ *   1: LONG_PTR - Pointer to an NMDAYSTATE structure.
+ *
+ * Returns:
+ *   None.
+ *
+ * Usage:
+ *   Call this after you finish processing the MCN_GETDAYSTATE notification.
+ */
+HB_FUNC( FREEDAYSTATE )
+{
+   LPNMDAYSTATE   pData = ( NMDAYSTATE * ) HB_PARNL( 1 );
+
+   if( pData && pData->prgDayState )
+   {
+      hb_xfree( ( void * ) pData->prgDayState );
+      pData->prgDayState = NULL;
+   }
 }
 
 /*
@@ -500,14 +549,27 @@ LRESULT CALLBACK OwnMCProc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
    static PHB_SYMB   pSymbol = NULL;
    LRESULT           r;
-   WNDPROC           OldWndProc;
+   WNDPROC           OldWndProc = NULL;
+   HANDLE            hOldProp;
 
-   OldWndProc = ( WNDPROC ) ( HB_PTRUINT ) GetProp( hwnd, TEXT( "oldmcproc" ) );
+   /* Retrieve the stored original WndProc from the window property.
+      It was stored as (HANDLE)(LONG_PTR)originalProc in INITMONTHCAL.
+   */
+   hOldProp = GetProp( hwnd, TEXT( "oldmcproc" ) );
+   if( hOldProp )
+   {
+      OldWndProc = ( WNDPROC ) ( LONG_PTR ) hOldProp;
+   }
 
    switch( Msg )
    {
       case WM_DESTROY:
-         SubclassWindow2( hwnd, OldWndProc );
+         /* restore original wndproc and remove property */
+         if( OldWndProc )
+         {
+            SubclassWindow2( hwnd, OldWndProc );
+         }
+
          RemoveProp( hwnd, TEXT( "oldmcproc" ) );
          break;
 
@@ -521,6 +583,7 @@ LRESULT CALLBACK OwnMCProc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 
          if( pSymbol )
          {
+            /* push symbol and parameters for Harbour callback */
             hb_vmPushSymbol( pSymbol );
             hb_vmPushNil();
             hb_vmPushNumInt( ( HB_PTRUINT ) hwnd );
@@ -530,9 +593,13 @@ LRESULT CALLBACK OwnMCProc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam )
             hb_vmDo( 4 );
          }
 
+         /* Read possible Harbour return */
          r = hmg_par_LRESULT( -1 );
+
+         /* if harbour returned non-zero, use it; otherwise call original wndproc */
          return( r != 0 ) ? r : CallWindowProc( OldWndProc, hwnd, Msg, wParam, lParam );
    }
 
+   /* default: forward to original procedure */
    return CallWindowProc( OldWndProc, hwnd, Msg, wParam, lParam );
 }

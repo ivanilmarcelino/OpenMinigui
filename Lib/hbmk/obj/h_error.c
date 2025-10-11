@@ -1,5 +1,5 @@
 /*
- * Harbour 3.2.0dev (r2507191744)
+ * Harbour 3.2.0dev (r2510040809)
  * MinGW GNU C 15.2 (32-bit)
  * Generated C source from "h_error.prg"
  */
@@ -234,7 +234,7 @@ HB_FUNC( MINIGUIVERSION )
    do {
 	hb_xvmFrame( 3, 1 );
 	hb_xvmSetLine( 199 );
-	hb_xvmPushStringConst( "Harbour MiniGUI Extended Edition 25.09 (", 40 );
+	hb_xvmPushStringConst( "Harbour MiniGUI Extended Edition 25.10 (", 40 );
 	hb_xvmPushFuncSymbol( symbols + 22 );
 	hb_xvmPushFuncSymbol( symbols + 23 );
 	hb_xvmPushInteger( 17 );

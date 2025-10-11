@@ -170,7 +170,7 @@ HB_FUNC( HMG_LISTTIMERS )
       if( s_timerRegistry[i].inUse )
       {
          PHB_ITEM pItem = hb_itemArrayNew( 3 );
-         hb_arraySetNI( pItem, 1, ( LONG_PTR ) s_timerRegistry[i].hwnd );
+         hb_arraySetNInt( pItem, 1, ( HB_PTRUINT ) s_timerRegistry[i].hwnd );
          hb_arraySetNI( pItem, 2, s_timerRegistry[i].timerID );
          hb_arraySetNI( pItem, 3, s_timerRegistry[i].interval );
 
@@ -217,7 +217,7 @@ HB_FUNC( INITTIMER )
 
    if( hwnd && nIDEvent != 0 && uElapse > 0 )
    {
-      UINT  result = SetTimer( hwnd, nIDEvent, uElapse, ( TIMERPROC ) NULL );
+      UINT_PTR  result = SetTimer( hwnd, nIDEvent, uElapse, ( TIMERPROC ) NULL );
 
       if( result )
       {

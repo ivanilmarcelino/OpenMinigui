@@ -637,6 +637,7 @@
 // StatusBar Control
 #define SB_SETPARTS             (WM_USER+4)
 #define SB_GETPARTS             (WM_USER+6)
+#define SB_GETICON              (WM_USER+20)
 
 #define CBN_SELCHANGE		1
 #define CBN_SELENDCANCEL        10

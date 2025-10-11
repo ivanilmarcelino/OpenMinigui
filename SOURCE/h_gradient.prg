@@ -452,7 +452,7 @@ HBRUSH LinearGradientBrush( HDC pDC, long cx, long cy, COLORREF crFrom, COLORREF
 
       // Clean up resources
       DeleteObject( memBmp );
-      DeleteObject( memDC );
+      DeleteDC( memDC );
    }
 
    return pGradientBrush;

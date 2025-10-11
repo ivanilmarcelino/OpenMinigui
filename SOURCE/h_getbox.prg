@@ -1378,21 +1378,15 @@ PROCEDURE _SetGetBoxValue( nId, hWnd, Value )
    LOCAL oGet       := _HMG_aControlHeadClick [nId]
    LOCAL cPicFunc   := _HMG_aControlInputMask [nId, 1]
    LOCAL lCleanZero := _HMG_aControlInputMask [nId, 3]
-   LOCAL cType := ValType( oGet:VarGet() ) /*ivanil*/
-      
 
    IF Value == NIL
-      *Value := Blank( oGet:VarGet() )
-      IF cType = "C".and._HMG_aControlMiscData1 [nId, 11] != NIL .AND. ISNUMERIC( _HMG_aControlMiscData1 [nId, 11] )
+      Value := Blank( oGet:VarGet() )
+      IF _HMG_aControlMiscData1 [nId, 11] != NIL .AND. ISNUMERIC( _HMG_aControlMiscData1 [nId, 11] )
          Value := Space( _HMG_aControlMiscData1 [nId, 11] )
-      Elseif cType="N"
-         Value:=0
-      Elseif cType="D"
-         Value:=Ctod("")
       ENDIF
    ENDIF
 
-   IF ValType( Value ) == cType
+   IF ValType( Value ) == ValType( oGet:VarGet() )
 
       _HMG_ThisFormIndex   := AScan ( _HMG_aFormHandles , _HMG_aControlParentHandles [nId] )
       _HMG_ThisFormName    := _HMG_aFormNames [_HMG_ThisFormIndex]

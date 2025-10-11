@@ -144,7 +144,7 @@ HB_FUNC( INITMASKEDTEXTBOX )
       );
 
    // Store the original window procedure and apply a custom subclass procedure
-   SetProp( ( HWND ) hedit, TEXT( "oldeditproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hedit, GWLP_WNDPROC ) );
+   SetProp( hedit, TEXT( "oldeditproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hedit, GWLP_WNDPROC ) );
    SubclassWindow2( hedit, OwnEditProc );
 
    hmg_ret_raw_HWND( hedit );    // Return the handle of the created control
@@ -253,7 +253,7 @@ HB_FUNC( INITTEXTBOX )
    SendMessage( hedit, EM_LIMITTEXT, hmg_par_WPARAM( 9 ), ( LPARAM ) 0 );
 
    // Store original window procedure and apply custom subclass procedure
-   SetProp( ( HWND ) hedit, TEXT( "oldeditproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hedit, GWLP_WNDPROC ) );
+   SetProp( hedit, TEXT( "oldeditproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hedit, GWLP_WNDPROC ) );
    SubclassWindow2( hedit, OwnEditProc );
 
    hmg_ret_raw_HWND( hedit );                // Return the handle of the created control
@@ -345,7 +345,7 @@ HB_FUNC( INITCHARMASKTEXTBOX )
       );
 
    // Store the original window procedure and apply custom subclass procedure
-   SetProp( ( HWND ) hedit, TEXT( "oldeditproc" ), ( HWND ) GetWindowLongPtr( ( HWND ) hedit, GWLP_WNDPROC ) );
+   SetProp( hedit, TEXT( "oldeditproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hedit, GWLP_WNDPROC ) );
    SubclassWindow2( hedit, OwnEditProc );
 
    hmg_ret_raw_HWND( hedit );                            // Return the handle of the created control
@@ -383,7 +383,7 @@ LRESULT CALLBACK OwnEditProc( HWND hButton, UINT Msg, WPARAM wParam, LPARAM lPar
    WNDPROC           OldWndProc;                         // Original window procedure
 
    // Retrieve the stored original window procedure
-   OldWndProc = ( WNDPROC ) ( HB_PTRUINT ) GetProp( hButton, TEXT( "oldeditproc" ) );
+   OldWndProc = ( WNDPROC ) ( LONG_PTR ) GetProp( hButton, TEXT( "oldeditproc" ) );
 
    switch( Msg )
    {
