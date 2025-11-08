@@ -17,7 +17,7 @@ REQUEST DBFNTX, DBFDBT, DBFCDX, DBFFPT, SIXCDX, DBFNSX, HB_MEMIO
 REQUEST BMDBFNTX, BMDBFCDX, BMDBFNSX, BM_DBSEEKWILD
 
 #define PROGRAM  "MG DBF-view"
-#define PROGVER  "Version 0.87 (19.11.2024)"
+#define PROGVER  "Version 0.88 (10.10.2025)"
 #define PROGINF  "Viewing dbf files for Harbour/Clipper/DbaseIV/Foxpro/Six"
 ///////////////////////////////////////////////////////////////////
 FUNCTION DimMenuMain()

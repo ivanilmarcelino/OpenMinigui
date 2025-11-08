@@ -243,8 +243,13 @@ HB_FUNC( EXTRACTICON )
    int      nIconIndex = hmg_par_INT( 2 );         // Icon index in the file
    if( nIconIndex == -1 )
    {
+#if defined( __BORLANDC__ )
+      // Extract icon count if the index is -1
+      hb_retni( ( int ) ExtractIcon( GetInstance(), lpFileName, nIconIndex ) );
+#else
       // Extract icon handle if the index is -1
       hmg_ret_raw_HANDLE( ExtractIcon( GetInstance(), lpFileName, nIconIndex ) );
+#endif
    }
    else
    {

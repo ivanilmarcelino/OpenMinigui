@@ -65,14 +65,10 @@ HINSTANCE   GetInstance( void );
  */
 void InterpretHotKey( UINT setting, TCHAR *szKeyName )
 {
-   BOOL     Ctrl, Alt, Shift;
-   UINT     WorkKey, uCode, uVKey;
+   BOOL  Ctrl, Alt, Shift;
+   UINT  scanCode, uCode, uVKey, WorkKey;
+   int   len;
 
-#ifndef UNICODE
-   LPSTR    lpString;
-#else
-   LPWSTR   lpString;
-#endif
    uCode = ( setting & 0x0000FF00 ) >> 8; // Extract modifier codes
    uVKey = setting & 255;                 // Extract virtual key code
    *szKeyName = 0;
@@ -87,29 +83,15 @@ void InterpretHotKey( UINT setting, TCHAR *szKeyName )
    lstrcat( szKeyName, Shift ? TEXT( "Shift + " ) : TEXT( "" ) );
    lstrcat( szKeyName, Alt ? TEXT( "Alt + " ) : TEXT( "" ) );
 
-#ifndef UNICODE
-   lpString = szKeyName;
-#else
-   lpString = AnsiToWide( ( char * ) szKeyName );
-#endif
+   // Map virtual key to scan code
+   scanCode = MapVirtualKey( uVKey, 0 );
 
-   // Map virtual key to key name
-   WorkKey = MapVirtualKey( uVKey, 0 );
-   if( uCode & 0x00000008 )               // Check if extended key
-   {
-      WorkKey = 0x03000000 | ( WorkKey << 16 );
-   }
-   else
-   {
-      WorkKey = 0x02000000 | ( WorkKey << 16 );
-   }
+   // Prepare lParam for GetKeyNameText
+   WorkKey = ( scanCode << 16 ) | ( ( uCode & HOTKEYF_EXT ) ? 0x01000000 : 0 );
 
    // Get the key name text and append it to the existing string
-   GetKeyNameText( WorkKey, lpString + lstrlen( lpString ), 100 );
-
-#ifdef UNICODE
-   hb_xfree( lpString );      // Free memory if Unicode conversion was used
-#endif
+   len = lstrlen( szKeyName );
+   GetKeyNameText( WorkKey, szKeyName + len, 100 - len );
 }
 
 /**

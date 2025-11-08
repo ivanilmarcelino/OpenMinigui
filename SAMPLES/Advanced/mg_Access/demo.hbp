@@ -1,0 +1,37 @@
+# Keys compile
+#-prgflag=-w0 -es1 -p
+-prgflag=-w2 -es1 
+
+# Enable multi/single-thread Harbour VM
+#-mt 
+
+# Incremental-compilation mode
+-inc
+
+# folder where are all * .obj
+-workdir=OBJ
+
+# Name EXE-module
+-oMg_Access
+
+# to list all * .prg
+0main.prg
+1about.prg
+2OpenAccess.prg
+3MenuTable.prg
+4Config.prg
+tsb_ViewAccess.prg
+tsb_ViewMenu.prg
+tsb_memo_cell.prg
+tsb_export.prg
+tsb_exportForm.prg
+menu_context3.prg
+util_other.prg
+util_fonts.prg
+util_button.prg
+
+# project Resources
+#demo.rc
+
+# paths to the main and extension *.Lib
+-lrddbm     

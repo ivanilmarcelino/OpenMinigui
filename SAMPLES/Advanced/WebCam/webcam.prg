@@ -166,6 +166,8 @@ Procedure Button3_Click()  // stop recording and ask to save video
 *------------------------------------------------------------------------------*
 Local cSaveName
 
+capCaptureStop()
+
 If MsgYesNo("Do you want to save your recording video?", "Recording Video")
    cSaveName := Putfile( {{"Avi files (*.avi)","*.avi"}}, "Save Video As", "C:\", .f., "RecordedVideo" )
    If !Empty(cSaveName)
@@ -273,6 +275,11 @@ HB_FUNC( CAPPREVIEW )
 HB_FUNC( CAPCAPTURESEQUENCE )
 {
  hb_retl( capCaptureSequence( (HWND) hb_parnl(1) ) );
+}
+
+HB_FUNC( CAPCAPTURESTOP )
+{
+ hb_retl( SendMessage((HWND) hb_parnl(1), WM_CAP_STOP, 0, 0) );
 }
 
 HB_FUNC( CAPFILESAVEAS )

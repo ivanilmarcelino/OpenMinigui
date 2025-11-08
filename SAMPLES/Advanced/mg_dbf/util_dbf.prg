@@ -427,7 +427,7 @@ FUNCTION myUse3Area( cDbf, cAls, lShared, cRdd, cCdp, cPsw, nWhl )
       cAls := SUBSTR(cAls,1,AT(".",cAls)-1)
    ENDIF
    // убираем в алиасе знаки
-   cAls := CharRem('()|-.',cAls)          // убираем в алиасе знаки
+   cAls := CharRem('()|-.@',cAls)          // убираем в алиасе знаки
 
    IF SELECT(cAls) > 0
       cLng := IIF( lRus, "Такой АЛИАС уже есть", "There is already such an alias" ) 
@@ -479,6 +479,7 @@ FUNCTION myUse3Area( cDbf, cAls, lShared, cRdd, cCdp, cPsw, nWhl )
                    Set(_SET_AUTOPEN, .T.)  // восстановим значение
                 ENDIF
              else 
+                cErr += ";;" + ProcNL() + ";" + ProcNL(1)
                 AlertStop( cErr, "Error", "ZZZ_B_STOP64", 64 )
              endif 
          end sequence

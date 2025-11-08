@@ -797,11 +797,7 @@ HB_FUNC( LISTVIEWSETITEM )
  */
 static TCHAR *GetLVItemText( HWND hListView, int i, int iSubItem_ )
 {
-#ifndef UNICODE
-   LPSTR    lpText = '\0';
-#else
-   LPWSTR   lpText = TEXT( '\0' );
-#endif
+   TCHAR    *lpText = NULL;
    int      nLen = 64;
    int      nRes;
    LV_ITEM  lvi;

@@ -3614,6 +3614,11 @@ FUNCTION InputWindow ( cTitle, aLabels, aValues, aFormats, ;
 
    ControlCol := nLabelWidth + 30
 
+   IF _HMG_IsBcc77OrLater .AND. _HMG_IsThemed
+      nWidth += GetBorderWidth() + 2
+      wHeight += GetBorderHeight() + 2
+   ENDIF
+
    DEFINE WINDOW _InputWindow ;
       AT r, c ;
       WIDTH nWidth ;
@@ -7593,56 +7598,56 @@ STATIC FUNCTION _SetGetGridProperty ( ControlName, ParentForm, nControl, nColInd
    LOCAL xCellValue
    LOCAL RetVal := .T.
 
-   IF i > 0 .AND. 'GRID' $ _HMG_aControlType [i]
+   IF i > 0
 
-      Assign z := nColIndex
+      IF 'GRID' $ _HMG_aControlType [i]
 
-      IF z > 0 .AND. z <= ( nColumnCount := ListView_GetColumnCount ( _HMG_aControlHandles [i] ) )
+         Assign z := nColIndex
 
-         IF PCount() > 4
+         IF z > 0 .AND. z <= ( nColumnCount := ListView_GetColumnCount ( _HMG_aControlHandles [i] ) )
 
-            IF Valtype ( _HMG_aControlMiscData1 [i] [nControl] ) <> "A"
-               _HMG_aControlMiscData1 [i] [nControl] := {}
-            ENDIF
+            IF PCount() > 4
 
-            IF Len ( _HMG_aControlMiscData1 [i] [nControl] ) < nColumnCount
-               ASize ( _HMG_aControlMiscData1 [i] [nControl], nColumnCount )
-            ENDIF
-
-            _HMG_aControlMiscData1 [i] [nControl] [z] := Value
-
-            SWITCH nControl
-            CASE _GRID_COLUMN_CONTROL_
-               nItemCount := ListViewGetItemCount ( _HMG_aControlHandles [i] )
-               FOR nRow := 1 TO nItemCount
-                  xCellValue := _GetGridCellValue ( ControlName, ParentForm, nRow, nColIndex )
-                  _SetGridCellValue ( ControlName, ParentForm, nRow, nColIndex, xCellValue )
-               NEXT
-               EXIT
-            CASE _GRID_COLUMN_JUSTIFY_
-               SetGridColumnJustify ( _HMG_aControlHandles [i], z, Value )
-               EXIT
-            CASE _GRID_COLUMN_HEADERDYNAMICBACKCOLOR_
-               IF _HMG_IsThemed
-                  SetWindowTheme( ListView_GetHeader ( _HMG_aControlHandles [i] ), "", "" )
+               IF Valtype ( _HMG_aControlMiscData1 [i] [nControl] ) <> "A"
+                  _HMG_aControlMiscData1 [i] [nControl] := {}
                ENDIF
-            CASE _GRID_COLUMN_HEADERDYNAMICFORECOLOR_
-            CASE _GRID_COLUMN_HEADERDYNAMICFONT_
-               DoMethod ( ParentForm, ControlName, "SetFocus" )
-            ENDSWITCH
 
-            DoMethod ( ParentForm, ControlName, "Refresh" )
+               IF Len ( _HMG_aControlMiscData1 [i] [nControl] ) < nColumnCount
+                  ASize ( _HMG_aControlMiscData1 [i] [nControl], nColumnCount )
+               ENDIF
 
-         ELSE
+               _HMG_aControlMiscData1 [i] [nControl] [z] := Value
 
-            IF Valtype ( _HMG_aControlMiscData1 [i] [nControl] ) == "A"
-               RetVal := _HMG_aControlMiscData1 [i] [nControl] [z]
+               SWITCH nControl
+               CASE _GRID_COLUMN_CONTROL_
+                  nItemCount := ListViewGetItemCount ( _HMG_aControlHandles [i] )
+                  FOR nRow := 1 TO nItemCount
+                     xCellValue := _GetGridCellValue ( ControlName, ParentForm, nRow, nColIndex )
+                     _SetGridCellValue ( ControlName, ParentForm, nRow, nColIndex, xCellValue )
+                  NEXT
+                  EXIT
+               CASE _GRID_COLUMN_JUSTIFY_
+                  SetGridColumnJustify ( _HMG_aControlHandles [i], z, Value )
+                  EXIT
+               CASE _GRID_COLUMN_HEADERDYNAMICBACKCOLOR_
+                  IF _HMG_IsThemed
+                     SetWindowTheme( ListView_GetHeader ( _HMG_aControlHandles [i] ), "", "" )
+                  ENDIF
+               CASE _GRID_COLUMN_HEADERDYNAMICFORECOLOR_
+               CASE _GRID_COLUMN_HEADERDYNAMICFONT_
+                  DoMethod ( ParentForm, ControlName, "SetFocus" )
+               ENDSWITCH
+
+               DoMethod ( ParentForm, ControlName, "Refresh" )
+            ELSE
+               IF Valtype ( _HMG_aControlMiscData1 [i] [nControl] ) == "A"
+                  RetVal := _HMG_aControlMiscData1 [i] [nControl] [z]
+               ENDIF
             ENDIF
-
          ENDIF
-
+      ELSE
+         MsgMiniGuiError ( "Control: " + _HMG_aControlNames [i] + " Of " + GetParentFormName ( i ) + " : This control should be a GRID only." )
       ENDIF
-
    ENDIF
 
 RETURN RetVal
@@ -7894,6 +7899,10 @@ STATIC FUNCTION _SetFontColor ( ControlName , ParentForm , Value )
       RETURN Nil
    ENDIF
 
+   IF ISNUMERIC ( Value ) .AND. ! IsArrayRGB ( Value )
+      Value := nRGB2Arr ( Value )
+   ENDIF
+
    i := GetControlIndex ( ControlName, ParentForm )
    t := GetControlType ( ControlName, ParentForm )
    c := GetControlHandle ( ControlName, ParentForm )
@@ -7966,6 +7975,10 @@ STATIC FUNCTION _SetBackColor ( ControlName , ParentForm , Value )
 
    IF Value == Nil
       RETURN Nil
+   ENDIF
+
+   IF ISNUMERIC ( Value ) .AND. ! IsArrayRGB ( Value )
+      Value := nRGB2Arr ( Value )
    ENDIF
 
    DO CASE

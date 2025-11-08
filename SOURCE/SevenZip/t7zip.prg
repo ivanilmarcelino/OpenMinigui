@@ -70,7 +70,7 @@ CREATE CLASS T7ZIP
                                                  // "Deflate" - LZ+Huffman
                                                  // "Copy" - No Compression
    DATA nCompressionMethod AS INTEGER INIT 3     // 3 = PPMd, default
-   DATA nZipCompressionLevel AS INTEGER INIT 5   // Zip compression Level
+   DATA nZipCompressionLevel AS INTEGER INIT 6   // Zip compression Level
                                                  // Range: 0 - 9
    DATA cCommand AS STRING INIT ""               // Command line to pass
    DATA nArctype AS INTEGER INIT 1               // "7z" - 7z format
@@ -120,12 +120,14 @@ CREATE CLASS T7ZIP
    METHOD GetCompressedSize   () INLINE HB_SevenZipGetCompressedsize   ( ::handle )
    METHOD GetRatio            () INLINE HB_SevenZipGetRatio            ( ::handle )
 
+   METHOD Version()              INLINE GetVersion()
+
 END CLASS
 
 //------------------------------------------------------------------------------
 METHOD T7Zip:Create()
 
-   LOCAL cFile
+   LOCAL cFile, nCPU
 
    // Currently only support 7z and zip
    IF Valtype( ::nArcType ) == "N" .AND. ::nArcType > 0 .AND. ::nArcType <= 2
@@ -142,7 +144,7 @@ METHOD T7Zip:Create()
       SWITCH ::nArcType
 
          CASE ARCTYPE_ZIP
-            IF ::nZipCompressionLevel >= 0 .AND. ::nZipCompressionLevel<= 9
+            IF ::nZipCompressionLevel >= 0 .AND. ::nZipCompressionLevel <= 9
                ::cCommand += ' ' + '-mx' + LTRIM( STR( ::nZipCompressionLevel ) )
             ENDIF
             EXIT
@@ -170,13 +172,24 @@ METHOD T7Zip:Create()
          ::cCommand += ' ' + '-ms=off'
       ENDIF
 
+      IF ::nZipCompressionLevel >= 0 .AND. ::nZipCompressionLevel <= 9
+         ::cCommand += ' ' + '-mx' + LTRIM( STR( ::nZipCompressionLevel ) )
+      ENDIF
+
       IF Valtype( ::lMultiCPU ) == "L" .AND. ::lMultiCPU
          ::cCommand += ' ' + '-mmt'
+         IF ( nCPU := Val( GetEnv( "NUMBER_OF_PROCESSORS" ) ) ) > 2
+            ::cCommand += '=' + LTRIM( STR( nCPU ) )
+         ENDIF
       ENDIF
 
       IF Valtype( ::aExcludeFiles ) == "A"
          FOR EACH cFile IN ::aExcludeFiles
-            ::cCommand += ' ' + '-x!' + ALLTRIM( cFile )
+            IF "*." $ cFile .OR. ".*" $ cFile
+               ::cCommand += ' ' + '-x!' + ALLTRIM( cFile )
+            ELSE
+               ::cCommand += ' ' + '-xr!' + ALLTRIM( cFile )
+            ENDIF
          NEXT
       ELSEIF Valtype( ::aExcludeFiles ) == "C"
          ::cCommand += ' ' + '-x!' + ALLTRIM( ::aExcludeFiles )
@@ -219,6 +232,46 @@ METHOD T7Zip:ErrorDescription()
    RETURN "ERROR_UNKNOWN"
 
 //------------------------------------------------------------------------------
+STATIC FUNCTION GetVersion()
+
+   LOCAL nVersion := hb_SevenZipGetVersion(), ;    // 7-zip
+      nSubversion := hb_SevenZipGetSubVersion(), ; // 7-zip32.dll
+      cVersion    := 'Version'
+
+   cVersion += Str( nVersion / 100, 5, 2 ) + '.' + StrZero( nSubversion / 100, 5, 2 )
+
+   RETURN cVersion
+
+//------------------------------------------------------------------------------
+STATIC FUNCTION GetFileInPath( cFile )
+
+   LOCAL cPath  := GetEnv( 'PATH' ) + ';'
+   LOCAL lFound := .N.
+   LOCAL nLPos  := 0
+   LOCAL nRPos  := 0
+   LOCAL cSearch
+
+   WHILE nRPos < Len( cPath ) .AND. !lFound
+      nRPos   := hb_At( ';', cPath, nLPos + 1 )
+      cSearch := AddSlash( SubStr( cPath, nLPos + 1, nRPos - nLPos -1 ) )
+      lFound  := File( cSearch + cFile )
+      nLPos   := nRPos
+   END WHILE
+
+RETURN lFound
+
+//------------------------------------------------------------------------------
+STATIC FUNCTION AddSlash( cInFolder )
+
+   LOCAL cOutFolder := AllTrim( cInFolder )
+
+   IF !Empty( cOutFolder ) .AND. Right( cOutfolder, 1 ) != '\'
+      cOutFolder += '\'
+   ENDIF
+
+RETURN cOutFolder
+
+//------------------------------------------------------------------------------
 STATIC FUNCTION HB_7ZIPCONVERTFILENAME( cFileName, lConvert )
 
    IF lConvert
@@ -228,9 +281,13 @@ STATIC FUNCTION HB_7ZIPCONVERTFILENAME( cFileName, lConvert )
    RETURN cFileName
 
 //------------------------------------------------------------------------------
+#define SEVENZIPDLL  "7-zip32.dll"
+
 INIT PROCEDURE _7ZINIT
 
-   INIT7ZIPDLL()
+   IF hb_FileExists( SEVENZIPDLL ) .OR. GetFileInPath( SEVENZIPDLL )
+      INIT7ZIPDLL()
+   ENDIF
    RETURN
 
 //------------------------------------------------------------------------------
@@ -238,4 +295,3 @@ EXIT PROCEDURE _7ZEXIT
 
    EXIT7ZIPDLL()
    RETURN
-

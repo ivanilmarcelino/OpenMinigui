@@ -43,7 +43,7 @@
 	"HWGUI"
   	Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
 
----------------------------------------------------------------------------*/
+ ---------------------------------------------------------------------------*/
 
 /* HMG 1.0 Experimental Build 6 */
 
@@ -52,3 +52,21 @@
 #xcommand SET LOGERROR <x:ON,OFF> => _HMG_CreateErrorlog := ( Upper(<(x)>) == "ON" )
 
 #xcommand SET SHOWREDALERT <x:ON,OFF> => _HMG_lOnErrorStop := ( Upper(<(x)>) == "ON" )
+
+// --------------------------------------------------------------------
+#xtranslate SetInitErrorTitle( <bAction> )  => _HMG_bOnErrorInit := <bAction>
+#xtranslate SetPostErrorAction( <bAction> ) => _HMG_bOnErrorExit := <bAction>
+
+#xtranslate SetErrorBackColor( <aColor> )  => _HMG_aErrorBackColor := <aColor>
+#xtranslate SetErrorFontColor( <aColor> )  => _HMG_aErrorFontColor := <aColor>
+#xtranslate SetErrorTopStringFontColor( <aColor> )  => _HMG_aTopStringFontColor := <aColor>
+#xtranslate SetErrorButtonBackColor( <aColor> )  => _HMG_aButtonBackColor := <aColor>
+#xtranslate SetErrorButtonFontColor( <aColor> )  => _HMG_aButtonFontColor := <aColor>
+
+#xtranslate SetProgramErrorColors( <aColors> ) ;
+  => ;
+      SetErrorBackColor( <aColors>\[1] ) ;;
+      SetErrorFontColor( <aColors>\[2] ) ;;
+      SetErrorTopStringFontColor( <aColors>\[3] ) ;;
+      SetErrorButtonBackColor( <aColors>\[4] ) ;;
+      SetErrorButtonFontColor( <aColors>\[5] )

@@ -76,6 +76,9 @@ FUNCTION _DefineWindow ( FormName, Caption, x, y, w, h, nominimize, nomaximize, 
    LOCAL o
 #endif
 
+   IF _SetGetGlobal( "_HMG_SetBCC58Compatible" ) == NIL
+      STATIC _HMG_SetBCC58Compatible AS GLOBAL VALUE .F.
+   ENDIF
    hb_default( @panel, .F. )
 
    IF FormName == NIL
@@ -176,7 +179,7 @@ FUNCTION _DefineWindow ( FormName, Caption, x, y, w, h, nominimize, nomaximize, 
          mVar := ( nocaption .AND. nosize )
          w := ClientWidth + iif( mVar, 0, GetBorderWidth() ) + iif( mVar .OR. _HMG_IsThemed .AND. nosize, 0, GetBorderWidth() ) - iif( mVar .OR. (!_HMG_IsThemed .AND. !nosize) .OR. (_HMG_IsThemed .AND. !nocaption .AND. !nosize), 0, 2 )
          h := ClientHeight + iif( nocaption, 0, GetTitleHeight() ) + iif( mVar .OR. _HMG_IsThemed .AND. nosize, 0, GetBorderWidth() ) + iif( mVar, 0, GetBorderWidth() ) - iif( mVar .OR. (!_HMG_IsThemed .AND. !nosize) .OR. (_HMG_IsThemed .AND. !nocaption .AND. !nosize), 0, 2 )
-         IF MSC_VER() > 0 .OR. _HMG_IsBcc77
+         IF _HMG_IsBcc77OrLater
             IF !mVar .AND. nosize .AND. _HMG_IsThemed
                w += GetBorderWidth() + 2
                h += GetBorderHeight() + 2
@@ -184,7 +187,7 @@ FUNCTION _DefineWindow ( FormName, Caption, x, y, w, h, nominimize, nomaximize, 
          ENDIF
       ENDIF
    ELSE
-      IF MSC_VER() > 0 .OR. _HMG_IsBcc77
+      IF _SetGetGlobal( "_HMG_SetBCC58Compatible" ) .AND. _HMG_IsBcc77OrLater
          IF nosize .AND. !nocaption .AND. _HMG_IsThemed
             w += GetBorderWidth() + 2
             h += GetBorderHeight() + 2
@@ -515,6 +518,9 @@ FUNCTION _DefineModalWindow ( FormName, Caption, x, y, w, h, Parent, nosize, nos
    LOCAL o
 #endif
 
+   IF _SetGetGlobal( "_HMG_SetBCC58Compatible" ) == NIL
+      STATIC _HMG_SetBCC58Compatible AS GLOBAL VALUE .F.
+   ENDIF
    IF FormName == NIL
       FormName := _HMG_TempWindowName
    ENDIF
@@ -548,7 +554,7 @@ FUNCTION _DefineModalWindow ( FormName, Caption, x, y, w, h, Parent, nosize, nos
          mVar := ( nocaption .AND. nosize )
          w := ClientWidth + iif( mVar, 0, GetBorderWidth() ) + iif( mVar .OR. _HMG_IsThemed .AND. nosize, 0, GetBorderWidth() ) - iif( mVar .OR. (!_HMG_IsThemed .AND. !nosize) .OR. (_HMG_IsThemed .AND. !nocaption .AND. !nosize), 0, 2 )
          h := ClientHeight + iif( nocaption, 0, GetTitleHeight() ) + iif( mVar .OR. _HMG_IsThemed .AND. nosize, 0, GetBorderWidth() ) + iif( mVar, 0, GetBorderWidth() ) - iif( mVar .OR. (!_HMG_IsThemed .AND. !nosize) .OR. (_HMG_IsThemed .AND. !nocaption .AND. !nosize), 0, 2 )
-         IF MSC_VER() > 0 .OR. _HMG_IsBcc77
+         IF _HMG_IsBcc77OrLater
             IF ! mVar .AND. nosize .AND. _HMG_IsThemed
                w += GetBorderWidth() + 2
                h += GetBorderHeight() + 2
@@ -556,7 +562,7 @@ FUNCTION _DefineModalWindow ( FormName, Caption, x, y, w, h, Parent, nosize, nos
          ENDIF
       ENDIF
    ELSE
-      IF MSC_VER() > 0 .OR. _HMG_IsBcc77
+      IF _SetGetGlobal( "_HMG_SetBCC58Compatible" ) .AND. _HMG_IsBcc77OrLater
          IF nosize .AND. !nocaption .AND. _HMG_IsThemed
             w += GetBorderWidth() + 2
             h += GetBorderHeight() + 2

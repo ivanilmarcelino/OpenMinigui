@@ -48,6 +48,7 @@
    author: Copyright 2016 (C) P.Chornyj <myorg63@mail.ru>
  ----------------------------------------------------------------------*/
 #define _WIN32_IE    0x0501
+#undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0600
 
 #include <mgdefs.h>

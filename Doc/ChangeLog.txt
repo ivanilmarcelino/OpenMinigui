@@ -1,3 +1,74 @@
+2025/11/06: HMG Extended Edition version 25.11.
+  * Fixed: Memory leaks in CHECKLABEL control: this fix avoids memory and
+           GDI leaks that would previously happen when replacing images or
+           destroying windows.
+           This is critical if you use the SWITCHER control.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\CheckLabel_3)
+  * Enhanced: Improved output of the Error message window with using
+           SET SHOWREDALERT ON command: in this form you can customize
+           the colors of the error message output with this pseudo-function:
+           SetProgramErrorColors( { MAROON, WHITE, YELLOW, ORANGE, BLACK } ),
+           where parameter is a five-element color array.
+           Requested by Verchenko Andrey.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\ShowDetailError)
+  * New: Adaptation of MiniGUI core is completed for using Zig language as
+           LLVM C compiler frontend at https://ziglang.org/download/
+           Please note that the library format is fully compatible with MinGW.
+           Contributed by Grigory Filatov.
+  * Updated: Implementation of UNICODE support in the MiniGUI core:
+           - fixed getting the name of the currently set hotkey in HotKeyBox.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\HotKeyBox)
+  * Updated: HbZipArc library:
+           * Fixed: hb_ZipFile() honors the <lFullPath> parameter. The default
+             value has been changed to .F.;
+           * Fixed: hb_UnzipFile() overwrites existing files in the unzip path.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\ZiparcUnitTests)
+  * Updated: Harbour contrib SevenZip library for 7zip compression:
+           * Added compression level handling for all compression methods,
+             not just zip archiving (default value is 6).
+           * Added recursive exclusion of folders by name or mask during
+             archiving.
+           * Added :Version() method to determine the 7-zip dll version.
+           Contributed by Grigory Filatov
+           (see source in folder \Source\SevenZip)
+  * Updated: Adaptation FiveWin Class TSBrowse 9.0 in HMG:
+           - improved FilterFTS() method now works with arrays;
+           - added new CalcTotal() method to calculate column's summary.
+           This was a last minute modification for the 25.10 build.
+           Suggested and contributed by Sergej Kiselev
+           (see demos in folder \samples\Advanced\Tsb_FilterFTS)
+  * Updated: HbSQLite3 library:
+           - update for using SQLITE3 version 3.51.0 (from 3.50.4).
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\SQLITE_2)
+  * Updated: Harbour Compiler 3.2.0dev (SVN 2025-10-23 21:45):
+           * updated hbmk2 tool to define __ARCH64BIT__ at .prg level;
+           * added support for using Zig as LLVM C compiler frontend;
+           * added use of read lock when accessing the FPT memo file.
+           Contributed by Grigory Filatov
+           (look at ReadMe.txt in folder \harbour) [PRO VERSION]
+  * New: 'Simple ChartView class for GraphPlus library' sample.
+           Based on the 'Google Charts' example approach.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\ChartView)
+  * New: 'CSV Viewer for .txt, .csv and .arr files' sample:
+           - export files to .xls, .dbf, and .arr formats.
+           Contributed by Sergej Kiselev and Verchenko Andrey
+           (see in folder \samples\Advanced\mg_csv)
+  * Updated: 'Arkanoid Mini Game 2.0' sample by HMG user Edward:
+           - added lives system;
+           - replaced CPU-intensive delay loop with timer;
+           - simplified brick collision logic;
+           - added game over screen with restart/quit options;
+           - implemented delta-time-based ball movement and level-scaled
+             speed, enhancing gameplay smoothness and difficulty progression.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Applications\Arkanoid) [PRO VERSION]
+
 2025/10/09: HMG Extended Edition version 25.10.
   * Fixed: MONTHCAL control refactoring focused on correctness of WinAPI calls,
            pointer casts, and lifetime issues for memory passed to Windows.

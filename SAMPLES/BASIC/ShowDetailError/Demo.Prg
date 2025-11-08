@@ -10,9 +10,6 @@
 #define _HMG_OUTLOG
 #include "minigui.ch"
 
-#translate SetInitErrorTitle( <bAction> )  => _HMG_bOnErrorInit := <bAction>
-#translate SetPostErrorAction( <bAction> ) => _HMG_bOnErrorExit := <bAction>
-
 // --------------------------------------------------------------------
 FUNCTION Main( NoShowRedAlert )
 
@@ -27,6 +24,7 @@ FUNCTION Main( NoShowRedAlert )
       SetInitErrorTitle( {| v | v += "A Run-Time Error Has Occured !;", ;
          v += "*** IT IS NECESSARY TO CONTACT THE PROGRAMMER ***;;", v } )
       SetPostErrorAction( hb_macroBlock( "MyExitError()" ) )
+      SetProgramErrorColors( { MAROON, WHITE, YELLOW, ORANGE, BLACK } )
    ENDIF
 
    DEFINE WINDOW Form1 ;

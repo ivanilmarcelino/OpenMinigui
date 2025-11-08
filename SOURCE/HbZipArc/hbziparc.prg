@@ -23,7 +23,7 @@
 #include "hbcompat.ch"
 #include "hbmzip.ch"
 
-#define ZIP_READ_BUFFER   32768
+#define ZIP_READ_BUFFER  32768
 
 // Static variables for buffering and settings
 STATIC s_nReadBuffer := ZIP_READ_BUFFER
@@ -271,7 +271,7 @@ RETURN
  *   lWithPath (LOGICAL, optional): A logical value indicating whether to include the path of the files in the archive. Defaults to .F.
  *   lWithDrive (LOGICAL, optional): A logical value indicating whether to include the drive letter in the path. Defaults to .F.
  *   bProgress (BLOCK, optional): A code block to be executed to display progress. Takes the number of bytes read and the total file size as parameters.
- *   lFullPath (LOGICAL, optional): A logical value indicating whether to use the full path. Defaults to .T.
+ *   lFullPath (LOGICAL, optional): A logical value indicating whether to use the full path. Defaults to .F.
  *   acExclude (ARRAY or CHARACTER, optional): An array of filenames or wildcard patterns to exclude from the archive, or a single filename/pattern.
  *
  * Return Value:
@@ -309,7 +309,7 @@ FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, cPassword,
    LOCAL aFile
 
    DEFAULT lOverwrite TO .F.
-   DEFAULT lFullPath TO .T.
+   DEFAULT lFullPath TO .F.
 
    cFileName := Zip_EnsureExtension( cFileName )
 
@@ -366,6 +366,12 @@ FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, cPassword,
       FOR EACH cFileToZip IN aProcFile
 
          IF ( hHandle := FOpen( cFileToZip, FO_READ ) ) != F_ERROR
+
+            IF lFullPath
+               IF ! hb_PathIsAbsolute( cFileToZip )
+                  cFileToZip := hb_PathJoin( hb_cwd(), cFileToZip )
+               ENDIF
+            ENDIF
 
             IF HB_ISBLOCK( bUpdate )
                Eval( bUpdate, cFileToZip, nPos++ )
@@ -531,8 +537,7 @@ FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles,
                cExtName := cPath + cSubPath + cExtName
                cExtName := StrTran( cExtName, "\", hb_ps() )
                cExtName := StrTran( cExtName, "/", hb_ps() )
-               hHandle := hb_vfOpen( cExtName, hb_bitOr( FO_WRITE, HB_FO_CREAT, HB_FO_EXCL ) )
-               IF ! Empty( hHandle )
+               IF ( hHandle := hb_vfOpen( cExtName, hb_bitOr( FO_CREAT, FO_TRUNC, FO_WRITE ) ) ) != NIL
                   nRead := 0
                   DO WHILE ( nLen := hb_unZipFileRead( hUnzip, @cBuffer, hb_BLen( cBuffer ) ) ) > 0
                      IF HB_ISEVALITEM( bProgress )
@@ -710,3 +715,28 @@ RETURN isZipFile
  */
 STATIC FUNCTION Zip_EnsureExtension( cFileName )
 RETURN iif( Set( _SET_DEFEXTENSIONS ), hb_FNameExtSetDef( cFileName, ".zip" ), cFileName )
+
+/*
+ * FUNCTION hb_PathIsAbsolute( cPath )
+ *
+ * Checks if a path is absolute.
+ *
+ * Parameters:
+ *   cPath (CHARACTER): The path to check.
+ *
+ * Return Value:
+ *   LOGICAL: .T. if the path is absolute, .F. otherwise.
+ *
+ * Purpose:
+ *   This function determines whether a given path is absolute.
+ *
+ * Notes:
+ *   Uses hb_FNameSplit to determine if the path has a drive or starts with a path separator.
+ */
+FUNCTION hb_PathIsAbsolute( cPath )
+
+   LOCAL cDir, cDrive
+
+   hb_FNameSplit( cPath, @cDir, , , @cDrive )
+
+RETURN ! Empty( cDrive ) .OR. hb_LeftEq( cDir, hb_ps() )

@@ -50,7 +50,7 @@
 */
 #define _WIN32_IE 0x0501
 
-#if defined( __MINGW32__ ) || defined( __XCC__ ) || defined( __POCC__ )
+#if ( defined( __MINGW32__ ) || defined( __XCC__ ) || defined( __POCC__ ) ) && ( _WIN32_WINNT < 0x0500 )
 #define _WIN32_WINNT 0x0500
 #endif /* MINGW | XCC | POCC */
 
@@ -2195,6 +2195,73 @@ HB_FUNC( REBAR_GETBANDINFO )
    HB_STORVNL( ( LONG ) rbbi.cxIdeal, -1, 7 );
 }
 
+#if defined( __VERSION__ ) && defined( __clang__ ) && ! defined( __BORLANDC__ )
+#include <string.h>
+#include <ctype.h>
+
+/* Helper: case-insensitive strstr */
+static const char *strcasestr_local( const char *haystack, const char *needle )
+{
+   size_t   nlen;
+   if( !haystack || !needle )
+   {
+      return NULL;
+   }
+
+   nlen = strlen( needle );
+   if( nlen == 0 )
+   {
+      return haystack;
+   }
+
+   for( ; *haystack; haystack++ )
+   {
+      if( tolower( ( unsigned char ) *haystack ) == tolower( ( unsigned char ) *needle ) )
+      {
+         if( strncasecmp( haystack, needle, nlen ) == 0 )
+         {
+            return haystack;
+         }
+      }
+   }
+
+   return NULL;
+}
+
+/* ---------- Zig Detection ---------- */
+static int is_zig_compiler( void )
+{
+   const char  *ver = __VERSION__;
+   int         detected = 0;
+
+#if defined( __clang__ ) && !defined( __INTEL_COMPILER )
+   /* Zig uses Clang frontend but version string includes "Zig" */
+   if( ver && ( strcasestr_local( ver, "Zig" ) != NULL ) )
+   {
+      detected = 1;
+   }
+#endif
+
+   /* Heuristic: Zig build paths often include these strings */
+   if( strstr( __FILE__, "/zig/" ) != NULL || strstr( __FILE__, "zig-cache" ) != NULL || strstr( __FILE__, "zig/libc" ) != NULL )
+   {
+      detected = 1;
+   }
+
+   return detected;
+}
+#endif
+
+/* Expose Zig detection as a Boolean function */
+HB_FUNC( ZIGCOMPILERDETECTED )
+{
+#if defined( __VERSION__ ) && defined( __clang__ ) && ! defined( __BORLANDC__ )
+   hb_retl( is_zig_compiler() );
+#else
+   hb_retl( 0 );
+#endif
+}
+
 /*
  * HB_FUNC( MSC_VER )
  *
@@ -2365,6 +2432,8 @@ HB_FUNC( HMG_ISDIGIT )
    hb_retl( IsCharAlphaNumeric( ch[0] ) && !IsCharAlpha( ch[0] ) );
 }
 
+#ifdef UNICODE
+
 /*
  * HB_FUNC( HMG_LOWER )
  *
@@ -2379,7 +2448,6 @@ HB_FUNC( HMG_ISDIGIT )
  * Purpose:
  *   This function converts a string to lowercase.
  */
-#ifdef UNICODE
 HB_FUNC( HMG_LOWER )
 {
    LPSTR pStr;
@@ -2472,15 +2540,10 @@ HB_FUNC( HMG_UPPER )
  */
 HB_FUNC( HMG_ISLOWER )
 {
-#ifndef UNICODE
-   LPSTR    Text = ( LPSTR ) hb_parc( 1 );
-#else
    LPWSTR   Text = AnsiToWide( ( char * ) hb_parc( 1 ) );
-#endif
+
    hb_retl( IsCharLower( Text[0] ) );
-#ifdef UNICODE
    hb_xfree( Text );
-#endif
 }
 
 /*
@@ -2499,15 +2562,10 @@ HB_FUNC( HMG_ISLOWER )
  */
 HB_FUNC( HMG_ISUPPER )
 {
-#ifndef UNICODE
-   LPSTR    Text = ( LPSTR ) hb_parc( 1 );
-#else
    LPWSTR   Text = AnsiToWide( ( char * ) hb_parc( 1 ) );
-#endif
+
    hb_retl( IsCharUpper( Text[0] ) );
-#ifdef UNICODE
    hb_xfree( Text );
-#endif
 }
 
 #else

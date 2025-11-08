@@ -49,6 +49,7 @@
 
 // Define minimum supported versions for Internet Explorer and Windows
 #define _WIN32_IE    0x0501
+#undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0502
 
 #include <mgdefs.h>     // Include MiniGUI definitions

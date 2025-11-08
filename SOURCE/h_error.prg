@@ -52,7 +52,6 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #include "error.ch"
 #include "hbver.ch"
 
-//#define TRACE
 /*-----------------------------------------------------------------------------*
 * PROCEDURE ClipInit()
 *
@@ -73,10 +72,6 @@ INIT PROCEDURE ClipInit()
 
    ENDIF
 
-#ifdef TRACE
-   __TRACEPRGCALLS( .T. )
-   HB_TRACESTATE( .T. )
-#endif
    Init()
 
 RETURN
@@ -169,7 +164,7 @@ STATIC FUNCTION HMG_GenError( cMsg )
 
 RETURN oError
 
-#define MG_VERSION "Harbour MiniGUI Extended Edition 25.10 ("
+#define MG_VERSION "Harbour MiniGUI Extended Edition 25.11 ("
 
 /*-----------------------------------------------------------------------------*
 * FUNCTION MiniGuiVersion( nVer )

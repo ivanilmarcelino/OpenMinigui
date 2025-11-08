@@ -1,0 +1,2361 @@
+1;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+2;SiriusXM;New York City;Media;476;Post-IPO;United States
+3;UpGrad;Mumbai;Education;122;Unknown;India
+4;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+5;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+6;Lendi;Sydney;Real Estate;105;Unknown;Australia
+7;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+8;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+9;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+10;SiriusXM;New York City;Media;484;Post-IPO;United States
+11;UpGrad;Mumbai;Education;130;Unknown;India
+12;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+13;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+14;Lendi;Sydney;Real Estate;113;Unknown;Australia
+15;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+16;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+17;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+18;SiriusXM;New York City;Media;492;Post-IPO;United States
+19;UpGrad;Mumbai;Education;138;Unknown;India
+20;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+21;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+22;Lendi;Sydney;Real Estate;121;Unknown;Australia
+23;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+24;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+25;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+26;SiriusXM;New York City;Media;500;Post-IPO;United States
+27;UpGrad;Mumbai;Education;146;Unknown;India
+28;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+29;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+30;Lendi;Sydney;Real Estate;129;Unknown;Australia
+31;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+32;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+33;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+34;SiriusXM;New York City;Media;508;Post-IPO;United States
+35;UpGrad;Mumbai;Education;154;Unknown;India
+36;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+37;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+38;Lendi;Sydney;Real Estate;137;Unknown;Australia
+39;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+40;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+41;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+42;SiriusXM;New York City;Media;516;Post-IPO;United States
+43;UpGrad;Mumbai;Education;162;Unknown;India
+44;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+45;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+46;Lendi;Sydney;Real Estate;145;Unknown;Australia
+47;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+48;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+49;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+50;SiriusXM;New York City;Media;524;Post-IPO;United States
+51;UpGrad;Mumbai;Education;170;Unknown;India
+52;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+53;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+54;Lendi;Sydney;Real Estate;153;Unknown;Australia
+55;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+56;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+57;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+58;SiriusXM;New York City;Media;532;Post-IPO;United States
+59;UpGrad;Mumbai;Education;178;Unknown;India
+60;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+61;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+62;Lendi;Sydney;Real Estate;161;Unknown;Australia
+63;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+64;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+65;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+66;SiriusXM;New York City;Media;540;Post-IPO;United States
+67;UpGrad;Mumbai;Education;186;Unknown;India
+68;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+69;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+70;Lendi;Sydney;Real Estate;169;Unknown;Australia
+71;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+72;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+73;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+74;SiriusXM;New York City;Media;548;Post-IPO;United States
+75;UpGrad;Mumbai;Education;194;Unknown;India
+76;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+77;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+78;Lendi;Sydney;Real Estate;177;Unknown;Australia
+79;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+80;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+81;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+82;SiriusXM;New York City;Media;556;Post-IPO;United States
+83;UpGrad;Mumbai;Education;202;Unknown;India
+84;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+85;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+86;Lendi;Sydney;Real Estate;185;Unknown;Australia
+87;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+88;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+89;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+90;SiriusXM;New York City;Media;564;Post-IPO;United States
+91;UpGrad;Mumbai;Education;210;Unknown;India
+92;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+93;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+94;Lendi;Sydney;Real Estate;193;Unknown;Australia
+95;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+96;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+97;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+98;SiriusXM;New York City;Media;572;Post-IPO;United States
+99;UpGrad;Mumbai;Education;218;Unknown;India
+100;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+101;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+102;Lendi;Sydney;Real Estate;101;Unknown;Australia
+103;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+104;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+105;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+106;SiriusXM;New York City;Media;480;Post-IPO;United States
+107;UpGrad;Mumbai;Education;126;Unknown;India
+108;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+109;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+110;Lendi;Sydney;Real Estate;109;Unknown;Australia
+111;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+112;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+113;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+114;SiriusXM;New York City;Media;488;Post-IPO;United States
+115;UpGrad;Mumbai;Education;134;Unknown;India
+116;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+117;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+118;Lendi;Sydney;Real Estate;117;Unknown;Australia
+119;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+120;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+121;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+122;SiriusXM;New York City;Media;496;Post-IPO;United States
+123;UpGrad;Mumbai;Education;142;Unknown;India
+124;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+125;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+126;Lendi;Sydney;Real Estate;125;Unknown;Australia
+127;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+128;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+129;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+130;SiriusXM;New York City;Media;504;Post-IPO;United States
+131;UpGrad;Mumbai;Education;150;Unknown;India
+132;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+133;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+134;Lendi;Sydney;Real Estate;133;Unknown;Australia
+135;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+136;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+137;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+138;SiriusXM;New York City;Media;512;Post-IPO;United States
+139;UpGrad;Mumbai;Education;158;Unknown;India
+140;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+141;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+142;Lendi;Sydney;Real Estate;141;Unknown;Australia
+143;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+144;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+145;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+146;SiriusXM;New York City;Media;520;Post-IPO;United States
+147;UpGrad;Mumbai;Education;166;Unknown;India
+148;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+149;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+150;Lendi;Sydney;Real Estate;149;Unknown;Australia
+151;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+152;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+153;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+154;SiriusXM;New York City;Media;528;Post-IPO;United States
+155;UpGrad;Mumbai;Education;174;Unknown;India
+156;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+157;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+158;Lendi;Sydney;Real Estate;157;Unknown;Australia
+159;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+160;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+161;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+162;SiriusXM;New York City;Media;536;Post-IPO;United States
+163;UpGrad;Mumbai;Education;182;Unknown;India
+164;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+165;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+166;Lendi;Sydney;Real Estate;165;Unknown;Australia
+167;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+168;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+169;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+170;SiriusXM;New York City;Media;544;Post-IPO;United States
+171;UpGrad;Mumbai;Education;190;Unknown;India
+172;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+173;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+174;Lendi;Sydney;Real Estate;173;Unknown;Australia
+175;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+176;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+177;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+178;SiriusXM;New York City;Media;552;Post-IPO;United States
+179;UpGrad;Mumbai;Education;198;Unknown;India
+180;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+181;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+182;Lendi;Sydney;Real Estate;181;Unknown;Australia
+183;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+184;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+185;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+186;SiriusXM;New York City;Media;560;Post-IPO;United States
+187;UpGrad;Mumbai;Education;206;Unknown;India
+188;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+189;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+190;Lendi;Sydney;Real Estate;189;Unknown;Australia
+191;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+192;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+193;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+194;SiriusXM;New York City;Media;568;Post-IPO;United States
+195;UpGrad;Mumbai;Education;214;Unknown;India
+196;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+197;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+198;Lendi;Sydney;Real Estate;197;Unknown;Australia
+199;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+200;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+201;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+202;SiriusXM;New York City;Media;476;Post-IPO;United States
+203;UpGrad;Mumbai;Education;122;Unknown;India
+204;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+205;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+206;Lendi;Sydney;Real Estate;105;Unknown;Australia
+207;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+208;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+209;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+210;SiriusXM;New York City;Media;484;Post-IPO;United States
+211;UpGrad;Mumbai;Education;130;Unknown;India
+212;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+213;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+214;Lendi;Sydney;Real Estate;113;Unknown;Australia
+215;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+216;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+217;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+218;SiriusXM;New York City;Media;492;Post-IPO;United States
+219;UpGrad;Mumbai;Education;138;Unknown;India
+220;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+221;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+222;Lendi;Sydney;Real Estate;121;Unknown;Australia
+223;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+224;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+225;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+226;SiriusXM;New York City;Media;500;Post-IPO;United States
+227;UpGrad;Mumbai;Education;146;Unknown;India
+228;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+229;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+230;Lendi;Sydney;Real Estate;129;Unknown;Australia
+231;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+232;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+233;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+234;SiriusXM;New York City;Media;508;Post-IPO;United States
+235;UpGrad;Mumbai;Education;154;Unknown;India
+236;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+237;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+238;Lendi;Sydney;Real Estate;137;Unknown;Australia
+239;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+240;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+241;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+242;SiriusXM;New York City;Media;516;Post-IPO;United States
+243;UpGrad;Mumbai;Education;162;Unknown;India
+244;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+245;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+246;Lendi;Sydney;Real Estate;145;Unknown;Australia
+247;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+248;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+249;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+250;SiriusXM;New York City;Media;524;Post-IPO;United States
+251;UpGrad;Mumbai;Education;170;Unknown;India
+252;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+253;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+254;Lendi;Sydney;Real Estate;153;Unknown;Australia
+255;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+256;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+257;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+258;SiriusXM;New York City;Media;532;Post-IPO;United States
+259;UpGrad;Mumbai;Education;178;Unknown;India
+260;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+261;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+262;Lendi;Sydney;Real Estate;161;Unknown;Australia
+263;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+264;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+265;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+266;SiriusXM;New York City;Media;540;Post-IPO;United States
+267;UpGrad;Mumbai;Education;186;Unknown;India
+268;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+269;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+270;Lendi;Sydney;Real Estate;169;Unknown;Australia
+271;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+272;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+273;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+274;SiriusXM;New York City;Media;548;Post-IPO;United States
+275;UpGrad;Mumbai;Education;194;Unknown;India
+276;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+277;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+278;Lendi;Sydney;Real Estate;177;Unknown;Australia
+279;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+280;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+281;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+282;SiriusXM;New York City;Media;556;Post-IPO;United States
+283;UpGrad;Mumbai;Education;202;Unknown;India
+284;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+285;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+286;Lendi;Sydney;Real Estate;185;Unknown;Australia
+287;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+288;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+289;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+290;SiriusXM;New York City;Media;564;Post-IPO;United States
+291;UpGrad;Mumbai;Education;210;Unknown;India
+292;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+293;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+294;Lendi;Sydney;Real Estate;193;Unknown;Australia
+295;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+296;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+297;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+298;SiriusXM;New York City;Media;572;Post-IPO;United States
+299;UpGrad;Mumbai;Education;218;Unknown;India
+300;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+301;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+302;Lendi;Sydney;Real Estate;101;Unknown;Australia
+303;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+304;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+305;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+306;SiriusXM;New York City;Media;480;Post-IPO;United States
+307;UpGrad;Mumbai;Education;126;Unknown;India
+308;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+309;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+310;Lendi;Sydney;Real Estate;109;Unknown;Australia
+311;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+312;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+313;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+314;SiriusXM;New York City;Media;488;Post-IPO;United States
+315;UpGrad;Mumbai;Education;134;Unknown;India
+316;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+317;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+318;Lendi;Sydney;Real Estate;117;Unknown;Australia
+319;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+320;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+321;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+322;SiriusXM;New York City;Media;496;Post-IPO;United States
+323;UpGrad;Mumbai;Education;142;Unknown;India
+324;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+325;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+326;Lendi;Sydney;Real Estate;125;Unknown;Australia
+327;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+328;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+329;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+330;SiriusXM;New York City;Media;504;Post-IPO;United States
+331;UpGrad;Mumbai;Education;150;Unknown;India
+332;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+333;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+334;Lendi;Sydney;Real Estate;133;Unknown;Australia
+335;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+336;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+337;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+338;SiriusXM;New York City;Media;512;Post-IPO;United States
+339;UpGrad;Mumbai;Education;158;Unknown;India
+340;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+341;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+342;Lendi;Sydney;Real Estate;141;Unknown;Australia
+343;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+344;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+345;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+346;SiriusXM;New York City;Media;520;Post-IPO;United States
+347;UpGrad;Mumbai;Education;166;Unknown;India
+348;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+349;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+350;Lendi;Sydney;Real Estate;149;Unknown;Australia
+351;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+352;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+353;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+354;SiriusXM;New York City;Media;528;Post-IPO;United States
+355;UpGrad;Mumbai;Education;174;Unknown;India
+356;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+357;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+358;Lendi;Sydney;Real Estate;157;Unknown;Australia
+359;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+360;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+361;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+362;SiriusXM;New York City;Media;536;Post-IPO;United States
+363;UpGrad;Mumbai;Education;182;Unknown;India
+364;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+365;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+366;Lendi;Sydney;Real Estate;165;Unknown;Australia
+367;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+368;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+369;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+370;SiriusXM;New York City;Media;544;Post-IPO;United States
+371;UpGrad;Mumbai;Education;190;Unknown;India
+372;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+373;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+374;Lendi;Sydney;Real Estate;173;Unknown;Australia
+375;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+376;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+377;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+378;SiriusXM;New York City;Media;552;Post-IPO;United States
+379;UpGrad;Mumbai;Education;198;Unknown;India
+380;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+381;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+382;Lendi;Sydney;Real Estate;181;Unknown;Australia
+383;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+384;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+385;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+386;SiriusXM;New York City;Media;560;Post-IPO;United States
+387;UpGrad;Mumbai;Education;206;Unknown;India
+388;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+389;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+390;Lendi;Sydney;Real Estate;189;Unknown;Australia
+391;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+392;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+393;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+394;SiriusXM;New York City;Media;568;Post-IPO;United States
+395;UpGrad;Mumbai;Education;214;Unknown;India
+396;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+397;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+398;Lendi;Sydney;Real Estate;197;Unknown;Australia
+399;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+400;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+401;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+402;SiriusXM;New York City;Media;476;Post-IPO;United States
+403;UpGrad;Mumbai;Education;122;Unknown;India
+404;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+405;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+406;Lendi;Sydney;Real Estate;105;Unknown;Australia
+407;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+408;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+409;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+410;SiriusXM;New York City;Media;484;Post-IPO;United States
+411;UpGrad;Mumbai;Education;130;Unknown;India
+412;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+413;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+414;Lendi;Sydney;Real Estate;113;Unknown;Australia
+415;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+416;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+417;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+418;SiriusXM;New York City;Media;492;Post-IPO;United States
+419;UpGrad;Mumbai;Education;138;Unknown;India
+420;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+421;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+422;Lendi;Sydney;Real Estate;121;Unknown;Australia
+423;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+424;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+425;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+426;SiriusXM;New York City;Media;500;Post-IPO;United States
+427;UpGrad;Mumbai;Education;146;Unknown;India
+428;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+429;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+430;Lendi;Sydney;Real Estate;129;Unknown;Australia
+431;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+432;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+433;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+434;SiriusXM;New York City;Media;508;Post-IPO;United States
+435;UpGrad;Mumbai;Education;154;Unknown;India
+436;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+437;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+438;Lendi;Sydney;Real Estate;137;Unknown;Australia
+439;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+440;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+441;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+442;SiriusXM;New York City;Media;516;Post-IPO;United States
+443;UpGrad;Mumbai;Education;162;Unknown;India
+444;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+445;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+446;Lendi;Sydney;Real Estate;145;Unknown;Australia
+447;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+448;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+449;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+450;SiriusXM;New York City;Media;524;Post-IPO;United States
+451;UpGrad;Mumbai;Education;170;Unknown;India
+452;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+453;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+454;Lendi;Sydney;Real Estate;153;Unknown;Australia
+455;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+456;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+457;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+458;SiriusXM;New York City;Media;532;Post-IPO;United States
+459;UpGrad;Mumbai;Education;178;Unknown;India
+460;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+461;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+462;Lendi;Sydney;Real Estate;161;Unknown;Australia
+463;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+464;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+465;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+466;SiriusXM;New York City;Media;540;Post-IPO;United States
+467;UpGrad;Mumbai;Education;186;Unknown;India
+468;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+469;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+470;Lendi;Sydney;Real Estate;169;Unknown;Australia
+471;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+472;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+473;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+474;SiriusXM;New York City;Media;548;Post-IPO;United States
+475;UpGrad;Mumbai;Education;194;Unknown;India
+476;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+477;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+478;Lendi;Sydney;Real Estate;177;Unknown;Australia
+479;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+480;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+481;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+482;SiriusXM;New York City;Media;556;Post-IPO;United States
+483;UpGrad;Mumbai;Education;202;Unknown;India
+484;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+485;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+486;Lendi;Sydney;Real Estate;185;Unknown;Australia
+487;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+488;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+489;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+490;SiriusXM;New York City;Media;564;Post-IPO;United States
+491;UpGrad;Mumbai;Education;210;Unknown;India
+492;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+493;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+494;Lendi;Sydney;Real Estate;193;Unknown;Australia
+495;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+496;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+497;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+498;SiriusXM;New York City;Media;572;Post-IPO;United States
+499;UpGrad;Mumbai;Education;218;Unknown;India
+500;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+501;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+502;Lendi;Sydney;Real Estate;101;Unknown;Australia
+503;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+504;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+505;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+506;SiriusXM;New York City;Media;480;Post-IPO;United States
+507;UpGrad;Mumbai;Education;126;Unknown;India
+508;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+509;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+510;Lendi;Sydney;Real Estate;109;Unknown;Australia
+511;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+512;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+513;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+514;SiriusXM;New York City;Media;488;Post-IPO;United States
+515;UpGrad;Mumbai;Education;134;Unknown;India
+516;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+517;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+518;Lendi;Sydney;Real Estate;117;Unknown;Australia
+519;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+520;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+521;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+522;SiriusXM;New York City;Media;496;Post-IPO;United States
+523;UpGrad;Mumbai;Education;142;Unknown;India
+524;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+525;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+526;Lendi;Sydney;Real Estate;125;Unknown;Australia
+527;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+528;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+529;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+530;SiriusXM;New York City;Media;504;Post-IPO;United States
+531;UpGrad;Mumbai;Education;150;Unknown;India
+532;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+533;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+534;Lendi;Sydney;Real Estate;133;Unknown;Australia
+535;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+536;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+537;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+538;SiriusXM;New York City;Media;512;Post-IPO;United States
+539;UpGrad;Mumbai;Education;158;Unknown;India
+540;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+541;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+542;Lendi;Sydney;Real Estate;141;Unknown;Australia
+543;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+544;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+545;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+546;SiriusXM;New York City;Media;520;Post-IPO;United States
+547;UpGrad;Mumbai;Education;166;Unknown;India
+548;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+549;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+550;Lendi;Sydney;Real Estate;149;Unknown;Australia
+551;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+552;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+553;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+554;SiriusXM;New York City;Media;528;Post-IPO;United States
+555;UpGrad;Mumbai;Education;174;Unknown;India
+556;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+557;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+558;Lendi;Sydney;Real Estate;157;Unknown;Australia
+559;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+560;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+561;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+562;SiriusXM;New York City;Media;536;Post-IPO;United States
+563;UpGrad;Mumbai;Education;182;Unknown;India
+564;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+565;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+566;Lendi;Sydney;Real Estate;165;Unknown;Australia
+567;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+568;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+569;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+570;SiriusXM;New York City;Media;544;Post-IPO;United States
+571;UpGrad;Mumbai;Education;190;Unknown;India
+572;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+573;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+574;Lendi;Sydney;Real Estate;173;Unknown;Australia
+575;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+576;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+577;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+578;SiriusXM;New York City;Media;552;Post-IPO;United States
+579;UpGrad;Mumbai;Education;198;Unknown;India
+580;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+581;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+582;Lendi;Sydney;Real Estate;181;Unknown;Australia
+583;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+584;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+585;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+586;SiriusXM;New York City;Media;560;Post-IPO;United States
+587;UpGrad;Mumbai;Education;206;Unknown;India
+588;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+589;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+590;Lendi;Sydney;Real Estate;189;Unknown;Australia
+591;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+592;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+593;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+594;SiriusXM;New York City;Media;568;Post-IPO;United States
+595;UpGrad;Mumbai;Education;214;Unknown;India
+596;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+597;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+598;Lendi;Sydney;Real Estate;197;Unknown;Australia
+599;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+600;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+601;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+602;SiriusXM;New York City;Media;476;Post-IPO;United States
+603;UpGrad;Mumbai;Education;122;Unknown;India
+604;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+605;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+606;Lendi;Sydney;Real Estate;105;Unknown;Australia
+607;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+608;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+609;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+610;SiriusXM;New York City;Media;484;Post-IPO;United States
+611;UpGrad;Mumbai;Education;130;Unknown;India
+612;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+613;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+614;Lendi;Sydney;Real Estate;113;Unknown;Australia
+615;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+616;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+617;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+618;SiriusXM;New York City;Media;492;Post-IPO;United States
+619;UpGrad;Mumbai;Education;138;Unknown;India
+620;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+621;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+622;Lendi;Sydney;Real Estate;121;Unknown;Australia
+623;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+624;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+625;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+626;SiriusXM;New York City;Media;500;Post-IPO;United States
+627;UpGrad;Mumbai;Education;146;Unknown;India
+628;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+629;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+630;Lendi;Sydney;Real Estate;129;Unknown;Australia
+631;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+632;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+633;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+634;SiriusXM;New York City;Media;508;Post-IPO;United States
+635;UpGrad;Mumbai;Education;154;Unknown;India
+636;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+637;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+638;Lendi;Sydney;Real Estate;137;Unknown;Australia
+639;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+640;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+641;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+642;SiriusXM;New York City;Media;516;Post-IPO;United States
+643;UpGrad;Mumbai;Education;162;Unknown;India
+644;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+645;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+646;Lendi;Sydney;Real Estate;145;Unknown;Australia
+647;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+648;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+649;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+650;SiriusXM;New York City;Media;524;Post-IPO;United States
+651;UpGrad;Mumbai;Education;170;Unknown;India
+652;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+653;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+654;Lendi;Sydney;Real Estate;153;Unknown;Australia
+655;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+656;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+657;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+658;SiriusXM;New York City;Media;532;Post-IPO;United States
+659;UpGrad;Mumbai;Education;178;Unknown;India
+660;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+661;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+662;Lendi;Sydney;Real Estate;161;Unknown;Australia
+663;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+664;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+665;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+666;SiriusXM;New York City;Media;540;Post-IPO;United States
+667;UpGrad;Mumbai;Education;186;Unknown;India
+668;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+669;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+670;Lendi;Sydney;Real Estate;169;Unknown;Australia
+671;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+672;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+673;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+674;SiriusXM;New York City;Media;548;Post-IPO;United States
+675;UpGrad;Mumbai;Education;194;Unknown;India
+676;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+677;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+678;Lendi;Sydney;Real Estate;177;Unknown;Australia
+679;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+680;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+681;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+682;SiriusXM;New York City;Media;556;Post-IPO;United States
+683;UpGrad;Mumbai;Education;202;Unknown;India
+684;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+685;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+686;Lendi;Sydney;Real Estate;185;Unknown;Australia
+687;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+688;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+689;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+690;SiriusXM;New York City;Media;564;Post-IPO;United States
+691;UpGrad;Mumbai;Education;210;Unknown;India
+692;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+693;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+694;Lendi;Sydney;Real Estate;193;Unknown;Australia
+695;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+696;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+697;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+698;SiriusXM;New York City;Media;572;Post-IPO;United States
+699;UpGrad;Mumbai;Education;218;Unknown;India
+700;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+701;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+702;Lendi;Sydney;Real Estate;101;Unknown;Australia
+703;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+704;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+705;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+706;SiriusXM;New York City;Media;480;Post-IPO;United States
+707;UpGrad;Mumbai;Education;126;Unknown;India
+708;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+709;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+710;Lendi;Sydney;Real Estate;109;Unknown;Australia
+711;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+712;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+713;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+714;SiriusXM;New York City;Media;488;Post-IPO;United States
+715;UpGrad;Mumbai;Education;134;Unknown;India
+716;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+717;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+718;Lendi;Sydney;Real Estate;117;Unknown;Australia
+719;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+720;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+721;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+722;SiriusXM;New York City;Media;496;Post-IPO;United States
+723;UpGrad;Mumbai;Education;142;Unknown;India
+724;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+725;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+726;Lendi;Sydney;Real Estate;125;Unknown;Australia
+727;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+728;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+729;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+730;SiriusXM;New York City;Media;504;Post-IPO;United States
+731;UpGrad;Mumbai;Education;150;Unknown;India
+732;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+733;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+734;Lendi;Sydney;Real Estate;133;Unknown;Australia
+735;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+736;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+737;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+738;SiriusXM;New York City;Media;512;Post-IPO;United States
+739;UpGrad;Mumbai;Education;158;Unknown;India
+740;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+741;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+742;Lendi;Sydney;Real Estate;141;Unknown;Australia
+743;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+744;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+745;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+746;SiriusXM;New York City;Media;520;Post-IPO;United States
+747;UpGrad;Mumbai;Education;166;Unknown;India
+748;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+749;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+750;Lendi;Sydney;Real Estate;149;Unknown;Australia
+751;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+752;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+753;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+754;SiriusXM;New York City;Media;528;Post-IPO;United States
+755;UpGrad;Mumbai;Education;174;Unknown;India
+756;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+757;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+758;Lendi;Sydney;Real Estate;157;Unknown;Australia
+759;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+760;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+761;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+762;SiriusXM;New York City;Media;536;Post-IPO;United States
+763;UpGrad;Mumbai;Education;182;Unknown;India
+764;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+765;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+766;Lendi;Sydney;Real Estate;165;Unknown;Australia
+767;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+768;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+769;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+770;SiriusXM;New York City;Media;544;Post-IPO;United States
+771;UpGrad;Mumbai;Education;190;Unknown;India
+772;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+773;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+774;Lendi;Sydney;Real Estate;173;Unknown;Australia
+775;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+776;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+777;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+778;SiriusXM;New York City;Media;552;Post-IPO;United States
+779;UpGrad;Mumbai;Education;198;Unknown;India
+780;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+781;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+782;Lendi;Sydney;Real Estate;181;Unknown;Australia
+783;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+784;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+785;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+786;SiriusXM;New York City;Media;560;Post-IPO;United States
+787;UpGrad;Mumbai;Education;206;Unknown;India
+788;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+789;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+790;Lendi;Sydney;Real Estate;189;Unknown;Australia
+791;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+792;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+793;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+794;SiriusXM;New York City;Media;568;Post-IPO;United States
+795;UpGrad;Mumbai;Education;214;Unknown;India
+796;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+797;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+798;Lendi;Sydney;Real Estate;197;Unknown;Australia
+799;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+800;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+801;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+802;SiriusXM;New York City;Media;476;Post-IPO;United States
+803;UpGrad;Mumbai;Education;122;Unknown;India
+804;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+805;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+806;Lendi;Sydney;Real Estate;105;Unknown;Australia
+807;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+808;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+809;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+810;SiriusXM;New York City;Media;484;Post-IPO;United States
+811;UpGrad;Mumbai;Education;130;Unknown;India
+812;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+813;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+814;Lendi;Sydney;Real Estate;113;Unknown;Australia
+815;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+816;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+817;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+818;SiriusXM;New York City;Media;492;Post-IPO;United States
+819;UpGrad;Mumbai;Education;138;Unknown;India
+820;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+821;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+822;Lendi;Sydney;Real Estate;121;Unknown;Australia
+823;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+824;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+825;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+826;SiriusXM;New York City;Media;500;Post-IPO;United States
+827;UpGrad;Mumbai;Education;146;Unknown;India
+828;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+829;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+830;Lendi;Sydney;Real Estate;129;Unknown;Australia
+831;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+832;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+833;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+834;SiriusXM;New York City;Media;508;Post-IPO;United States
+835;UpGrad;Mumbai;Education;154;Unknown;India
+836;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+837;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+838;Lendi;Sydney;Real Estate;137;Unknown;Australia
+839;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+840;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+841;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+842;SiriusXM;New York City;Media;516;Post-IPO;United States
+843;UpGrad;Mumbai;Education;162;Unknown;India
+844;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+845;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+846;Lendi;Sydney;Real Estate;145;Unknown;Australia
+847;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+848;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+849;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+850;SiriusXM;New York City;Media;524;Post-IPO;United States
+851;UpGrad;Mumbai;Education;170;Unknown;India
+852;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+853;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+854;Lendi;Sydney;Real Estate;153;Unknown;Australia
+855;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+856;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+857;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+858;SiriusXM;New York City;Media;532;Post-IPO;United States
+859;UpGrad;Mumbai;Education;178;Unknown;India
+860;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+861;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+862;Lendi;Sydney;Real Estate;161;Unknown;Australia
+863;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+864;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+865;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+866;SiriusXM;New York City;Media;540;Post-IPO;United States
+867;UpGrad;Mumbai;Education;186;Unknown;India
+868;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+869;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+870;Lendi;Sydney;Real Estate;169;Unknown;Australia
+871;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+872;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+873;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+874;SiriusXM;New York City;Media;548;Post-IPO;United States
+875;UpGrad;Mumbai;Education;194;Unknown;India
+876;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+877;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+878;Lendi;Sydney;Real Estate;177;Unknown;Australia
+879;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+880;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+881;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+882;SiriusXM;New York City;Media;556;Post-IPO;United States
+883;UpGrad;Mumbai;Education;202;Unknown;India
+884;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+885;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+886;Lendi;Sydney;Real Estate;185;Unknown;Australia
+887;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+888;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+889;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+890;SiriusXM;New York City;Media;564;Post-IPO;United States
+891;UpGrad;Mumbai;Education;210;Unknown;India
+892;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+893;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+894;Lendi;Sydney;Real Estate;193;Unknown;Australia
+895;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+896;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+897;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+898;SiriusXM;New York City;Media;572;Post-IPO;United States
+899;UpGrad;Mumbai;Education;218;Unknown;India
+900;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+901;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+902;Lendi;Sydney;Real Estate;101;Unknown;Australia
+903;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+904;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+905;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+906;SiriusXM;New York City;Media;480;Post-IPO;United States
+907;UpGrad;Mumbai;Education;126;Unknown;India
+908;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+909;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+910;Lendi;Sydney;Real Estate;109;Unknown;Australia
+911;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+912;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+913;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+914;SiriusXM;New York City;Media;488;Post-IPO;United States
+915;UpGrad;Mumbai;Education;134;Unknown;India
+916;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+917;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+918;Lendi;Sydney;Real Estate;117;Unknown;Australia
+919;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+920;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+921;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+922;SiriusXM;New York City;Media;496;Post-IPO;United States
+923;UpGrad;Mumbai;Education;142;Unknown;India
+924;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+925;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+926;Lendi;Sydney;Real Estate;125;Unknown;Australia
+927;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+928;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+929;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+930;SiriusXM;New York City;Media;504;Post-IPO;United States
+931;UpGrad;Mumbai;Education;150;Unknown;India
+932;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+933;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+934;Lendi;Sydney;Real Estate;133;Unknown;Australia
+935;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+936;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+937;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+938;SiriusXM;New York City;Media;512;Post-IPO;United States
+939;UpGrad;Mumbai;Education;158;Unknown;India
+940;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+941;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+942;Lendi;Sydney;Real Estate;141;Unknown;Australia
+943;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+944;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+945;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+946;SiriusXM;New York City;Media;520;Post-IPO;United States
+947;UpGrad;Mumbai;Education;166;Unknown;India
+948;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+949;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+950;Lendi;Sydney;Real Estate;149;Unknown;Australia
+951;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+952;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+953;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+954;SiriusXM;New York City;Media;528;Post-IPO;United States
+955;UpGrad;Mumbai;Education;174;Unknown;India
+956;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+957;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+958;Lendi;Sydney;Real Estate;157;Unknown;Australia
+959;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+960;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+961;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+962;SiriusXM;New York City;Media;536;Post-IPO;United States
+963;UpGrad;Mumbai;Education;182;Unknown;India
+964;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+965;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+966;Lendi;Sydney;Real Estate;165;Unknown;Australia
+967;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+968;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+969;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+970;SiriusXM;New York City;Media;544;Post-IPO;United States
+971;UpGrad;Mumbai;Education;190;Unknown;India
+972;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+973;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+974;Lendi;Sydney;Real Estate;173;Unknown;Australia
+975;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+976;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+977;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+978;SiriusXM;New York City;Media;552;Post-IPO;United States
+979;UpGrad;Mumbai;Education;198;Unknown;India
+980;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+981;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+982;Lendi;Sydney;Real Estate;181;Unknown;Australia
+983;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+984;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+985;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+986;SiriusXM;New York City;Media;560;Post-IPO;United States
+987;UpGrad;Mumbai;Education;206;Unknown;India
+988;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+989;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+990;Lendi;Sydney;Real Estate;189;Unknown;Australia
+991;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+992;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+993;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+994;SiriusXM;New York City;Media;568;Post-IPO;United States
+995;UpGrad;Mumbai;Education;214;Unknown;India
+996;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+997;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+998;Lendi;Sydney;Real Estate;197;Unknown;Australia
+999;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+1000;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+1001;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+1002;SiriusXM;New York City;Media;476;Post-IPO;United States
+1003;UpGrad;Mumbai;Education;122;Unknown;India
+1004;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+1005;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+1006;Lendi;Sydney;Real Estate;105;Unknown;Australia
+1007;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+1008;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+1009;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+1010;SiriusXM;New York City;Media;484;Post-IPO;United States
+1011;UpGrad;Mumbai;Education;130;Unknown;India
+1012;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+1013;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+1014;Lendi;Sydney;Real Estate;113;Unknown;Australia
+1015;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+1016;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+1017;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+1018;SiriusXM;New York City;Media;492;Post-IPO;United States
+1019;UpGrad;Mumbai;Education;138;Unknown;India
+1020;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+1021;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+1022;Lendi;Sydney;Real Estate;121;Unknown;Australia
+1023;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+1024;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+1025;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+1026;SiriusXM;New York City;Media;500;Post-IPO;United States
+1027;UpGrad;Mumbai;Education;146;Unknown;India
+1028;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+1029;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+1030;Lendi;Sydney;Real Estate;129;Unknown;Australia
+1031;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+1032;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+1033;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+1034;SiriusXM;New York City;Media;508;Post-IPO;United States
+1035;UpGrad;Mumbai;Education;154;Unknown;India
+1036;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+1037;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+1038;Lendi;Sydney;Real Estate;137;Unknown;Australia
+1039;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+1040;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+1041;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+1042;SiriusXM;New York City;Media;516;Post-IPO;United States
+1043;UpGrad;Mumbai;Education;162;Unknown;India
+1044;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+1045;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+1046;Lendi;Sydney;Real Estate;145;Unknown;Australia
+1047;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+1048;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+1049;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+1050;SiriusXM;New York City;Media;524;Post-IPO;United States
+1051;UpGrad;Mumbai;Education;170;Unknown;India
+1052;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+1053;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+1054;Lendi;Sydney;Real Estate;153;Unknown;Australia
+1055;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+1056;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+1057;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+1058;SiriusXM;New York City;Media;532;Post-IPO;United States
+1059;UpGrad;Mumbai;Education;178;Unknown;India
+1060;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+1061;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+1062;Lendi;Sydney;Real Estate;161;Unknown;Australia
+1063;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+1064;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+1065;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+1066;SiriusXM;New York City;Media;540;Post-IPO;United States
+1067;UpGrad;Mumbai;Education;186;Unknown;India
+1068;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+1069;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+1070;Lendi;Sydney;Real Estate;169;Unknown;Australia
+1071;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+1072;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+1073;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+1074;SiriusXM;New York City;Media;548;Post-IPO;United States
+1075;UpGrad;Mumbai;Education;194;Unknown;India
+1076;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+1077;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+1078;Lendi;Sydney;Real Estate;177;Unknown;Australia
+1079;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+1080;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+1081;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+1082;SiriusXM;New York City;Media;556;Post-IPO;United States
+1083;UpGrad;Mumbai;Education;202;Unknown;India
+1084;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+1085;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+1086;Lendi;Sydney;Real Estate;185;Unknown;Australia
+1087;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+1088;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+1089;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+1090;SiriusXM;New York City;Media;564;Post-IPO;United States
+1091;UpGrad;Mumbai;Education;210;Unknown;India
+1092;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+1093;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+1094;Lendi;Sydney;Real Estate;193;Unknown;Australia
+1095;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+1096;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+1097;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+1098;SiriusXM;New York City;Media;572;Post-IPO;United States
+1099;UpGrad;Mumbai;Education;218;Unknown;India
+1100;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+1101;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+1102;Lendi;Sydney;Real Estate;101;Unknown;Australia
+1103;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+1104;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+1105;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+1106;SiriusXM;New York City;Media;480;Post-IPO;United States
+1107;UpGrad;Mumbai;Education;126;Unknown;India
+1108;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+1109;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+1110;Lendi;Sydney;Real Estate;109;Unknown;Australia
+1111;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+1112;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+1113;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+1114;SiriusXM;New York City;Media;488;Post-IPO;United States
+1115;UpGrad;Mumbai;Education;134;Unknown;India
+1116;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+1117;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+1118;Lendi;Sydney;Real Estate;117;Unknown;Australia
+1119;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+1120;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+1121;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+1122;SiriusXM;New York City;Media;496;Post-IPO;United States
+1123;UpGrad;Mumbai;Education;142;Unknown;India
+1124;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+1125;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+1126;Lendi;Sydney;Real Estate;125;Unknown;Australia
+1127;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+1128;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+1129;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+1130;SiriusXM;New York City;Media;504;Post-IPO;United States
+1131;UpGrad;Mumbai;Education;150;Unknown;India
+1132;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+1133;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+1134;Lendi;Sydney;Real Estate;133;Unknown;Australia
+1135;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+1136;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+1137;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+1138;SiriusXM;New York City;Media;512;Post-IPO;United States
+1139;UpGrad;Mumbai;Education;158;Unknown;India
+1140;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+1141;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+1142;Lendi;Sydney;Real Estate;141;Unknown;Australia
+1143;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+1144;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+1145;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+1146;SiriusXM;New York City;Media;520;Post-IPO;United States
+1147;UpGrad;Mumbai;Education;166;Unknown;India
+1148;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+1149;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+1150;Lendi;Sydney;Real Estate;149;Unknown;Australia
+1151;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+1152;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+1153;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+1154;SiriusXM;New York City;Media;528;Post-IPO;United States
+1155;UpGrad;Mumbai;Education;174;Unknown;India
+1156;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+1157;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+1158;Lendi;Sydney;Real Estate;157;Unknown;Australia
+1159;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+1160;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+1161;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+1162;SiriusXM;New York City;Media;536;Post-IPO;United States
+1163;UpGrad;Mumbai;Education;182;Unknown;India
+1164;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+1165;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+1166;Lendi;Sydney;Real Estate;165;Unknown;Australia
+1167;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+1168;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+1169;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+1170;SiriusXM;New York City;Media;544;Post-IPO;United States
+1171;UpGrad;Mumbai;Education;190;Unknown;India
+1172;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+1173;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+1174;Lendi;Sydney;Real Estate;173;Unknown;Australia
+1175;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+1176;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+1177;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+1178;SiriusXM;New York City;Media;552;Post-IPO;United States
+1179;UpGrad;Mumbai;Education;198;Unknown;India
+1180;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+1181;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+1182;Lendi;Sydney;Real Estate;181;Unknown;Australia
+1183;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+1184;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+1185;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+1186;SiriusXM;New York City;Media;560;Post-IPO;United States
+1187;UpGrad;Mumbai;Education;206;Unknown;India
+1188;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+1189;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+1190;Lendi;Sydney;Real Estate;189;Unknown;Australia
+1191;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+1192;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+1193;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+1194;SiriusXM;New York City;Media;568;Post-IPO;United States
+1195;UpGrad;Mumbai;Education;214;Unknown;India
+1196;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+1197;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+1198;Lendi;Sydney;Real Estate;197;Unknown;Australia
+1199;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+1200;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+1201;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+1202;SiriusXM;New York City;Media;476;Post-IPO;United States
+1203;UpGrad;Mumbai;Education;122;Unknown;India
+1204;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+1205;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+1206;Lendi;Sydney;Real Estate;105;Unknown;Australia
+1207;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+1208;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+1209;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+1210;SiriusXM;New York City;Media;484;Post-IPO;United States
+1211;UpGrad;Mumbai;Education;130;Unknown;India
+1212;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+1213;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+1214;Lendi;Sydney;Real Estate;113;Unknown;Australia
+1215;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+1216;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+1217;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+1218;SiriusXM;New York City;Media;492;Post-IPO;United States
+1219;UpGrad;Mumbai;Education;138;Unknown;India
+1220;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+1221;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+1222;Lendi;Sydney;Real Estate;121;Unknown;Australia
+1223;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+1224;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+1225;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+1226;SiriusXM;New York City;Media;500;Post-IPO;United States
+1227;UpGrad;Mumbai;Education;146;Unknown;India
+1228;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+1229;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+1230;Lendi;Sydney;Real Estate;129;Unknown;Australia
+1231;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+1232;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+1233;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+1234;SiriusXM;New York City;Media;508;Post-IPO;United States
+1235;UpGrad;Mumbai;Education;154;Unknown;India
+1236;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+1237;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+1238;Lendi;Sydney;Real Estate;137;Unknown;Australia
+1239;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+1240;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+1241;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+1242;SiriusXM;New York City;Media;516;Post-IPO;United States
+1243;UpGrad;Mumbai;Education;162;Unknown;India
+1244;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+1245;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+1246;Lendi;Sydney;Real Estate;145;Unknown;Australia
+1247;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+1248;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+1249;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+1250;SiriusXM;New York City;Media;524;Post-IPO;United States
+1251;UpGrad;Mumbai;Education;170;Unknown;India
+1252;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+1253;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+1254;Lendi;Sydney;Real Estate;153;Unknown;Australia
+1255;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+1256;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+1257;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+1258;SiriusXM;New York City;Media;532;Post-IPO;United States
+1259;UpGrad;Mumbai;Education;178;Unknown;India
+1260;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+1261;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+1262;Lendi;Sydney;Real Estate;161;Unknown;Australia
+1263;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+1264;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+1265;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+1266;SiriusXM;New York City;Media;540;Post-IPO;United States
+1267;UpGrad;Mumbai;Education;186;Unknown;India
+1268;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+1269;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+1270;Lendi;Sydney;Real Estate;169;Unknown;Australia
+1271;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+1272;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+1273;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+1274;SiriusXM;New York City;Media;548;Post-IPO;United States
+1275;UpGrad;Mumbai;Education;194;Unknown;India
+1276;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+1277;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+1278;Lendi;Sydney;Real Estate;177;Unknown;Australia
+1279;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+1280;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+1281;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+1282;SiriusXM;New York City;Media;556;Post-IPO;United States
+1283;UpGrad;Mumbai;Education;202;Unknown;India
+1284;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+1285;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+1286;Lendi;Sydney;Real Estate;185;Unknown;Australia
+1287;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+1288;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+1289;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+1290;SiriusXM;New York City;Media;564;Post-IPO;United States
+1291;UpGrad;Mumbai;Education;210;Unknown;India
+1292;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+1293;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+1294;Lendi;Sydney;Real Estate;193;Unknown;Australia
+1295;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+1296;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+1297;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+1298;SiriusXM;New York City;Media;572;Post-IPO;United States
+1299;UpGrad;Mumbai;Education;218;Unknown;India
+1300;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+1301;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+1302;Lendi;Sydney;Real Estate;101;Unknown;Australia
+1303;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+1304;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+1305;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+1306;SiriusXM;New York City;Media;480;Post-IPO;United States
+1307;UpGrad;Mumbai;Education;126;Unknown;India
+1308;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+1309;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+1310;Lendi;Sydney;Real Estate;109;Unknown;Australia
+1311;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+1312;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+1313;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+1314;SiriusXM;New York City;Media;488;Post-IPO;United States
+1315;UpGrad;Mumbai;Education;134;Unknown;India
+1316;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+1317;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+1318;Lendi;Sydney;Real Estate;117;Unknown;Australia
+1319;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+1320;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+1321;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+1322;SiriusXM;New York City;Media;496;Post-IPO;United States
+1323;UpGrad;Mumbai;Education;142;Unknown;India
+1324;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+1325;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+1326;Lendi;Sydney;Real Estate;125;Unknown;Australia
+1327;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+1328;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+1329;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+1330;SiriusXM;New York City;Media;504;Post-IPO;United States
+1331;UpGrad;Mumbai;Education;150;Unknown;India
+1332;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+1333;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+1334;Lendi;Sydney;Real Estate;133;Unknown;Australia
+1335;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+1336;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+1337;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+1338;SiriusXM;New York City;Media;512;Post-IPO;United States
+1339;UpGrad;Mumbai;Education;158;Unknown;India
+1340;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+1341;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+1342;Lendi;Sydney;Real Estate;141;Unknown;Australia
+1343;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+1344;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+1345;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+1346;SiriusXM;New York City;Media;520;Post-IPO;United States
+1347;UpGrad;Mumbai;Education;166;Unknown;India
+1348;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+1349;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+1350;Lendi;Sydney;Real Estate;149;Unknown;Australia
+1351;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+1352;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+1353;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+1354;SiriusXM;New York City;Media;528;Post-IPO;United States
+1355;UpGrad;Mumbai;Education;174;Unknown;India
+1356;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+1357;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+1358;Lendi;Sydney;Real Estate;157;Unknown;Australia
+1359;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+1360;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+1361;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+1362;SiriusXM;New York City;Media;536;Post-IPO;United States
+1363;UpGrad;Mumbai;Education;182;Unknown;India
+1364;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+1365;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+1366;Lendi;Sydney;Real Estate;165;Unknown;Australia
+1367;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+1368;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+1369;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+1370;SiriusXM;New York City;Media;544;Post-IPO;United States
+1371;UpGrad;Mumbai;Education;190;Unknown;India
+1372;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+1373;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+1374;Lendi;Sydney;Real Estate;173;Unknown;Australia
+1375;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+1376;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+1377;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+1378;SiriusXM;New York City;Media;552;Post-IPO;United States
+1379;UpGrad;Mumbai;Education;198;Unknown;India
+1380;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+1381;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+1382;Lendi;Sydney;Real Estate;181;Unknown;Australia
+1383;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+1384;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+1385;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+1386;SiriusXM;New York City;Media;560;Post-IPO;United States
+1387;UpGrad;Mumbai;Education;206;Unknown;India
+1388;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+1389;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+1390;Lendi;Sydney;Real Estate;189;Unknown;Australia
+1391;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+1392;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+1393;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+1394;SiriusXM;New York City;Media;568;Post-IPO;United States
+1395;UpGrad;Mumbai;Education;214;Unknown;India
+1396;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+1397;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+1398;Lendi;Sydney;Real Estate;197;Unknown;Australia
+1399;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+1400;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+1401;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+1402;SiriusXM;New York City;Media;476;Post-IPO;United States
+1403;UpGrad;Mumbai;Education;122;Unknown;India
+1404;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+1405;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+1406;Lendi;Sydney;Real Estate;105;Unknown;Australia
+1407;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+1408;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+1409;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+1410;SiriusXM;New York City;Media;484;Post-IPO;United States
+1411;UpGrad;Mumbai;Education;130;Unknown;India
+1412;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+1413;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+1414;Lendi;Sydney;Real Estate;113;Unknown;Australia
+1415;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+1416;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+1417;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+1418;SiriusXM;New York City;Media;492;Post-IPO;United States
+1419;UpGrad;Mumbai;Education;138;Unknown;India
+1420;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+1421;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+1422;Lendi;Sydney;Real Estate;121;Unknown;Australia
+1423;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+1424;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+1425;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+1426;SiriusXM;New York City;Media;500;Post-IPO;United States
+1427;UpGrad;Mumbai;Education;146;Unknown;India
+1428;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+1429;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+1430;Lendi;Sydney;Real Estate;129;Unknown;Australia
+1431;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+1432;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+1433;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+1434;SiriusXM;New York City;Media;508;Post-IPO;United States
+1435;UpGrad;Mumbai;Education;154;Unknown;India
+1436;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+1437;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+1438;Lendi;Sydney;Real Estate;137;Unknown;Australia
+1439;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+1440;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+1441;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+1442;SiriusXM;New York City;Media;516;Post-IPO;United States
+1443;UpGrad;Mumbai;Education;162;Unknown;India
+1444;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+1445;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+1446;Lendi;Sydney;Real Estate;145;Unknown;Australia
+1447;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+1448;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+1449;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+1450;SiriusXM;New York City;Media;524;Post-IPO;United States
+1451;UpGrad;Mumbai;Education;170;Unknown;India
+1452;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+1453;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+1454;Lendi;Sydney;Real Estate;153;Unknown;Australia
+1455;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+1456;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+1457;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+1458;SiriusXM;New York City;Media;532;Post-IPO;United States
+1459;UpGrad;Mumbai;Education;178;Unknown;India
+1460;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+1461;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+1462;Lendi;Sydney;Real Estate;161;Unknown;Australia
+1463;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+1464;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+1465;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+1466;SiriusXM;New York City;Media;540;Post-IPO;United States
+1467;UpGrad;Mumbai;Education;186;Unknown;India
+1468;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+1469;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+1470;Lendi;Sydney;Real Estate;169;Unknown;Australia
+1471;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+1472;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+1473;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+1474;SiriusXM;New York City;Media;548;Post-IPO;United States
+1475;UpGrad;Mumbai;Education;194;Unknown;India
+1476;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+1477;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+1478;Lendi;Sydney;Real Estate;177;Unknown;Australia
+1479;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+1480;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+1481;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+1482;SiriusXM;New York City;Media;556;Post-IPO;United States
+1483;UpGrad;Mumbai;Education;202;Unknown;India
+1484;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+1485;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+1486;Lendi;Sydney;Real Estate;185;Unknown;Australia
+1487;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+1488;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+1489;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+1490;SiriusXM;New York City;Media;564;Post-IPO;United States
+1491;UpGrad;Mumbai;Education;210;Unknown;India
+1492;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+1493;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+1494;Lendi;Sydney;Real Estate;193;Unknown;Australia
+1495;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+1496;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+1497;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+1498;SiriusXM;New York City;Media;572;Post-IPO;United States
+1499;UpGrad;Mumbai;Education;218;Unknown;India
+1500;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+1501;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+1502;Lendi;Sydney;Real Estate;101;Unknown;Australia
+1503;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+1504;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+1505;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+1506;SiriusXM;New York City;Media;480;Post-IPO;United States
+1507;UpGrad;Mumbai;Education;126;Unknown;India
+1508;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+1509;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+1510;Lendi;Sydney;Real Estate;109;Unknown;Australia
+1511;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+1512;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+1513;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+1514;SiriusXM;New York City;Media;488;Post-IPO;United States
+1515;UpGrad;Mumbai;Education;134;Unknown;India
+1516;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+1517;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+1518;Lendi;Sydney;Real Estate;117;Unknown;Australia
+1519;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+1520;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+1521;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+1522;SiriusXM;New York City;Media;496;Post-IPO;United States
+1523;UpGrad;Mumbai;Education;142;Unknown;India
+1524;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+1525;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+1526;Lendi;Sydney;Real Estate;125;Unknown;Australia
+1527;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+1528;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+1529;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+1530;SiriusXM;New York City;Media;504;Post-IPO;United States
+1531;UpGrad;Mumbai;Education;150;Unknown;India
+1532;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+1533;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+1534;Lendi;Sydney;Real Estate;133;Unknown;Australia
+1535;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+1536;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+1537;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+1538;SiriusXM;New York City;Media;512;Post-IPO;United States
+1539;UpGrad;Mumbai;Education;158;Unknown;India
+1540;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+1541;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+1542;Lendi;Sydney;Real Estate;141;Unknown;Australia
+1543;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+1544;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+1545;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+1546;SiriusXM;New York City;Media;520;Post-IPO;United States
+1547;UpGrad;Mumbai;Education;166;Unknown;India
+1548;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+1549;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+1550;Lendi;Sydney;Real Estate;149;Unknown;Australia
+1551;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+1552;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+1553;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+1554;SiriusXM;New York City;Media;528;Post-IPO;United States
+1555;UpGrad;Mumbai;Education;174;Unknown;India
+1556;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+1557;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+1558;Lendi;Sydney;Real Estate;157;Unknown;Australia
+1559;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+1560;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+1561;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+1562;SiriusXM;New York City;Media;536;Post-IPO;United States
+1563;UpGrad;Mumbai;Education;182;Unknown;India
+1564;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+1565;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+1566;Lendi;Sydney;Real Estate;165;Unknown;Australia
+1567;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+1568;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+1569;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+1570;SiriusXM;New York City;Media;544;Post-IPO;United States
+1571;UpGrad;Mumbai;Education;190;Unknown;India
+1572;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+1573;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+1574;Lendi;Sydney;Real Estate;173;Unknown;Australia
+1575;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+1576;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+1577;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+1578;SiriusXM;New York City;Media;552;Post-IPO;United States
+1579;UpGrad;Mumbai;Education;198;Unknown;India
+1580;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+1581;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+1582;Lendi;Sydney;Real Estate;181;Unknown;Australia
+1583;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+1584;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+1585;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+1586;SiriusXM;New York City;Media;560;Post-IPO;United States
+1587;UpGrad;Mumbai;Education;206;Unknown;India
+1588;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+1589;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+1590;Lendi;Sydney;Real Estate;189;Unknown;Australia
+1591;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+1592;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+1593;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+1594;SiriusXM;New York City;Media;568;Post-IPO;United States
+1595;UpGrad;Mumbai;Education;214;Unknown;India
+1596;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+1597;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+1598;Lendi;Sydney;Real Estate;197;Unknown;Australia
+1599;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+1600;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+1601;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+1602;SiriusXM;New York City;Media;476;Post-IPO;United States
+1603;UpGrad;Mumbai;Education;122;Unknown;India
+1604;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+1605;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+1606;Lendi;Sydney;Real Estate;105;Unknown;Australia
+1607;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+1608;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+1609;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+1610;SiriusXM;New York City;Media;484;Post-IPO;United States
+1611;UpGrad;Mumbai;Education;130;Unknown;India
+1612;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+1613;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+1614;Lendi;Sydney;Real Estate;113;Unknown;Australia
+1615;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+1616;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+1617;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+1618;SiriusXM;New York City;Media;492;Post-IPO;United States
+1619;UpGrad;Mumbai;Education;138;Unknown;India
+1620;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+1621;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+1622;Lendi;Sydney;Real Estate;121;Unknown;Australia
+1623;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+1624;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+1625;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+1626;SiriusXM;New York City;Media;500;Post-IPO;United States
+1627;UpGrad;Mumbai;Education;146;Unknown;India
+1628;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+1629;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+1630;Lendi;Sydney;Real Estate;129;Unknown;Australia
+1631;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+1632;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+1633;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+1634;SiriusXM;New York City;Media;508;Post-IPO;United States
+1635;UpGrad;Mumbai;Education;154;Unknown;India
+1636;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+1637;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+1638;Lendi;Sydney;Real Estate;137;Unknown;Australia
+1639;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+1640;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+1641;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+1642;SiriusXM;New York City;Media;516;Post-IPO;United States
+1643;UpGrad;Mumbai;Education;162;Unknown;India
+1644;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+1645;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+1646;Lendi;Sydney;Real Estate;145;Unknown;Australia
+1647;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+1648;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+1649;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+1650;SiriusXM;New York City;Media;524;Post-IPO;United States
+1651;UpGrad;Mumbai;Education;170;Unknown;India
+1652;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+1653;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+1654;Lendi;Sydney;Real Estate;153;Unknown;Australia
+1655;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+1656;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+1657;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+1658;SiriusXM;New York City;Media;532;Post-IPO;United States
+1659;UpGrad;Mumbai;Education;178;Unknown;India
+1660;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+1661;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+1662;Lendi;Sydney;Real Estate;161;Unknown;Australia
+1663;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+1664;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+1665;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+1666;SiriusXM;New York City;Media;540;Post-IPO;United States
+1667;UpGrad;Mumbai;Education;186;Unknown;India
+1668;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+1669;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+1670;Lendi;Sydney;Real Estate;169;Unknown;Australia
+1671;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+1672;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+1673;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+1674;SiriusXM;New York City;Media;548;Post-IPO;United States
+1675;UpGrad;Mumbai;Education;194;Unknown;India
+1676;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+1677;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+1678;Lendi;Sydney;Real Estate;177;Unknown;Australia
+1679;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+1680;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+1681;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+1682;SiriusXM;New York City;Media;556;Post-IPO;United States
+1683;UpGrad;Mumbai;Education;202;Unknown;India
+1684;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+1685;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+1686;Lendi;Sydney;Real Estate;185;Unknown;Australia
+1687;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+1688;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+1689;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+1690;SiriusXM;New York City;Media;564;Post-IPO;United States
+1691;UpGrad;Mumbai;Education;210;Unknown;India
+1692;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+1693;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+1694;Lendi;Sydney;Real Estate;193;Unknown;Australia
+1695;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+1696;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+1697;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+1698;SiriusXM;New York City;Media;572;Post-IPO;United States
+1699;UpGrad;Mumbai;Education;218;Unknown;India
+1700;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+1701;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+1702;Lendi;Sydney;Real Estate;101;Unknown;Australia
+1703;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+1704;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+1705;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+1706;SiriusXM;New York City;Media;480;Post-IPO;United States
+1707;UpGrad;Mumbai;Education;126;Unknown;India
+1708;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+1709;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+1710;Lendi;Sydney;Real Estate;109;Unknown;Australia
+1711;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+1712;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+1713;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+1714;SiriusXM;New York City;Media;488;Post-IPO;United States
+1715;UpGrad;Mumbai;Education;134;Unknown;India
+1716;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+1717;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+1718;Lendi;Sydney;Real Estate;117;Unknown;Australia
+1719;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+1720;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+1721;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+1722;SiriusXM;New York City;Media;496;Post-IPO;United States
+1723;UpGrad;Mumbai;Education;142;Unknown;India
+1724;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+1725;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+1726;Lendi;Sydney;Real Estate;125;Unknown;Australia
+1727;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+1728;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+1729;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+1730;SiriusXM;New York City;Media;504;Post-IPO;United States
+1731;UpGrad;Mumbai;Education;150;Unknown;India
+1732;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+1733;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+1734;Lendi;Sydney;Real Estate;133;Unknown;Australia
+1735;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+1736;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+1737;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+1738;SiriusXM;New York City;Media;512;Post-IPO;United States
+1739;UpGrad;Mumbai;Education;158;Unknown;India
+1740;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+1741;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+1742;Lendi;Sydney;Real Estate;141;Unknown;Australia
+1743;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+1744;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+1745;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+1746;SiriusXM;New York City;Media;520;Post-IPO;United States
+1747;UpGrad;Mumbai;Education;166;Unknown;India
+1748;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+1749;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+1750;Lendi;Sydney;Real Estate;149;Unknown;Australia
+1751;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+1752;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+1753;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+1754;SiriusXM;New York City;Media;528;Post-IPO;United States
+1755;UpGrad;Mumbai;Education;174;Unknown;India
+1756;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+1757;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+1758;Lendi;Sydney;Real Estate;157;Unknown;Australia
+1759;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+1760;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+1761;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+1762;SiriusXM;New York City;Media;536;Post-IPO;United States
+1763;UpGrad;Mumbai;Education;182;Unknown;India
+1764;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+1765;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+1766;Lendi;Sydney;Real Estate;165;Unknown;Australia
+1767;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+1768;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+1769;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+1770;SiriusXM;New York City;Media;544;Post-IPO;United States
+1771;UpGrad;Mumbai;Education;190;Unknown;India
+1772;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+1773;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+1774;Lendi;Sydney;Real Estate;173;Unknown;Australia
+1775;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+1776;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+1777;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+1778;SiriusXM;New York City;Media;552;Post-IPO;United States
+1779;UpGrad;Mumbai;Education;198;Unknown;India
+1780;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+1781;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+1782;Lendi;Sydney;Real Estate;181;Unknown;Australia
+1783;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+1784;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+1785;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+1786;SiriusXM;New York City;Media;560;Post-IPO;United States
+1787;UpGrad;Mumbai;Education;206;Unknown;India
+1788;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+1789;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+1790;Lendi;Sydney;Real Estate;189;Unknown;Australia
+1791;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+1792;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+1793;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+1794;SiriusXM;New York City;Media;568;Post-IPO;United States
+1795;UpGrad;Mumbai;Education;214;Unknown;India
+1796;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+1797;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+1798;Lendi;Sydney;Real Estate;197;Unknown;Australia
+1799;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+1800;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+1801;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+1802;SiriusXM;New York City;Media;476;Post-IPO;United States
+1803;UpGrad;Mumbai;Education;122;Unknown;India
+1804;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+1805;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+1806;Lendi;Sydney;Real Estate;105;Unknown;Australia
+1807;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+1808;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+1809;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+1810;SiriusXM;New York City;Media;484;Post-IPO;United States
+1811;UpGrad;Mumbai;Education;130;Unknown;India
+1812;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+1813;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+1814;Lendi;Sydney;Real Estate;113;Unknown;Australia
+1815;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+1816;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+1817;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+1818;SiriusXM;New York City;Media;492;Post-IPO;United States
+1819;UpGrad;Mumbai;Education;138;Unknown;India
+1820;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+1821;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+1822;Lendi;Sydney;Real Estate;121;Unknown;Australia
+1823;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+1824;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+1825;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+1826;SiriusXM;New York City;Media;500;Post-IPO;United States
+1827;UpGrad;Mumbai;Education;146;Unknown;India
+1828;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+1829;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+1830;Lendi;Sydney;Real Estate;129;Unknown;Australia
+1831;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+1832;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+1833;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+1834;SiriusXM;New York City;Media;508;Post-IPO;United States
+1835;UpGrad;Mumbai;Education;154;Unknown;India
+1836;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+1837;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+1838;Lendi;Sydney;Real Estate;137;Unknown;Australia
+1839;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+1840;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+1841;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+1842;SiriusXM;New York City;Media;516;Post-IPO;United States
+1843;UpGrad;Mumbai;Education;162;Unknown;India
+1844;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+1845;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+1846;Lendi;Sydney;Real Estate;145;Unknown;Australia
+1847;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+1848;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+1849;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+1850;SiriusXM;New York City;Media;524;Post-IPO;United States
+1851;UpGrad;Mumbai;Education;170;Unknown;India
+1852;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+1853;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+1854;Lendi;Sydney;Real Estate;153;Unknown;Australia
+1855;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+1856;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+1857;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+1858;SiriusXM;New York City;Media;532;Post-IPO;United States
+1859;UpGrad;Mumbai;Education;178;Unknown;India
+1860;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+1861;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+1862;Lendi;Sydney;Real Estate;161;Unknown;Australia
+1863;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+1864;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+1865;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+1866;SiriusXM;New York City;Media;540;Post-IPO;United States
+1867;UpGrad;Mumbai;Education;186;Unknown;India
+1868;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+1869;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+1870;Lendi;Sydney;Real Estate;169;Unknown;Australia
+1871;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+1872;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+1873;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+1874;SiriusXM;New York City;Media;548;Post-IPO;United States
+1875;UpGrad;Mumbai;Education;194;Unknown;India
+1876;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+1877;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+1878;Lendi;Sydney;Real Estate;177;Unknown;Australia
+1879;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+1880;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+1881;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+1882;SiriusXM;New York City;Media;556;Post-IPO;United States
+1883;UpGrad;Mumbai;Education;202;Unknown;India
+1884;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+1885;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+1886;Lendi;Sydney;Real Estate;185;Unknown;Australia
+1887;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+1888;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+1889;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+1890;SiriusXM;New York City;Media;564;Post-IPO;United States
+1891;UpGrad;Mumbai;Education;210;Unknown;India
+1892;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+1893;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+1894;Lendi;Sydney;Real Estate;193;Unknown;Australia
+1895;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+1896;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+1897;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+1898;SiriusXM;New York City;Media;572;Post-IPO;United States
+1899;UpGrad;Mumbai;Education;218;Unknown;India
+1900;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+1901;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+1902;Lendi;Sydney;Real Estate;101;Unknown;Australia
+1903;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+1904;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+1905;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+1906;SiriusXM;New York City;Media;480;Post-IPO;United States
+1907;UpGrad;Mumbai;Education;126;Unknown;India
+1908;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+1909;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+1910;Lendi;Sydney;Real Estate;109;Unknown;Australia
+1911;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+1912;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+1913;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+1914;SiriusXM;New York City;Media;488;Post-IPO;United States
+1915;UpGrad;Mumbai;Education;134;Unknown;India
+1916;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+1917;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+1918;Lendi;Sydney;Real Estate;117;Unknown;Australia
+1919;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+1920;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+1921;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+1922;SiriusXM;New York City;Media;496;Post-IPO;United States
+1923;UpGrad;Mumbai;Education;142;Unknown;India
+1924;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+1925;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+1926;Lendi;Sydney;Real Estate;125;Unknown;Australia
+1927;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+1928;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+1929;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+1930;SiriusXM;New York City;Media;504;Post-IPO;United States
+1931;UpGrad;Mumbai;Education;150;Unknown;India
+1932;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+1933;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+1934;Lendi;Sydney;Real Estate;133;Unknown;Australia
+1935;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+1936;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+1937;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+1938;SiriusXM;New York City;Media;512;Post-IPO;United States
+1939;UpGrad;Mumbai;Education;158;Unknown;India
+1940;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+1941;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+1942;Lendi;Sydney;Real Estate;141;Unknown;Australia
+1943;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+1944;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+1945;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+1946;SiriusXM;New York City;Media;520;Post-IPO;United States
+1947;UpGrad;Mumbai;Education;166;Unknown;India
+1948;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+1949;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+1950;Lendi;Sydney;Real Estate;149;Unknown;Australia
+1951;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+1952;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+1953;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+1954;SiriusXM;New York City;Media;528;Post-IPO;United States
+1955;UpGrad;Mumbai;Education;174;Unknown;India
+1956;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+1957;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+1958;Lendi;Sydney;Real Estate;157;Unknown;Australia
+1959;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+1960;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+1961;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+1962;SiriusXM;New York City;Media;536;Post-IPO;United States
+1963;UpGrad;Mumbai;Education;182;Unknown;India
+1964;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+1965;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+1966;Lendi;Sydney;Real Estate;165;Unknown;Australia
+1967;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+1968;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+1969;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+1970;SiriusXM;New York City;Media;544;Post-IPO;United States
+1971;UpGrad;Mumbai;Education;190;Unknown;India
+1972;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+1973;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+1974;Lendi;Sydney;Real Estate;173;Unknown;Australia
+1975;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+1976;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+1977;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+1978;SiriusXM;New York City;Media;552;Post-IPO;United States
+1979;UpGrad;Mumbai;Education;198;Unknown;India
+1980;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+1981;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+1982;Lendi;Sydney;Real Estate;181;Unknown;Australia
+1983;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+1984;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+1985;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+1986;SiriusXM;New York City;Media;560;Post-IPO;United States
+1987;UpGrad;Mumbai;Education;206;Unknown;India
+1988;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+1989;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+1990;Lendi;Sydney;Real Estate;189;Unknown;Australia
+1991;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+1992;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+1993;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+1994;SiriusXM;New York City;Media;568;Post-IPO;United States
+1995;UpGrad;Mumbai;Education;214;Unknown;India
+1996;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+1997;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+1998;Lendi;Sydney;Real Estate;197;Unknown;Australia
+1999;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+2000;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+2001;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+2002;SiriusXM;New York City;Media;476;Post-IPO;United States
+2003;UpGrad;Mumbai;Education;122;Unknown;India
+2004;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+2005;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+2006;Lendi;Sydney;Real Estate;105;Unknown;Australia
+2007;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+2008;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+2009;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+2010;SiriusXM;New York City;Media;484;Post-IPO;United States
+2011;UpGrad;Mumbai;Education;130;Unknown;India
+2012;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+2013;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+2014;Lendi;Sydney;Real Estate;113;Unknown;Australia
+2015;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+2016;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+2017;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+2018;SiriusXM;New York City;Media;492;Post-IPO;United States
+2019;UpGrad;Mumbai;Education;138;Unknown;India
+2020;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+2021;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+2022;Lendi;Sydney;Real Estate;121;Unknown;Australia
+2023;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+2024;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+2025;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+2026;SiriusXM;New York City;Media;500;Post-IPO;United States
+2027;UpGrad;Mumbai;Education;146;Unknown;India
+2028;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+2029;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+2030;Lendi;Sydney;Real Estate;129;Unknown;Australia
+2031;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+2032;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+2033;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+2034;SiriusXM;New York City;Media;508;Post-IPO;United States
+2035;UpGrad;Mumbai;Education;154;Unknown;India
+2036;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+2037;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+2038;Lendi;Sydney;Real Estate;137;Unknown;Australia
+2039;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+2040;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+2041;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+2042;SiriusXM;New York City;Media;516;Post-IPO;United States
+2043;UpGrad;Mumbai;Education;162;Unknown;India
+2044;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+2045;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+2046;Lendi;Sydney;Real Estate;145;Unknown;Australia
+2047;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+2048;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+2049;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+2050;SiriusXM;New York City;Media;524;Post-IPO;United States
+2051;UpGrad;Mumbai;Education;170;Unknown;India
+2052;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+2053;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+2054;Lendi;Sydney;Real Estate;153;Unknown;Australia
+2055;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+2056;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+2057;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+2058;SiriusXM;New York City;Media;532;Post-IPO;United States
+2059;UpGrad;Mumbai;Education;178;Unknown;India
+2060;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+2061;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+2062;Lendi;Sydney;Real Estate;161;Unknown;Australia
+2063;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+2064;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+2065;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+2066;SiriusXM;New York City;Media;540;Post-IPO;United States
+2067;UpGrad;Mumbai;Education;186;Unknown;India
+2068;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+2069;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+2070;Lendi;Sydney;Real Estate;169;Unknown;Australia
+2071;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+2072;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+2073;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+2074;SiriusXM;New York City;Media;548;Post-IPO;United States
+2075;UpGrad;Mumbai;Education;194;Unknown;India
+2076;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+2077;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+2078;Lendi;Sydney;Real Estate;177;Unknown;Australia
+2079;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+2080;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+2081;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+2082;SiriusXM;New York City;Media;556;Post-IPO;United States
+2083;UpGrad;Mumbai;Education;202;Unknown;India
+2084;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+2085;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+2086;Lendi;Sydney;Real Estate;185;Unknown;Australia
+2087;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+2088;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+2089;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+2090;SiriusXM;New York City;Media;564;Post-IPO;United States
+2091;UpGrad;Mumbai;Education;210;Unknown;India
+2092;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+2093;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+2094;Lendi;Sydney;Real Estate;193;Unknown;Australia
+2095;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+2096;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+2097;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+2098;SiriusXM;New York City;Media;572;Post-IPO;United States
+2099;UpGrad;Mumbai;Education;218;Unknown;India
+2100;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+2101;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+2102;Lendi;Sydney;Real Estate;101;Unknown;Australia
+2103;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+2104;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+2105;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+2106;SiriusXM;New York City;Media;480;Post-IPO;United States
+2107;UpGrad;Mumbai;Education;126;Unknown;India
+2108;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+2109;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+2110;Lendi;Sydney;Real Estate;109;Unknown;Australia
+2111;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+2112;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+2113;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+2114;SiriusXM;New York City;Media;488;Post-IPO;United States
+2115;UpGrad;Mumbai;Education;134;Unknown;India
+2116;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+2117;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+2118;Lendi;Sydney;Real Estate;117;Unknown;Australia
+2119;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+2120;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+2121;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+2122;SiriusXM;New York City;Media;496;Post-IPO;United States
+2123;UpGrad;Mumbai;Education;142;Unknown;India
+2124;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+2125;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+2126;Lendi;Sydney;Real Estate;125;Unknown;Australia
+2127;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+2128;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+2129;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+2130;SiriusXM;New York City;Media;504;Post-IPO;United States
+2131;UpGrad;Mumbai;Education;150;Unknown;India
+2132;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+2133;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+2134;Lendi;Sydney;Real Estate;133;Unknown;Australia
+2135;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+2136;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+2137;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+2138;SiriusXM;New York City;Media;512;Post-IPO;United States
+2139;UpGrad;Mumbai;Education;158;Unknown;India
+2140;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+2141;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+2142;Lendi;Sydney;Real Estate;141;Unknown;Australia
+2143;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+2144;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+2145;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+2146;SiriusXM;New York City;Media;520;Post-IPO;United States
+2147;UpGrad;Mumbai;Education;166;Unknown;India
+2148;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+2149;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+2150;Lendi;Sydney;Real Estate;149;Unknown;Australia
+2151;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+2152;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+2153;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+2154;SiriusXM;New York City;Media;528;Post-IPO;United States
+2155;UpGrad;Mumbai;Education;174;Unknown;India
+2156;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+2157;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+2158;Lendi;Sydney;Real Estate;157;Unknown;Australia
+2159;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+2160;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+2161;Atlassian;Sydney;Tech;560;Post-IPO;Australia
+2162;SiriusXM;New York City;Media;536;Post-IPO;United States
+2163;UpGrad;Mumbai;Education;182;Unknown;India
+2164;Loft;Sao Paulo;Real Estate;403;Unknown;Brazil
+2165;Embark Trucks;SF Bay Area;Transportation;294;Post-IPO;United States
+2166;Lendi;Sydney;Real Estate;165;Unknown;Australia
+2167;UserTesting;SF Bay Area;Marketing;129;Acquired;United States
+2168;Airbnb;SF Bay Area;Hospitality;6467;Post-IPO;United States
+2169;Atlassian;Sydney;Tech;568;Post-IPO;Australia
+2170;SiriusXM;New York City;Media;544;Post-IPO;United States
+2171;UpGrad;Mumbai;Education;190;Unknown;India
+2172;Loft;Sao Paulo;Real Estate;411;Unknown;Brazil
+2173;Embark Trucks;SF Bay Area;Transportation;302;Post-IPO;United States
+2174;Lendi;Sydney;Real Estate;173;Unknown;Australia
+2175;UserTesting;SF Bay Area;Marketing;137;Acquired;United States
+2176;Airbnb;SF Bay Area;Hospitality;6475;Post-IPO;United States
+2177;Atlassian;Sydney;Tech;576;Post-IPO;Australia
+2178;SiriusXM;New York City;Media;552;Post-IPO;United States
+2179;UpGrad;Mumbai;Education;198;Unknown;India
+2180;Loft;Sao Paulo;Real Estate;419;Unknown;Brazil
+2181;Embark Trucks;SF Bay Area;Transportation;310;Post-IPO;United States
+2182;Lendi;Sydney;Real Estate;181;Unknown;Australia
+2183;UserTesting;SF Bay Area;Marketing;145;Acquired;United States
+2184;Airbnb;SF Bay Area;Hospitality;6483;Post-IPO;United States
+2185;Atlassian;Sydney;Tech;584;Post-IPO;Australia
+2186;SiriusXM;New York City;Media;560;Post-IPO;United States
+2187;UpGrad;Mumbai;Education;206;Unknown;India
+2188;Loft;Sao Paulo;Real Estate;427;Unknown;Brazil
+2189;Embark Trucks;SF Bay Area;Transportation;318;Post-IPO;United States
+2190;Lendi;Sydney;Real Estate;189;Unknown;Australia
+2191;UserTesting;SF Bay Area;Marketing;153;Acquired;United States
+2192;Airbnb;SF Bay Area;Hospitality;6491;Post-IPO;United States
+2193;Atlassian;Sydney;Tech;592;Post-IPO;Australia
+2194;SiriusXM;New York City;Media;568;Post-IPO;United States
+2195;UpGrad;Mumbai;Education;214;Unknown;India
+2196;Loft;Sao Paulo;Real Estate;435;Unknown;Brazil
+2197;Embark Trucks;SF Bay Area;Transportation;326;Post-IPO;United States
+2198;Lendi;Sydney;Real Estate;197;Unknown;Australia
+2199;UserTesting;SF Bay Area;Marketing;161;Acquired;United States
+2200;Airbnb;SF Bay Area;Hospitality;6499;Post-IPO;United States
+2201;Atlassian;Sydney;Tech;500;Post-IPO;Australia
+2202;SiriusXM;New York City;Media;476;Post-IPO;United States
+2203;UpGrad;Mumbai;Education;122;Unknown;India
+2204;Loft;Sao Paulo;Real Estate;343;Unknown;Brazil
+2205;Embark Trucks;SF Bay Area;Transportation;234;Post-IPO;United States
+2206;Lendi;Sydney;Real Estate;105;Unknown;Australia
+2207;UserTesting;SF Bay Area;Marketing;69;Acquired;United States
+2208;Airbnb;SF Bay Area;Hospitality;6407;Post-IPO;United States
+2209;Atlassian;Sydney;Tech;508;Post-IPO;Australia
+2210;SiriusXM;New York City;Media;484;Post-IPO;United States
+2211;UpGrad;Mumbai;Education;130;Unknown;India
+2212;Loft;Sao Paulo;Real Estate;351;Unknown;Brazil
+2213;Embark Trucks;SF Bay Area;Transportation;242;Post-IPO;United States
+2214;Lendi;Sydney;Real Estate;113;Unknown;Australia
+2215;UserTesting;SF Bay Area;Marketing;77;Acquired;United States
+2216;Airbnb;SF Bay Area;Hospitality;6415;Post-IPO;United States
+2217;Atlassian;Sydney;Tech;516;Post-IPO;Australia
+2218;SiriusXM;New York City;Media;492;Post-IPO;United States
+2219;UpGrad;Mumbai;Education;138;Unknown;India
+2220;Loft;Sao Paulo;Real Estate;359;Unknown;Brazil
+2221;Embark Trucks;SF Bay Area;Transportation;250;Post-IPO;United States
+2222;Lendi;Sydney;Real Estate;121;Unknown;Australia
+2223;UserTesting;SF Bay Area;Marketing;85;Acquired;United States
+2224;Airbnb;SF Bay Area;Hospitality;6423;Post-IPO;United States
+2225;Atlassian;Sydney;Tech;524;Post-IPO;Australia
+2226;SiriusXM;New York City;Media;500;Post-IPO;United States
+2227;UpGrad;Mumbai;Education;146;Unknown;India
+2228;Loft;Sao Paulo;Real Estate;367;Unknown;Brazil
+2229;Embark Trucks;SF Bay Area;Transportation;258;Post-IPO;United States
+2230;Lendi;Sydney;Real Estate;129;Unknown;Australia
+2231;UserTesting;SF Bay Area;Marketing;93;Acquired;United States
+2232;Airbnb;SF Bay Area;Hospitality;6431;Post-IPO;United States
+2233;Atlassian;Sydney;Tech;532;Post-IPO;Australia
+2234;SiriusXM;New York City;Media;508;Post-IPO;United States
+2235;UpGrad;Mumbai;Education;154;Unknown;India
+2236;Loft;Sao Paulo;Real Estate;375;Unknown;Brazil
+2237;Embark Trucks;SF Bay Area;Transportation;266;Post-IPO;United States
+2238;Lendi;Sydney;Real Estate;137;Unknown;Australia
+2239;UserTesting;SF Bay Area;Marketing;101;Acquired;United States
+2240;Airbnb;SF Bay Area;Hospitality;6439;Post-IPO;United States
+2241;Atlassian;Sydney;Tech;540;Post-IPO;Australia
+2242;SiriusXM;New York City;Media;516;Post-IPO;United States
+2243;UpGrad;Mumbai;Education;162;Unknown;India
+2244;Loft;Sao Paulo;Real Estate;383;Unknown;Brazil
+2245;Embark Trucks;SF Bay Area;Transportation;274;Post-IPO;United States
+2246;Lendi;Sydney;Real Estate;145;Unknown;Australia
+2247;UserTesting;SF Bay Area;Marketing;109;Acquired;United States
+2248;Airbnb;SF Bay Area;Hospitality;6447;Post-IPO;United States
+2249;Atlassian;Sydney;Tech;548;Post-IPO;Australia
+2250;SiriusXM;New York City;Media;524;Post-IPO;United States
+2251;UpGrad;Mumbai;Education;170;Unknown;India
+2252;Loft;Sao Paulo;Real Estate;391;Unknown;Brazil
+2253;Embark Trucks;SF Bay Area;Transportation;282;Post-IPO;United States
+2254;Lendi;Sydney;Real Estate;153;Unknown;Australia
+2255;UserTesting;SF Bay Area;Marketing;117;Acquired;United States
+2256;Airbnb;SF Bay Area;Hospitality;6455;Post-IPO;United States
+2257;Atlassian;Sydney;Tech;556;Post-IPO;Australia
+2258;SiriusXM;New York City;Media;532;Post-IPO;United States
+2259;UpGrad;Mumbai;Education;178;Unknown;India
+2260;Loft;Sao Paulo;Real Estate;399;Unknown;Brazil
+2261;Embark Trucks;SF Bay Area;Transportation;290;Post-IPO;United States
+2262;Lendi;Sydney;Real Estate;161;Unknown;Australia
+2263;UserTesting;SF Bay Area;Marketing;125;Acquired;United States
+2264;Airbnb;SF Bay Area;Hospitality;6463;Post-IPO;United States
+2265;Atlassian;Sydney;Tech;564;Post-IPO;Australia
+2266;SiriusXM;New York City;Media;540;Post-IPO;United States
+2267;UpGrad;Mumbai;Education;186;Unknown;India
+2268;Loft;Sao Paulo;Real Estate;407;Unknown;Brazil
+2269;Embark Trucks;SF Bay Area;Transportation;298;Post-IPO;United States
+2270;Lendi;Sydney;Real Estate;169;Unknown;Australia
+2271;UserTesting;SF Bay Area;Marketing;133;Acquired;United States
+2272;Airbnb;SF Bay Area;Hospitality;6471;Post-IPO;United States
+2273;Atlassian;Sydney;Tech;572;Post-IPO;Australia
+2274;SiriusXM;New York City;Media;548;Post-IPO;United States
+2275;UpGrad;Mumbai;Education;194;Unknown;India
+2276;Loft;Sao Paulo;Real Estate;415;Unknown;Brazil
+2277;Embark Trucks;SF Bay Area;Transportation;306;Post-IPO;United States
+2278;Lendi;Sydney;Real Estate;177;Unknown;Australia
+2279;UserTesting;SF Bay Area;Marketing;141;Acquired;United States
+2280;Airbnb;SF Bay Area;Hospitality;6479;Post-IPO;United States
+2281;Atlassian;Sydney;Tech;580;Post-IPO;Australia
+2282;SiriusXM;New York City;Media;556;Post-IPO;United States
+2283;UpGrad;Mumbai;Education;202;Unknown;India
+2284;Loft;Sao Paulo;Real Estate;423;Unknown;Brazil
+2285;Embark Trucks;SF Bay Area;Transportation;314;Post-IPO;United States
+2286;Lendi;Sydney;Real Estate;185;Unknown;Australia
+2287;UserTesting;SF Bay Area;Marketing;149;Acquired;United States
+2288;Airbnb;SF Bay Area;Hospitality;6487;Post-IPO;United States
+2289;Atlassian;Sydney;Tech;588;Post-IPO;Australia
+2290;SiriusXM;New York City;Media;564;Post-IPO;United States
+2291;UpGrad;Mumbai;Education;210;Unknown;India
+2292;Loft;Sao Paulo;Real Estate;431;Unknown;Brazil
+2293;Embark Trucks;SF Bay Area;Transportation;322;Post-IPO;United States
+2294;Lendi;Sydney;Real Estate;193;Unknown;Australia
+2295;UserTesting;SF Bay Area;Marketing;157;Acquired;United States
+2296;Airbnb;SF Bay Area;Hospitality;6495;Post-IPO;United States
+2297;Atlassian;Sydney;Tech;596;Post-IPO;Australia
+2298;SiriusXM;New York City;Media;572;Post-IPO;United States
+2299;UpGrad;Mumbai;Education;218;Unknown;India
+2300;Loft;Sao Paulo;Real Estate;439;Unknown;Brazil
+2301;Embark Trucks;SF Bay Area;Transportation;230;Post-IPO;United States
+2302;Lendi;Sydney;Real Estate;101;Unknown;Australia
+2303;UserTesting;SF Bay Area;Marketing;65;Acquired;United States
+2304;Airbnb;SF Bay Area;Hospitality;6403;Post-IPO;United States
+2305;Atlassian;Sydney;Tech;504;Post-IPO;Australia
+2306;SiriusXM;New York City;Media;480;Post-IPO;United States
+2307;UpGrad;Mumbai;Education;126;Unknown;India
+2308;Loft;Sao Paulo;Real Estate;347;Unknown;Brazil
+2309;Embark Trucks;SF Bay Area;Transportation;238;Post-IPO;United States
+2310;Lendi;Sydney;Real Estate;109;Unknown;Australia
+2311;UserTesting;SF Bay Area;Marketing;73;Acquired;United States
+2312;Airbnb;SF Bay Area;Hospitality;6411;Post-IPO;United States
+2313;Atlassian;Sydney;Tech;512;Post-IPO;Australia
+2314;SiriusXM;New York City;Media;488;Post-IPO;United States
+2315;UpGrad;Mumbai;Education;134;Unknown;India
+2316;Loft;Sao Paulo;Real Estate;355;Unknown;Brazil
+2317;Embark Trucks;SF Bay Area;Transportation;246;Post-IPO;United States
+2318;Lendi;Sydney;Real Estate;117;Unknown;Australia
+2319;UserTesting;SF Bay Area;Marketing;81;Acquired;United States
+2320;Airbnb;SF Bay Area;Hospitality;6419;Post-IPO;United States
+2321;Atlassian;Sydney;Tech;520;Post-IPO;Australia
+2322;SiriusXM;New York City;Media;496;Post-IPO;United States
+2323;UpGrad;Mumbai;Education;142;Unknown;India
+2324;Loft;Sao Paulo;Real Estate;363;Unknown;Brazil
+2325;Embark Trucks;SF Bay Area;Transportation;254;Post-IPO;United States
+2326;Lendi;Sydney;Real Estate;125;Unknown;Australia
+2327;UserTesting;SF Bay Area;Marketing;89;Acquired;United States
+2328;Airbnb;SF Bay Area;Hospitality;6427;Post-IPO;United States
+2329;Atlassian;Sydney;Tech;528;Post-IPO;Australia
+2330;SiriusXM;New York City;Media;504;Post-IPO;United States
+2331;UpGrad;Mumbai;Education;150;Unknown;India
+2332;Loft;Sao Paulo;Real Estate;371;Unknown;Brazil
+2333;Embark Trucks;SF Bay Area;Transportation;262;Post-IPO;United States
+2334;Lendi;Sydney;Real Estate;133;Unknown;Australia
+2335;UserTesting;SF Bay Area;Marketing;97;Acquired;United States
+2336;Airbnb;SF Bay Area;Hospitality;6435;Post-IPO;United States
+2337;Atlassian;Sydney;Tech;536;Post-IPO;Australia
+2338;SiriusXM;New York City;Media;512;Post-IPO;United States
+2339;UpGrad;Mumbai;Education;158;Unknown;India
+2340;Loft;Sao Paulo;Real Estate;379;Unknown;Brazil
+2341;Embark Trucks;SF Bay Area;Transportation;270;Post-IPO;United States
+2342;Lendi;Sydney;Real Estate;141;Unknown;Australia
+2343;UserTesting;SF Bay Area;Marketing;105;Acquired;United States
+2344;Airbnb;SF Bay Area;Hospitality;6443;Post-IPO;United States
+2345;Atlassian;Sydney;Tech;544;Post-IPO;Australia
+2346;SiriusXM;New York City;Media;520;Post-IPO;United States
+2347;UpGrad;Mumbai;Education;166;Unknown;India
+2348;Loft;Sao Paulo;Real Estate;387;Unknown;Brazil
+2349;Embark Trucks;SF Bay Area;Transportation;278;Post-IPO;United States
+2350;Lendi;Sydney;Real Estate;149;Unknown;Australia
+2351;UserTesting;SF Bay Area;Marketing;113;Acquired;United States
+2352;Airbnb;SF Bay Area;Hospitality;6451;Post-IPO;United States
+2353;Atlassian;Sydney;Tech;552;Post-IPO;Australia
+2354;SiriusXM;New York City;Media;528;Post-IPO;United States
+2355;UpGrad;Mumbai;Education;174;Unknown;India
+2356;Loft;Sao Paulo;Real Estate;395;Unknown;Brazil
+2357;Embark Trucks;SF Bay Area;Transportation;286;Post-IPO;United States
+2358;Lendi;Sydney;Real Estate;157;Unknown;Australia
+2359;UserTesting;SF Bay Area;Marketing;121;Acquired;United States
+2360;Airbnb;SF Bay Area;Hospitality;6459;Post-IPO;United States
+2361;Atlassian;Sydney;Tech;560;Post-IPO;Australia

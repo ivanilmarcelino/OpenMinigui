@@ -95,7 +95,7 @@ PROCEDURE Init
    _HMG_IsXP := os_isWinXP()
    _HMG_IsXPorLater := IsWinXPorLater ()
    _HMG_IsThemed := IsThemed ()
-   _HMG_IsBcc77 := ( "7.7" $ iif( IsExe64(), hb_Ccompiler(), hb_compiler() ) )
+   _HMG_IsBcc77OrLater := ( "7.7" $ iif( IsExe64(), hb_Ccompiler(), hb_compiler() ) .OR. MSC_VER() > 0 .OR. ZigCompilerDetected() )
 
    _HMG_LANG_ID := ''
 
@@ -455,7 +455,7 @@ PROCEDURE Init
 #endif
 
    _HMG_ParentWindowActive  := .F.
-   _HMG_aErrorBlocks := Array ( 3 )
+   _HMG_aErrorBlocks := Array ( 8 )
    _HMG_lOnErrorStop := .F.
    _HMG_ProceedEachRadioButtonEvent := .T.
 

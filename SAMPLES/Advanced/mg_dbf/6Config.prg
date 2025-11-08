@@ -281,6 +281,9 @@ FUNCTION myConfig301menu(oWnd, oBrw, nMenu)
          App.Cargo:oIni:MAIN:SET_CODEPAGE := cStr
          HB_CDPSELECT( App.Cargo:cSetCdpg )
       ELSE
+         IF AT(".",cStr) > 0
+            cStr := SUBSTR(cStr,1,AT(".",cStr)-1)
+         ENDIF
          App.Cargo:cSetLang                  := cStr
          App.Cargo:oIni:MAIN:SET_LANGUAGE    := cStr
          owc:cLang := "HB_LANGSELECT()= " + cStr

@@ -607,6 +607,11 @@ Memvariables
 #xtranslate _HMG_bOnErrorInit				=> _HMG_aErrorBlocks\[1]
 #xtranslate _HMG_bOnErrorExit				=> _HMG_aErrorBlocks\[2]
 #xtranslate _HMG_lOnErrorStop				=> _HMG_aErrorBlocks\[3]
+#xtranslate _HMG_aErrorBackColor			=> _HMG_aErrorBlocks\[4]
+#xtranslate _HMG_aErrorFontColor			=> _HMG_aErrorBlocks\[5]
+#xtranslate _HMG_aTopStringFontColor		=> _HMG_aErrorBlocks\[6]
+#xtranslate _HMG_aButtonBackColor			=> _HMG_aErrorBlocks\[7]
+#xtranslate _HMG_aButtonFontColor			=> _HMG_aErrorBlocks\[8]
 
 #xtranslate _HMG_GridInplaceEdit			=> _HMG_SYSDATA\[457]
 #xtranslate _HMG_GridInplaceEdit_StageEvent		=> _HMG_GridInplaceEdit\[1]
@@ -615,4 +620,4 @@ Memvariables
 
 #xtranslate _HMG_ProceedEachRadioButtonEvent 		=> _HMG_SYSDATA\[458]
 #xtranslate _HMG_OwnerModalHandle			=> _HMG_SYSDATA\[459]
-#xtranslate _HMG_IsBcc77				=> _HMG_SYSDATA\[460]
+#xtranslate _HMG_IsBcc77OrLater				=> _HMG_SYSDATA\[460]

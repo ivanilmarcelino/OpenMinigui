@@ -1434,7 +1434,7 @@ CLASS TSBrowse FROM TControl
    METHOD FilterData( cFilter, lBottom, lFocus )
    METHOD FilterFTS( cFind, lUpper, lBottom, lFocus, lAll )
    METHOD FilterFTS_Line( cFind, lUpper, lAll )
-   METHOD CalcTotal( cTotal, cNoTotal, lDraw )
+   METHOD CalcTotal( cTotal, cNoTotal, lDraw, lPicture )
 
    METHOD SeekRec( xVal, lSoftSeek, lFindLast, nRowPos )
    METHOD FindRec( Block, lNext, nRowPos )
@@ -3061,7 +3061,7 @@ METHOD Default() CLASS TSBrowse
          nMin := 1
          nMax := ::oTxtFile:nMaxLineLength - Int( nMaxWidth / nTxtWid )
          ::oHScroll := TSBScrlBar():WinNew( nMin, nMax,, .F., Self )
-      ELSE
+      ELSEIF ::lCellBrw
          nMin := Min( 1, Len( ::aColumns ) )
          nMax := Len( ::aColumns )
          ::oHScroll := TSBScrlBar():WinNew( nMin, nMax,, .F., Self )
@@ -3098,7 +3098,7 @@ METHOD Default() CLASS TSBrowse
       ::oVScroll:SetPage( nPage, .T. )
    ENDIF
 
-   IF ! ::lNoHScroll
+   IF ! ::lNoHScroll .AND. ::oHScroll != NIL
       nPage := 1
       ::oHScroll:SetPage( nPage, .T. )
    ENDIF
@@ -9741,7 +9741,7 @@ METHOD HandleEvent( nMsg, nWParam, nLParam ) CLASS TSBrowse
       RETURN ::LDblClick( HiWord( nLParam ), LoWord( nLParam ), nWParam )
 
    ELSEIF nMsg == WM_MOUSEWHEEL
-      IF ::hWnd != 0 .AND. ::lEnabled .AND. ! ::lDontChange
+      IF ::hWnd != 0 .AND. ::hWnd == GetFocus() .AND. ::lEnabled .AND. ! ::lDontChange
          nDelta := Bin2I( I2Bin( HiWord( nWParam ) ) ) / 120
          ::MouseWheel( nMsg, nDelta, LoWord( nLParam ), HiWord( nLParam ) )
       ENDIF
@@ -9764,7 +9764,7 @@ METHOD HiliteCell( nCol, nColPix ) CLASS TSBrowse
    DEFAULT nCol := 1
 
    IF ! ::lCellBrw .AND. nColPix == NIL // if not browsing cell-style AND no nColPix, ignore call.
-      RETURN lDraw // nColPix NOT nil means called from ::LButtonDown()
+      RETURN lDraw                      // nColPix NOT nil means called from ::LButtonDown()
    ENDIF
 
    IF nCol < 1
@@ -14075,12 +14075,22 @@ RETURN NIL
 METHOD FilterFTS( cFind, lUpper, lBottom, lFocus, lAll ) CLASS TSBrowse
 
    LOCAL nLen := 0, cAlias := ::cAlias, ob := Self
-   LOCAL aArray, aLine, nLine, nCol, oCol, xVal, lRet, nFind
-   LOCAL nAtPos, nLastPos
+   LOCAL aArray, aLine, nLine, nCol, oCol, xVal, lRet
+   LOCAL nAtPos, nLastPos, aFind, nFind := 0
    DEFAULT lUpper := .T., lAll := .F.
 
-   IF lUpper .AND. HB_ISCHAR( cFind )
+   IF !HB_ISCHAR( cFind ) .or. Len( cFind ) == 0
+      RETURN nFind
+   ENDIF
+
+   IF lUpper
       cFind := Upper( cFind )
+   ENDIF
+
+   IF Left( cFind, 1 ) == " " 
+      aFind := hb_ATokens( substr( cFind, 2 ) )
+   ELSE
+      aFind := { cFind }
    ENDIF
 
    IF ::lIsDbf
@@ -14121,6 +14131,7 @@ METHOD FilterFTS( cFind, lUpper, lBottom, lFocus, lAll ) CLASS TSBrowse
           FOR EACH oCol IN ::aColumns
               nCol := hb_enumindex( oCol )
               IF nCol == 1 .AND. ::lSelector ; LOOP
+              ELSEIF !Empty(oCol:cName) .AND. oCol:cName == "ARRAYNO" ; LOOP
               ELSEIF ! oCol:lVisible ; LOOP
               ELSEIF oCol:lBitMap ; LOOP
               ENDIF
@@ -14133,11 +14144,16 @@ METHOD FilterFTS( cFind, lUpper, lBottom, lFocus, lAll ) CLASS TSBrowse
                  ENDIF
               ENDIF
               IF HB_ISCHAR( xVal )
-                 IF lUpper
-                    lRet := cFind $ Upper( xVal )
-                 ELSE
-                    lRet := cFind $ xVal
-                 ENDIF
+                 FOR EACH cFind IN aFind
+                     IF lUpper
+                        lRet := cFind $ Upper( xVal )
+                     ELSE
+                        lRet := cFind $ xVal
+                     ENDIF
+                     IF !lRet
+                        EXIT
+                     ENDIF
+                 NEXT
                  IF lRet
                     AAdd( aArray, aLine )
                     EXIT
@@ -14178,12 +14194,19 @@ RETURN nFind
 
 METHOD FilterFTS_Line( cFind, lUpper, lAll ) CLASS TSBrowse
 
-   LOCAL nCol, oCol, xVal, lRet := .F.
+   LOCAL nCol, oCol, xVal, lRet := .F., aFind
    DEFAULT lUpper := .T., lAll := .F.
+
+   IF Left( cFind, 1 ) == " "
+      aFind := hb_ATokens( substr( cFind, 2 ) )
+   ELSE
+      aFind := { cFind }
+   ENDIF
 
    FOR nCol := 1 TO Len( ::aColumns )
       oCol := ::aColumns[ nCol ]
       IF nCol == 1 .AND. ::lSelector ; LOOP
+      ELSEIF !Empty(oCol:cName) .AND. oCol:cName == "ORDKEYNO" ; LOOP
       ELSEIF ! oCol:lVisible ; LOOP
       ELSEIF oCol:lBitMap ; LOOP
       ENDIF
@@ -14196,11 +14219,16 @@ METHOD FilterFTS_Line( cFind, lUpper, lAll ) CLASS TSBrowse
          ENDIF
       ENDIF
       IF HB_ISCHAR( xVal )
-         IF lUpper
-            lRet := cFind $ Upper( xVal )
-         ELSE
-            lRet := cFind $ xVal
-         ENDIF
+         FOR EACH cFind IN aFind
+             IF lUpper
+                lRet := cFind $ Upper( xVal )
+             ELSE
+                lRet := cFind $ xVal
+             ENDIF
+             IF !lRet
+                EXIT
+             ENDIF
+         NEXT
          IF lRet
             EXIT
          ENDIF
@@ -14213,22 +14241,22 @@ RETURN lRet
 * METHOD TSBrowse:CalcTotal()  by SergKis
 * ============================================================================
 
-METHOD CalcTotal( cTotal, cNoTotal, lDraw ) CLASS TSBrowse
+METHOD CalcTotal( cTotal, cNoTotal, lDraw, lPicture ) CLASS TSBrowse
    LOCAL nCols := Len( ::aColumns )
    LOCAL lToT := .F., cToT, aSum := Array( nCols )
    LOCAL lNoT := .F., cNoT, aToT := Array( nCols )
    LOCAL nSum := 0, nRec, oCol, nI, nK
    LOCAL cNam, xVal, nAtPos, nLastPos
 
-   IF IsLogical( cNoTotal )
+   IF ISLOGICAL( cNoTotal )
       lDraw    := cNoTotal
       cNoTotal := NIL
-   ELSEIF IsLogical( cTotal )
+   ELSEIF ISLOGICAL( cTotal )
       lDraw  := cTotal
       cTotal := NIL
    ENDIF
 
-   DEFAULT lDraw := .T.
+   DEFAULT lDraw := .T., lPicture := .F.
 
    aFill( aSum, 0 )
    aFill( aToT, .F. )
@@ -14324,8 +14352,12 @@ METHOD CalcTotal( cTotal, cNoTotal, lDraw ) CLASS TSBrowse
              oCol := ::aColumns[nK]
              IF !aTot[nK] ; LOOP
              ENDIF
-             IF Empty( aSum[nK] ) ; xVal := ""
-             ELSE                 ; xVal := hb_ntos( aSum[nK] )
+             IF Empty( aSum[nK] )
+                xVal := ""
+             ELSEIF lPicture .AND. !Empty( oCol:cPicture )
+                xVal := AllTrim( Transform( aSum[nK], oCol:cPicture ) )
+             ELSE
+                xVal := hb_ntos( aSum[nK] )
              ENDIF
              oCol:cFooting := xVal
          NEXT

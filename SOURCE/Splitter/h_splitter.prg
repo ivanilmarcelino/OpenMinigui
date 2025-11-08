@@ -1178,7 +1178,7 @@ HB_FUNC( __INITGRADIENTFUNC )
    {
       f_GradientFill   = ( GradientFillPtr ) wapi_GetProcAddress( s_hDLL, "GdiGradientFill" );
 
-      if(( f_GradientFill == NULL ) )
+      if( f_GradientFill == NULL )
       {
          FreeLibrary( s_hDLL );
          s_hDLL = NULL;
@@ -1193,7 +1193,7 @@ HB_FUNC( __INITGRADIENTFUNC )
       {
          f_GradientFill   = ( GradientFillPtr ) wapi_GetProcAddress( s_hDLL, "GradientFill" );
 
-         if( ( f_GradientFill == NULL ) )
+         if( f_GradientFill == NULL )
          {
             FreeLibrary( s_hDLL );
             s_hDLL = NULL;
