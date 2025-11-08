@@ -1,1 +1,0 @@
-call ..\..\..\batch\hbmk2.bat %* -b dbg_test.hbp dbg_test.hbc

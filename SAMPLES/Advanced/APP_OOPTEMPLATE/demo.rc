@@ -1,5 +1,0 @@
-#include "Resource\demo.rc"
-#include "Resource\demo_64.rc"
-#include "Resource\demo_128.rc"
-#include "Resource\_info_my.rc"
-                              

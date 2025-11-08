@@ -1,1 +1,0 @@
-call ..\..\..\build.bat %* SapiVoice.hbp SapiVoice.hbc

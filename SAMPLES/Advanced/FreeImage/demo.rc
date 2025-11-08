@@ -1,4 +1,0 @@
-COPY	BITMAP	Res\Copy.bmp
-DELETE	BITMAP	Res\Delete.bmp
-DIR	BITMAP	Res\Dir.bmp
-SAVE	BITMAP	Res\Save.bmp

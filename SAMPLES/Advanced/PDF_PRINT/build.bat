@@ -1,1 +1,0 @@
-call ..\..\..\batch\hbmk2.bat %* hmghpdfdoc.hbp hmghpdfdoc.hbc

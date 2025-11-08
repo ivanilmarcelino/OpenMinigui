@@ -1,7 +1,0 @@
-library         JPG res\library.jpg
-book	  	PNG res\book.png
-employees	PNG res\employees.png
-exit		PNG res\exit.png
-loan		PNG res\loan.png
-reports		PNG res\reports.png
-user		PNG res\user.png

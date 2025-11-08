@@ -1,3 +1,0 @@
-call ..\..\..\batch\compile.bat demo1 %1 /nx %2 %3 %4 %5 %6 %7 %8 %9
-call ..\..\..\batch\compile.bat demo2 %1 /nx %2 %3 %4 %5 %6 %7 %8 %9
-call ..\..\..\batch\compile.bat demo3 %1 %2 %3 %4 %5 %6 %7 %8 %9

@@ -1,1 +1,0 @@
-call \MiniGui\batch\compile.bat HelpTest /lg procinfo

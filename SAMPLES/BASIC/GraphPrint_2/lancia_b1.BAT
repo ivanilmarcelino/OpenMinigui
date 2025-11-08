@@ -1,1 +1,0 @@
-@start graphprint grafico1.DBF  200 200 200 
