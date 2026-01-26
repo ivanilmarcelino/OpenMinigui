@@ -318,7 +318,7 @@ FUNCTION _DefineTBrowse( ControlName, ParentFormName, nCol, nRow, nWidth, nHeigh
          nStyle, bLClick, aFlds, aHeadClick, nLineStyle, lRePaint, ;
          delete, aJust, lock, appendable, lEnum, ;
          lAutoSearch, uUserSearch, lAutoFilter, uUserFilter, aPicture, ;
-         lTransparent, uSelector, lEditable, lAutoCol, aColSel, tooltip, aBrush )
+         lTransparent, uSelector, lEditable, lAutoCol, aColSel, tooltip, aBrush, lAdjust )
 
       IF HB_ISARRAY( aFont ) .AND. Len( aFont ) > 3
          IF HB_ISCHAR( aFont[ 4 ] )
@@ -1059,7 +1059,7 @@ CLASS TSBrowse FROM TControl
       lUpdate, uAlias, bWhen, nValue, lCellBrw, nStyle, bLClick, aLine, ;
       aActions, nLineStyle, lRePaint, lDelete, aJust, lLock, lAppend, lEnum, ;
       lAutoSearch, uUserSearch, lAutoFilter, uUserFilter, aPicture, ;
-      lTransparent, uSelector, lEditable, lAutoCol, aColSel, cTooltip, aBrush ) CONSTRUCTOR
+      lTransparent, uSelector, lEditable, lAutoCol, aColSel, cTooltip, aBrush, lAdjust ) CONSTRUCTOR
 
    METHOD AddColumn( oColumn )
 
@@ -1452,7 +1452,7 @@ METHOD New( cControlName, nRow, nCol, nWidth, nHeight, bLine, aHeaders, aColSize
       bWhen, nValue, lCellBrw, nStyle, bLClick, aLine, ;
       aActions, nLineStyle, lRePaint, lDelete, aJust, ;
       lLock, lAppend, lEnum, lAutoSearch, uUserSearch, lAutoFilter, uUserFilter, aPicture, ;
-      lTransparent, uSelector, lEditable, lAutoCol, aColSel, cTooltip, aBrush ) CLASS TSBrowse
+      lTransparent, uSelector, lEditable, lAutoCol, aColSel, cTooltip, aBrush, lAdjust ) CLASS TSBrowse
 
    LOCAL aSuperHeaders, ParentHandle, ;
       aTmpColor := Array( 20 ), ;
@@ -1551,6 +1551,7 @@ METHOD New( cControlName, nRow, nCol, nWidth, nHeight, bLine, aHeaders, aColSize
          cAlias := "ADO_"
          ::oRSet := uAlias
       ENDIF
+
 #ifdef __XHARBOUR__
    ELSEIF ValType( uAlias ) == "H"
       ::nDataType := DATATYPE_ARRAY
@@ -1716,6 +1717,10 @@ METHOD New( cControlName, nRow, nCol, nWidth, nHeight, bLine, aHeaders, aColSize
          IF lSuperHeader
             aSuperHeaders := IdentSuper( aHeaders, Self )
          ENDIF
+      ENDIF
+
+      IF HB_ISLOGICAL( lAdjust )
+         ::lAdjColumn := lAdjust
       ENDIF
 
       ::Default()
@@ -3061,7 +3066,7 @@ METHOD Default() CLASS TSBrowse
          nMin := 1
          nMax := ::oTxtFile:nMaxLineLength - Int( nMaxWidth / nTxtWid )
          ::oHScroll := TSBScrlBar():WinNew( nMin, nMax,, .F., Self )
-      ELSEIF ::lCellBrw
+      ELSEIF ! ::lAdjColumn
          nMin := Min( 1, Len( ::aColumns ) )
          nMax := Len( ::aColumns )
          ::oHScroll := TSBScrlBar():WinNew( nMin, nMax,, .F., Self )
@@ -14079,16 +14084,14 @@ METHOD FilterFTS( cFind, lUpper, lBottom, lFocus, lAll ) CLASS TSBrowse
    LOCAL nAtPos, nLastPos, aFind, nFind := 0
    DEFAULT lUpper := .T., lAll := .F.
 
-   IF !HB_ISCHAR( cFind ) .or. Len( cFind ) == 0
-      RETURN nFind
-   ENDIF
-
-   IF lUpper
+   IF ! HB_ISCHAR( cFind )
+      cFind := ""
+   ELSEIF lUpper
       cFind := Upper( cFind )
    ENDIF
 
-   IF Left( cFind, 1 ) == " " 
-      aFind := hb_ATokens( substr( cFind, 2 ) )
+   IF Left( cFind, 1 ) == " " .AND. Len( cFind ) > 1
+      aFind := hb_ATokens( SubStr( cFind, 2 ) )
    ELSE
       aFind := { cFind }
    ENDIF
@@ -14356,6 +14359,9 @@ METHOD CalcTotal( cTotal, cNoTotal, lDraw, lPicture ) CLASS TSBrowse
                 xVal := ""
              ELSEIF lPicture .AND. !Empty( oCol:cPicture )
                 xVal := AllTrim( Transform( aSum[nK], oCol:cPicture ) )
+                IF "*" $ xVal
+                   xVal := hb_ntos( aSum[nK] )
+                ENDIF
              ELSE
                 xVal := hb_ntos( aSum[nK] )
              ENDIF

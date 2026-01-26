@@ -438,7 +438,7 @@ RETURN iif( cType == 'N', 0, ;
       iif( cType == 'L', .F., '' ) ) )
 
 /*
- * STATIC FUNCTION WithRegistry( nKey, cRegKey, bAction )
+ * STATIC FUNCTION WithRegistry( nKey, cRegKey, bAction, uDefault )
  *
  * Executes a code block with a TReg32 object.
  *
@@ -446,9 +446,11 @@ RETURN iif( cType == 'N', 0, ;
  *   nKey    (numeric): The handle of a predefined registry key (e.g., HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER).
  *   cRegKey (string):  The path to the registry key to operate on.
  *   bAction (codeblock): The code block to execute with the TReg32 object as a parameter.
+ *   uDefault: value returned when open fails.
  *
  * Return Value:
- *   (variant): The result of the code block execution.
+ *   (variant): The result of the code block execution when key opens successfully.
+ *   uDefault when key does NOT exist or on error.
  *
  * Purpose:
  *   This function simplifies registry operations by creating a TReg32 object, executing a code block with the object,
@@ -457,16 +459,19 @@ RETURN iif( cType == 'N', 0, ;
  * Notes:
  *   The TReg32 object is created with lShowError set to .F. to suppress error messages during object creation.
  */
-STATIC FUNCTION WithRegistry( nKey, cRegKey, bAction )
+STATIC FUNCTION WithRegistry( nKey, cRegKey, bAction, uDefault )
 
-   LOCAL oReg := TReg32():New( nKey, cRegKey, .F. ), uResult
+   LOCAL oReg, uResult := uDefault
+
+   oReg := TReg32():New( nKey, cRegKey, .F. )
+
    IF ! oReg:lError
       uResult := Eval( bAction, oReg )
    ENDIF
+
    oReg:Close()
 
 RETURN uResult
-
 
 /*
  * FUNCTION IsRegistryKey( nKey, cRegKey )
@@ -488,7 +493,7 @@ RETURN uResult
  *   The TReg32 object is created with lShowError set to .F. to suppress error messages.
  */
 FUNCTION IsRegistryKey( nRegistryKey, cRegistryKey )
-RETURN WithRegistry( nRegistryKey, cRegistryKey, {| oReg | ! oReg:lError } )
+RETURN WithRegistry( nRegistryKey, cRegistryKey, {| oReg | ! oReg:lError }, .F. )
 
 /*
  * FUNCTION CreateRegistryKey( nKey, cRegKey )

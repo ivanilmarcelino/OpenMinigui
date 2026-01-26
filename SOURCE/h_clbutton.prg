@@ -173,7 +173,7 @@ FUNCTION CLButtonEventhandler ( hWnd, nMsg, wParam, lParam )
 
    HB_SYMBOL_UNUSED( hWnd )
 
-   IF nMsg == WM_COMMAND
+   IF nMsg == WM_COMMAND .AND. lParam != 0
 
       i := AScan ( _HMG_aControlHandles, lParam )
 
@@ -232,10 +232,8 @@ PROCEDURE CLButtonSetFocus ( cWindow, cControl )
       ControlCount := Len ( _HMG_aControlNames )
       ParentFormHandle := _HMG_aControlParentHandles [ GetControlIndex ( cControl, cWindow ) ]
       FOR x := 1 TO ControlCount
-         IF _HMG_aControlType [x] == 'CLBUTTON'
-            IF _HMG_aControlParentHandles [x] == ParentFormHandle
-               SendMessage ( _HMG_aControlHandles [x], BM_SETSTYLE, LOWORD ( BS_COMMANDLINK ), 1 )
-            ENDIF
+         IF _HMG_aControlParentHandles [x] == ParentFormHandle .AND. _HMG_aControlType [x] == 'CLBUTTON'
+            SendMessage ( _HMG_aControlHandles [x], BM_SETSTYLE, LOWORD ( BS_COMMANDLINK ), 1 )
          ENDIF
       NEXT
       SetFocus( hWnd )

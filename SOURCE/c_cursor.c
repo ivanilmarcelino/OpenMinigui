@@ -266,7 +266,7 @@ HB_FUNC( FILECURSOR )
  *   2: STRING or INTEGER - Cursor name or resource ID.
  *
  * Returns:
- *   (void) — updates window class cursor if successful.
+ *   (void) - updates window class cursor if successful.
  *
  * Notes:
  *   Attempts resource-based loading first, then file-based fallback.

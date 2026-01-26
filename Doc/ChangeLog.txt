@@ -1,3 +1,123 @@
+2026/01/22: HMG Extended Edition version 26.01.
+  * Modified: Minor optimizations in the MiniGUI core, affecting the following
+           controls:
+           - GetBox;
+           - Statusbar;
+           - Command Link Button;
+           - Split Button.
+           Contributed by Grigory Filatov
+  * Updated: Adaptation FiveWin Class TSBrowse 9.0 in HMG:
+           - pacified the warnings in the C code for compatibility with Zig
+             compiler.
+           Contributed by Grigory Filatov
+  * Updated: HbSQLite3 library:
+           - update for using SQLITE3 version 3.51.2 (from 3.51.0).
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\SQLITE_2)
+  * Updated: Harbour Compiler 3.2.0dev (SVN 2026-01-13 16:24):
+           * Updated libpng library to 1.6.53 (from 1.6.50).
+           Contributed by Grigory Filatov
+           (look at ReadMe.txt in folder \harbour) [PRO VERSION]
+  * New: 'System idle time monitoring' sample.
+           Based upon a contribution of HMG user Edward.
+           Adapted for Minigui Extended by Grigory Filatov
+           (see in folder \samples\Advanced\SysIdle_2)
+  * Updated: 'Emulation of a colored CheckBox and colored RadioGroup controls
+           at the themed Windows' sample:
+           - added reusable CHECKLABEL-based Radio Group implementation.
+           This allows you to use custom images for radio buttons.
+           Syntax:
+             @ <row>,<col> CLRADIOGROUP <name> ;
+                [ PARENT <parent> ] ;
+                [ WIDTH <width> ] ;
+                [ HEIGHT <height> ] ;
+                OPTIONS <aOptions> ;
+                IMAGES <aImages> ;
+                [ FONTCOLOR <fontcolor> ] ;
+                [ HOVERCOLOR <hovercolor> ] ;
+                [ VALUE <initvalue> ] ;
+                [ SPACING <spacing> ] ;
+                [ <horizontal: HORIZONTAL> ] ;
+                [ TOOLTIP <tooltip> ] ;
+                [ ON CHANGE <bOnChange> ]
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\CheckLabel_2)
+  * Updated: 'Use CheckLabels similar to RadioGroup' samples.
+           Contributed by Sergej Kiselev and Verchenko Andrey
+           (see in folder \samples\Basic\CheckLabel_RadioGroup)
+  * Updated: 'How to add a skin for a Grid control' sample:
+           - added comprehensive comments explaining the purpose and
+             functionality of each function.
+           Contributed by Grigory Filatov
+           (see demo2.prg in folder \samples\Basic\Grid_5)
+  * Updated: 'HMG Miscellaneous Functions' sample.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\Misc)
+  * Updated: 'Custom progress bar' sample:
+           - fixed visual glitch on the second page of the Tab control.
+           Bug was reported by Pierpaolo Martinello.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\PROGRESSBAR_2)
+  * Updated: 'Custom Button' user component sample:
+           - added comprehensive comments explaining the purpose and
+             functionality of each function.
+           Contributed by Grigory Filatov
+           (see hmgbutton.prg in folder \samples\Basic\USER_COMPONENTS)
+  * Updated: 'Vista UI buttons' sample.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\VistaUI)
+  * Updated: 'Harbour Script Usage' sample:
+           - added comprehensive comments explaining the purpose and
+             functionality of each function.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\RunScript)
+
+2025/11/29: HMG Extended Edition version 25.11 (Update 1).
+  * Fixed: There is incorrect behavior for IsRegistryKey() function: when
+           the key does not exist, it returns NIL, not .F.
+           (introduced in build 25.09).
+           This is critical if you use the above function in expressions like:
+             IF IsRegistryKey( ... )
+           because NIL is treated as falsey, but it is not .F..
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\RegistryUnitTests)
+  * Updated: Implementation of UNICODE support in the MiniGUI core:
+           - fixed RCDataToFile() and RCDataToMem() C-functions error handling;
+           - updated AnsiToWide() and WideToAnsi() essential C-functions:
+             * removed MultiByteToWideChar misuse;
+             * NULL-safe behavior;
+             * memory handling fixed in HMG_CREATEFILE_UTF16LE_BOM();
+             * clean UTF-16 BOM writing logic.
+           Contributed by Grigory Filatov
+  * Updated: Pacified the warnings in the C code for compatibility with Zig
+           language as LLVM C compiler.
+           Contributed by Grigory Filatov
+  * Updated: Adaptation FiveWin Class TSBrowse 9.0 in HMG:
+           * Fixed an incorrect behavior introduced in build 25.11:
+             The horizontal scrollbar was only visible if the CELLED clause was
+             present in the TBROWSE definition. This scrollbar will now be
+             hidden if the TBROWSE definition contains the ADJUST clause.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\BrowseToTBrowse)
+  * New: 'How to switch from a BROWSE control to a TBROWSE control' sample.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\BrowseToTBrowse)
+  * New: 'File copy window with animation' samples.
+           Based on HMG_FILECOPY( cSource, cDestination, BUFFER_SIZE, bBlock ).
+           Contributed by Sergej Kiselev and Verchenko Andrey
+           (see demo in folder \samples\Basic\Filecopy_2)
+  * New: 'Update the program from the website' samples.
+           Based on WinAPI and CURL approach.
+           Contributed by Sergej Kiselev, Verchenko Andrey and Dmitry Ryzhkov
+           (see demo in folder \samples\Advanced\Updating_program_from_website)
+  * New: 'Updated Payroll example with MariaDB support' sample.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\SQLRDD\Payroll_MariaDB) [PRO VERSION]
+  * Updated: 'Arkanoid Mini Game 2.0' sample by HMG user Edward:
+           - more brief comments.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Applications\Arkanoid) [PRO VERSION]
+
 2025/11/06: HMG Extended Edition version 25.11.
   * Fixed: Memory leaks in CHECKLABEL control: this fix avoids memory and
            GDI leaks that would previously happen when replacing images or

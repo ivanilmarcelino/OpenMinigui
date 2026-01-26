@@ -172,7 +172,7 @@ FUNCTION SPButtonEventHandler ( hWnd, nMsg, wParam, lParam )
          LaunchDropdownMenu( GetHwndFrom ( lParam ) )
       ENDIF
 
-   ELSEIF nMsg == WM_COMMAND
+   ELSEIF nMsg == WM_COMMAND .AND. lParam != 0
 
       i := AScan ( _HMG_aControlHandles, lParam )
 
@@ -209,10 +209,8 @@ PROCEDURE SPButtonSetFocus ( cWindow, cControl )
       ControlCount := Len ( _HMG_aControlNames )
       ParentFormHandle := _HMG_aControlParentHandles [ GetControlIndex ( cControl, cWindow ) ]
       FOR x := 1 TO ControlCount
-         IF _HMG_aControlType [x] == 'SPBUTTON'
-            IF _HMG_aControlParentHandles [x] == ParentFormHandle
-               SendMessage ( _HMG_aControlHandles [x], BM_SETSTYLE, BS_SPLITBUTTON, LOWORD( 1 ) )
-            ENDIF
+         IF _HMG_aControlParentHandles [x] == ParentFormHandle .AND. _HMG_aControlType [x] == 'SPBUTTON'
+            SendMessage ( _HMG_aControlHandles [x], BM_SETSTYLE, BS_SPLITBUTTON, LOWORD( 1 ) )
          ENDIF
       NEXT
 

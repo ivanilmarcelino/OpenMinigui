@@ -420,7 +420,7 @@ FUNCTION _IsOwnerDrawStatusBarItem( ParentHandle, ItemID, Value, lSet )
 
       i := hb_enumindex( h )
 
-      IF _HMG_aControlType[ i ] == ITEMTYPENAME .AND. h == ParentHandle
+      IF h == ParentHandle .AND. _HMG_aControlType[ i ] == ITEMTYPENAME
 
          IF ++nLocID == ItemID
 

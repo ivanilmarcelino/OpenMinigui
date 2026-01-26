@@ -158,6 +158,10 @@ METHOD T7Zip:Create()
                ::cCompressionMethod := aArcMethod[ ::nCompressionMethod ]
                ::cCommand += ' ' + '-m0=' + ::cCompressionMethod
             ENDIF
+            IF ::nZipCompressionLevel >= 0 .AND. ::nZipCompressionLevel <= 9
+               ::cCommand += ' ' + '-mx' + LTRIM( STR( ::nZipCompressionLevel ) )
+            ENDIF
+
       END
 
       IF Valtype( ::cPassword ) == "C" .AND. Len( ::cPassword ) > 0
@@ -170,10 +174,6 @@ METHOD T7Zip:Create()
 
       IF Valtype( ::lSolid ) == "L" .AND. !::lSolid
          ::cCommand += ' ' + '-ms=off'
-      ENDIF
-
-      IF ::nZipCompressionLevel >= 0 .AND. ::nZipCompressionLevel <= 9
-         ::cCommand += ' ' + '-mx' + LTRIM( STR( ::nZipCompressionLevel ) )
       ENDIF
 
       IF Valtype( ::lMultiCPU ) == "L" .AND. ::lMultiCPU

@@ -121,7 +121,7 @@ BEGIN
          VALUE "CompanyName",      MG_NAME "\0"
          VALUE "FileDescription",  MG_NAME "\0"
          VALUE "FileVersion",      MG_VER_FILE_STR "\0"
-         VALUE "LegalCopyright",   "Copyright © 2005-2025 MiniGUI Team" "\0"
+         VALUE "LegalCopyright",   "Copyright © 2005-2026 MiniGUI Team" "\0"
          VALUE "ProductName",      MG_NAME "\0"
          VALUE "ProductVersion",   MG_VER_PROD_STR "\0"
       END

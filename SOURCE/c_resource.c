@@ -48,9 +48,8 @@
    Parts of this code are contributed and used here under permission of the
    author: Copyright 2016 (C) P.Chornyj <myorg63@mail.ru>
 */
-
 #include <mgdefs.h>
-#include "hbapifs.h"                // Include Harbour API for file system functions.
+#include "hbapifs.h"                 // Include Harbour API for file system functions.
 
 // Function prototype to get the application instance handle.
 HINSTANCE         GetInstance( void );
@@ -80,7 +79,7 @@ static HINSTANCE  HMG_DllStore[255]; // Array to store handles of up to 256 load
  */
 static HINSTANCE HMG_LoadDll( char *DllName )
 {
-   static int  DllCnt;               // Counter to track the index for storing DLL handles in HMG_DllStore.
+   static int  DllCnt;              // Counter to track the index for storing DLL handles in HMG_DllStore.
 #ifndef UNICODE
    LPCSTR      lpLibFileName = DllName;               // If not Unicode, DLL name is in ANSI.
 #else
@@ -201,7 +200,7 @@ HB_FUNC( SETRESOURCES )
 HB_FUNC( FREERESOURCES )
 {
    HMG_UnloadDll();                                   // Free all DLLs in HMG_DllStore.
-   if( hResources )                                   // Reset hResources if it’s not zero.
+   if( hResources )                                   // Reset hResources if it is not zero.
    {
       hResources = 0;
    }
@@ -273,8 +272,8 @@ HB_FUNC( RCDATATOFILE )
 
    dwSize = SizeofResource( hModule, hResInfo );      // Get the size of the resource.
 
-   // Create a new file to write the resource data.
-   hFile = CreateFile( hb_parc( 2 ), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, ( DWORD ) 0, NULL );
+   /* Use ANSI-specific CreateFileA to avoid passing a wide pointer on ANSI build */
+   hFile = CreateFileA( hb_parc( 2 ), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, ( DWORD ) 0, NULL );
 
    // Check if the file was created; return -4 if not.
    if( INVALID_HANDLE_VALUE == hFile )
@@ -294,7 +293,6 @@ HB_FUNC( RCDATATOFILE )
    }
 
    CloseHandle( hFile );               // Close the file.
-
    hb_retnl( dwRet );                  // Return the number of bytes written.
 }
 
@@ -358,9 +356,9 @@ HB_FUNC( RCDATATOMEM )
    }
 
    dwSize = SizeofResource( hModule, hResInfo );   // Get the size of the resource.
-   if( dwSize )               // If the resource has data, return it as a binary string.
+   if( dwSize )         // If the resource has data, return it as a binary string.
    {
-      hb_retclen( lpData, dwSize );
+      hb_retclen( ( const char * ) lpData, dwSize );
    }
 }
 
@@ -388,72 +386,73 @@ extern HB_EXPORT HB_SIZE   hb_fileWrite( PHB_FILE pFile, const void *buffer, HB_
  */
 HB_FUNC( RCDATATOFILE )
 {
-   HMODULE  hModule = ( HMODULE ) ( HB_ISNIL( 4 ) ? GetResources() : hmg_par_raw_HINSTANCE( 4 ) );
+   HMODULE  hModule = ( HB_ISNIL( 4 ) ? GetResources() : hmg_par_raw_HINSTANCE( 4 ) );
 
-   /* lpType is RT_RCDATA by default */
 #ifndef UNICODE
    LPCSTR   lpName = hb_parc( 1 );
-   LPCSTR   lpType = hb_parclen( 3 ) > 0 ? ( LPCSTR ) hb_parc( 3 ) : MAKEINTRESOURCE( hb_parnidef( 3, 10 ) );
+   LPCSTR   lpType = HB_ISCHAR( 3 ) ? hb_parc( 3 ) : MAKEINTRESOURCE( hb_parnidef( 3, 10 ) );
 #else
    LPCWSTR  lpName = AnsiToWide( ( char * ) hb_parc( 1 ) );
-   LPCWSTR  lpType = HB_ISCHAR( 3 ) ? AnsiToWide( ( char * ) hb_parc( 3 ) ) : ( LPCWSTR ) MAKEINTRESOURCE( hb_parnidef( 3, 10 ) );
+   LPCWSTR  lpType = HB_ISCHAR( 3 ) ? AnsiToWide( ( char * ) hb_parc( 3 ) ) : MAKEINTRESOURCEW( hb_parnidef( 3, 10 ) );
 #endif
-   HRSRC    hResInfo;
-   HGLOBAL  hResData = NULL;
-   HB_SIZE  dwResult = 0;
+   HGLOBAL  hResData;
+   LPVOID   lpData;
+   DWORD    dwSize;
+   PHB_FILE pFile;
+   HB_SIZE  written;
+   HRSRC    hResInfo = FindResource( hModule, HB_ISCHAR( 1 ) ? lpName : MAKEINTRESOURCE( hb_parni( 1 ) ), lpType );
 
-   if( HB_ISCHAR( 1 ) )
+   if( !hResInfo )
    {
-      hResInfo = FindResource( hModule, lpName, lpType );
-   }
-   else
-   {
-      hResInfo = FindResource( hModule, MAKEINTRESOURCE( hb_parni( 1 ) ), lpType );
+      hb_retnl( -1 );   /* resource not found */
+      return;
    }
 
-   if( NULL != hResInfo )
+   hResData = LoadResource( hModule, hResInfo );
+   if( !hResData )
    {
-      hResData = LoadResource( hModule, hResInfo );
-      if( NULL == hResData )
+      hb_retnl( -2 );   /* cannot load */
+      return;
+   }
+
+   lpData = LockResource( hResData );
+   if( !lpData )
+   {
+      hb_retnl( -3 );   /* cannot lock */
+      return;
+   }
+
+   dwSize = SizeofResource( hModule, hResInfo );
+   pFile = hb_fileExtOpen( hb_parcx( 2 ), NULL, FO_CREAT | FO_WRITE | FO_EXCLUSIVE | FO_PRIVATE, NULL, NULL );
+
+   if( !pFile )
+   {
+      hb_retnl( -4 );   /* cannot open output file */
+#ifdef UNICODE
+      hb_xfree( ( TCHAR * ) lpName );
+      if( HB_ISCHAR( 3 ) )
       {
-         dwResult = ( HB_SIZE ) - 2;         // can't load
+         hb_xfree( ( TCHAR * ) lpType );
       }
+#endif
+      return;
    }
-   else
+
+   written = hb_fileWrite( pFile, lpData, ( HB_SIZE ) dwSize, -1 );
+   hb_fileClose( pFile );
+
+   if( written != dwSize )
    {
-      dwResult = ( HB_SIZE ) - 1;            // can't find
-   }
-
-   if( 0 == dwResult )
-   {
-      LPVOID   lpData = LockResource( hResData );
-      if( NULL != lpData )
+#ifdef UNICODE
+      hb_xfree( ( TCHAR * ) lpName );
+      if( HB_ISCHAR( 3 ) )
       {
-         DWORD    dwSize = SizeofResource( hModule, hResInfo );
-         PHB_FILE pFile;
-         pFile = hb_fileExtOpen( hb_parcx( 2 ), NULL, FO_CREAT | FO_WRITE | FO_EXCLUSIVE | FO_PRIVATE, NULL, NULL );
-         if( NULL != pFile )
-         {
-            dwResult = hb_fileWrite( pFile, ( const void * ) lpData, ( HB_SIZE ) dwSize, -1 );
-            if( dwResult != dwSize )
-            {
-               dwResult = ( HB_SIZE ) - 5;   // can't write
-            }
-
-            hb_fileClose( pFile );
-         }
-         else
-         {
-            dwResult = ( HB_SIZE ) - 4;      // can't open
-         }
+         hb_xfree( ( TCHAR * ) lpType );
       }
-      else
-      {
-         dwResult = ( HB_SIZE ) - 3;         // can't lock
-      }
+#endif
+      hb_retnl( -5 );   /* write error */
+      return;
    }
-
-   hb_retnl( ( LONG ) dwResult );
 
 #ifdef UNICODE
    hb_xfree( ( TCHAR * ) lpName );
@@ -462,6 +461,7 @@ HB_FUNC( RCDATATOFILE )
       hb_xfree( ( TCHAR * ) lpType );
    }
 #endif
+   hb_retnl( ( LONG ) written );
 }
 
 /*
@@ -482,45 +482,57 @@ HB_FUNC( RCDATATOFILE )
  */
 HB_FUNC( RCDATATOMEM )
 {
-   HMODULE  hModule = ( HMODULE ) ( HB_ISNIL( 3 ) ? GetResources() : hmg_par_raw_HINSTANCE( 3 ) );
+   HMODULE  hModule = ( HB_ISNIL( 3 ) ? GetResources() : hmg_par_raw_HINSTANCE( 3 ) );
 
 #ifndef UNICODE
    LPCSTR   lpName = hb_parc( 1 );
-   LPCSTR   lpType = hb_parclen( 2 ) > 0 ? ( LPCSTR ) hb_parc( 2 ) : MAKEINTRESOURCE( hb_parnidef( 2, 10 ) );
+   LPCSTR   lpType = HB_ISCHAR( 2 ) ? hb_parc( 2 ) : MAKEINTRESOURCE( hb_parnidef( 2, 10 ) );
 #else
    LPCWSTR  lpName = AnsiToWide( ( char * ) hb_parc( 1 ) );
-   LPCWSTR  lpType = HB_ISCHAR( 2 ) ? AnsiToWide( ( char * ) hb_parc( 2 ) ) : ( LPCWSTR ) MAKEINTRESOURCE( hb_parnidef( 2, 10 ) );
+   LPCWSTR  lpType = HB_ISCHAR( 2 ) ? AnsiToWide( ( char * ) hb_parc( 2 ) ) : MAKEINTRESOURCEW( hb_parnidef( 2, 10 ) );
 #endif
-   HRSRC    hResInfo;
    HGLOBAL  hResData;
    LPVOID   lpData;
    DWORD    dwSize;
+   HRSRC    hResInfo = FindResource( hModule, hb_parclen( 1 ) ? lpName : MAKEINTRESOURCE( hb_parni( 1 ) ), lpType );
 
-   if( hb_parclen( 1 ) > 0 )
-   {
-      hResInfo = FindResource( hModule, lpName, lpType );
-   }
-   else
-   {
-      hResInfo = FindResource( hModule, MAKEINTRESOURCE( hb_parni( 1 ) ), lpType );
-   }
-
-   if( NULL == hResInfo )
+   if( !hResInfo )
    {
       hb_retc( "" );
+#ifdef UNICODE
+      hb_xfree( ( TCHAR * ) lpName );
+      if( HB_ISCHAR( 2 ) )
+      {
+         hb_xfree( ( TCHAR * ) lpType );
+      }
+#endif
       return;
    }
 
    hResData = LoadResource( hModule, hResInfo );
-   if( NULL == hResData )
+   if( !hResData )
    {
+#ifdef UNICODE
+      hb_xfree( ( TCHAR * ) lpName );
+      if( HB_ISCHAR( 2 ) )
+      {
+         hb_xfree( ( TCHAR * ) lpType );
+      }
+#endif
       hb_retc( "" );
       return;
    }
 
    lpData = LockResource( hResData );
-   if( NULL == lpData )
+   if( !lpData )
    {
+#ifdef UNICODE
+      hb_xfree( ( TCHAR * ) lpName );
+      if( HB_ISCHAR( 2 ) )
+      {
+         hb_xfree( ( TCHAR * ) lpType );
+      }
+#endif
       hb_retc( "" );
       return;
    }
@@ -528,7 +540,19 @@ HB_FUNC( RCDATATOMEM )
    dwSize = SizeofResource( hModule, hResInfo );
    if( dwSize )
    {
-      hb_retclen( lpData, dwSize );
+      hb_retclen( ( const char * ) lpData, dwSize );
    }
+   else
+   {
+      hb_retc( "" );
+   }
+
+#ifdef UNICODE
+   hb_xfree( ( TCHAR * ) lpName );
+   if( HB_ISCHAR( 2 ) )
+   {
+      hb_xfree( ( TCHAR * ) lpType );
+   }
+#endif
 }
 #endif /* __XHARBOUR__ */

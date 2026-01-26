@@ -164,7 +164,7 @@ STATIC FUNCTION HMG_GenError( cMsg )
 
 RETURN oError
 
-#define MG_VERSION "Harbour MiniGUI Extended Edition 25.11 ("
+#define MG_VERSION "Harbour MiniGUI Extended Edition 26.01.0 ("
 
 /*-----------------------------------------------------------------------------*
 * FUNCTION MiniGuiVersion( nVer )
@@ -183,7 +183,7 @@ RETURN oError
 * Parameters:
 *   nVer: Optional. Specifies the level of version information to return.
 *                   0 (default): Returns the full version string.
-*                   1: Returns a shorter version string (38 characters).
+*                   1: Returns a shorter version string (40 characters).
 *                   2: Returns an even shorter version string (15 characters).
 *
 * Return Value:
@@ -206,7 +206,7 @@ FUNCTION MiniGuiVersion( nVer )
       cVer += " (DEBUG)"
    ENDIF
 
-   anOfs := { Len( cVer ), 38, 15 }
+   anOfs := { Len( cVer ), 40, 15 }
    nIndex := Max( 0, Min( nVer, 2 ) ) + 1
 
 RETURN Left( cVer, anOfs[ nIndex ] )

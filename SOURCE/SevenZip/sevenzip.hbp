@@ -1,16 +1,22 @@
+#
+# winprint.hbp
+#
+
+{bcc}-env:DEBUG=yes
 
 -hblib
 -inc
--o../../lib/sevenzip
+-o../../harbour/lib/sevenzip
 
--I../../include
+-I../../include;${hb_curdir}
 
--warn=yes
+-warn=max 
+
+{!DEBUG&bcc|mingw}-l
+
+-hbx=../../include/sevenzip.hbx
 
 -w3 -es2 -ko -q0
 
--hbx=../../include/${hb_name}.hbx
-
 t7zip.prg
 sevenzip.c
-

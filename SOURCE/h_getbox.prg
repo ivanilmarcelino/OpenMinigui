@@ -1804,7 +1804,7 @@ STATIC FUNCTION _GetDefinedStatusBarItemValue( ParentHandle, ItemID )
 
       i := hb_enumindex( h )
 
-      IF _HMG_aControlType [i] == "ITEMMESSAGE" .AND. h == ParentHandle
+      IF h == ParentHandle .AND. _HMG_aControlType [i] == "ITEMMESSAGE"
 
          IF ++nLocID == ItemID
             EXIT

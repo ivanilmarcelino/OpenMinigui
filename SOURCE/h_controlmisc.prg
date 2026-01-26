@@ -1178,16 +1178,12 @@ FUNCTION _SetFocus ( ControlName , ParentForm , Index )
 
             x := hb_enumindex( hControl )
 
-            IF _HMG_aControlType [x] == 'BUTTON'
-
-               IF _HMG_aControlParentHandles [x] == ParentFormHandle
-                  SendMessage ( hControl , BM_SETSTYLE , LOWORD ( BS_PUSHBUTTON ) , 1 )
-                  IF Empty( _HMG_aControlBrushHandle [x] )
-                     LOOP
-                  ENDIF
-                  RedrawWindow ( hControl )
+            IF _HMG_aControlParentHandles [x] == ParentFormHandle .AND. _HMG_aControlType [x] == 'BUTTON'
+               SendMessage ( hControl , BM_SETSTYLE , LOWORD ( BS_PUSHBUTTON ) , 1 )
+               IF Empty( _HMG_aControlBrushHandle [x] )
+                  LOOP
                ENDIF
-
+               RedrawWindow ( hControl )
             ENDIF
 
          NEXT
