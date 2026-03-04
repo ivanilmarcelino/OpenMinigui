@@ -13921,7 +13921,7 @@ METHOD SetDbf( cAlias ) CLASS TSBrowse
          ::bKeyCount := &cAdsKeyCount, ;
          ::bLogicLen := &cAdsKeyCount, ;
          ::bTagOrder := {| uTag | ( cAlias )->( ordSetFocus( uTag ) ) }, ;
-         ::bGoToPos := {| n | Eval( ::bKeyNo, n, Self ) }
+         ::bGoToPos := {| n | Eval( ::bKeyNo, n ) }
    ELSE
       DEFAULT ::bKeyNo := {| n | ( cAlias )->( iif( n == NIL, iif( IndexOrd() > 0, ordKeyNo(), RecNo() ), ;
          iif( IndexOrd() > 0, ordKeyGoto( n ), dbGoto( n ) ) ) ) }, ;

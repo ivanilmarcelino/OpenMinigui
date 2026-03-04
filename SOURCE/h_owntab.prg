@@ -34,7 +34,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
    www - https://harbour.github.io/
 
    "Harbour Project"
-   Copyright 1999-2025, https://harbour.github.io/
+   Copyright 1999-2026, https://harbour.github.io/
 
    "WHAT32"
    Copyright 2002 AJ Wos <andrwos@aust1.net>

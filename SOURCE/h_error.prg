@@ -35,7 +35,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
    www - https://harbour.github.io/
 
    "Harbour Project"
-   Copyright 1999-2025, https://harbour.github.io/
+   Copyright 1999-2026, https://harbour.github.io/
 
    "WHAT32"
    Copyright 2002 AJ Wos <andrwos@aust1.net>
@@ -63,13 +63,13 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 *-----------------------------------------------------------------------------*/
 INIT PROCEDURE ClipInit()
 
-   IF os_isWin95() .OR. os_isWin98()
+   LOCAL lIsLegacyOs := os_isWin95() .OR. os_isWin98()
+
+   IF lIsLegacyOs
       MsgExclamation( "The " + hb_ArgV( 0 ) + " file" + CRLF + ;
          "expects a newer version of Windows." + CRLF + ;
          "Upgrade your Windows version.", "Error Starting Program", , .F., .T. )
-
       ExitProcess( 1 )
-
    ENDIF
 
    Init()
@@ -156,18 +156,18 @@ STATIC FUNCTION HMG_GenError( cMsg )
 
    LOCAL oError := ErrorNew()
 
-   oError:SubSystem   := "MGERROR"
-   oError:SubCode     := 0
-   oError:Severity    := ES_CATASTROPHIC
+   oError:SubSystem := "MGERROR"
+   oError:SubCode := 0
+   oError:Severity := ES_CATASTROPHIC
    oError:Description := cMsg
-   oError:Operation   := NIL
+   oError:Operation := NIL
 
 RETURN oError
 
-#define MG_VERSION "Harbour MiniGUI Extended Edition 26.01.0 ("
+#define MG_VERSION "Harbour MiniGUI Extended Edition 26.02.0 ("
 
 /*-----------------------------------------------------------------------------*
-* FUNCTION MiniGuiVersion( nVer )
+* FUNCTION MiniGuiVersion( nVersion )
 *
 * Description:
 *   This function returns the version string of the Harbour MiniGUI Extended Edition.
@@ -181,32 +181,34 @@ RETURN oError
 *   in how the version is displayed.
 *
 * Parameters:
-*   nVer: Optional. Specifies the level of version information to return.
+*   nVersion: Optional. Specifies the level of version information to return.
 *                   0 (default): Returns the full version string.
 *                   1: Returns a shorter version string (40 characters).
 *                   2: Returns an even shorter version string (15 characters).
 *
 * Return Value:
-*   cVer: The version string of the Harbour MiniGUI Extended Edition, truncated based on nVer.
+*   cVersion: The version string of the Harbour MiniGUI Extended Edition, truncated based on nVersion.
 *-----------------------------------------------------------------------------*/
-FUNCTION MiniGuiVersion( nVer )
+FUNCTION MiniGuiVersion( nVersion )
+
+   LOCAL cVersion
+
 #ifndef __XHARBOUR__
-   LOCAL cVer := MG_VERSION + hb_ntos( hb_Version( HB_VERSION_BITWIDTH ) ) + "-bit) "
+   cVersion := MG_VERSION + hb_ntos( hb_Version( HB_VERSION_BITWIDTH ) ) + "-bit) "
 #else
-   LOCAL cVer := MG_VERSION + iif( IsExe64(), "64", "32" ) + "-bit) "
+   cVersion := MG_VERSION + iif( IsExe64(), "64", "32" ) + "-bit) "
 #endif
-   LOCAL anOfs
-   LOCAL nIndex
-
-   hb_default( @nVer, 0 )
-
-   cVer += HMG_CharsetName()
-
+   cVersion += HMG_CharsetName()
    IF Set( _SET_DEBUG )
-      cVer += " (DEBUG)"
+      cVersion += " (DEBUG)"
    ENDIF
 
-   anOfs := { Len( cVer ), 40, 15 }
-   nIndex := Max( 0, Min( nVer, 2 ) ) + 1
+   hb_default( @nVersion, 0 )
+   nVersion := Max( 0, Min( nVersion, 2 ) )
 
-RETURN Left( cVer, anOfs[ nIndex ] )
+   SWITCH nVersion
+      CASE 1 ; RETURN Left( cVersion, 40 )
+      CASE 2 ; RETURN Left( cVersion, 15 )
+   ENDSWITCH
+
+RETURN cVersion

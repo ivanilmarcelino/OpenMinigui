@@ -1,7 +1,7 @@
 /*
  * MINIGUI - Harbour Win32 GUI library source code
  *
- * Copyright 2019-2025 Grigory Filatov <gfilatov@gmail.com>
+ * Copyright 2019-2026 Grigory Filatov <gfilatov@gmail.com>
  */
 
 #include "minigui.ch"
@@ -77,9 +77,9 @@ RETURN { cTitle, xOptions }
  *  The lRevertDefault parameter allows for easy customization of the default button.
  *-----------------------------------------------------------------------------*/
 FUNCTION AlertYesNo( cMessage, Title, lRevertDefault, xIcon, nSize, aColors, lAlwaysOnTop, bInit )
-   LOCAL aTitleInfo := _GetTitleAndOptions( Title, { '&' + _HMG_aABMLangLabel[ 20 ], '&' + _HMG_aABMLangLabel[ 21 ] } )
-   LOCAL cTitle := aTitleInfo[ 1 ]
-   LOCAL aOptions := aTitleInfo[ 2 ]
+   LOCAL aTitleData := _GetTitleAndOptions( Title, { '&' + _HMG_aABMLangLabel[ 20 ], '&' + _HMG_aABMLangLabel[ 21 ] } )
+   LOCAL cTitle := aTitleData[ 1 ]
+   LOCAL aOptions := aTitleData[ 2 ]
 
 RETURN ( _Alert( cMessage, aOptions, cTitle, , iif( hb_defaultValue( lRevertDefault, .F. ), 2, 1 ), xIcon, nSize, aColors, lAlwaysOnTop, bInit ) == IDOK )
 
@@ -107,9 +107,9 @@ RETURN ( _Alert( cMessage, aOptions, cTitle, , iif( hb_defaultValue( lRevertDefa
  *  The nDefaultButton parameter allows specifying the default button.
  *-----------------------------------------------------------------------------*/
 FUNCTION AlertYesNoCancel( cMessage, Title, nDefaultButton, xIcon, nSize, aColors, lAlwaysOnTop, bInit )
-   LOCAL aTitleInfo := _GetTitleAndOptions( Title, { '&' + _HMG_aABMLangLabel[ 20 ], '&' + _HMG_aABMLangLabel[ 21 ], '&' + _HMG_aABMLangButton[ 13 ] } )
-   LOCAL cTitle := aTitleInfo[ 1 ]
-   LOCAL aOptions := aTitleInfo[ 2 ]
+   LOCAL aTitleData := _GetTitleAndOptions( Title, { '&' + _HMG_aABMLangLabel[ 20 ], '&' + _HMG_aABMLangLabel[ 21 ], '&' + _HMG_aABMLangButton[ 13 ] } )
+   LOCAL cTitle := aTitleData[ 1 ]
+   LOCAL aOptions := aTitleData[ 2 ]
 
    SWITCH _Alert( cMessage, aOptions, cTitle, , hb_defaultValue( nDefaultButton, 1 ), xIcon, nSize, aColors, lAlwaysOnTop, bInit, .T. )
 
@@ -149,9 +149,9 @@ RETURN ( ALERT_CANCEL )
  *  The nDefaultButton parameter allows specifying the default button.
  *-----------------------------------------------------------------------------*/
 FUNCTION AlertRetryCancel( cMessage, Title, nDefaultButton, xIcon, nSize, aColors, lAlwaysOnTop, bInit )
-   LOCAL aTitleInfo := _GetTitleAndOptions( Title, { _HMG_aLangButton[ 13 ], _HMG_aLangButton[ 7 ] } ) // P.D. July 3, 2021
-   LOCAL cTitle := aTitleInfo[ 1 ]
-   LOCAL aOptions := aTitleInfo[ 2 ]
+   LOCAL aTitleData := _GetTitleAndOptions( Title, { _HMG_aLangButton[ 13 ], _HMG_aLangButton[ 7 ] } ) // P.D. July 3, 2021
+   LOCAL cTitle := aTitleData[ 1 ]
+   LOCAL aOptions := aTitleData[ 2 ]
 
 RETURN ( _Alert( cMessage, aOptions, cTitle, , hb_defaultValue( nDefaultButton, 1 ), xIcon, nSize, aColors, lAlwaysOnTop, bInit, .T. ) == IDOK )
 
@@ -179,9 +179,9 @@ RETURN ( _Alert( cMessage, aOptions, cTitle, , hb_defaultValue( nDefaultButton, 
  *  The nDefaultButton parameter allows specifying the default button.
  *-----------------------------------------------------------------------------*/
 FUNCTION AlertOkCancel( cMessage, Title, nDefaultButton, xIcon, nSize, aColors, lAlwaysOnTop, bInit )
-   LOCAL aTitleInfo := _GetTitleAndOptions( Title, { _HMG_BRWLangButton[ 4 ], _HMG_BRWLangButton[ 3 ] } )
-   LOCAL cTitle := aTitleInfo[ 1 ]
-   LOCAL aOptions := aTitleInfo[ 2 ]
+   LOCAL aTitleData := _GetTitleAndOptions( Title, { _HMG_BRWLangButton[ 4 ], _HMG_BRWLangButton[ 3 ] } )
+   LOCAL cTitle := aTitleData[ 1 ]
+   LOCAL aOptions := aTitleData[ 2 ]
 
 RETURN ( _Alert( cMessage, aOptions, cTitle, , hb_defaultValue( nDefaultButton, 1 ), xIcon, nSize, aColors, lAlwaysOnTop, bInit, .T. ) == IDOK )
 
@@ -209,9 +209,9 @@ RETURN ( _Alert( cMessage, aOptions, cTitle, , hb_defaultValue( nDefaultButton, 
  *  The lNoSound parameter allows disabling the default exclamation sound.
  *-----------------------------------------------------------------------------*/
 FUNCTION AlertExclamation( cMessage, Title, xIcon, nSize, aColors, lAlwaysOnTop, bInit, lNoSound )
-   LOCAL aTitleInfo := _GetTitleAndOptions( Title )
-   LOCAL nWaitSec := aTitleInfo[ 2 ]
-   LOCAL cTitle := aTitleInfo[ 1 ]
+   LOCAL aTitleData := _GetTitleAndOptions( Title )
+   LOCAL nWaitSec := aTitleData[ 2 ]
+   LOCAL cTitle := aTitleData[ 1 ]
 
    IF Empty( lNoSound )
       PlayExclamation()
@@ -243,9 +243,9 @@ RETURN _Alert( cMessage, nWaitSec, hb_defaultValue( cTitle, _HMG_MESSAGE[ 10 ] )
  *  The lNoSound parameter allows disabling the default information sound.
  *-----------------------------------------------------------------------------*/
 FUNCTION AlertInfo( cMessage, Title, xIcon, nSize, aColors, lAlwaysOnTop, bInit, lNoSound )
-   LOCAL aTitleInfo := _GetTitleAndOptions( Title )
-   LOCAL nWaitSec := aTitleInfo[ 2 ]
-   LOCAL cTitle := aTitleInfo[ 1 ]
+   LOCAL aTitleData := _GetTitleAndOptions( Title )
+   LOCAL nWaitSec := aTitleData[ 2 ]
+   LOCAL cTitle := aTitleData[ 1 ]
 
    IF Empty( lNoSound )
       PlayAsterisk()
@@ -277,9 +277,9 @@ RETURN _Alert( cMessage, nWaitSec, hb_defaultValue( cTitle, _HMG_MESSAGE[ 11 ] )
  *  The lNoSound parameter allows disabling the default stop sound.
  *-----------------------------------------------------------------------------*/
 FUNCTION AlertStop( cMessage, Title, xIcon, nSize, aColors, lAlwaysOnTop, bInit, lNoSound )
-   LOCAL aTitleInfo := _GetTitleAndOptions( Title )
-   LOCAL nWaitSec := aTitleInfo[ 2 ]
-   LOCAL cTitle := aTitleInfo[ 1 ]
+   LOCAL aTitleData := _GetTitleAndOptions( Title )
+   LOCAL nWaitSec := aTitleData[ 2 ]
+   LOCAL cTitle := aTitleData[ 1 ]
 
    IF Empty( lNoSound )
       PlayHand()
@@ -323,12 +323,8 @@ STATIC FUNCTION _Alert( cMessage, aOptions, cTitle, nIconType, nDefault, xIcon, 
    ENDIF
 
    IF hb_defaultValue( lAlwaysOnTop, .T. )
-      IF Empty( bInit )
-         bInit := {|| This.TopMost := .T. }
-      ELSE
-         bOldInit := bInit
-         bInit := {|| Eval( bOldInit ), This.TopMost := .T. }
-      ENDIF
+      bOldInit := bInit
+      bInit := {|| iif( HB_ISBLOCK( bOldInit ), Eval( bOldInit ), NIL ), This.TopMost := .T. }
    ENDIF
 
    IF AScan( _HMG_aFormType, 'A' ) == 0

@@ -35,7 +35,7 @@
 	www - https://harbour.github.io/
 
 	"Harbour Project"
-	Copyright 1999-2025, https://harbour.github.io/
+	Copyright 1999-2026, https://harbour.github.io/
 
 	"WHAT32"
 	Copyright 2002 AJ Wos <andrwos@aust1.net> 
@@ -226,6 +226,11 @@
 #define COLOR_3DHIGHLIGHT       COLOR_BTNHIGHLIGHT
 #define COLOR_3DHILIGHT         COLOR_BTNHIGHLIGHT
 #define COLOR_BTNHILIGHT        COLOR_BTNHIGHLIGHT
+
+// ChooseColors Styles
+#define CC_RGBINIT				1
+#define CC_PREVENTFULLOPEN		4
+#define CC_ANYCOLOR				256
 
 // Edit Control Styles
 #define ES_LEFT         0     // 0x0000

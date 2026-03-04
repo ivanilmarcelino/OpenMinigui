@@ -35,7 +35,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
     www - https://harbour.github.io/
 
     "Harbour Project"
-    Copyright 1999-2025, https://harbour.github.io/
+    Copyright 1999-2026, https://harbour.github.io/
 
     "WHAT32"
     Copyright 2002 AJ Wos <andrwos@aust1.net>
@@ -2744,13 +2744,33 @@ FUNCTION _SetPicture ( ControlName , ParentForm , FileName )
 
    CASE t == 'GETBOX'
 
-      oGet := _HMG_aControlHeadClick [i]
-      oGet:SetFocus()
-      oGet:Picture := Filename
-      _HMG_aControlPicture [i] := Filename
-      _HMG_aControlInputMask [i] := _GetPictureData ( oGet , Filename )
+      IF ISARRAY ( FileName ) .AND. Len ( FileName ) == 2
+         #define GBB1  2
+         #define GBB2  3
+         #define GBI1  4
+         #define GBI2  5
+         w := _HMG_aControlMiscData1 [i, 6] - 4
+         IF ISCHAR ( FileName [1] )
+            h := LoadImage( Filename [1], , w, w, , , GetSysColor ( COLOR_WINDOW ) )
+            SendMessage ( _HMG_aControlRangeMin[ i ][ GBB1 ], BM_SETIMAGE, IMAGE_BITMAP, h )
+            DeleteObject ( _HMG_aControlRangeMin[ i ][ GBI1 ] )
+            _HMG_aControlRangeMin[ i ][ GBI1 ] := h
+         ENDIF
+         IF ISCHAR ( FileName [2] )
+            h := LoadImage( Filename [2], , w, w, , , GetSysColor ( COLOR_WINDOW ) )
+            SendMessage ( _HMG_aControlRangeMin[ i ][ GBB2 ], BM_SETIMAGE, IMAGE_BITMAP, h )
+            DeleteObject ( _HMG_aControlRangeMin[ i ][ GBI2 ] )
+            _HMG_aControlRangeMin[ i ][ GBI2 ] := h
+         ENDIF
+      ELSE
+         oGet := _HMG_aControlHeadClick [i]
+         oGet:SetFocus()
+         oGet:Picture := Filename
+         _HMG_aControlPicture [i] := Filename
+         _HMG_aControlInputMask [i] := _GetPictureData ( oGet , Filename )
 
-      _SetValue ( , , oGet:VarGet(), i )
+         _SetValue ( , , oGet:VarGet(), i )
+      ENDIF
 
    CASE t == 'ANIGIF'
 

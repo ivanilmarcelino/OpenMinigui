@@ -40,7 +40,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
    www - https://harbour.github.io/
 
    "Harbour Project"
-   Copyright 1999-2025, https://harbour.github.io/
+   Copyright 1999-2026, https://harbour.github.io/
 
    "WHAT32"
    Copyright 2002 AJ Wos <andrwos@aust1.net>
@@ -613,7 +613,15 @@ FUNCTION OGETEVENTS( hWnd, nMsg, wParam, lParam )
                   IF Empty( _HMG_aControlSpacing [i] )
                      oGet:changed := .T.
                   ELSE
-                     oGet:changed := MsgRetryCancel( _HMG_aControlSpacing [i], _HMG_BRWLangError [11], , .F. )
+                     IF ISLOGICAL( _HMG_lOnErrorStop ) .AND. _HMG_lOnErrorStop
+                        IF GetFontHandle( "DlgFont" ) == 0
+                           DEFINE FONT DlgFont FONTNAME "Verdana" SIZE 14
+                        ENDIF
+                        DEFINE TIMER ( HMG_GetUniqueName() ) PARENT ( _HMG_ThisFormName ) INTERVAL 50 ACTION C_Center( GetActiveWindow() ) ONCE
+                        oGet:changed := AlertRetryCancel( _HMG_aControlSpacing [i], _HMG_BRWLangError [11], , "ZZZ_B_STOP64", 64, _HMG_aButtonBackColor )
+                     ELSE
+                        oGet:changed := MsgRetryCancel( _HMG_aControlSpacing [i], _HMG_BRWLangError [11], , .F. )
+                     ENDIF
                      IF ! oGet:changed
                         PostMessage( hWnd, WM_KEYDOWN, VK_ESCAPE, 0 )
                      ENDIF
@@ -627,7 +635,7 @@ FUNCTION OGETEVENTS( hWnd, nMsg, wParam, lParam )
 
                IF !( coldbuff == oGet:buffer )
                   _DispGetBoxText( hWnd, oGet:buffer )
-               ENDIF
+               ENDIF 
             ELSE
                oGet:changed := .T.
                oGet:original := oGet:buffer
@@ -686,7 +694,7 @@ FUNCTION OGETEVENTS( hWnd, nMsg, wParam, lParam )
       // message
       IF ParentHandle > 0
 
-         IF _IsControlDefined ( "StatusBar" , _HMG_aFormNames [ParentHandle] )
+         IF _IsControlDefined( "StatusBar" , _HMG_aFormNames [ParentHandle] )
 
             IF ValType( _HMG_DefaultStatusBarMessage ) == "C" .AND. _IsOwnerDrawStatusBarItem( _HMG_aControlContainerHandle [i], 1 )
                SetProperty( _HMG_aFormNames [ParentHandle], "StatusBar", "Item", 1, _HMG_DefaultStatusBarMessage )

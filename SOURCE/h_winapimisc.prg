@@ -35,7 +35,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
    www - https://harbour.github.io/
 
    "Harbour Project"
-   Copyright 1999-2025, https://harbour.github.io/
+   Copyright 1999-2026, https://harbour.github.io/
 
    "WHAT32"
    Copyright 2002 AJ Wos <andrwos@aust1.net>
@@ -52,146 +52,155 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #include 'minigui.ch'
 
 /*-----------------------------------------------------------------------------*
-FUNCTION WindowsVersion()
-*------------------------------------------------------------------------------*
-*
-*  Description:
-*     Retrieves the operating system version information.  Specifically, it attempts to retrieve
-*     detailed version information for Windows 10 and later, and falls back to the standard
-*     WinVersion() function for older operating systems.
-*
-*  Parameters:
-*     None
-*
-*  Return Value:
-*     An array containing the following elements:
-*       - [1]: The product name (e.g., "Windows 10 Pro", "Windows 11 Home").
-*       - [2]: The release ID or display version (e.g., "20H2", "22H2" or "22000.1234").
-*       - [3]: The build number (e.g., "Build 19042.985").
-*
-*  Purpose:
-*     This function provides a more robust way to determine the Windows version, especially for
-*     Windows 10 and later, where the traditional WinVersion() function may not return accurate
-*     information.  It reads version information directly from the Windows Registry. This is
-*     crucial for applications that need to adapt their behavior based on the specific OS version.
-*
-*  Notes:
-*     - The function relies on the IsWin10OrLater() and hb_osisWin11() functions to determine the OS version.
-*     - It uses GetRegistryValue() to read values from the Windows Registry.
-*     - The UBR (Update Build Revision) value is appended to the build number for more precise versioning.
-*     - If the OS is not Windows 10 or later, it falls back to the WinVersion() function.
-*
-*/
-FUNCTION WindowsVersion()
-   LOCAL cKey
-   LOCAL aRetVal := Array( 4 )
+   FUNCTION WindowsVersion()
+   
+   Purpose:
+      Retrieves detailed Operating System version information, specifically 
+      tailored to handle the nuances of Windows 10 and Windows 11.
 
+   Parameters:
+      None.
+
+   Returns:
+      An array { cProductName, cVersion, cBuildString }
+      - [1] Product Name (e.g., "Windows 11 Pro")
+      - [2] Release/Version ID (e.g., "22H2")
+      - [3] Formatted Build String (e.g., "Build 22621.1702")
+
+   Implementation Logic:
+      Standard Windows APIs often report incorrect versions for Windows 10+ 
+      unless the application is specifically manifested. This function bypasses 
+      API limitations by querying the Windows Registry directly for "CurrentVersion" 
+      data, providing the most accurate identification for modern environments.
+ *------------------------------------------------------------------------------*/
+FUNCTION WindowsVersion()
+
+   // Path to the registry key containing NT-based Windows versioning data
+   LOCAL cKey := "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
+   LOCAL cProd, cVer, cBuild, cExtra := ""
+   LOCAL aWin
+
+   // Check if the OS is Windows 10 or newer using HMG internal detection
    IF IsWin10OrLater()
-      cKey := "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
-      aRetVal [1] := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "ProductName" )
+
+      // Retrieve the descriptive product name from the registry
+      cProd  := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "ProductName" )
+
+      /* 
+         Logic for Windows 11:
+         Early Windows 11 builds often still report "Windows 10" in the ProductName registry key.
+         We perform a string replacement if hb_osisWin11() confirms the OS is actually Windows 11.
+         We also switch from 'ReleaseId' to 'DisplayVersion' as the standard for version naming.
+      */
       IF hb_osisWin11()
-         aRetVal [1] := StrTran( aRetVal [1], "10", "11" )
-         aRetVal [2] := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "DisplayVersion" )
+         cProd := StrTran( cProd, "10", "11" )
+         cVer  := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "DisplayVersion" )
       ELSE
-         aRetVal [2] := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "ReleaseId" )
+         // For standard Windows 10, ReleaseId (e.g., 1909, 20H2) is the primary identifier
+         cVer  := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "ReleaseId" )
       ENDIF
-      aRetVal [3] := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "CurrentBuild" ) + "." + ;
+
+      /* 
+         Build Number Construction:
+         Combines the base 'CurrentBuild' with the 'UBR' (Update Build Revision).
+         The UBR is stored as a Numeric (DWORD) in the registry, hence the "N" parameter.
+      */
+      cBuild := ;
+         GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "CurrentBuild" ) + "." + ;
          hb_ntos( GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "UBR", "N" ) )
-      aRetVal [4] := ""
+
    ELSE
-      aRetVal := WinVersion()
+
+      /* 
+         Fallback for Legacy OS:
+         If the OS is older than Windows 10, we rely on the standard WinVersion() 
+         array which is generally accurate for Windows 7, 8, and XP.
+      */
+      aWin := WinVersion()
+
+      cProd  := aWin[1]
+      cVer   := aWin[2]
+      cBuild := aWin[3]
+
+      // Check for service pack or extra version info if available in the array
+      IF Len( aWin ) >= 4
+         cExtra := aWin[4]
+      ENDIF
+
    ENDIF
 
-RETURN { aRetVal [1] + aRetVal [4] , aRetVal [2] , 'Build ' + aRetVal [3] }
+   // Return the formatted results as a 3-element array
+   RETURN { cProd + cExtra, cVer, "Build " + cBuild }
 
 /*-----------------------------------------------------------------------------*
+   FUNCTION _Execute( hWnd, cOperation, cFile, cParameters, cDirectory, nState )
+   
+   Purpose:
+      A high-level wrapper for the Windows ShellExecute API.
+
+   Parameters:
+      - hWnd: Handle to the parent window. If NIL, defaults to the current active window.
+      - cOperation: The action to perform ("open", "print", "explore", "runas", etc.).
+      - cFile: The file, executable, or URL to be processed.
+      - cParameters: Command-line arguments (if cFile is an executable).
+      - cDirectory: The working directory for the process.
+      - nState: Window display state (e.g., SW_SHOWNORMAL, SW_HIDE).
+
+   Returns:
+      Numeric: A value > 32 indicates success. Values <= 32 represent Shell error codes.
+
+   Design Decision:
+      Uses hb_defaultValue() to ensure the function is robust even when called with 
+      minimal arguments, defaulting to the active HMG window and standard visibility.
+ *------------------------------------------------------------------------------*/
 FUNCTION _Execute( hWnd , cOperation , cFile , cParameters , cDirectory , nState )
-*------------------------------------------------------------------------------*
-*
-*  Description:
-*     Executes a file or performs an operation on a file using the Windows ShellExecute API.
-*
-*  Parameters:
-*     hWnd        - The handle of the parent window.  If NIL, the active window is used.
-*                   Data type: HWND (Handle to a Window). Optional.
-*     cOperation  - The operation to perform (e.g., "open", "print", "edit", "explore", "find").
-*                   Data type: STRING.
-*     cFile       - The file to execute or operate on.
-*                   Data type: STRING. Optional.
-*     cParameters - Parameters to pass to the executable file.
-*                   Data type: STRING. Optional.
-*     cDirectory  - The working directory for the executable.
-*                   Data type: STRING.
-*     nState      - The window state (e.g., SW_SHOWNORMAL, SW_MAXIMIZE, SW_MINIMIZE).
-*                   Data type: NUMERIC. Optional. Defaults to SW_SHOWNORMAL.
-*
-*  Return Value:
-*     The return value of the ShellExecute API function.  A value greater than 32 indicates success.
-*     A value less than or equal to 32 indicates an error.
-*
-*  Purpose:
-*     This function provides a convenient wrapper around the Windows ShellExecute API, allowing
-*     applications to launch files, open documents, print files, and perform other shell operations.
-*     It simplifies the process of interacting with the operating system's shell.
-*     Example Usage:
-*       _Execute( hWnd, "open", "C:\MyDocument.txt", "", "C:\", SW_SHOWNORMAL )  // Opens the text file.
-*
-*  Notes:
-*     - The function uses hb_defaultValue() to provide default values for optional parameters.
-*     - The possible values for cOperation are 'edit', 'explore', 'find', 'open', 'print'.
-*     - The nState parameter controls how the application window is displayed.
-*
-*/
-FUNCTION _Execute( hWnd , cOperation , cFile , cParameters , cDirectory , nState )
-RETURN ShellExecute( hb_defaultValue( hWnd, GetActiveWindow() ), cOperation, ;
-   hb_defaultValue( cFile, "" ), cParameters, cDirectory, hb_defaultValue( nState, SW_SHOWNORMAL ) )
+   RETURN ShellExecute( hb_defaultValue( hWnd, GetActiveWindow() ), cOperation, ;
+      hb_defaultValue( cFile, "" ), cParameters, cDirectory, hb_defaultValue( nState, SW_SHOWNORMAL ) )
 
 /*-----------------------------------------------------------------------------*
-PROCEDURE ShellAbout( cTitle , cMsg , hIcon )
-*------------------------------------------------------------------------------*
-*
-*  Description:
-*     Displays a standard "About" dialog box using the C_ShellAbout function.  This function ensures
-*     that only one "About" dialog box is displayed at a time, even if the function is called multiple times.
-*
-*  Parameters:
-*     cTitle - The title of the "About" dialog box.
-*              Data type: STRING.
-*     cMsg   - The message to display in the "About" dialog box.
-*              Data type: STRING.
-*     hIcon  - The handle of the icon to display in the "About" dialog box.  If NIL, the default icon is used.
-*              Data type: HICON (Handle to an Icon). Optional.
-*
-*  Return Value:
-*     None.
-*
-*  Purpose:
-*     This procedure simplifies the creation of "About" dialog boxes in HMG applications.  It prevents
-*     multiple "About" dialogs from being opened simultaneously by using a global variable to track
-*     whether an "About" dialog is already active.  This ensures a consistent and user-friendly experience.
-*
-*  Notes:
-*     - The function uses a static global variable _HMG_ShellAbout to track whether an "About" dialog is already open.
-*     - The C_ShellAbout function (presumably a C function linked into the HMG application) is responsible for
-*       actually displaying the dialog box.
-*     - If an icon is provided (hIcon), the function destroys the icon after the dialog box is closed to prevent memory leaks.
-*
-*/
+   PROCEDURE ShellAbout( cTitle, cMsg, hIcon )
+   
+   Purpose:
+      Displays the standard Windows "About" dialog box.
+
+   Parameters:
+      - cTitle: The application name/title to display in the dialog.
+      - cMsg: Additional text (usually copyright or version info).
+      - hIcon: Handle to a custom icon. If provided, it will be displayed in the dialog.
+
+   Side Effects:
+      - UI: Freezes the parent window while the modal dialog is open.
+      - Resource Management: Automatically destroys the hIcon handle after use to prevent GDI leaks.
+      - Global State: Uses a global counter to prevent multiple instances of the About box.
+
+   Logic:
+      The procedure implements a "Singleton" pattern for the dialog using a 
+      Global variable. This prevents the user from triggering multiple About 
+      dialogs simultaneously via rapid clicking.
+ *------------------------------------------------------------------------------*/
 PROCEDURE ShellAbout( cTitle , cMsg , hIcon )
    LOCAL nCount
 
+   // Initialize the global tracking variable if it doesn't exist in the HMG environment
    IF _SetGetGlobal( "_HMG_ShellAbout" ) == NIL
       STATIC _HMG_ShellAbout AS GLOBAL VALUE 0
    ENDIF
 
+   // Only proceed if no other ShellAbout dialog is currently active
    IF ( nCount := _SetGetGlobal( "_HMG_ShellAbout" ) ) == 0
 
+      // Increment the global counter to "lock" the dialog
       ASSIGN GLOBAL _HMG_ShellAbout := ++nCount
 
+      // Call the C-level wrapper for the Windows ShellAbout API
       IF C_ShellAbout( GetActiveWindow() , cTitle , cMsg , hIcon )
-         IF hIcon != NIL .AND. IsHIcon( hIcon )  // Release Icon
+         
+         // If a custom icon handle was passed, we must release it from memory
+         IF hIcon != NIL .AND. IsHIcon( hIcon )
             DestroyIcon ( hIcon )
          ENDIF
+         
+         // Decrement the global counter to "unlock" and allow future calls
          ASSIGN GLOBAL _HMG_ShellAbout := --nCount
       ENDIF
 
