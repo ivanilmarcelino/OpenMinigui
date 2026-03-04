@@ -1,0 +1,5 @@
+# hmg paths
+
+incpaths=.\ .\Form .\Include ${HMGRPATH}\include ..\..\SYSOFFICE\64\FORM ..\..\BIBLIOTECA\64\FORM ..\64\FORM ..\64\Form ..\..\Biblioteca\64\form ..\comuns ..\..\SysOffice\64\form
+set Include=%MG_HRB%\include;%MG_CMP%\include;%MG_ROOT%include;%MG_BCC%\include;%MG_BCC%\include\windows\crtl;%MG_BCC%\include\windows\rtl;%MG_BCC%\include\windows\sdk
+

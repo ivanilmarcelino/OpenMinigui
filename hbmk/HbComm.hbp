@@ -1,0 +1,13 @@
+
+-hblib
+-inc
+-o../lib/HbComm
+-workdir=../lib/hbmk/HbComm
+
+-I../include
+
+-hbx=../include/HbComm.hbx
+
+../source/HbComm/hbcomm.c
+../source/HbComm/comm.cpp 
+../source/HbComm/hblcomm.cpp

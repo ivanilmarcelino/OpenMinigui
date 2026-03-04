@@ -1,0 +1,16 @@
+#
+# dll.hbp
+#
+
+-hblib
+-inc
+-o../lib/dll
+
+-workdir=../lib/hbmk/dll
+
+-I../include
+
+-w3 -es2 -ko -q0
+
+../source/dll/_wincall.c
+../source/dll/_windll.c

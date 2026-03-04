@@ -1,0 +1,21 @@
+#
+# hbaes.hbp
+#
+
+-hblib
+-inc
+-o../lib/hbaes
+-workdir=../lib/hbmk/hbaes
+
+-I../include;../source/hbaes/include
+
+-w2 -es2 -ko -q0
+
+-hbx=../include/hbaes.hbx
+
+../source/hbaes/aescrypt.prg
+../source/hbaes/padlock.c 
+../source/hbaes/aes.c 
+../source/hbaes/sha2.c 
+../source/hbaes/aescrypt2.c
+

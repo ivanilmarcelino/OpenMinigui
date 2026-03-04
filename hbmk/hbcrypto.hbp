@@ -1,0 +1,34 @@
+#
+# HBCrypto.hbp
+#
+
+-hblib
+-inc
+
+-o../lib/HBCrypto
+
+-w3 -es2
+
+-I../source/HBCrypto/3rd/ed25519;../source/HBCrypto/3rd/scrypt
+
+-cflag=-DHAVE_CONFIG_H
+
+-hbx=HBCrypto.hbx
+
+../source/HBCrypto/bcrypt.c
+
+#blake2b.c
+../source/HBCrypto/blake2s.c
+
+../source/HBCrypto/ed25519.c
+
+../source/HBCrypto/sha3.c
+
+../source/HBCrypto/pbkdf2.c
+../source/HBCrypto/scrypt.c
+../source/HBCrypto/strcmpc.c
+
+../source/HBCrypto/scryptcf.prg
+
+../source/HBCrypto/3rd/ed25519/ed25519.hbc
+../source/HBCrypto/3rd/scrypt/scrypt.hbc

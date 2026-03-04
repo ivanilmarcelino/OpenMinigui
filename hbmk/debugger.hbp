@@ -1,0 +1,17 @@
+#
+# debugger.hbp
+#
+
+-hblib
+-inc
+-o../lib/debugger
+-workdir=../lib/hbmk/debugger
+
+-I../include
+
+-w -es2 -ko -q0
+
+-hbx=../include/debugger.hbx
+
+../source/debugger/dbgGUI.prg
+../source/debugger/dbgHB.prg

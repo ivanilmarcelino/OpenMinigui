@@ -1,0 +1,17 @@
+#
+# hbcab.hbp
+#
+
+-hblib
+-inc
+
+-o../lib/hbcab
+-workdir=../lib/hbmk/hbcab
+
+-I./;../include
+
+-warn=max
+
+../source/hbcab/cabinet.c
+../source/hbcab/compress.c
+../source/hbcab/decompress.c

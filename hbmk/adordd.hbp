@@ -1,0 +1,20 @@
+#
+# adordd.hbp
+#
+
+-hblib
+-inc
+-workdir=../lib/hbmk/adordd
+-o../lib/adordd
+
+-I../include
+
+-warn=max
+
+-w2 -es2 -ko -q0
+
+-hbx=../include/adordd.hbx
+
+../source/adordd/adordd.prg
+
+

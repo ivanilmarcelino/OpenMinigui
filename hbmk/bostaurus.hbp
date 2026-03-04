@@ -1,0 +1,24 @@
+#
+# bostaurus.hbp
+#
+
+{bcc}-env:DEBUG=yes
+
+-hblib
+-inc
+-workdir=../lib/hbmk/bostaurus
+
+-o../lib/bostaurus
+
+-I../include
+
+-warn=max
+
+-w3 -es2 -ko -q0
+
+{!DEBUG&bcc}-l
+
+-hbx=../include/bostaurus.hbx
+
+../source/bostaurus/h_Bostaurus.prg
+../source/bostaurus/c_BosTaurus.c
