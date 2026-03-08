@@ -3,7 +3,7 @@
 #Feito 2026-03-04 ../BosTaurus
 #Feito 2026-03-04 ../CallDll
 #Feito 2026-03-04 ../Debugger
-#Feito 2026-03-04 ../Dll
+#Feito 2026-03-04 ../Dll (NAO COMPILA EM MINGW)
 #Feito 2026-03-04 ../GraphPlus
 #Feito 2026-03-04 ../HbAES
 #Feito 2026-03-04 ../HbCAB
@@ -19,30 +19,28 @@
 #Feito 2026-03-07 ../HbPrinter
 #Feito 2026-03-07 ../HbSQLite3
 #Feito 2026-03-07 ../HbVpdf
-
-/*Pendente*/
-../HbXlsXml
-../HbXML
-../HbZeeGrid
-../HbZipArc
-../HMG_EasySQL
-../HMG_HPDF
-../MiniPrint
-../MiniPrint2
-../PageScript
-../PdfPrinter
-../PropGrid
-../PropSheet
-../QHTM
-../SELECTOR
-../SevenZip
-../shell32
-../Socket
-../Splitter
-../SQLite3Facade
-../TMsAgent
-../TsBrowse
-../WinReport
+#Feito 2026-03-07 ../HbXlsXml
+#Feito 2026-03-07 ../HbXML
+#Feito 2026-03-07 ../HbZeeGrid (NÃO COMPILA EM MINGW)
+#Feito 2026-03-07 ../HbZipArc
+#Feito 2026-03-07 ../HMG_EasySQL
+#Feito 2026-03-07 ../HMG_HPDF
+#Feito 2026-03-07 ../MiniPrint
+#Feito 2026-03-07 ../MiniPrint2
+#Feito 2026-03-07 ../PageScript
+#Feito 2026-03-07 ../PdfPrinter
+#Feito 2026-03-07 ../PropGrid
+#Feito 2026-03-07 ../PropSheet
+#Feito 2026-03-07 ../QHTM
+#Feito 2026-03-07 ../SELECTOR
+#Feito 2026-03-07 ../SevenZip
+#Feito 2026-03-07 ../shell32
+#Feito 2026-03-07 ../Socket
+#Feito 2026-03-07 ../Splitter
+#Feito 2026-03-07 ../SQLite3Facade
+#Feito 2026-03-07 ../TMsAgent
+#Feito 2026-03-07 ../TsBrowse
+#Feito 2026-03-07 ../WinReport
 
 #Retirado (já tem no harbour)
 #../HbMySQL
