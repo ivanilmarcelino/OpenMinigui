@@ -1,0 +1,23 @@
+#
+# hbzeegrid.hbp
+#
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I../include;../source/hbzeegrid
+
+-warn=max
+
+-w3 -es2 -ko -q0
+
+-hbx=../include/hbzeegrid.hbx
+
+../source/hbzeegrid/hbzggrid.c
+../source/hbzeegrid/zgflat.c
+../source/hbzeegrid/zgdate.c
+../source/hbzeegrid/hbutils.c
+../source/hbzeegrid/cells.prg

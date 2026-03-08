@@ -1,6 +1,8 @@
 #
-# adordd.hbp
+# easy_sql.hbp
 #
+
+#{bcc}-env:DEBUG=yes
 
 -hblib
 -inc
@@ -10,12 +12,8 @@
 
 -I../include
 
--warn=max
-
 -w2 -es2 -ko -q0
 
--hbx=../include/adordd.hbx
+#{!DEBUG&bcc|allmingw}-l
 
-../source/adordd/adordd.prg
-
-
+../source/HMG_EasySQL/core.prg

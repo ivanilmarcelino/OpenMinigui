@@ -1,0 +1,20 @@
+#
+# hbsqlit3.hbp
+#
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I../include
+
+-hbx=../include/hbsqlit3.hbx
+
+-w3 -es2 -ko -q0
+
+-cflag=-DSQLITE_ENABLE_COLUMN_METADATA
+../source/HbSQLite3/core.c
+../source/HbSQLite3/errstr.prg
+../source/HbSQLite3/hdbc.prg

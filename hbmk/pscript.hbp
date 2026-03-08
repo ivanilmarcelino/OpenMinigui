@@ -1,5 +1,5 @@
 #
-# gplus.hbp
+# pscript.hbp
 #
 
 #{bcc}-env:DEBUG=yes
@@ -10,12 +10,15 @@
 -workdir=../lib/hbmk/${hb_comp}/${hb_name}
 -o../lib/${hb_comp}/${hb_name}
 
--I../include;${hb_curdir}
+-w2 -es2 -ko -ql
 
--w3 -es2 -ko -q0
+-warn=max 
+
+-I../include
+
 
 #{!DEBUG&bcc|mingw}-l
 
--hbx=../include/GraphPlus.hbx
+{bcc|mingw}-hbx=../include/pscript.hbx
 
-../source/GraphPlus/core.prg
+../source/PageScript/TPScript.prg

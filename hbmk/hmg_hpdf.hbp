@@ -1,6 +1,8 @@
 #
-# adordd.hbp
+# hmg_hpdf.hbp
 #
+
+#{bcc}-env:DEBUG=yes
 
 -hblib
 -inc
@@ -10,12 +12,10 @@
 
 -I../include
 
--warn=max
-
 -w2 -es2 -ko -q0
 
--hbx=../include/adordd.hbx
+#{!DEBUG&bcc|allmingw}-l
 
-../source/adordd/adordd.prg
+{bcc}-hbx=../include/hmg_hpdf.hbx
 
-
+../source/hmg_hpdf/core.prg

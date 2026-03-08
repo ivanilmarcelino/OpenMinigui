@@ -1,0 +1,22 @@
+#
+# PdfPrinter.hbp
+#
+
+-hblib
+
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I../source/PdfPrinter/include
+
+-w2 -es2 -ko -q0
+
+{bcc}-hbx=../include/PdfPrinter.hbx
+
+../source/PdfPrinter/source/THaruPdf.prg
+../source/PdfPrinter/source/THaruPdfBase.prg
+../source/PdfPrinter/source/HaruFonts.prg
+../source/PdfPrinter/source/HaruUtils.prg
+../source/PdfPrinter/source/HaruPrintMgr.prg

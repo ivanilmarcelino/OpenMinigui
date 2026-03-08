@@ -1,0 +1,19 @@
+#
+# hbxlsxml.hbp
+#
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I../include
+
+-w3 -es2 -ko -q0
+
+../source/HbXlsXml/xlsxml.prg
+../source/HbXlsXml/xlsxml_s.prg
+../source/HbXlsXml/xlsxml_y.prg
+
+-hbx=../include/hbxlsxml.hbx

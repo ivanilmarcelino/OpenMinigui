@@ -1,6 +1,3 @@
-#
-# calldll.hbp
-#
 
 -hblib
 -inc
@@ -10,8 +7,11 @@
 
 -I../include
 
+-hbx=../include/${hb_name}.hbx
+
+-warn=max
+
 -w3 -es2 -ko -q0
 
--hbx=../include/calldll.hbx
-
-../source/calldll/calldll.prg
+../source/shell32/shell32.prg
+

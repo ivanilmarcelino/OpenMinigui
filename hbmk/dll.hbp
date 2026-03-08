@@ -4,9 +4,9 @@
 
 -hblib
 -inc
--o../lib/dll
 
--workdir=../lib/hbmk/dll
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
 
 -I../include
 

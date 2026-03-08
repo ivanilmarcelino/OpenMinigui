@@ -1,0 +1,21 @@
+#
+# propgrid.hbp
+#
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I../include
+
+-warn=max
+
+-w2 -es2 -ko -q0
+
+-hbx=../include/propgrid.hbx
+
+../source/PropGrid/h_propgrid.prg
+../source/PropGrid/h_pglang.prg
+../source/PropGrid/c_propgrid.c

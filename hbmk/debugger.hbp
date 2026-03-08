@@ -4,8 +4,9 @@
 
 -hblib
 -inc
--o../lib/debugger
--workdir=../lib/hbmk/debugger
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
 
 -I../include
 

@@ -1,6 +1,8 @@
 #
-# calldll.hbp
+# hbziparc.hbp
 #
+
+#{bcc}-env:DEBUG=yes
 
 -hblib
 -inc
@@ -10,8 +12,10 @@
 
 -I../include
 
+-hbx=../include/hbziparc.hbx
+
 -w3 -es2 -ko -q0
 
--hbx=../include/calldll.hbx
+{!DEBUG&bcc|mingw}-l
 
-../source/calldll/calldll.prg
+../source/hbziparc/hbziparc.prg

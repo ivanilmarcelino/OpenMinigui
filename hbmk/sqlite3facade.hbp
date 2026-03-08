@@ -1,0 +1,26 @@
+#
+# sqlite3facade.hbp
+#
+
+#{bcc}-env:DEBUG=yes
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-w3 -es2 -ko -ql
+
+-warn=max 
+
+-I../include
+
+
+#{!DEBUG&bcc|mingw}-l
+
+../SOURCE\SQLite3Facade/SQLiteFacade.prg
+../SOURCE\SQLite3Facade/SQLiteFacadeHelper.prg
+../SOURCE\SQLite3Facade/SQLiteFacadeRecordSet.prg
+../SOURCE\SQLite3Facade/SQLiteFacadeRecordSetMockup.prg
+../SOURCE\SQLite3Facade/SQLiteFacadeStatement.prg

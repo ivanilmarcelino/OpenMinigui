@@ -1,8 +1,9 @@
 
 -hblib
 -inc
--o../lib/HbComm
--workdir=../lib/hbmk/HbComm
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
 
 -I../include
 

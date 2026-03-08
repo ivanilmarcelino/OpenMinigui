@@ -1,0 +1,16 @@
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I.
+
+-hbx=../include/hbfimage.hbx
+
+-w3 -es2
+
+# For FreeImage headers
+-c=gnu90
+
+../source/hbfimage/core.c

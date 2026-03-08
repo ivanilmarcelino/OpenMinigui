@@ -1,0 +1,21 @@
+
+#
+# libxlw.hbp
+#
+
+#{bcc}-env:DEBUG=yes
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/minigui
+-o../lib/${hb_comp}/${hb_name}
+
+-I../include;../source/hblibxlsxwriter
+
+-w2 -es2
+
+#{!DEBUG&bcc|mingw}-l
+
+../source/hblibxlsxwriter/hblibxlsxwriter.prg
+ 

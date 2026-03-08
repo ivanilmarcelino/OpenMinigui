@@ -1,0 +1,21 @@
+#
+# winreport.hbp
+#
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I../include
+
+-hbx=../include/winreport.hbx
+
+-w2 -es2 -ko -q0
+
+../source/WinReport/h_wrepint.prg
+../source/WinReport/h_wremix.prg
+../source/WinReport/h_WrePdf.prg
+../source/WinReport/hmg_hpdf.prg
+../source/WinReport/fncMyError.prg

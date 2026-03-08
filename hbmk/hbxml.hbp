@@ -1,5 +1,5 @@
 #
-# calldll.hbp
+# hbxml.hbp
 #
 
 -hblib
@@ -12,6 +12,7 @@
 
 -w3 -es2 -ko -q0
 
--hbx=../include/calldll.hbx
+{bcc}-hbx=../include/hbxml.hbx
 
-../source/calldll/calldll.prg
+../source/hbxml/hxmldoc.prg
+../source/hbxml/xmlparse.c

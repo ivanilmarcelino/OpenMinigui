@@ -1,5 +1,5 @@
 #
-# adordd.hbp
+# propsheet.hbp
 #
 
 -hblib
@@ -14,8 +14,7 @@
 
 -w2 -es2 -ko -q0
 
--hbx=../include/adordd.hbx
+-hbx=../include/propsheet.hbx
 
-../source/adordd/adordd.prg
-
-
+../source/propsheet/h_propsheet.prg
+../source/propsheet/c_propsheet.c

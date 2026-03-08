@@ -1,0 +1,23 @@
+#
+# hbgdip.hbp
+#
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I../include
+
+-warn=yes
+
+-hbx=../include/hbgdip.hbx
+
+../source/hbgdip/core.c 
+../source/hbgdip/pen.c 
+../source/hbgdip/brush.c 
+../source/hbgdip/image.c 
+../source/hbgdip/imageattr.c 
+../source/hbgdip/graphics.c 
+../source/hbgdip/bitmap.c

@@ -1,5 +1,5 @@
 #
-# adordd.hbp
+# qhtm.hbp
 #
 
 -hblib
@@ -14,8 +14,7 @@
 
 -w2 -es2 -ko -q0
 
--hbx=../include/adordd.hbx
+-hbx=../include/hmg_qhtm.hbx
 
-../source/adordd/adordd.prg
-
-
+../source/qHtm/h_qhtm.prg
+../source/qHtm/c_qhtm.c

@@ -4,8 +4,9 @@
 
 -hblib
 -inc
--o../lib/hbaes
--workdir=../lib/hbmk/hbaes
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
 
 -I../include;../source/hbaes/include
 

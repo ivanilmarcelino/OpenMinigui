@@ -5,7 +5,8 @@
 -hblib
 -inc
 
--o../lib/HBCrypto
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
 
 -w3 -es2
 
@@ -19,16 +20,11 @@
 
 #blake2b.c
 ../source/HBCrypto/blake2s.c
-
 ../source/HBCrypto/ed25519.c
-
 ../source/HBCrypto/sha3.c
-
 ../source/HBCrypto/pbkdf2.c
 ../source/HBCrypto/scrypt.c
 ../source/HBCrypto/strcmpc.c
-
 ../source/HBCrypto/scryptcf.prg
-
 ../source/HBCrypto/3rd/ed25519/ed25519.hbc
 ../source/HBCrypto/3rd/scrypt/scrypt.hbc

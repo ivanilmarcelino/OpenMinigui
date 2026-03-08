@@ -1,0 +1,34 @@
+#
+# socket.hbp
+#
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I../include
+
+-warn=yes
+
+-w2 -es2 -ko -q0
+
+-cflag=-D_WINSOCK_DEPRECATED_NO_WARNINGS
+{bcc}-cflag=-w-8057
+{bcc}-cflag=-w-8008
+{bcc}-cflag=-w-8066
+
+-hbx=../include/socket.hbx
+
+../source/socket/tftp.prg
+../source/socket/tpair.prg
+../source/socket/tdecode.prg
+../source/socket/thttp.prg
+../source/socket/tpop3.prg
+../source/socket/tsmtp.prg
+../source/socket/tsocket.prg
+../source/socket/socket.c
+../source/socket/base64.c
+../source/socket/md5c.c
+../source/socket/hmac_md5.c

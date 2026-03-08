@@ -5,8 +5,8 @@
 -hblib
 -inc
 
--o../lib/hbcab
--workdir=../lib/hbmk/hbcab
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
 
 -I./;../include
 

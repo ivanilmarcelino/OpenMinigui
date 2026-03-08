@@ -1,5 +1,5 @@
 #
-# bostaurus.hbp
+# hbvpdf.hbp
 #
 
 #{bcc}-env:DEBUG=yes
@@ -12,13 +12,11 @@
 
 -I../include
 
--warn=max
-
 -w3 -es2 -ko -q0
 
-#{!DEBUG&bcc}-l
+#{!DEBUG&bcc|mingw}-l
 
--hbx=../include/bostaurus.hbx
+{bcc}-hbx=../include/hbvpdf.hbx
 
-../source/bostaurus/h_Bostaurus.prg
-../source/bostaurus/c_BosTaurus.c
+../source/hbvpdf/hbvpdf.prg
+../source/hbvpdf/hbvpsup.prg

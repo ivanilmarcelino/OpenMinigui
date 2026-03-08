@@ -1,0 +1,25 @@
+#
+# splitter.hbp
+#
+
+#{bcc}-env:DEBUG=yes
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-w3 -es2 -ko -ql
+
+-warn=max 
+
+-I../include
+
+
+#{!DEBUG&bcc|mingw}-l
+
+{bcc|mingw}-hbx=../include/splitter.hbx
+
+../source/splitter/h_splitter.prg
+../source/splitter/c_splitter.c

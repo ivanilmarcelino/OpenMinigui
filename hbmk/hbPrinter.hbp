@@ -1,5 +1,5 @@
 #
-# gplus.hbp
+# HbPrinter.hbp
 #
 
 #{bcc}-env:DEBUG=yes
@@ -12,10 +12,13 @@
 
 -I../include;${hb_curdir}
 
--w3 -es2 -ko -q0
+-warn=max 
 
 #{!DEBUG&bcc|mingw}-l
 
--hbx=../include/GraphPlus.hbx
+-hbx=../include/winprint.hbx
 
-../source/GraphPlus/core.prg
+-w3 -es2 -ko -q0
+
+../source/HbPrinter/h_winprint.prg
+../source/HbPrinter/c_winprint.c

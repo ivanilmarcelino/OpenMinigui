@@ -1,0 +1,26 @@
+#
+# miniprint.hbp
+#
+
+#{bcc}-env:DEBUG=yes
+
+-hblib
+-inc
+
+-workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/${hb_name}
+
+-I../include
+
+-warn=max 
+
+-w3 -es2 -ko -q0
+
+#{!DEBUG&bcc|mingw}-l
+
+-hbx=../include/miniprint.hbx
+
+{DEBUG}-cflag=-D_ERRORMSG_
+
+../source/Miniprint/h_miniprint.prg
+../source/Miniprint/c_miniprint.c

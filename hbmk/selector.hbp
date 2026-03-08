@@ -1,5 +1,5 @@
 #
-# calldll.hbp
+# selector.hbp
 #
 
 -hblib
@@ -12,6 +12,4 @@
 
 -w3 -es2 -ko -q0
 
--hbx=../include/calldll.hbx
-
-../source/calldll/calldll.prg
+../source/Selector/selector.prg
