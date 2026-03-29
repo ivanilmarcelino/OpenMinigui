@@ -1,118 +1,143 @@
 /*
- *  Resources Control Functions
+ *  Resources Control Functions for HMG Extended
  *
- *  Purpose: This code provides resource management functions for HMG Extended applications.
- *           It allows tracking of resources (e.g., window handles, GDI objects) allocated by the application
- *           and helps in identifying potential resource leaks.  It provides both Harbour-level functions
- *           and C-level functions to facilitate resource tracking from different parts of the application.
+ *  This module implements a centralized resource tracking system. In GUI programming, 
+ *  failing to release GDI objects (bitmaps, icons, fonts) or window handles leads 
+ *  to memory leaks and system instability. This utility provides a mechanism to 
+ *  log every allocation and deallocation, allowing developers to identify 
+ *  unreleased resources upon application termination.
  */
 
 #ifdef __XHARBOUR__
-#define __SYSDATA__
+   #define __SYSDATA__
 #endif
+
 #include "minigui.ch"
 
+/* 
+ * Compatibility Layer:
+ * This macro ensures the code remains portable across different compiler versions
+ * by simulating the behavior of removing characters from the end of a string.
+ */
 #if defined( __XHARBOUR__ ) .OR. ( __HARBOUR__ - 0 < 0x030200 )
-#xtranslate hb_StrShrink( <char>, <n> ) => Left( <char>, Len( <char> ) - <n> )
+   #xtranslate hb_StrShrink( <char>, <n> ) => Left( <char>, Len( <char> ) - <n> )
 #endif
 
-THREAD STATIC aResources := {} // Array to store resource information. Each element is an array { cType, nHResource, cInfo }.
+/* 
+ * Thread-local storage for resource tracking.
+ * Using THREAD STATIC ensures that in multi-threaded HMG applications, 
+ * resource tracking is isolated to the specific thread that created the resource,
+ * preventing race conditions and data corruption.
+ * Structure: { cType, nHResource, cCallStack }
+ */
+THREAD STATIC aResources := {} 
 
 /*
- * FUNCTION MGAddResource( nHResource, cType )
- *
- * Adds a resource to the resource tracking array.
+ * FUNCTION: MGAddResource
+ * -----------------------
+ * Registers a new resource handle into the tracking system.
  *
  * Parameters:
- *   nHResource (NUMERIC): The handle of the resource (e.g., HBITMAP for a bitmap).  This is treated as a numeric value representing the memory address of the resource.
- *   cType (CHARACTER): A string describing the type of the resource (e.g., "Icon", "Bitmap").
+ *    nHResource : Numeric - The memory handle (pointer) of the resource.
+ *    cType      : String  - A descriptive label (e.g., "BITMAP", "FONT").
  *
- * Return Value:
- *   NIL
- *
- * Purpose:
- *   This function is used to register a newly allocated resource with the resource tracking system.
- *   It records the resource's handle, type, and the call stack at the point of allocation.
- *   This information is crucial for identifying potential resource leaks later on.
+ * Implementation Detail:
+ *    This function automatically captures the call stack. By starting the 
+ *    trace at depth 3, it skips the tracking function itself and its immediate 
+ *    wrapper, pointing directly to the developer's code that triggered the allocation.
  */
 FUNCTION MGAddResource( nHResource, cType )
-   LOCAL n := 3, cInfo := "" // Initialize variables: n for call stack depth, cInfo for call stack string.
+   LOCAL n := 3 
+   LOCAL cInfo := "" 
 
-   WHILE ! Empty( ProcName( n ) ) // Iterate through the call stack until an empty procedure name is encountered.
-      cInfo += ProcName( n ) + "(" + hb_ntos( ProcLine( n ) ) + ")->" // Append the procedure name and line number to the call stack information string.
-      n++ // Increment the call stack depth.
+   // Traverse the call stack to build a breadcrumb trail for debugging.
+   WHILE ! Empty( ProcName( n ) ) 
+      // Concatenate function names and line numbers into a readable path.
+      cInfo += ProcName( n ) + "(" + hb_ntos( ProcLine( n ) ) + ")->" 
+      n++ 
    END
 
-   IF ! Empty( cInfo ) // If the call stack information is not empty.
-      cInfo := hb_StrShrink( cInfo, 2 ) // Remove the trailing "->" from the call stack information string.
+   // Clean up the trailing arrow for a professional log format.
+   IF ! Empty( cInfo ) 
+      cInfo := hb_StrShrink( cInfo, 2 ) 
    ENDIF
 
-   AAdd( aResources, { cType, nHResource, cInfo } ) // Add the resource information to the aResources array.
+   // Store the resource metadata. The handle is used as the unique identifier for later deletion.
+   AAdd( aResources, { cType, nHResource, cInfo } ) 
 
 RETURN NIL
 
 /*
- * FUNCTION MGDelResource( nHResource )
- *
- * Removes a resource from the resource tracking array.
+ * FUNCTION: MGDelResource
+ * -----------------------
+ * Removes a resource from the tracking list, signaling it has been safely released.
  *
  * Parameters:
- *   nHResource (NUMERIC): The handle of the resource to remove.
+ *    nHResource : Numeric - The handle of the resource being destroyed.
  *
- * Return Value:
- *   NIL
- *
- * Purpose:
- *   This function is used to unregister a resource from the resource tracking system when it is released (e.g., destroyed or freed).
- *   Removing the resource from the tracking array prevents it from being flagged as a potential leak during resource checks.
+ * Reasoning:
+ *    When an HMG control is destroyed or a GDI object is deleted, this function 
+ *    is called to "check out" the resource. If a resource is deleted here, 
+ *    it will not appear in the final leak report.
  */
 FUNCTION MGDelResource( nHResource )
-   LOCAL nAt // Variable to store the index of the resource in the array.
+   LOCAL nAt 
 
-   IF ( nAt := AScan( aResources, {| aRes | aRes[ 2 ] == nHResource } ) ) != 0 // Search for the resource in the array.
-      hb_ADel( aResources, nAt, .T. ) // If found, delete the resource from the array.
+   // Locate the resource by its handle within the tracking array.
+   IF ( nAt := AScan( aResources, {| aRes | aRes[ 2 ] == nHResource } ) ) != 0 
+      // Use hb_ADel with .T. to physically shrink the array and maintain performance.
+      hb_ADel( aResources, nAt, .T. ) 
    ENDIF
 
 RETURN NIL
 
 /*
- * FUNCTION CheckRes()
- *
- * Checks for potential resource leaks by iterating through the resource tracking array
- * and logging any resources that have not been released.
+ * FUNCTION: CheckRes
+ * ------------------
+ * Analyzes the tracking array and generates a report of unreleased resources.
  *
  * Purpose:
- *   This function is called at the end of the application's execution (or during debugging) to identify any resources that were allocated but not released.
- *   It generates a log file ("checkres.txt") containing information about the unreleased resources, including their type, handle, and allocation call stack.
- *   This helps developers pinpoint the exact location in the code where the resource leak is occurring.
+ *    Typically called during the application's shutdown sequence. It creates 
+ *    'checkres.txt' in the application folder. If the file contains data, 
+ *    it indicates a resource leak that needs developer attention.
  *
- * Notes:
- *   The log file is created in the application's startup folder.
- *   The function only logs resources with a non-zero handle, indicating that they are still allocated.
+ * Side Effects:
+ *    - Creates/Overwrites 'checkres.txt'.
+ *    - Uses HMG internal logging functions (_SetGetLogFile, _LogFile).
  */
 FUNCTION CheckRes()
-   LOCAL cInfo := "", p // Initialize variables: cInfo for the log information, p for the current resource.
+   // Define the log path relative to the executable location.
+   LOCAL cLogFile := GetStartUpFolder() + hb_ps() + "checkres.txt"
+   LOCAL cInfo := ""
+   LOCAL p 
 
-   _SetGetLogFile( GetStartUpFolder() + hb_ps() + "checkres.txt" ) // Set the log file path.
-   FErase( _SetGetLogFile() ) // Erase the log file if it exists.
+   // Configure the HMG logging subsystem.
+   _SetGetLogFile( cLogFile ) 
+   FErase( cLogFile ) 
 
-   FOR EACH p IN aResources // Iterate through the aResources array.
-      IF p[ 2 ] != 0 // If the resource handle is not 0 (meaning it's still allocated).
-         cInfo += GetExeFileName() + " -- " + p[ 1 ] + "," + hb_ntos( p[ 2 ] ) + "," + p[ 3 ] + CRLF // Format the resource information for logging.
-         _LogFile( .T., cInfo ) // Write the resource information to the log file.
+   // Iterate through all registered resources that were never "deleted".
+   FOR EACH p IN aResources 
+      // A non-zero handle indicates the resource is still occupying system memory.
+      IF p[ 2 ] != 0 
+         // Format: ExeName -- Type, Handle, CallStack
+         cInfo += GetExeFileName() + " -- " + p[ 1 ] + "," + hb_ntos( p[ 2 ] ) + "," + p[ 3 ] + CRLF 
       ENDIF
    NEXT
 
-   IF ! Empty( cInfo ) // If any unreleased resources were found.
-     _LogFile( .T., GetExeFileName() + " -- " + Replicate( "=", 99 ) ) // Write a separator line to the log file.
+   // If leaks are detected, write them to the file with a visual separator.
+   IF ! Empty( cInfo ) 
+      _LogFile( .T., cInfo ) 
+      _LogFile( .T., GetExeFileName() + " -- " + Replicate( "=", 99 ) ) 
    ENDIF
 
 RETURN NIL
 
 /*
- * C-level functions for resource management.  These functions provide a way to register and
- * unregister resources directly from C code, which can be useful when working with external libraries
- * or when more fine-grained control over resource management is required.
+ * C-Level Interface
+ * -----------------
+ * These functions bridge the gap between the Windows API (C) and Harbour.
+ * Many HMG resources are created within C wrappers; these functions allow 
+ * those low-level routines to participate in the high-level tracking system.
  */
 
 #pragma BEGINDUMP
@@ -122,61 +147,59 @@ RETURN NIL
 #include <hbvm.h>
 
 /*
- * FUNCTION RegisterResource( HANDLE hRes, LPCSTR szType )
- *
- * Registers a resource with the Harbour resource tracking system from C code.
+ * C-FUNCTION: RegisterResource
+ * ----------------------------
+ * Allows C-level code to invoke the Harbour MGAddResource function.
  *
  * Parameters:
- *   hRes (HANDLE): The handle of the resource to register.
- *   szType (LPCSTR): A string describing the type of the resource.
+ *    hRes   : The Windows HANDLE (HWND, HBITMAP, etc.)
+ *    szType : The string description of the resource.
  *
- * Return Value:
- *   None (void)
- *
- * Purpose:
- *   This function allows C code to register resources with the Harbour resource tracking system.
- *   This is essential when working with external libraries or when resources are allocated directly in C code.
- *   It ensures that these resources are also tracked for potential leaks.
+ * Logic:
+ *    Uses the Harbour Virtual Machine (VM) API to push arguments onto the 
+ *    eval stack and execute the Harbour-level function by its symbol name.
  */
 void RegisterResource( HANDLE hRes, LPCSTR szType )
 {
-   PHB_ITEM pRet = hb_itemNew( hb_param( -1, HB_IT_ANY ) );  // Create a new Harbour item for the return value.
+   // Create a placeholder for the Harbour return value.
+   PHB_ITEM pRet = hb_itemNew( hb_param( -1, HB_IT_ANY ) );  
 
-   hb_vmPushSymbol( hb_dynsymGetSymbol( "MGADDRESOURCE" ) ); // Push the symbol for the MGADDRESOURCE function.
-   hb_vmPushNil();                                           // Push a NIL value (required by Harbour calling convention).
-   hb_vmPushNumInt( ( LONG_PTR ) hRes );                     // Push the resource handle as a numeric integer.
-   hb_vmPushString( szType, strlen( szType ) );              // Push the resource type as a string.
-   hb_vmFunction( 2 );                                       // Call the MGADDRESOURCE function with 2 parameters.
+   // Prepare the VM to call MGADDRESOURCE.
+   hb_vmPushSymbol( hb_dynsymGetSymbol( "MGADDRESOURCE" ) ); 
+   hb_vmPushNil();                                           
+   // Cast the handle to a pointer-sized integer to ensure 32/64-bit compatibility.
+   hb_vmPushNumInt( ( LONG_PTR ) hRes );                     
+   hb_vmPushString( szType, strlen( szType ) );              
+   // Execute the function with 2 arguments.
+   hb_vmFunction( 2 );                                       
 
-   hb_itemReturnRelease( pRet );                             // Release the return value item.
+   // Clean up the item reference to prevent memory leaks in the C-to-Harbour bridge.
+   hb_itemReturnRelease( pRet );                             
 }
 
 /*
- * FUNCTION DelResource( HANDLE hResource )
- *
- * Unregisters a resource from the Harbour resource tracking system from C code.
+ * C-FUNCTION: DelResource
+ * -----------------------
+ * Allows C-level code to invoke the Harbour MGDelResource function.
  *
  * Parameters:
- *   hResource (HANDLE): The handle of the resource to unregister.
+ *    hResource : The Windows HANDLE to be removed from tracking.
  *
- * Return Value:
- *   None (void)
- *
- * Purpose:
- *   This function allows C code to unregister resources from the Harbour resource tracking system.
- *   It's the counterpart to RegisterResource and should be called when a resource allocated in C code is released.
- *   This prevents the resource from being incorrectly flagged as a leak.
+ * Logic:
+ *    Similar to RegisterResource, this uses the hb_vm API to notify the 
+ *    Harbour tracking array that a resource has been freed at the C level.
  */
 void pascal DelResource( HANDLE hResource )
 {
-   PHB_ITEM pRet = hb_itemNew( hb_param( -1, HB_IT_ANY ) );  // Create a new Harbour item for the return value.
+   PHB_ITEM pRet = hb_itemNew( hb_param( -1, HB_IT_ANY ) );  
 
-   hb_vmPushSymbol( hb_dynsymGetSymbol( "MGDELRESOURCE" ) ); // Push the symbol for the MGDELRESOURCE function.
-   hb_vmPushNil();                                           // Push a NIL value (required by Harbour calling convention).
-   hb_vmPushNumInt( ( LONG_PTR ) hResource );                // Push the resource handle as a numeric integer.
-   hb_vmFunction( 1 );                                       // Call the MGDELRESOURCE function with 1 parameter.
+   hb_vmPushSymbol( hb_dynsymGetSymbol( "MGDELRESOURCE" ) ); 
+   hb_vmPushNil();                                           
+   hb_vmPushNumInt( ( LONG_PTR ) hResource );                
+   // Execute the function with 1 argument.
+   hb_vmFunction( 1 );                                       
 
-   hb_itemReturnRelease( pRet );                             // Release the return value item.
+   hb_itemReturnRelease( pRet );                             
 }
 
 #pragma ENDDUMP

@@ -1,0 +1,32 @@
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+*.ppo
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+**/backup/*
+**/obj/*
+**/ppo/*
+**/API/*
+**/tools/*
+**/lib/hbmk/*

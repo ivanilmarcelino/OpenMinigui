@@ -10,7 +10,7 @@
 -inc
 
 -workdir=../lib/hbmk/${hb_comp}/${hb_name}
--o../lib/${hb_comp}/${hb_name}
+-o../lib/${hb_comp}/minigui
 
 -I../include
 

@@ -51,286 +51,274 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #include "minigui.ch"
 #include "i_winuser.ch"
 
-#define MB_DEFAULT_ICON  0
+/* 
+ * Configuration Constants 
+ */
 
-* Constants for default button values
-#define DEFAULT_BUTTON_1 1
-#define DEFAULT_BUTTON_2 2
-#define DEFAULT_BUTTON_3 3
+// Default icon identifier used when no specific user icon is provided.
+#define MB_DEFAULT_ICON   0
 
-* Constants for button-click return values
-#define MESSAGE_YES      1
-#define MESSAGE_NO       0
-#define MESSAGE_CANCEL  -1
+// Standardized return values for ternary-state message boxes (Yes/No/Cancel).
+// These provide a consistent numeric interface regardless of the underlying Win32 IDs.
+#define MESSAGE_YES       1
+#define MESSAGE_NO        0
+#define MESSAGE_CANCEL   -1
 
-/*-----------------------------------------------------------------------------*
-* STATIC FUNCTION _MsgBox( cMessage, cTitle, nStyle, nIcon, lSysModal, lTopMost )
-* 
-* Description:
-*   This is a helper function that encapsulates the actual call to the Windows
-*   MessageBoxIndirect API. It handles argument defaulting, type conversion,
-*   and modal behavior selection.  It is declared as STATIC, meaning it is only
-*   accessible within this source file.
-* 
-* Parameters:
-*   cMessage  (STRING): The message to display in the message box.  If it's not a string,
-*                       it will be converted to a string. If it's an array, all elements
-*                       will be concatenated into a single string.
-*   cTitle    (STRING): The title of the message box.
-*   nStyle    (NUMERIC): The style flags for the message box (e.g., MB_YESNO, MB_OKCANCEL).
-*   nIcon     (NUMERIC): The icon to display in the message box (e.g., MB_ICONQUESTION).
-*   lSysModal (LOGICAL):  If .T. (default), the message box is system modal (disables all
-*                       windows). If .F., it's application modal (disables only the
-*                       application's windows).
-*   lTopMost  (LOGICAL): If .T. (default), the message box is displayed as a top-most window.
-* 
-* Return Value:
-*   NUMERIC: The result of the MessageBoxIndirect call (e.g., IDOK, IDCANCEL, IDYES, IDNO).
-*-----------------------------------------------------------------------------*/
-STATIC FUNCTION _MsgBox( cMessage, cTitle, nStyle, nIcon, lSysModal, lTopMost )
-   LOCAL cText
+/*
+ * Function: _NormalizeMsg
+ *
+ * Purpose: Sanitizes and converts input data into a displayable string format.
+ *
+ * Parameters:
+ *    cMsg - The message content. Supports String, Array, or other types via hb_ValToStr.
+ *
+ * Returns: A character string ready for display.
+ *
+ * Logic: 
+ *    If an array is passed, the function iterates through it and concatenates 
+ *    all elements. This allows developers to pass multi-line messages or 
+ *    mixed-type data without manual conversion.
+ */
+STATIC FUNCTION _NormalizeMsg( cMsg )
+   LOCAL cText := "", xVal
 
-   __defaultNIL( @cMessage, "" )
-   __defaultNIL( @cTitle, "" )
+   // Ensure cMsg is at least an empty string if NIL is passed.
+   __defaultNIL( @cMsg, "" )
 
-   IF ! ISCHARACTER( cMessage )
-      IF ISARRAY( cMessage )
-         cText := ""
-         AEval( cMessage, {| x | cText += hb_ValToStr( x ) } )
-         cMessage := cText
-      ELSE
-         cMessage := hb_ValToStr( cMessage )
-      ENDIF
+   IF ISARRAY( cMsg )
+      // Concatenate array elements into a single string block.
+      FOR EACH xVal IN cMsg
+         cText += hb_ValToStr( xVal )
+      NEXT
+      RETURN cText
    ENDIF
 
-   nStyle += iif( hb_defaultValue( lSysModal, .T. ), MB_SYSTEMMODAL, MB_APPLMODAL )
+   // Convert non-string types (numbers, dates, etc.) to string.
+RETURN hb_ValToStr( cMsg )
 
-   IF hb_defaultValue( lTopMost, .T. )
-      nStyle += MB_TOPMOST
+/*
+ * Function: _ApplyBoxFlags
+ *
+ * Purpose: Combines base style flags with modality and Z-order settings.
+ *
+ * Parameters:
+ *    nStyle - The initial Win32 MessageBox style bitmask.
+ *    lSys   - Logical; .T. for System Modal (blocks all apps), .F. for Application Modal.
+ *    lTop   - Logical; .T. to set the MB_TOPMOST flag.
+ *
+ * Returns: Updated numeric style bitmask.
+ *
+ * Logic:
+ *    Uses bitwise OR (hb_bitOr) to merge flags. System modality is the default 
+ *    behavior in this implementation to ensure user attention.
+ */
+STATIC FUNCTION _ApplyBoxFlags( nStyle, lSys, lTop )
+   LOCAL lSystem  := hb_defaultValue( lSys, .T. )
+   LOCAL lTopMost := hb_defaultValue( lTop, .T. )
+
+   // Apply modality: System modal stays on top of all windows; App modal only blocks the current app.
+   nStyle := hb_bitOr( nStyle, ;
+                       iif( lSystem, MB_SYSTEMMODAL, MB_APPLMODAL ) )
+
+   // Force the window to the foreground if requested.
+   IF lTopMost
+      nStyle := hb_bitOr( nStyle, MB_TOPMOST )
    ENDIF
 
-RETURN MessageBoxIndirect( NIL, cMessage, cTitle, nStyle, nIcon )
+RETURN nStyle
 
-/*-----------------------------------------------------------------------------*
-* FUNCTION MsgYesNo ( Message, Title, RevertDefault, nIcon, lSysModal, lTopMost )
-* 
-* Description:
-*   Displays a message box with "Yes" and "No" buttons.
-* 
-* Parameters:
-*   Message       (STRING): The message to display.
-*   Title         (STRING): The title of the message box.
-*   RevertDefault (LOGICAL): If .T., the "No" button is the default. Otherwise, "Yes" is the default.
-*   nIcon         (NUMERIC): The icon to display (e.g., MB_ICONQUESTION). If NIL or 0, a question mark icon is used.
-*   lSysModal     (LOGICAL): If .T. (default), the message box is system modal. If .F., it's application modal.
-*   lTopMost      (LOGICAL): If .T. (default), the message box is displayed as a top-most window.
-* 
-* Return Value:
-*   LOGICAL: .T. if the user clicked "Yes", .F. if the user clicked "No".
-*-----------------------------------------------------------------------------*/
-FUNCTION MsgYesNo ( Message, Title, RevertDefault, nIcon, lSysModal, lTopMost )
-   LOCAL nStyle := MB_YESNO
+/*
+ * Function: _BuildStyle
+ *
+ * Purpose: Constructs the complete Win32 style bitmask for the message box.
+ *
+ * Parameters:
+ *    nButtons - The button configuration constant (e.g., MB_YESNO).
+ *    nIcon    - Handle or ID for a custom icon.
+ *    nDefIcon - The fallback system icon style (e.g., MB_ICONQUESTION).
+ *    nDefBtn  - The 1-based index of the button that should have initial focus.
+ * Returns: A combined numeric style bitmask.
+ *
+ * Logic:
+ *    If nIcon is 0, it uses the system default icon. Otherwise, it flags the 
+ *    style as MB_USERICON. The default button is calculated by shifting bits:
+ *    Win32 defines MB_DEFBUTTON2 as 256 (0x100) and MB_DEFBUTTON3 as 512 (0x200).
+ */
+STATIC FUNCTION _BuildStyle( nButtons, nIcon, nDefIcon, nDefBtn )
+   LOCAL nStyle
+   LOCAL nBtn := hb_defaultValue( nDefBtn, 1 )
+   LOCAL nIconStyle
 
-   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONQUESTION, MB_USERICON )
+   // Determine if we use a standard system icon or a user-defined resource.
+   nIconStyle := iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, ;
+                      nDefIcon, ;
+                      MB_USERICON )
 
-   IF hb_defaultValue( RevertDefault, .F. )
-      nStyle += MB_DEFBUTTON2
+   nStyle := hb_bitOr( nButtons, nIconStyle )
+
+   // Calculate default button flag: (Index - 1) * 256 maps 2->256, 3->512, etc.
+   IF ISNUMERIC( nBtn ) .AND. nBtn > 1
+      nStyle := hb_bitOr( nStyle, ( nBtn - 1 ) * 256 )
    ENDIF
 
-RETURN ( _MsgBox( Message, Title, nStyle, nIcon, lSysModal, lTopMost ) == IDYES )
+RETURN nStyle
 
-/*-----------------------------------------------------------------------------*
-* FUNCTION MsgYesNoCancel ( Message, Title, nIcon, lSysModal, nDefaultButton, lTopMost )
-* 
-* Description:
-*   Displays a message box with "Yes", "No", and "Cancel" buttons.
-* 
-* Parameters:
-*   Message        (STRING): The message to display.
-*   Title          (STRING): The title of the message box.
-*   nIcon          (NUMERIC): The icon to display (e.g., MB_ICONQUESTION). If NIL or 0, a question mark icon is used.
-*   lSysModal      (LOGICAL): If .T. (default), the message box is system modal. If .F., it's application modal.
-*   nDefaultButton (NUMERIC): Specifies which button is the default:
-*                             DEFAULT_BUTTON_1 (1): "Yes" (default).
-*                             DEFAULT_BUTTON_2 (2): "No".
-*                             DEFAULT_BUTTON_3 (3): "Cancel".
-*   lTopMost       (LOGICAL): If .T. (default), the message box is displayed as a top-most window.
-* 
-* Return Value:
-*   NUMERIC: MESSAGE_YES (1) if the user clicked "Yes".
-*            MESSAGE_NO (0) if the user clicked "No".
-*            MESSAGE_CANCEL (-1) if the user clicked "Cancel".
-*-----------------------------------------------------------------------------*/
-FUNCTION MsgYesNoCancel ( Message, Title, nIcon, lSysModal, nDefaultButton, lTopMost )
-   LOCAL nStyle := MB_YESNOCANCEL
+/*
+ * Function: _MsgBox
+ *
+ * Purpose: The core internal engine for displaying message boxes.
+ *
+ * Parameters:
+ *    cMsg   - The message text.
+ *    cTitle - The window title.
+ *    nStyle - Combined Win32 style flags.
+ *    nIcon  - Icon resource identifier.
+ *    lSys   - Modality flag.
+ *    lTop   - Topmost flag.
+ *
+ * Returns: Numeric Win32 ID of the button pressed (e.g., IDOK, IDYES).
+ *
+ * Side Effects: Suspends program execution until the user closes the dialog.
+ *
+ * Logic:
+ *    Uses MessageBoxIndirect for maximum flexibility, allowing custom icons 
+ *    and precise control over window behavior.
+ */
+STATIC FUNCTION _MsgBox( cMsg, cTitle, nStyle, nIcon, lSys, lTop )
+   cMsg   := _NormalizeMsg( cMsg )
+   nStyle := _ApplyBoxFlags( nStyle, lSys, lTop )
 
-   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONQUESTION, MB_USERICON )
+RETURN MessageBoxIndirect( NIL, ;
+                           cMsg, ;
+                           hb_defaultValue( cTitle, "" ), ;
+                           nStyle, ;
+                           nIcon )
 
-   SWITCH hb_defaultValue( nDefaultButton, DEFAULT_BUTTON_1 )
+/*
+ * Function: MsgYesNo
+ *
+ * Purpose: Displays a standard Yes/No confirmation dialog.
+ *
+ * Parameters:
+ *    lRevDef - Logical; if .T., 'No' is the default button (prevents accidental 'Yes').
+ *
+ * Returns: .T. if the user clicked 'Yes', .F. otherwise.
+ */
+FUNCTION MsgYesNo ( cMsg, cTitle, lRevDef, nIcon, lSys, lTop )
+   LOCAL nStyle
 
-   CASE DEFAULT_BUTTON_2
-      nStyle += MB_DEFBUTTON2
-      EXIT
-   CASE DEFAULT_BUTTON_3
-      nStyle += MB_DEFBUTTON3
+   // Build style with Question icon and optional default button reversal.
+   nStyle := _BuildStyle( MB_YESNO, ;
+                          nIcon, ;
+                          MB_ICONQUESTION, ;
+                          iif( hb_defaultValue( lRevDef, .F. ), 2, 1 ) )
 
-   END SWITCH
+RETURN ( _MsgBox( cMsg, cTitle, nStyle, nIcon, lSys, lTop ) == IDYES )
 
-   SWITCH _MsgBox( Message, Title, nStyle, nIcon, lSysModal, lTopMost )
+/*
+ * Function: MsgYesNoCancel
+ *
+ * Purpose: Displays a dialog with 'Yes', 'No', and 'Cancel' buttons.
+ *
+ * Parameters:
+ *    nDefBtn - Index (1-3) of the default focused button.
+ *
+ * Returns: MESSAGE_YES (1), MESSAGE_NO (0), or MESSAGE_CANCEL (-1).
+ */
+FUNCTION MsgYesNoCancel ( cMsg, cTitle, nIcon, lSys, nDefBtn, lTop )
+   LOCAL nRes
 
-   CASE IDYES
-      RETURN ( MESSAGE_YES )
-   CASE IDNO
-      RETURN ( MESSAGE_NO )
+   nRes := _MsgBox( cMsg, cTitle, ;
+                    _BuildStyle( MB_YESNOCANCEL, nIcon, MB_ICONQUESTION, nDefBtn ), ;
+                    nIcon, lSys, lTop )
 
-   END SWITCH
-
-RETURN ( MESSAGE_CANCEL )
-
-/*-----------------------------------------------------------------------------*
-* FUNCTION MsgRetryCancel ( Message, Title, nIcon, lSysModal, nDefaultButton, lTopMost )
-* 
-* Description:
-*   Displays a message box with "Retry" and "Cancel" buttons.
-* 
-* Parameters:
-*   Message        (STRING): The message to display.
-*   Title          (STRING): The title of the message box.
-*   nIcon          (NUMERIC): The icon to display (e.g., MB_ICONQUESTION). If NIL or 0, a question mark icon is used.
-*   lSysModal      (LOGICAL): If .T. (default), the message box is system modal. If .F., it's application modal.
-*   nDefaultButton (NUMERIC): Specifies which button is the default:
-*                             DEFAULT_BUTTON_1 (1): "Retry" (default).
-*                             DEFAULT_BUTTON_2 (2): "Cancel".
-*   lTopMost       (LOGICAL): If .T. (default), the message box is displayed as a top-most window.
-* 
-* Return Value:
-*   LOGICAL: .T. if the user clicked "Retry", .F. if the user clicked "Cancel".
-*-----------------------------------------------------------------------------*/
-FUNCTION MsgRetryCancel ( Message, Title, nIcon, lSysModal, nDefaultButton, lTopMost )
-   LOCAL nStyle := MB_RETRYCANCEL
-
-   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONQUESTION, MB_USERICON )
-
-   IF hb_defaultValue( nDefaultButton, DEFAULT_BUTTON_1 ) == DEFAULT_BUTTON_2
-      nStyle += MB_DEFBUTTON2
+   IF nRes == IDYES
+      RETURN MESSAGE_YES
+   ELSEIF nRes == IDNO
+      RETURN MESSAGE_NO
    ENDIF
 
-RETURN ( _MsgBox( Message, Title, nStyle, nIcon, lSysModal, lTopMost ) == IDRETRY )
+RETURN MESSAGE_CANCEL
 
-/*-----------------------------------------------------------------------------*
-* FUNCTION MsgOkCancel ( Message, Title, nIcon, lSysModal, nDefaultButton, lTopMost )
-* 
-* Description:
-*   Displays a message box with "OK" and "Cancel" buttons.
-* 
-* Parameters:
-*   Message        (STRING): The message to display.
-*   Title          (STRING): The title of the message box.
-*   nIcon          (NUMERIC): The icon to display (e.g., MB_ICONQUESTION). If NIL or 0, a question mark icon is used.
-*   lSysModal      (LOGICAL): If .T. (default), the message box is system modal. If .F., it's application modal.
-*   nDefaultButton (NUMERIC): Specifies which button is the default:
-*                             DEFAULT_BUTTON_1 (1): "OK" (default).
-*                             DEFAULT_BUTTON_2 (2): "Cancel".
-*   lTopMost       (LOGICAL): If .T. (default), the message box is displayed as a top-most window.
-* 
-* Return Value:
-*   LOGICAL: .T. if the user clicked "OK", .F. if the user clicked "Cancel".
-*-----------------------------------------------------------------------------*/
-FUNCTION MsgOkCancel ( Message, Title, nIcon, lSysModal, nDefaultButton, lTopMost )
-   LOCAL nStyle := MB_OKCANCEL
+/*
+ * Function: MsgRetryCancel
+ *
+ * Purpose: Displays a dialog for retrying a failed operation.
+ *
+ * Returns: .T. if 'Retry' is clicked, .F. if 'Cancel' is clicked.
+ */
+FUNCTION MsgRetryCancel ( cMsg, cTitle, nIcon, lSys, nDefBtn, lTop )
+RETURN ( _MsgBox( cMsg, cTitle, ;
+                  _BuildStyle( MB_RETRYCANCEL, nIcon, MB_ICONQUESTION, nDefBtn ), ;
+                  nIcon, lSys, lTop ) == IDRETRY )
 
-   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONQUESTION, MB_USERICON )
+/*
+ * Function: MsgOkCancel
+ *
+ * Purpose: Displays a dialog for confirming an action with an option to abort.
+ *
+ * Returns: .T. if 'OK' is clicked, .F. if 'Cancel' is clicked.
+ */
+FUNCTION MsgOkCancel ( cMsg, cTitle, nIcon, lSys, nDefBtn, lTop )
+RETURN ( _MsgBox( cMsg, cTitle, ;
+                  _BuildStyle( MB_OKCANCEL, nIcon, MB_ICONQUESTION, nDefBtn ), ;
+                  nIcon, lSys, lTop ) == IDOK )
 
-   IF hb_defaultValue( nDefaultButton, DEFAULT_BUTTON_1 ) == DEFAULT_BUTTON_2
-      nStyle += MB_DEFBUTTON2
-   ENDIF
+/*
+ * Function: MsgExclamation
+ *
+ * Purpose: Displays a warning message with an exclamation icon.
+ *
+ * Logic: Uses the localized "Warning" title from the HMG internal message array.
+ *
+ * Returns: IDOK (numeric).
+ */
+FUNCTION MsgExclamation ( cMsg, cTitle, nIcon, lSys, lTop )
+RETURN _MsgBox( cMsg, ;
+                hb_defaultValue( cTitle, _HMG_MESSAGE[ 10 ] ), ;
+                _BuildStyle( MB_OK, nIcon, MB_ICONEXCLAMATION, 1 ), ;
+                nIcon, lSys, lTop )
 
-RETURN ( _MsgBox( Message, Title, nStyle, nIcon, lSysModal, lTopMost ) == IDOK )
+/*
+ * Function: MsgInfo
+ *
+ * Purpose: Displays an informational message with an 'i' icon.
+ *
+ * Logic: Uses the localized "Information" title from the HMG internal message array.
+ *
+ * Returns: IDOK (numeric).
+ */
+FUNCTION MsgInfo ( cMsg, cTitle, nIcon, lSys, lTop )
+RETURN _MsgBox( cMsg, ;
+                hb_defaultValue( cTitle, _HMG_MESSAGE[ 11 ] ), ;
+                _BuildStyle( MB_OK, nIcon, MB_ICONINFORMATION, 1 ), ;
+                nIcon, lSys, lTop )
 
-/*-----------------------------------------------------------------------------*
-* FUNCTION MsgExclamation ( Message, Title, nIcon, lSysModal, lTopMost )
-* 
-* Description:
-*   Displays a message box with an exclamation icon and an "OK" button.
-* 
-* Parameters:
-*   Message   (STRING): The message to display.
-*   Title     (STRING): The title of the message box. If NIL, a default title from _HMG_MESSAGE[10] is used.
-*   nIcon     (NUMERIC): The icon to display. If NIL or 0, an exclamation icon is used.
-*   lSysModal (LOGICAL): If .T. (default), the message box is system modal. If .F., it's application modal.
-*   lTopMost  (LOGICAL): If .T. (default), the message box is displayed as a top-most window.
-* 
-* Return Value:
-*   NUMERIC: The result of the MessageBoxIndirect call (IDOK).
-*-----------------------------------------------------------------------------*/
-FUNCTION MsgExclamation ( Message, Title, nIcon, lSysModal, lTopMost )
-   LOCAL nStyle := MB_OK
+/*
+ * Function: MsgStop
+ *
+ * Purpose: Displays a critical error or stop message with a red 'X' icon.
+ *
+ * Logic: Uses the localized "Stop" title from the HMG internal message array.
+ *
+ * Returns: IDOK (numeric).
+ */
+FUNCTION MsgStop ( cMsg, cTitle, nIcon, lSys, lTop )
+RETURN _MsgBox( cMsg, ;
+                hb_defaultValue( cTitle, _HMG_MESSAGE[ 12 ] ), ;
+                _BuildStyle( MB_OK, nIcon, MB_ICONSTOP, 1 ), ;
+                nIcon, lSys, lTop )
 
-   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONEXCLAMATION, MB_USERICON )
-
-RETURN _MsgBox( Message, hb_defaultValue( Title, _HMG_MESSAGE [10] ), nStyle, nIcon, lSysModal, lTopMost )
-
-/*-----------------------------------------------------------------------------*
-* FUNCTION MsgInfo ( Message, Title, nIcon, lSysModal, lTopMost )
-* 
-* Description:
-*   Displays a message box with an information icon and an "OK" button.
-* 
-* Parameters:
-*   Message   (STRING): The message to display.
-*   Title     (STRING): The title of the message box. If NIL, a default title from _HMG_MESSAGE[11] is used.
-*   nIcon     (NUMERIC): The icon to display. If NIL or 0, an information icon is used.
-*   lSysModal (LOGICAL): If .T. (default), the message box is system modal. If .F., it's application modal.
-*   lTopMost  (LOGICAL): If .T. (default), the message box is displayed as a top-most window.
-* 
-* Return Value:
-*   NUMERIC: The result of the MessageBoxIndirect call (IDOK).
-*-----------------------------------------------------------------------------*/
-FUNCTION MsgInfo ( Message, Title, nIcon, lSysModal, lTopMost )
-   LOCAL nStyle := MB_OK
-
-   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONINFORMATION, MB_USERICON )
-
-RETURN _MsgBox( Message, hb_defaultValue( Title, _HMG_MESSAGE [11] ), nStyle, nIcon, lSysModal, lTopMost )
-
-/*-----------------------------------------------------------------------------*
-* FUNCTION MsgStop ( Message, Title, nIcon, lSysModal, lTopMost )
-* 
-* Description:
-*   Displays a message box with a stop (error) icon and an "OK" button.
-* 
-* Parameters:
-*   Message   (STRING): The message to display.
-*   Title     (STRING): The title of the message box. If NIL, a default title from _HMG_MESSAGE[12] is used.
-*   nIcon     (NUMERIC): The icon to display. If NIL or 0, a stop icon is used.
-*   lSysModal (LOGICAL): If .T. (default), the message box is system modal. If .F., it's application modal.
-*   lTopMost  (LOGICAL): If .T. (default), the message box is displayed as a top-most window.
-* 
-* Return Value:
-*   NUMERIC: The result of the MessageBoxIndirect call (IDOK).
-*-----------------------------------------------------------------------------*/
-FUNCTION MsgStop ( Message, Title, nIcon, lSysModal, lTopMost )
-   LOCAL nStyle := MB_OK
-
-   nStyle += iif( hb_defaultValue( nIcon, 0 ) == MB_DEFAULT_ICON, MB_ICONSTOP, MB_USERICON )
-
-RETURN _MsgBox( Message, hb_defaultValue( Title, _HMG_MESSAGE [12] ), nStyle, nIcon, lSysModal, lTopMost )
-
-/*-----------------------------------------------------------------------------*
-* FUNCTION MsgBox ( Message, Title, lSysModal, lTopMost )
-* 
-* Description:
-*   Displays a simple message box with an "OK" button. This is the most basic
-*   message box function.
-* 
-* Parameters:
-*   Message   (STRING): The message to display.
-*   Title     (STRING): The title of the message box.
-*   lSysModal (LOGICAL): If .T. (default), the message box is system modal. If .F., it's application modal.
-*   lTopMost  (LOGICAL): If .T. (default), the message box is displayed as a top-most window.
-* 
-* Return Value:
-*   NUMERIC: The result of the MessageBoxIndirect call (IDOK).
-*-----------------------------------------------------------------------------*/
-FUNCTION MsgBox ( Message, Title, lSysModal, lTopMost )
-RETURN _MsgBox( Message, Title, MB_OK, NIL, lSysModal, lTopMost )
+/*
+ * Function: MsgBox
+ *
+ * Purpose: The simplest message box implementation, showing only an OK button.
+ *
+ * Parameters:
+ *    cMsg   - The message to display.
+ *    cTitle - Optional window title.
+ *
+ * Returns: IDOK (numeric).
+ */
+FUNCTION MsgBox ( cMsg, cTitle, lSys, lTop )
+RETURN _MsgBox( cMsg, cTitle, MB_OK, NIL, lSys, lTop )

@@ -4,32 +4,12 @@ CD "%~dp0%"
 setlocal EnableDelayedExpansion
 set LOG=..\LogGeral.log
 
-::=======================================================================
-::Configure apenas estas variáveis de ambiente; o Hbmk2 resolve automaticamente o restante.
-::Configure only these environment variables; Hbmk2 automatically resolves the rest.
-::Configure solo estas variables de entorno; Hbmk2 resuelve automáticamente el resto.
-::Configura solo queste variabili d'ambiente; Hbmk2 risolve automaticamente il resto.
-
-::Defina seu ambiente 
-@SET HB_COMPILER=mingw
-@Set HB_ARCHITECTURE=w32
-
-::Defina seu PATH DO HARBOUR
-::Set MG_HRB=D:\prgplus\Youtube\IDE\Tools\Harbour
-@Set MG_HRB=D:\prgplus\git\lib2026\ide\32\Tools\Harbour
-
-::Defina PATH DO BORLAND/MINGW
-::Set MG_BCC=D:\prgplus\Youtube\IDE\Tools\BCC
-@Set MG_BCC=D:\prgplus\git\lib2026\ide\32\tools\mingw32
-::/*FIM*/
-::=======================================================================
 ::PATH OPENMINIGUI
 @Set MG_ROOT=%~dp0%
 @Set MG_LIB=%MG_ROOT%lib
 @Set MG_XLIB=%MG_ROOT%xlib
 
 @set Path=%MG_CMP%\bin;%MG_BCC%\bin;%MG_HRB%\bin;%path%
-
 
 
 CD hbmk

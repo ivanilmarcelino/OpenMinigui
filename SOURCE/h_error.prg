@@ -63,9 +63,11 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 *-----------------------------------------------------------------------------*/
 INIT PROCEDURE ClipInit()
 
-   LOCAL lIsLegacyOs := os_isWin95() .OR. os_isWin98()
-
-   IF lIsLegacyOs
+#ifndef __XHARBOUR__
+   IF hb_osIsWin9x()
+#else
+   IF os_isWin95() .OR. os_isWin98()
+#endif
       MsgExclamation( "The " + hb_ArgV( 0 ) + " file" + CRLF + ;
          "expects a newer version of Windows." + CRLF + ;
          "Upgrade your Windows version.", "Error Starting Program", , .F., .T. )
@@ -164,8 +166,6 @@ STATIC FUNCTION HMG_GenError( cMsg )
 
 RETURN oError
 
-#define MG_VERSION "Harbour MiniGUI Extended Edition 26.02.0 ("
-
 /*-----------------------------------------------------------------------------*
 * FUNCTION MiniGuiVersion( nVersion )
 *
@@ -192,6 +192,8 @@ RETURN oError
 FUNCTION MiniGuiVersion( nVersion )
 
    LOCAL cVersion
+
+#define MG_VERSION "Harbour MiniGUI Extended Edition 26.03.0 ("
 
 #ifndef __XHARBOUR__
    cVersion := MG_VERSION + hb_ntos( hb_Version( HB_VERSION_BITWIDTH ) ) + "-bit) "

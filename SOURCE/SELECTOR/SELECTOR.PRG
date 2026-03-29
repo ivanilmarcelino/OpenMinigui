@@ -1,265 +1,405 @@
 /*
-      Name: Selector
-    Author: Written in Clipper 5.2e by Janusz Piwowarski <januszp@geocities.com>
-   Purpose: Emulates a simplified SQL SELECT statement, extracting data from a database based on specified criteria.
+ * =============================================================================
+ * Name: Selector Utility
+ * Author: Janusz Piwowarski (Original Clipper 5.2e)
+ *
+ * Description:
+ * A high-performance programmatic data extraction and transformation engine.
+ * This utility mimics SQL "SELECT INTO" functionality within the Harbour/HMG
+ * environment, allowing developers to filter, aggregate (Sum/Average), and
+ * group data from DBF work areas into temporary tables. These tables are
+ * typically used to power HMG Grid controls or complex reporting modules.
+ * =============================================================================
  */
 
-#xcommand DEFAULT <uVar1> := <uVal1> ;
-               [, <uVarN> := <uValN> ] => ;
-                  <uVar1> := iif( <uVar1> == NIL, <uVal1>, <uVar1> ) ;;
-                [ <uVarN> := iif( <uVarN> == NIL, <uValN>, <uVarN> ); ]
+/* 
+ * Select List Array (aSelectList) Constants
+ * These definitions provide a semantic layer over the multi-dimensional array
+ * used to define the target schema and data mapping logic.
+ */
+#define SEL_BLOCK       1 // Codeblock: Evaluated against source to retrieve data.
+#define SEL_NAME        2 // String: Target field name in the destination DBF.
+#define SEL_LEN         3 // Numeric: Optional explicit field length.
+#define SEL_DEC         4 // Numeric: Optional decimal precision for numeric types.
+#define SEL_FLAG        5 // String: Operation mode ('G'=Group, 'T'=Total/Sum, 'A'=Average).
+#define SEL_SUMMARY     6 // Logical: If .T., value is accumulated in a global summary array.
+
+/* 
+ * One-To-Many Array (aOneToMany) Constants
+ * Defines the relational link between a parent work area and a child work area.
+ */
+#define OTM_CHILD_ALIAS 1 // String: Alias of the child work area.
+#define OTM_MOTHER_LINK 2 // Codeblock: Key expression in the parent work area.
+#define OTM_CHILD_LINK  3 // Codeblock: Key expression in the child work area.
+
 /*
- * PROCEDURE Selector( aSelectList, xcnFromArea, aOneToMany, lSelect, lWhile, lRest, xcFile, xcAlias, lAdditive, aSummary, xEval )
- *
- * Purpose:
- *   Executes a Clipper/Harbour-based emulation of a simplified SQL SELECT query.
- *   Extracts, processes, and optionally aggregates data from a DBF table (or a one-to-many related set of tables),
- *   then outputs the results to a new or existing DBF file with optional indexing and summary calculations.
+ * PROCEDURE Selector
+ * The primary engine for data extraction and transformation.
  *
  * Parameters:
- *   aSelectList  (ARRAY)  – Definition of the fields/expressions to select.
- *       Format: { expression (CODEBLOCK), alias (STRING), length (NUMERIC|NIL), decimals (NUMERIC|NIL),
- *                 groupFlag (STRING: "G" for GROUP BY, "T" for total, "A" for average, or NIL),
- *                 summaryFlag (LOGICAL: .T. if included in aSummary) }
- *   xcnFromArea  (NUMERIC|STRING|NIL) – Work area number or alias name of the source DBF. NIL = current work area.
- *   aOneToMany   (ARRAY|NIL) – Defines a one-to-many relationship: { childAlias, parentFieldBlock, childFieldBlock }. NIL = no relation.
- *   lSelect      (CODEBLOCK|NIL) – WHERE condition to filter records. NIL = include all.
- *   lWhile       (CODEBLOCK|NIL) – WHILE condition to limit processing. NIL = process until EOF().
- *   lRest        (LOGICAL) – .T. = start from current record, .F. = start from first record.
- *   xcFile       (STRING|NIL) – Output DBF file path. NIL = "TEMP.DBF".
- *   xcAlias      (STRING|NIL) – Alias for output DBF. Defaults to filename (or "temp").
- *   lAdditive    (LOGICAL) – .T. = append to existing DBF, .F. = create new file.
- *   aSummary     (ARRAY|NIL) – Holds running totals for fields marked in aSelectList[6]. NIL = no summary.
- *   xEval        (CODEBLOCK|NIL) – Optional per-record evaluation before appending/updating.
+ *  aSelectList : Array. Field definitions and mapping rules.
+ *  xcnFromArea : Numeric/String. Source work area handle or alias.
+ *  aOneToMany  : Array. Join logic for parent/child relationships.
+ *  lSelect     : Codeblock. Filter condition (SQL "WHERE").
+ *  lWhile      : Codeblock. Loop continuation condition (SQL "WHILE").
+ *  lRest       : Logical. If .T., processes from current record; else from Top.
+ *  xcFile      : String. Path to the target DBF (Default: TEMP.DBF).
+ *  xcAlias     : String. Alias for the target work area.
+ *  lAdditive   : Logical. If .T., appends to existing target; else recreates.
+ *  aSummary    : Array (Ref). Stores running totals for flagged fields.
+ *  xEval       : Codeblock. Callback for progress tracking (e.g., HMG ProgressBar).
  *
- * Return:
- *   None (side effects only).
- *   - Creates or appends to a DBF.
- *   - Optionally builds an index.
- *   - Optionally fills aSummary array with totals.
- *   - Changes the active work area to the output table and positions at the first record.
- *
- * Purpose (Rationale):
- *   This function enables SQL-like data extraction and transformation in DBF-based Harbour apps without
- *   requiring an SQL engine. It supports grouping, aggregation, conditional filtering, and joining
- *   (one-to-many), making it useful for reporting and batch data processing in legacy systems.
- *
- * Notes:
- *   - Index creation is only done if GROUP BY fields are specified.
- *   - Grouping is implemented via index key expressions, not SQL semantics.
- *   - aOneToMany assumes child records can be located by dbSeek().
- *   - When lAdditive = .T., structure compatibility between source and target is assumed.
- *   - Large datasets may be slower due to per-record Eval() calls.
+ * Side Effects:
+ *  - Creates/Overwrites physical DBF files.
+ *  - Modifies active work area and record pointers.
+ *  - Populates the aSummary array if provided.
  */
 PROCEDURE Selector( aSelectList, xcnFromArea, aOneToMany, lSelect, lWhile, lRest, xcFile, xcAlias, lAdditive, aSummary, xEval )
-
-   LOCAL nLenSelectList := Len( aSelectList )
-   LOCAL xExprValue, cExprValue, cExprType, nExprLen, aStruct := {}
-   LOCAL lOTM := HB_ISARRAY( aOneToMany )
-   LOCAL nExprAlias, nCurrExpr, nSelectFrom, nSelectChild, nSelectTemp, xValueFromMother, axExpr := {}
+   LOCAL nSourceArea
+   LOCAL nChildArea := NIL
+   LOCAL nTargetArea
+   LOCAL aStruct := {}
+   LOCAL aGroupExpr := {}
+   LOCAL cIndexKey := ""
+   LOCAL cIndexName
    LOCAL lCreateIndex := .F.
-   LOCAL cIndexName, cIndexKey := ""
-   LOCAL lAppend, lSummary := !( aSummary == NIL )
-   LOCAL nCurrent, cSeekExpr, nStartRec
+   LOCAL lAggregate := .F.
+   LOCAL lOTM := HB_ISARRAY( aOneToMany )
    LOCAL lEval := HB_ISBLOCK( xEval )
+   LOCAL lSummary := ( aSummary != NIL )
+   LOCAL nGroupExprCount
+   LOCAL xMotherKey
 
-   /* Determine and select the source work area */
-   IF xcnFromArea == NIL
-      nSelectFrom := Select()
-   ELSE
-      IF HB_ISNUMERIC( xcnFromArea )
-         nSelectFrom := xcnFromArea
-      ELSEIF HB_ISSTRING( xcnFromArea )
-         nSelectFrom := Select( xcnFromArea )
-      ENDIF
-      dbSelectArea( nSelectFrom )
-   ENDIF
+   // Initialize defaults to ensure the engine has valid targets even if parameters are omitted.
+   hb_default( @xcFile, "TEMP.DBF" )
+   hb_default( @xcAlias, hb_FNameName( xcFile ) )
+   hb_default( @lRest, .F. )
+   hb_default( @lAdditive, .F. )
 
-   /* Prepare child work area if one-to-many relationship is defined */
+   // Generate index filename using the system's default driver extension (.ntx or .cdx).
+   cIndexName := hb_FNameExtSet( hb_FNameName( xcFile ), IndexExt() )
+
+   // Switch context to the source work area to begin data evaluation.
+   nSourceArea := ResolveSourceArea( xcnFromArea )
+
+   // Identify the child area if a One-To-Many relationship is requested.
    IF lOTM
-      nSelectChild := Select( aOneToMany[ 1 ] )
+      nChildArea := Select( aOneToMany[ OTM_CHILD_ALIAS ] )
    ENDIF
 
-   /* Set output file and alias defaults */
-   IF xcFile == NIL
-      xcFile := "TEMP.DBF"
-      IF xcAlias == NIL
-         xcAlias := "temp"
+   // Analyze the select list to build the DBF structure and determine if indexing is needed for grouping.
+   BuildStructure( aSelectList, aStruct, aGroupExpr, @lAggregate, @lCreateIndex, @cIndexKey, aSummary, lSummary, lAdditive )
+
+   nGroupExprCount := Len( aGroupExpr )
+
+   // Create or open the target table. If grouping is used, an index is created to facilitate 'Seek' operations.
+   nTargetArea := OpenTargetTable( xcFile, xcAlias, aStruct, lAdditive, lCreateIndex, cIndexName, cIndexKey, nSourceArea )
+
+   // Standard navigation: Start at the beginning unless 'REST' scope is specified.
+   IF ! lRest
+      dbGoTop()
+   ENDIF
+
+   // Synchronize parent to the first valid child record to maintain Inner Join integrity.
+   IF lOTM
+      AlignParentChild( nSourceArea, nChildArea, aOneToMany, @xMotherKey )
+   ENDIF
+
+   // Main processing loop: Iterates through the source data.
+   DO WHILE ! Eof() .AND. ( lWhile == NIL .OR. Eval( lWhile ) )
+
+      // Execute callback - ideal for updating HMG UI elements during long-running extractions.
+      IF lEval
+         Eval( xEval )
       ENDIF
-   ELSEIF xcAlias == NIL
-      xcAlias := hb_FNameName( xcFile )
+
+      // Apply the filter condition (the "WHERE" clause).
+      IF lSelect == NIL .OR. Eval( lSelect )
+         ProcessRecord( aSelectList, aGroupExpr, nGroupExprCount, nTargetArea, lAggregate, aSummary, lSummary )
+      ENDIF
+
+      // Move to the next record, handling complex One-To-Many navigation if active.
+      NavigateRecords( nSourceArea, nChildArea, aOneToMany, lOTM, @xMotherKey )
+
+   ENDDO
+
+   // Leave the target area selected so the caller can immediately bind it to an HMG Grid or Report.
+   dbSelectArea( nTargetArea )
+   dbGoTop()
+RETURN
+
+/*
+ * FUNCTION ResolveSourceArea
+ * Determines the work area handle from either a numeric ID or an alias string.
+ * Returns: Numeric work area handle.
+ */
+STATIC FUNCTION ResolveSourceArea( xArea )
+   LOCAL nArea := Select()
+
+   IF xArea != NIL
+      // Support both numeric handles and string aliases for flexibility.
+      nArea := iif( HB_ISNUMERIC( xArea ), xArea, Select( xArea ) )
+      dbSelectArea( nArea )
    ENDIF
 
-   /* Determine default index filename */
-   DEFAULT cIndexName := hb_FNameExtSet( hb_FNameName( xcFile ), IndexExt() )
+RETURN nArea
 
-   /* Bookmark current record and move to EOF to prep for reading */
-   nStartRec := RecNo()
+/*
+ * PROCEDURE BuildStructure
+ * Dynamically constructs the target DBF structure by evaluating source data.
+ * This avoids hardcoding schemas and allows for "Schema-on-Read" behavior.
+ */
+STATIC PROCEDURE BuildStructure( aSelectList, aStruct, aGroupExpr, lAggregate, lCreateIndex, cIndexKey, aSummary, lSummary, lAdditive )
+   LOCAL nCount := Len( aSelectList )
+   LOCAL n, xVal, cType, cVal, nLenExpr, nDot, cField, nAlias, nLenField, nDec
+   LOCAL lHasAvg := .F.
+   LOCAL nStart := RecNo()
+
+   // Move to a phantom record (EOF+1) to evaluate expressions safely without triggering data-driven side effects.
    dbGoto( LastRec() + 1 )
-   IF lOTM
-      ( nSelectChild )->( dbGoto( LastRec() + 1 ) )
-   ENDIF
 
-   /* Build output structure and determine grouping/summary fields */
-   FOR nCurrExpr := 1 TO nLenSelectList
-      xExprValue := Eval( aSelectList[ nCurrExpr, 1 ] )
-      cExprType := ValType( xExprValue )
-      cExprValue := Transform( xExprValue, "" )
-      nExprLen := Len( cExprValue )
+   FOR n := 1 TO nCount
 
-      AAdd( aStruct, { iif( ( nExprAlias := At( "->", aSelectList[ nCurrExpr, 2 ] ) ) == 0, ;
-                            aSelectList[ nCurrExpr, 2 ], ;
-                            SubStr( aSelectList[ nCurrExpr, 2 ], nExprAlias + 2 ) ), ;
-                            cExprType, ;
-                            iif( aSelectList[ nCurrExpr, 3 ] <> NIL, aSelectList[ nCurrExpr, 3 ], ;
-                                 iif( cExprType == "D", 8, nExprLen ) ), ;
-                            iif( aSelectList[ nCurrExpr, 4 ] <> NIL, aSelectList[ nCurrExpr, 4 ], ;
-                                 iif( cExprType == "N" .AND. ( nExprAlias := At( ".", cExprValue ) ) > 0, ;
-                                      nExprLen - nExprAlias, 0 ) ) } )
+      // Evaluate the codeblock to determine the data type and infer length/decimals.
+      xVal := Eval( aSelectList[ n, SEL_BLOCK ] )
+      cType := ValType( xVal )
+      cVal := Transform( xVal, "" )
+      nLenExpr := Len( cVal )
 
-      /* Handle GROUP BY */
-      IF aSelectList[ nCurrExpr, 5 ] == "G"
-         IF !lCreateIndex
+      // Clean field names: Remove alias prefixes (e.g., "CUST->NAME" becomes "NAME").
+      nAlias := At( "->", aSelectList[ n, SEL_NAME ] )
+      cField := iif( nAlias == 0, aSelectList[ n, SEL_NAME ], SubStr( aSelectList[ n, SEL_NAME ], nAlias + 2 ) )
+
+      // Determine field length: Use explicit override if provided, otherwise use inferred length.
+      nLenField := iif( aSelectList[ n, SEL_LEN ] != NIL, aSelectList[ n, SEL_LEN ], iif( cType == "D", 8, nLenExpr ) )
+
+      // Determine decimal precision for numeric fields by analyzing the transformed string.
+      nDec := iif( aSelectList[ n, SEL_DEC ] != NIL, aSelectList[ n, SEL_DEC ], ;
+         iif( cType == "N" .AND. ( nDot := At( ".", cVal ) ) > 0, nLenExpr - nDot, 0 ) )
+
+      // Append the definition to the structure array for dbCreate().
+      AAdd( aStruct, { cField, cType, nLenField, nDec } )
+
+      // Flag if the operation requires mathematical aggregation (Sum/Avg).
+      IF aSelectList[ n, SEL_FLAG ] $ "TA"
+         lAggregate := .T.
+      ENDIF
+
+      IF aSelectList[ n, SEL_FLAG ] == "A"
+         lHasAvg := .T.
+      ENDIF
+
+      // If 'Group By' is requested, build a concatenated index key to identify unique groups.
+      IF aSelectList[ n, SEL_FLAG ] == "G"
+         IF ! lCreateIndex
             lCreateIndex := .T.
          ELSE
             cIndexKey += "+"
          ENDIF
+         cIndexKey += BuildIndexExpr( cField, cType )
+         AAdd( aGroupExpr, aSelectList[ n, SEL_BLOCK ] )
 
-         DO CASE
-         CASE cExprType == "C"
-            cIndexKey += aStruct[ nCurrExpr, 1 ]
-         CASE cExprType == "N"
-            cIndexKey += ( "Str(" + aStruct[ nCurrExpr, 1 ] + ")" )
-         CASE cExprType == "D"
-            cIndexKey += ( "DToS(" + aStruct[ nCurrExpr, 1 ] + ")" )
-         CASE cExprType == "L"
-            cIndexKey += ( "Iif(" + aStruct[ nCurrExpr, 1 ] + "," + Chr( 34 ) + "1" + Chr( 34 ) + "," + Chr( 34 ) + "0" + Chr( 34 ) + ")" )
-         ENDCASE
-
-         AAdd( axExpr, aSelectList[ nCurrExpr, 1 ] )
-
-      /* Handle SUMMARY fields */
-      ELSEIF aSelectList[ nCurrExpr, 6 ] .AND. ( lSummary .AND. !lAdditive )
+      // Initialize the summary array if global totals are requested and we aren't appending to an existing set.
+      ELSEIF aSelectList[ n, SEL_SUMMARY ] .AND. lSummary .AND. ! lAdditive
          AAdd( aSummary, 0 )
       ENDIF
+
    NEXT
 
-   dbGoto( nStartRec )
+   // If calculating averages, add a hidden field to track the denominator (count) for each group.
+   IF lHasAvg .AND. ! lAdditive
+      AAdd( aStruct, { "_COUNT", "N", 10, 0 } )
+   ENDIF
 
-   /* Open output table for writing */
+   // Restore the source record pointer.
+   dbGoto( nStart )
+RETURN
+
+/*
+ * FUNCTION BuildIndexExpr
+ * Converts field names into string-safe expressions for index key concatenation.
+ * This ensures that mixed-type grouping (e.g., Date + Numeric) works correctly.
+ */
+STATIC FUNCTION BuildIndexExpr( cField, cType )
+
+   SWITCH cType
+   CASE "C"
+      RETURN cField
+   CASE "N"
+      RETURN "Str(" + cField + ")"
+   CASE "D"
+      RETURN "DToS(" + cField + ")"
+   CASE "L"
+      RETURN 'Iif(' + cField + ',"1","0")'
+   ENDSWITCH
+RETURN cField
+
+/*
+ * FUNCTION OpenTargetTable
+ * Manages the physical creation and opening of the temporary result set.
+ */
+STATIC FUNCTION OpenTargetTable( xcFile, xcAlias, aStruct, lAdditive, lCreateIndex, cIndexName, cIndexKey, nSource )
+   LOCAL nArea
+
    IF lAdditive
-      nSelectTemp := Select( xcAlias )
+      // If additive mode is on, we assume the table is already open and positioned.
+      nArea := Select( xcAlias )
    ELSE
+      // Create a new physical DBF based on the dynamic structure.
       dbCreate( xcFile, aStruct )
       dbUseArea( .T., NIL, xcFile, xcAlias, .F. )
-      nSelectTemp := Select()
+      nArea := Select()
+
+      // Create the index required for grouping/aggregation logic.
       IF lCreateIndex
          dbCreateIndex( cIndexName, cIndexKey, hb_macroBlock( cIndexKey ) )
       ENDIF
-      dbSelectArea( nSelectFrom )
+
+      // Return focus to the source area to begin the data pump.
+      dbSelectArea( nSource )
    ENDIF
-
-   IF !lRest
-      dbGoTop()
-   ENDIF
-
-   /* Align source and child cursors for one-to-many */
-   IF lOTM
-      DO WHILE !Eof() .AND. !( nSelectChild )->( dbSeek( xValueFromMother := ( nSelectFrom )->( Eval( aOneToMany[ 2 ] ) ), .F. ) )
-         dbSkip()
-      ENDDO
-   ENDIF
-
-   /* Main record processing loop */
-   DO WHILE !Eof() .AND. ( lWhile == NIL .OR. Eval( lWhile ) )
-      IF lEval
-         Eval( xEval )
-      ENDIF
-      IF lSelect == NIL .OR. Eval( lSelect )
-         lAppend := .F.
-         lCreateIndex := !lCreateIndex
-         cSeekExpr := ""
-
-         IF HB_ISARRAY( axExpr ) .AND. ValType( AEval( axExpr, {| e | cSeekExpr += ToString( Eval( e ) ) } ) ) == "A" .OR. !( nSelectTemp )->( dbSeek( cSeekExpr, .F. ) )
-            ( nSelectTemp )->( dbAppend() )
-            lAppend := .T.
-         ENDIF
-
-         nCurrent := 0
-         FOR nCurrExpr := 1 TO nLenSelectList
-            IF aSelectList[ nCurrExpr, 6 ]
-               ++nCurrent
-            ENDIF
-            IF !lCreateIndex .OR. lAppend .OR. aSelectList[ nCurrExpr, 5 ] $ "TA"
-               xExprValue := Eval( aSelectList[ nCurrExpr, 1 ] )
-               DO CASE
-               CASE aSelectList[ nCurrExpr, 5 ] == "T"
-                  ( nSelectTemp )->( FieldPut( nCurrExpr, FieldGet( nCurrExpr ) + xExprValue ) )
-               CASE aSelectList[ nCurrExpr, 5 ] == "A" .AND. !lAppend
-                  ( nSelectTemp )->( FieldPut( nCurrExpr, ( FieldGet( nCurrExpr ) + xExprValue ) / 2 ) )
-               OTHERWISE
-                  ( nSelectTemp )->( FieldPut( nCurrExpr, xExprValue ) )
-               ENDCASE
-               IF aSelectList[ nCurrExpr, 6 ] .AND. lSummary
-                  aSummary[ nCurrent ] += xExprValue
-               ENDIF
-            ENDIF
-         NEXT
-      ENDIF
-
-      /* Advance record pointers */
-      IF !lOTM
-         ( nSelectFrom )->( dbSkip() )
-      ELSE
-         ( nSelectChild )->( dbSkip() )
-         IF ( nSelectChild )->( Eof() ) .OR. !xValueFromMother == ( nSelectChild )->( Eval( aOneToMany[ 3 ] ) )
-            dbSkip()
-            IF lOTM
-               DO WHILE !Eof() .AND. !( nSelectChild )->( dbSeek( ( nSelectFrom )->( Eval( aOneToMany[ 2 ] ) ), .F. ) )
-                  dbSkip()
-               ENDDO
-            ENDIF
-         ENDIF
-      ENDIF
-   ENDDO
-
-   dbSelectArea( nSelectTemp )
-   dbGoTop()
-
-RETURN
-
+RETURN nArea
 
 /*
- * STATIC FUNCTION ToString( cStr )
- *
- * Purpose:
- *   Converts a value of various Harbour types into a consistent string form,
- *   mainly for index key construction and comparison in GROUP BY/seek operations.
- *
- * Parameters:
- *   cStr – Value to be converted. May be Numeric, Date, Logical, or String.
- *
- * Return:
- *   (STRING) – Formatted value as a string.
- *     - Numeric to Str()
- *     - Date to DToS() (YYYYMMDD)
- *     - Logical to "1" for .T., "0" for .F.
- *     - Other to unchanged
- *
- * Notes:
- *   Ensures grouping keys are type-consistent when building index expressions.
+ * PROCEDURE ProcessRecord
+ * The core logic for data transfer, grouping, and mathematical aggregation.
  */
-STATIC FUNCTION ToString( cStr )
+STATIC PROCEDURE ProcessRecord( aSelectList, aGroupExpr, nGroupExprCount, nTargetArea, lAggregate, aSummary, lSummary )
+   LOCAL lAppend
+   LOCAL n, xVal, nSummaryIndex := 0
+   LOCAL nFields := Len( aSelectList )
+   LOCAL nCountField := ( nTargetArea )->( FieldPos( "_COUNT" ) )
+   LOCAL cSeekKey := ""
+   LOCAL nPrevCount, nNewCount, nPrevSum
 
-   LOCAL cType := ValType( cStr )
+   // Determine if we are creating a new record or updating an existing group.
+   IF nGroupExprCount == 0
+      IF lAggregate
+         // Global aggregation (no grouping): Always update the first record.
+         IF ( nTargetArea )->( LastRec() ) == 0
+            ( nTargetArea )->( dbAppend() )
+            lAppend := .T.
+         ELSE
+            ( nTargetArea )->( dbGoTop() )
+            lAppend := .F.
+         ENDIF
+      ELSE
+         // Standard selection: Every source record creates a new target record.
+         ( nTargetArea )->( dbAppend() )
+         lAppend := .T.
+      ENDIF
+   ELSE
+      // Grouping logic: Build the seek key from the current source record values.
+      FOR n := 1 TO nGroupExprCount
+         cSeekKey += ToString( Eval( aGroupExpr[ n ] ) )
+      NEXT
+
+      // Seek the group in the target. If not found, create a new group record.
+      IF !( nTargetArea )->( dbSeek( cSeekKey, .F. ) )
+         ( nTargetArea )->( dbAppend() )
+         lAppend := .T.
+      ELSE
+         lAppend := .F.
+      ENDIF
+   ENDIF
+
+   // Map source data to target fields and perform calculations.
+   FOR n := 1 TO nFields
+
+      IF aSelectList[ n, SEL_SUMMARY ]
+         nSummaryIndex++
+      ENDIF
+
+      xVal := Eval( aSelectList[ n, SEL_BLOCK ] )
+
+      SWITCH aSelectList[ n, SEL_FLAG ]
+      CASE "T" // Total (Summation)
+         ( nTargetArea )->( FieldPut( n, ( nTargetArea )->( FieldGet( n ) ) + xVal ) )
+         EXIT
+
+      CASE "A" // Average (Running Mean)
+         IF lAppend
+            // Initialize the average with the first value.
+            ( nTargetArea )->( FieldPut( n, xVal ) )
+            IF nCountField > 0
+               ( nTargetArea )->( FieldPut( nCountField, 1 ) )
+            ENDIF
+         ELSE
+            // Recalculate the mean: ( (OldAvg * OldCount) + NewVal ) / NewCount.
+            nPrevCount := ( nTargetArea )->( FieldGet( nCountField ) )
+            nNewCount := nPrevCount + 1
+            nPrevSum := ( nTargetArea )->( FieldGet( n ) ) * nPrevCount
+            ( nTargetArea )->( FieldPut( n, ( nPrevSum + xVal ) / nNewCount ) )
+            ( nTargetArea )->( FieldPut( nCountField, nNewCount ) )
+         ENDIF
+         EXIT
+
+      OTHERWISE // Standard assignment for non-aggregated or grouping fields.
+         ( nTargetArea )->( FieldPut( n, xVal ) )
+      ENDSWITCH
+
+      // Update the global summary array if the field is flagged for summary reporting.
+      IF aSelectList[ n, SEL_SUMMARY ] .AND. lSummary
+         aSummary[ nSummaryIndex ] += xVal
+      ENDIF
+
+   NEXT
+RETURN
+
+/*
+ * PROCEDURE AlignParentChild
+ * Implements "Inner Join" behavior by skipping parent records that do not
+ * have a corresponding match in the child work area.
+ */
+STATIC PROCEDURE AlignParentChild( nSourceArea, nChildArea, aOneToMany, xMotherKey )
+
+   DO WHILE !( nSourceArea )->( Eof() ) .AND. ;
+         !( nChildArea )->( dbSeek( xMotherKey := ( nSourceArea )->( Eval( aOneToMany[ OTM_MOTHER_LINK ] ) ), .F. ) )
+      ( nSourceArea )->( dbSkip() )
+   ENDDO
+RETURN
+
+/*
+ * PROCEDURE NavigateRecords
+ * Handles iteration logic. In One-To-Many mode, it ensures all child records
+ * are processed before moving the parent record pointer.
+ */
+STATIC PROCEDURE NavigateRecords( nSourceArea, nChildArea, aOneToMany, lOTM, xMotherKey )
+
+   IF ! lOTM
+      // Standard single-table navigation.
+      ( nSourceArea )->( dbSkip() )
+   ELSE
+      // Move to the next child record in the join.
+      ( nChildArea )->( dbSkip() )
+
+      // If the child pointer reaches EOF or the link key changes, move the parent.
+      IF ( nChildArea )->( Eof() ) .OR. xMotherKey != ( nChildArea )->( Eval( aOneToMany[ OTM_CHILD_LINK ] ) )
+         ( nSourceArea )->( dbSkip() )
+
+         // Re-align parent to the next valid child (Inner Join logic).
+         DO WHILE !( nSourceArea )->( Eof() ) .AND. ;
+               !( nChildArea )->( dbSeek( ( nSourceArea )->( Eval( aOneToMany[ OTM_MOTHER_LINK ] ) ), .F. ) )
+            ( nSourceArea )->( dbSkip() )
+         ENDDO
+      ENDIF
+   ENDIF
+RETURN
+
+/*
+ * FUNCTION ToString
+ * Normalizes various Harbour data types into a string format.
+ * This is essential for building reliable index keys and performing seeks.
+ */
+STATIC FUNCTION ToString( xVal )
+   LOCAL cType := ValType( xVal )
 
    SWITCH cType
    CASE "N"
-      RETURN Str( cStr )
+      RETURN Str( xVal )
    CASE "D"
-      RETURN DToS( cStr )
+      RETURN DToS( xVal )
    CASE "L"
-      RETURN iif( cStr, "1", "0" )
+      RETURN iif( xVal, "1", "0" )
    ENDSWITCH
-
-RETURN cStr
+RETURN xVal

@@ -1,0 +1,449 @@
+===== INICIO DO BUILD ===== 
+[Compilando HMG] 
+CMD: hbmk2 hmg.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Creating static library... ..\lib\bcc\minigui.lib
+TLIB 6.3 Copyright (c) 1987-2011 Embarcadero Technologies, Inc.
+/P128   ..\lib\bcc\minigui.lib -+ ..\lib\hbmk\bcc\hmg\ErrorSys.obj -+ ..\lib\hbmk\bcc\hmg\h_activex.obj -+ ..\lib\hbmk\bcc\hmg\h_alert.obj -+ ..\lib\hbmk\bcc\hmg\h_animate.obj -+ ..\lib\hbmk\bcc\hmg\h_browse.obj -+ ..\lib\hbmk\bcc\hmg\h_btntextbox.obj -+ ..\lib\hbmk\bcc\hmg\h_button.obj -+ ..\lib\hbmk\bcc\hmg\h_buttonex.obj -+ ..\lib\hbmk\bcc\hmg\h_checkbox.obj -+ ..\lib\hbmk\bcc\hmg\h_checkres.obj -+ ..\lib\hbmk\bcc\hmg\h_chklabel.obj -+ ..\lib\hbmk\bcc\hmg\h_chklistbox.obj -+ ..\lib\hbmk\bcc\hmg\h_clbutton.obj -+ ..\lib\hbmk\bcc\hmg\h_combo.obj -+ ..\lib\hbmk\bcc\hmg\h_comboex.obj -+ ..\lib\hbmk\bcc\hmg\h_controlmisc.obj -+ ..\lib\hbmk\bcc\hmg\h_crypt.obj -+ ..\lib\hbmk\bcc\hmg\h_datepicker.obj -+ ..\lib\hbmk\bcc\hmg\h_dbf_aux.obj -+ ..\lib\hbmk\bcc\hmg\h_dialog.obj -+ ..\lib\hbmk\bcc\hmg\h_dialogs.obj -+ ..\lib\hbmk\bcc\hmg\h_draw.obj -+ ..\lib\hbmk\bcc\hmg\h_edit.obj -+ ..\lib\hbmk\bcc\hmg\h_edit_ex.obj -+ ..\lib\hbmk\bcc\hmg\h_editbox.obj -+ ..\lib\hbmk\bcc\hmg\h_error.obj -+ ..\lib\hbmk\bcc\hmg\h_events.obj -+ ..\lib\hbmk\bcc\hmg\h_filename.obj -+ ..\lib\hbmk\bcc\hmg\h_folder.obj -+ ..\lib\hbmk\bcc\hmg\h_font.obj -+ ..\lib\hbmk\bcc\hmg\h_frame.obj -+ ..\lib\hbmk\bcc\hmg\h_getbox.obj -+ ..\lib\hbmk\bcc\hmg\h_Gif89.obj -+ ..\lib\hbmk\bcc\hmg\h_gradient.obj -+ ..\lib\hbmk\bcc\hmg\h_graph.obj -+ ..\lib\hbmk\bcc\hmg\h_GraphBitmap.obj -+ ..\lib\hbmk\bcc\hmg\h_grid.obj -+ ..\lib\hbmk\bcc\hmg\h_help.obj -+ ..\lib\hbmk\bcc\hmg\h_hotkey.obj -+ ..\lib\hbmk\bcc\hmg\h_hotkeybox.obj -+ ..\lib\hbmk\bcc\hmg\h_hyperlink.obj -+ ..\lib\hbmk\bcc\hmg\h_image.obj -+ ..\lib\hbmk\bcc\hmg\h_imagelist.obj -+ ..\lib\hbmk\bcc\hmg\h_ini.obj -+ ..\lib\hbmk\bcc\hmg\h_init.obj -+ ..\lib\hbmk\bcc\hmg\h_ipaddress.obj -+ ..\lib\hbmk\bcc\hmg\h_label.obj -+ ..\lib\hbmk\bcc\hmg\h_listbox.obj -+ ..\lib\hbmk\bcc\hmg\h_media.obj -+ ..\lib\hbmk\bcc\hmg\h_menu.obj -+ ..\lib\hbmk\bcc\hmg\h_misc.obj -+ ..\lib\hbmk\bcc\hmg\h_monthcal.obj -+ ..\lib\hbmk\bcc\hmg\h_mru.obj -+ ..\lib\hbmk\bcc\hmg\h_msgbox.obj -+ ..\lib\hbmk\bcc\hmg\h_objects.obj -+ ..\lib\hbmk\bcc\hmg\h_objmisc.obj -+ ..\lib\hbmk\bcc\hmg\h_owntab.obj -+ ..\lib\hbmk\bcc\hmg\h_pager.obj -+ ..\lib\hbmk\bcc\hmg\h_progressbar.obj -+ ..\lib\hbmk\bcc\hmg\h_progresswheel.obj -+ ..\lib\hbmk\bcc\hmg\h_pubfunc.obj -+ ..\lib\hbmk\bcc\hmg\h_radio.obj -+ ..\lib\hbmk\bcc\hmg\h_rating.obj -+ ..\lib\hbmk\bcc\hmg\h_registry.obj -+ ..\lib\hbmk\bcc\hmg\h_report.obj -+ ..\lib\hbmk\bcc\hmg\h_richeditbox.obj -+ ..\lib\hbmk\bcc\hmg\h_richeditex.obj -+ ..\lib\hbmk\bcc\hmg\h_rptgen.obj -+ ..\lib\hbmk\bcc\hmg\h_savepdf.obj -+ ..\lib\hbmk\bcc\hmg\h_scrsaver.obj -+ ..\lib\hbmk\bcc\hmg\h_slider.obj -+ ..\lib\hbmk\bcc\hmg\h_socket.obj -+ ..\lib\hbmk\bcc\hmg\h_spinner.obj -+ ..\lib\hbmk\bcc\hmg\h_splitbutton.obj -+ ..\lib\hbmk\bcc\hmg\h_status.obj -+ ..\lib\hbmk\bcc\hmg\h_tab.obj -+ ..\lib\hbmk\bcc\hmg\h_taskdlg.obj -+ ..\lib\hbmk\bcc\hmg\h_textbox.obj -+ ..\lib\hbmk\bcc\hmg\h_timer.obj -+ ..\lib\hbmk\bcc\hmg\h_toolbar.obj -+ ..\lib\hbmk\bcc\hmg\h_tree.obj -+ ..\lib\hbmk\bcc\hmg\h_wbrush.obj -+ ..\lib\hbmk\bcc\hmg\h_webcam.obj -+ ..\lib\hbmk\bcc\hmg\h_winapimisc.obj -+ ..\lib\hbmk\bcc\hmg\h_windows.obj -+ ..\lib\hbmk\bcc\hmg\h_windowsMDI.obj -+ ..\lib\hbmk\bcc\hmg\h_winprop.obj -+ ..\lib\hbmk\bcc\hmg\alerts.obj -+ ..\lib\hbmk\bcc\hmg\netfuncs.obj -+ ..\lib\hbmk\bcc\hmg\tget.obj -+ ..\lib\hbmk\bcc\hmg\h_cdomail.obj -+ ..\lib\hbmk\bcc\hmg\statics.obj -+ ..\lib\hbmk\bcc\hmg\c_bitmap.obj -+ ..\lib\hbmk\bcc\hmg\c_browse.obj -+ ..\lib\hbmk\bcc\hmg\c_btntextbox.obj -+ ..\lib\hbmk\bcc\hmg\c_button.obj -+ ..\lib\hbmk\bcc\hmg\c_checkbox.obj -+ ..\lib\hbmk\bcc\hmg\c_chklabel.obj -+ ..\lib\hbmk\bcc\hmg\c_chklistbox.obj -+ ..\lib\hbmk\bcc\hmg\c_combo.obj -+ ..\lib\hbmk\bcc\hmg\c_controlmisc.obj -+ ..\lib\hbmk\bcc\hmg\c_cuebanner.obj -+ ..\lib\hbmk\bcc\hmg\c_cursor.obj -+ ..\lib\hbmk\bcc\hmg\c_datepicker.obj -+ ..\lib\hbmk\bcc\hmg\c_dialog.obj -+ ..\lib\hbmk\bcc\hmg\c_dialogs.obj -+ ..\lib\hbmk\bcc\hmg\c_draw.obj -+ ..\lib\hbmk\bcc\hmg\c_error.obj -+ ..\lib\hbmk\bcc\hmg\c_editbox.obj -+ ..\lib\hbmk\bcc\hmg\c_folder.obj -+ ..\lib\hbmk\bcc\hmg\c_font.obj -+ ..\lib\hbmk\bcc\hmg\c_frame.obj -+ ..\lib\hbmk\bcc\hmg\c_getbox.obj -+ ..\lib\hbmk\bcc\hmg\c_graph.obj -+ ..\lib\hbmk\bcc\hmg\c_grid.obj -+ ..\lib\hbmk\bcc\hmg\c_help.obj -+ ..\lib\hbmk\bcc\hmg\c_hmgapp.obj -+ ..\lib\hbmk\bcc\hmg\c_hotkey.obj -+ ..\lib\hbmk\bcc\hmg\c_hotkeybox.obj -+ ..\lib\hbmk\bcc\hmg\c_icon.obj -+ ..\lib\hbmk\bcc\hmg\c_image.obj -+ ..\lib\hbmk\bcc\hmg\c_imagelist.obj -+ ..\lib\hbmk\bcc\hmg\c_ini.obj -+ ..\lib\hbmk\bcc\hmg\c_ipaddress.obj -+ ..\lib\hbmk\bcc\hmg\c_label.obj -+ ..\lib\hbmk\bcc\hmg\c_listbox.obj -+ ..\lib\hbmk\bcc\hmg\c_media.obj -+ ..\lib\hbmk\bcc\hmg\c_menu.obj -+ ..\lib\hbmk\bcc\hmg\c_monitors.obj -+ ..\lib\hbmk\bcc\hmg\c_monthcal.obj -+ ..\lib\hbmk\bcc\hmg\c_msgbox.obj -+ ..\lib\hbmk\bcc\hmg\c_nonclient.obj -+ ..\lib\hbmk\bcc\hmg\c_pager.obj -+ ..\lib\hbmk\bcc\hmg\c_progressbar.obj -+ ..\lib\hbmk\bcc\hmg\c_radio.obj -+ ..\lib\hbmk\bcc\hmg\c_registry.obj -+ ..\lib\hbmk\bcc\hmg\c_resource.obj -+ ..\lib\hbmk\bcc\hmg\c_richeditbox.obj -+ ..\lib\hbmk\bcc\hmg\c_richeditex.obj -+ ..\lib\hbmk\bcc\hmg\c_scrsaver.obj -+ ..\lib\hbmk\bcc\hmg\c_slider.obj -+ ..\lib\hbmk\bcc\hmg\c_spinner.obj -+ ..\lib\hbmk\bcc\hmg\c_status.obj -+ ..\lib\hbmk\bcc\hmg\c_tab.obj -+ ..\lib\hbmk\bcc\hmg\c_taskdlgs.obj -+ ..\lib\hbmk\bcc\hmg\c_textbox.obj -+ ..\lib\hbmk\bcc\hmg\c_timer.obj -+ ..\lib\hbmk\bcc\hmg\c_toolbar.obj -+ ..\lib\hbmk\bcc\hmg\c_tooltip.obj -+ ..\lib\hbmk\bcc\hmg\c_tree.obj -+ ..\lib\hbmk\bcc\hmg\c_winapimisc.obj -+ ..\lib\hbmk\bcc\hmg\c_windows.obj -+ ..\lib\hbmk\bcc\hmg\c_windowsAPI.obj -+ ..\lib\hbmk\bcc\hmg\c_windowsCLS.obj -+ ..\lib\hbmk\bcc\hmg\c_windowsMDI.obj -+ ..\lib\hbmk\bcc\hmg\c_winprop.obj -+ ..\lib\hbmk\bcc\hmg\c_winxp.obj -+ ..\lib\hbmk\bcc\hmg\dbinsert.obj -+ ..\lib\hbmk\bcc\hmg\hbgdiplus.objWarning: 'ErrorSys' not found in library
+Warning: 'h_activex' not found in library
+Warning: 'h_alert' not found in library
+Warning: 'h_animate' not found in library
+Warning: 'h_browse' not found in library
+Warning: 'h_btntextbox' not found in library
+Warning: 'h_button' not found in library
+Warning: 'h_buttonex' not found in library
+Warning: 'h_checkbox' not found in library
+Warning: 'h_checkres' not found in library
+Warning: 'h_chklabel' not found in library
+Warning: 'h_chklistbox' not found in library
+Warning: 'h_clbutton' not found in library
+Warning: 'h_combo' not found in library
+Warning: 'h_comboex' not found in library
+Warning: 'h_controlmisc' not found in library
+Warning: 'h_crypt' not found in library
+Warning: 'h_datepicker' not found in library
+Warning: 'h_dbf_aux' not found in library
+Warning: 'h_dialog' not found in library
+Warning: 'h_dialogs' not found in library
+Warning: 'h_draw' not found in library
+Warning: 'h_edit' not found in library
+Warning: 'h_edit_ex' not found in library
+Warning: 'h_editbox' not found in library
+Warning: 'h_error' not found in library
+Warning: 'h_events' not found in library
+Warning: 'h_filename' not found in library
+Warning: 'h_folder' not found in library
+Warning: 'h_font' not found in library
+Warning: 'h_frame' not found in library
+Warning: 'h_getbox' not found in library
+Warning: 'h_Gif89' not found in library
+Warning: 'h_gradient' not found in library
+Warning: 'h_graph' not found in library
+Warning: 'h_GraphBitmap' not found in library
+Warning: 'h_grid' not found in library
+Warning: 'h_help' not found in library
+Warning: 'h_hotkey' not found in library
+Warning: 'h_hotkeybox' not found in library
+Warning: 'h_hyperlink' not found in library
+Warning: 'h_image' not found in library
+Warning: 'h_imagelist' not found in library
+Warning: 'h_ini' not found in library
+Warning: 'h_init' not found in library
+Warning: 'h_ipaddress' not found in library
+Warning: 'h_label' not found in library
+Warning: 'h_listbox' not found in library
+Warning: 'h_media' not found in library
+Warning: 'h_menu' not found in library
+Warning: 'h_misc' not found in library
+Warning: 'h_monthcal' not found in library
+Warning: 'h_mru' not found in library
+Warning: 'h_msgbox' not found in library
+Warning: 'h_objects' not found in library
+Warning: 'h_objmisc' not found in library
+Warning: 'h_owntab' not found in library
+Warning: 'h_pager' not found in library
+Warning: 'h_progressbar' not found in library
+Warning: 'h_progresswheel' not found in library
+Warning: 'h_pubfunc' not found in library
+Warning: 'h_radio' not found in library
+Warning: 'h_rating' not found in library
+Warning: 'h_registry' not found in library
+Warning: 'h_report' not found in library
+Warning: 'h_richeditbox' not found in library
+Warning: 'h_richeditex' not found in library
+Warning: 'h_rptgen' not found in library
+Warning: 'h_savepdf' not found in library
+Warning: 'h_scrsaver' not found in library
+Warning: 'h_slider' not found in library
+Warning: 'h_socket' not found in library
+Warning: 'h_spinner' not found in library
+Warning: 'h_splitbutton' not found in library
+Warning: 'h_status' not found in library
+Warning: 'h_tab' not found in library
+Warning: 'h_taskdlg' not found in library
+Warning: 'h_textbox' not found in library
+Warning: 'h_timer' not found in library
+Warning: 'h_toolbar' not found in library
+Warning: 'h_tree' not found in library
+Warning: 'h_wbrush' not found in library
+Warning: 'h_webcam' not found in library
+Warning: 'h_winapimisc' not found in library
+Warning: 'h_windows' not found in library
+Warning: 'h_windowsMDI' not found in library
+Warning: 'h_winprop' not found in library
+Warning: 'alerts' not found in library
+Warning: 'netfuncs' not found in library
+Warning: 'tget' not found in library
+Warning: 'h_cdomail' not found in library
+Warning: 'statics' not found in library
+Warning: 'c_bitmap' not found in library
+Warning: 'c_browse' not found in library
+Warning: 'c_btntextbox' not found in library
+Warning: 'c_button' not found in library
+Warning: 'c_checkbox' not found in library
+Warning: 'c_chklabel' not found in library
+Warning: 'c_chklistbox' not found in library
+Warning: 'c_combo' not found in library
+Warning: 'c_controlmisc' not found in library
+Warning: 'c_cuebanner' not found in library
+Warning: 'c_cursor' not found in library
+Warning: 'c_datepicker' not found in library
+Warning: 'c_dialog' not found in library
+Warning: 'c_dialogs' not found in library
+Warning: 'c_draw' not found in library
+Warning: 'c_error' not found in library
+Warning: 'c_editbox' not found in library
+Warning: 'c_folder' not found in library
+Warning: 'c_font' not found in library
+Warning: 'c_frame' not found in library
+Warning: 'c_getbox' not found in library
+Warning: 'c_graph' not found in library
+Warning: 'c_grid' not found in library
+Warning: 'c_help' not found in library
+Warning: 'c_hmgapp' not found in library
+Warning: 'c_hotkey' not found in library
+Warning: 'c_hotkeybox' not found in library
+Warning: 'c_icon' not found in library
+Warning: 'c_image' not found in library
+Warning: 'c_imagelist' not found in library
+Warning: 'c_ini' not found in library
+Warning: 'c_ipaddress' not found in library
+Warning: 'c_label' not found in library
+Warning: 'c_listbox' not found in library
+Warning: 'c_media' not found in library
+Warning: 'c_menu' not found in library
+Warning: 'c_monitors' not found in library
+Warning: 'c_monthcal' not found in library
+Warning: 'c_msgbox' not found in library
+Warning: 'c_nonclient' not found in library
+Warning: 'c_pager' not found in library
+Warning: 'c_progressbar' not found in library
+Warning: 'c_radio' not found in library
+Warning: 'c_registry' not found in library
+Warning: 'c_resource' not found in library
+Warning: 'c_richeditbox' not found in library
+Warning: 'c_richeditex' not found in library
+Warning: 'c_scrsaver' not found in library
+Warning: 'c_slider' not found in library
+Warning: 'c_spinner' not found in library
+Warning: 'c_status' not found in library
+Warning: 'c_tab' not found in library
+Warning: 'c_taskdlgs' not found in library
+Warning: 'c_textbox' not found in library
+Warning: 'c_timer' not found in library
+Warning: 'c_toolbar' not found in library
+Warning: 'c_tooltip' not found in library
+Warning: 'c_tree' not found in library
+Warning: 'c_winapimisc' not found in library
+Warning: 'c_windows' not found in library
+Warning: 'c_windowsAPI' not found in library
+Warning: 'c_windowsCLS' not found in library
+Warning: 'c_windowsMDI' not found in library
+Warning: 'c_winprop' not found in library
+Warning: 'c_winxp' not found in library
+Warning: 'dbinsert' not found in library
+Warning: 'hbgdiplus' not found in library
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando adordd] 
+CMD: hbmk2 adordd.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\adordd.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando bostaurus] 
+CMD: hbmk2 bostaurus.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\bostaurus.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando calldll] 
+CMD: hbmk2 calldll.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\calldll.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando debugger] 
+CMD: hbmk2 debugger.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\debugger.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando dll] 
+CMD: hbmk2 dll.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\dll.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando GraphPlus] 
+CMD: hbmk2 GraphPlus.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\GraphPlus.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbaes] 
+CMD: hbmk2 hbaes.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbaes.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbcab] 
+CMD: hbmk2 hbcab.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbcab.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbComm] 
+CMD: hbmk2 hbComm.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbComm.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando HBCrypto] 
+CMD: hbmk2 HBCrypto.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\HBCrypto.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbfimage] 
+CMD: hbmk2 hbfimage.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbfimage.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbgdip] 
+CMD: hbmk2 hbgdip.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbgdip.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hblibxlsxwriter] 
+CMD: hbmk2 hblibxlsxwriter.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hblibxlsxwriter.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando nulsys] 
+CMD: hbmk2 nulsys.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\nulsys.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando HbPrinter] 
+CMD: hbmk2 HbPrinter.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\HbPrinter.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbsqlit3] 
+CMD: hbmk2 hbsqlit3.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbsqlit3.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbvpdf] 
+CMD: hbmk2 hbvpdf.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbvpdf.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbxlsxml] 
+CMD: hbmk2 hbxlsxml.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbxlsxml.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbxml] 
+CMD: hbmk2 hbxml.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbxml.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hbzeegrid] 
+CMD: hbmk2 hbzeegrid.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Compiling Harbour sources...
+..\source\hbzeegrid\cells.prg(7) Error F0029  Can't open #include file 'zeegrid.ch'
+hbmk2[hbzeegrid]: Error: Running Harbour compiler (built-in). 1
+(D:\prgplus\git\OpenMinigui\harbour\bin\harbour.exe) -n1 ..\source\hbzeegrid\cells.prg -w3 -es2 -ko -q0 -o..\lib\hbmk\bcc\hbzeegrid\ -iD:\prgplus\Youtube\IDE\Tools\BCC\Include -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -iD:\prgplus\git\OpenMinigui\harbour\include -i..\include -i..\source\hbzeegrid
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+ERRO no passo: Compilando hbzeegrid 
+Codigo: 6 
+[Compilando hbziparc] 
+CMD: hbmk2 hbziparc.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hbziparc.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando easy_sql] 
+CMD: hbmk2 easy_sql.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\easy_sql.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando hmg_hpdf] 
+CMD: hbmk2 hmg_hpdf.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\hmg_hpdf.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando miniprint] 
+CMD: hbmk2 miniprint.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\miniprint.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando miniprint2] 
+CMD: hbmk2 miniprint2.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\miniprint2.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando pscript] 
+CMD: hbmk2 pscript.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\pscript.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando PdfPrinter] 
+CMD: hbmk2 PdfPrinter.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\PdfPrinter.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando propgrid] 
+CMD: hbmk2 propgrid.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\propgrid.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando propsheet] 
+CMD: hbmk2 propsheet.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\propsheet.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando qhtm] 
+CMD: hbmk2 qhtm.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\qhtm.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando selector] 
+CMD: hbmk2 selector.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\selector.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando SevenZip] 
+CMD: hbmk2 SevenZip.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\SevenZip.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando Shell32] 
+CMD: hbmk2 Shell32.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\Shell32.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando socket] 
+CMD: hbmk2 socket.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\socket.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando splitter] 
+CMD: hbmk2 splitter.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\splitter.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando sqlite3facade] 
+CMD: hbmk2 sqlite3facade.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\sqlite3facade.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando tmsagent] 
+CMD: hbmk2 tmsagent.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\tmsagent.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando tsbrowse] 
+CMD: hbmk2 tsbrowse.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Target up to date: ..\lib\bcc\tsbrowse.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+[Compilando winreport] 
+CMD: hbmk2 winreport.hbp 
+hbmk2: Processing environment options: -comp=bcc
+hbmk2: Triggered by #require directive: hbzebra.hbc
+hbmk2[winreport]: Warning: Cannot find hbzebra.hbc
+hbmk2: Target up to date: ..\lib\bcc\winreport.lib
+*********************************************************************************** 
+/////////////////////////////////////////////////////////////////////////////////// 
+*********************************************************************************** 
+===== BUILD OK ===== 

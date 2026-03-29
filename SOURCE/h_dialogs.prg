@@ -130,11 +130,18 @@ FUNCTION GetFolder( cTitle, cInitPath, nFlags, lNewFolderButton, nFolderType )
 
    // BIF_USENEWUI: Provides the resizable dialog with drag-and-drop and new folder button.
    // BIF_VALIDATE: Sends messages to the callback to validate the selection.
-   LOCAL nDefaultFlags := BIF_USENEWUI + BIF_VALIDATE
+   LOCAL nDefaultFlags := hb_BitOr( BIF_USENEWUI, BIF_VALIDATE )
+
+   hb_default( @nFlags, nDefaultFlags )
+   hb_default( @lNewFolderButton, .T. )
+   hb_default( @cInitPath, "" )
+
+   IF ! lNewFolderButton
+      nFlags := hb_BitOr( nFlags, BIF_NONEWFOLDERBUTTON )
+   ENDIF
 
    // C_BrowseForFolder is a C-level wrapper for the SHBrowseForFolder Shell API.
-   RETURN C_BrowseForFolder( NIL, cTitle, hb_defaultValue( nFlags, nDefaultFlags ) + ;
-      iif( hb_defaultValue( lNewFolderButton, .T. ), 0, BIF_NONEWFOLDERBUTTON ), nFolderType, cInitPath )
+RETURN C_BrowseForFolder( NIL, cTitle, nFlags, nFolderType, cInitPath )
 
 /*
  * Function: BrowseForFolder
@@ -177,57 +184,51 @@ RETURN C_BrowseForFolder( NIL, cTitle, hb_defaultValue( nFlags, nDefaultFlags ),
  */
 FUNCTION GetFile( acFilter, cTitle, cInitDir, lMultiSelect, lNoChangeDirectory, nFilterIndex )
 
-   LOCAL cRet, aTmp, xRet, i
-   LOCAL cFilter := ""
    LOCAL nFlags := WIN_OFN_EXPLORER // Use the modern Explorer-style dialog.
+   LOCAL cRet, aTmp, aResult := {}
+   LOCAL i
 
    hb_default( @lMultiSelect, .F. )
    hb_default( @lNoChangeDirectory, .F. )
 
    // Bitwise addition of flags based on logical parameters.
    IF lMultiSelect
-      nFlags += WIN_OFN_ALLOWMULTISELECT
+      nFlags := hb_BitOr( nFlags, WIN_OFN_ALLOWMULTISELECT )
    ENDIF
 
    IF lNoChangeDirectory
-      nFlags += WIN_OFN_NOCHANGEDIR
-   ENDIF
-
-   // The Windows API expects filters as a null-terminated string sequence:
-   // "Text Files\0*.txt\0All Files\0*.*\0\0"
-   IF ISARRAY( acFilter )
-      AEval( acFilter, {| x | cFilter += x[1] + Chr( 0 ) + x[2] + Chr( 0 ) } )
-      cFilter += Chr( 0 )
+      nFlags := hb_BitOr( nFlags, WIN_OFN_NOCHANGEDIR )
    ENDIF
 
    // win_GetOpenFileName is the Harbour-native wrapper for GetOpenFileName API.
-   cRet := win_GetOpenFileName( @nFlags, cTitle, cInitDir, /*cDefExt*/, cFilter, @nFilterIndex, /*nBufferSize*/, /*cDefName*/ )
+   cRet := win_GetOpenFileName( @nFlags, cTitle, cInitDir, /*cDefExt*/, BuildFilterString( acFilter ), @nFilterIndex, /*nBufferSize*/, /*cDefName*/ )
 
    // Handle Multi-Select logic:
    // When multiple files are selected, the API returns a string where the first 
    // part is the directory, followed by null-separated filenames.
    IF hb_bitAnd( nFlags, WIN_OFN_ALLOWMULTISELECT ) != 0
-      xRet := {}
+
       IF ! Empty( aTmp := hb_ATokens( cRet, Chr( 0 ) ) )
          IF Len( aTmp ) == 1
             // Only one file selected in multi-select mode.
-            xRet := { aTmp[1] }
+            aResult := { aTmp[1] }
          ELSE
             // Multiple files: aTmp[1] is the path, aTmp[2..N] are filenames.
             FOR i := 2 TO Len( aTmp )
-               AAdd( xRet, aTmp[1] + "\" + aTmp[i] )
+               AAdd( aResult, aTmp[1] + "\" + aTmp[i] )
             NEXT
          ENDIF
       ENDIF
-   ELSE
-      // Single file selection returns the full path directly.
-      xRet := cRet
+
+      RETURN aResult
+
    ENDIF
 
-RETURN xRet
+   // Single file selection returns the full path directly.
+RETURN cRet
 
 /*
- * Function: Putfile
+ * Function: PutFile
  * Purpose:  Displays the "Save File" dialog.
  * 
  * Parameters:
@@ -242,33 +243,41 @@ RETURN xRet
  * Returns:
  *    String containing the selected path/filename, or empty if cancelled.
  */
-FUNCTION Putfile( acFilter, cTitle, cInitDir, lNoChangeCurDir, cDefName, nFilterIndex, lPromptOverwrite )
+FUNCTION PutFile( acFilter, cTitle, cInitDir, lNoChangeCurDir, cDefName, nFilterIndex, lPromptOverwrite )
 
-   LOCAL cRet, cFilter := "", cDefExt := ""
    LOCAL nFlags := WIN_OFN_EXPLORER
+   LOCAL cRet, cDefExt := ""
 
    hb_default( @nFilterIndex, 1 )
    hb_default( @lNoChangeCurDir, .F. )
    hb_default( @lPromptOverwrite, .F. )
 
    IF lNoChangeCurDir
-      nFlags += WIN_OFN_NOCHANGEDIR
+      nFlags := hb_BitOr( nFlags, WIN_OFN_NOCHANGEDIR )
    ENDIF
 
    IF lPromptOverwrite
-      nFlags += WIN_OFN_OVERWRITEPROMPT
+      nFlags := hb_BitOr( nFlags, WIN_OFN_OVERWRITEPROMPT )
    ENDIF
 
-   // Construct the null-delimited filter string required by the WinAPI.
+   // win_GetSaveFileName is the Harbour-native wrapper for GetSaveFileName API.
+   cRet := win_GetSaveFileName( @nFlags, cTitle, cInitDir, cDefExt, BuildFilterString( acFilter ), @nFilterIndex, /*nBufferSize*/, cDefName )
+
+RETURN cRet
+
+/*
+ * Helper Function: BuildFilterString
+ * Purpose: Constructs the null-delimited filter string for file dialogs.
+ */
+STATIC FUNCTION BuildFilterString( acFilter )
+   LOCAL cFilter := ""
+
    IF ISARRAY( acFilter )
       AEval( acFilter, {| x | cFilter += x[1] + Chr( 0 ) + x[2] + Chr( 0 ) } )
       cFilter += Chr( 0 )
    ENDIF
 
-   // win_GetSaveFileName is the Harbour-native wrapper for GetSaveFileName API.
-   cRet := win_GetSaveFileName( @nFlags, cTitle, cInitDir, cDefExt, acFilter, @nFilterIndex, /*nBufferSize*/, cDefName )
-
-RETURN cRet
+RETURN cFilter
 
 #else
 
