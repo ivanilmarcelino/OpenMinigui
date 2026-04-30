@@ -11,7 +11,7 @@
 
    This   program   is   distributed  in  the hope that it will be useful, but
    WITHOUT    ANY    WARRANTY;    without   even   the   implied  warranty  of
-   MERCHANTABILITY  or  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+   MERCHANTABILITY  or  FITNESS  FOR A PARTICULAR PURPOSE. See the GNU General
    Public License for more details.
 
    You   should  have  received a copy of the GNU General Public License along
@@ -45,322 +45,276 @@
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
  */
+
 #include <mgdefs.h>
 #include <windowsx.h>
-
 #include "hbapiitm.h"
 #include "hbapierr.h"
 
-// Include hbwinuni.h if not using xHarbour and Harbour version is greater than 3.0.0
+/* 
+ * Harbour 3.0+ Unicode Compatibility Layer
+ * 
+ * Reasoning:
+ * Different versions of Harbour handle string copying differently in Unicode 
+ * environments. This block ensures a consistent internal API (HB_STRNCPY) 
+ * regardless of the underlying Harbour version or build type.
+ */
 #if !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 > 0x030000 )
 #include "hbwinuni.h"
 #else
 #define HB_STRNCPY   hb_strncpy
 #endif
-
-// Convert ANSI string to Wide string
 #ifdef UNICODE
-LPWSTR   AnsiToWide( LPCSTR );
-LPSTR    WideToAnsi( LPWSTR );
+
+/* 
+ * String Conversion Prototypes
+ * Used to bridge Harbour's internal string representation with Windows Wide-character APIs.
+ */
+LPWSTR         AnsiToWide( LPCSTR );
+LPSTR          WideToAnsi( LPWSTR );
 #endif
 
-// MiniGUI Resources management for loading resources
-void     RegisterResource( HANDLE hResource, LPCSTR szType );
+/* 
+ * HMG Resource Tracker
+ * 
+ * Purpose:
+ * Registers GDI objects (like fonts) into HMG's internal cleanup system.
+ * This prevents GDI handle leaks by ensuring objects are deleted when 
+ * the application or the owning window is destroyed.
+ */
+void           RegisterResource( HANDLE hResource, LPCSTR szType );
 
-#ifdef __XCC__
-#define HB_ISBLOCK   ISBLOCK
-#endif
+/* Forward declaration for the font enumeration callback used by the Windows API */
+int CALLBACK   EnumFontFamExProc( ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme, DWORD FontType, LPARAM lParam );
 
 /*
-   PrepareFont
-
-   This function creates a Windows font (HFONT) based on the provided specifications.
-   It calculates the font size based on the screen's DPI and creates the font using CreateFont.
-
-   Parameters:
-      FontName (TCHAR*): The name of the font (e.g., "Arial").
-      FontSize (int): The desired font size in points.
-      Weight (int): The font weight (e.g., FW_BOLD, FW_NORMAL).
-      Italic (DWORD): A flag indicating whether the font should be italic (TRUE) or not (FALSE).
-      Underline (DWORD): A flag indicating whether the font should be underlined (TRUE) or not (FALSE).
-      StrikeOut (DWORD): A flag indicating whether the font should be struck out (TRUE) or not (FALSE).
-      Angle (DWORD): The angle of the font in tenths of a degree.
-      charset (DWORD): The character set to use for the font (e.g., DEFAULT_CHARSET).
-
-   Returns:
-      HFONT: A handle to the created font.  Returns NULL if the font creation fails.
-
-   Purpose:
-      This function encapsulates the font creation process, handling DPI scaling and calling the Windows API to create the font.
-      It is used to ensure that fonts are created consistently across different screen resolutions.
-*/
+ * PrepareFont (Internal Helper)
+ * 
+ * Purpose:
+ * Creates a Win32 HFONT handle with proper DPI scaling.
+ * 
+ * Parameters:
+ * - FontName: Typeface name (e.g., "Arial").
+ * - FontSize: Desired size in points.
+ * - Weight: Win32 weight constant (e.g., FW_BOLD).
+ * - Italic, Underline, StrikeOut: Boolean style flags.
+ * - Angle: Rotation in tenths of degrees (e.g., 450 = 45 degrees).
+ * - charset: Windows character set identifier.
+ * 
+ * Reasoning:
+ * Windows uses logical units for font height. To maintain visual consistency 
+ * across different screen resolutions (DPI), we scale the point size using 
+ * LOGPIXELSY. We use a negative FontSize to tell Windows to match the 
+ * character height rather than the cell height.
+ */
 HFONT PrepareFont( TCHAR *FontName, int FontSize, int Weight, DWORD Italic, DWORD Underline, DWORD StrikeOut, DWORD Angle, DWORD charset )
 {
-   // Get device context for the desktop
    HDC   hDC = GetDC( HWND_DESKTOP );
 
-   // Convert font size to logical units based on DPI settings
+   // Calculate logical height: (Points * DPI) / 72
    FontSize = -MulDiv( FontSize, GetDeviceCaps( hDC, LOGPIXELSY ), 72 );
-
-   // Release the device context
    ReleaseDC( HWND_DESKTOP, hDC );
 
-   // Create and return the font with specified attributes
-   return CreateFont
-      (
-         FontSize,                        // Height of font
-         0,                               // Width of font
-         Angle,                           // Text rotation angle
-         Angle,                           // Baseline rotation angle
-         Weight,                          // Font weight (bold or normal)
-         Italic,                          // Italic setting
-         Underline,                       // Underline setting
-         StrikeOut,                       // Strikeout setting
-         charset,                         // Character set
-         OUT_TT_PRECIS,                   // Output precision
-         CLIP_DEFAULT_PRECIS,             // Clipping precision
-         DEFAULT_QUALITY,                 // Output quality
-         FF_DONTCARE,                     // Family and pitch
-         FontName                         // Font name
-      );
+   // Create the font using high-quality TrueType precision
+   return CreateFont( FontSize, 0, Angle, Angle, Weight, Italic, Underline, StrikeOut, charset, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, FontName );
 }
 
 /*
-   INITFONT
-
-   This Harbour function initializes a font with the given attributes and returns a handle to the created font.
-
-   Parameters:
-      1: FontName (STRING): The name of the font (e.g., "Arial").
-      2: FontSize (NUMERIC): The desired font size in points.
-      3: Bold (LOGICAL): A flag indicating whether the font should be bold (TRUE) or not (FALSE).
-      4: Italic (LOGICAL): A flag indicating whether the font should be italic (TRUE) or not (FALSE).
-      5: Underline (LOGICAL): A flag indicating whether the font should be underlined (TRUE) or not (FALSE).
-      6: StrikeOut (LOGICAL): A flag indicating whether the font should be struck out (TRUE) or not (FALSE).
-      7: Angle (NUMERIC): The angle of the font in tenths of a degree.
-      8: Charset (NUMERIC, optional): The character set to use for the font (e.g., DEFAULT_CHARSET). Defaults to DEFAULT_CHARSET if not provided.
-
-   Returns:
-      HANDLE: A handle to the created font.
-
-   Purpose:
-      This function serves as a Harbour-callable interface to create fonts. It takes font attributes as parameters,
-      calls the PrepareFont function to create the font, registers the font as a resource, and returns the font handle.
-      It handles UNICODE conversions if necessary.
-*/
+ * INITFONT
+ * 
+ * Purpose:
+ * Harbour-level function to create a font object.
+ * 
+ * Parameters:
+ *    1: FontName (C)
+ *    2: Size (N)
+ *    3: Bold (L)
+ *    4: Italic (L)
+ *    5: Underline (L)
+ *    6: StrikeOut (L)
+ *    7: Angle (N)
+ *    8: Charset (N, optional)
+ * 
+ * Returns:
+ * A numeric handle (HFONT) to the created font.
+ */
 HB_FUNC( INITFONT )
 {
-   HFONT hFont;
+   // Map Harbour logical parameters to Win32 constants
    int   bold = hb_parl( 3 ) ? FW_BOLD : FW_NORMAL;
    DWORD italic = ( DWORD ) hb_parl( 4 );
    DWORD underline = ( DWORD ) hb_parl( 5 );
    DWORD strikeout = ( DWORD ) hb_parl( 6 );
    DWORD angle = hb_parnl( 7 );
    DWORD charset = hb_parnldef( 8, DEFAULT_CHARSET );
+   HFONT hFont;
 
 #ifdef UNICODE
-   // Convert ANSI font name to Wide string if in UNICODE mode
+   // Convert Harbour string to WideChar for Unicode builds
    LPWSTR   pStr = AnsiToWide( hb_parc( 1 ) );
    hFont = PrepareFont( ( TCHAR * ) pStr, hb_parni( 2 ), bold, italic, underline, strikeout, angle, charset );
-   hb_xfree( pStr );                      // Free converted Wide string
+   hb_xfree( pStr );
 #else
    hFont = PrepareFont( ( TCHAR * ) hb_parc( 1 ), hb_parni( 2 ), bold, italic, underline, strikeout, angle, charset );
 #endif
-   RegisterResource( hFont, "FONT" );     // Register the font resource
-   hmg_ret_raw_HANDLE( hFont );           // Return the font handle
+
+   // Register the font for automatic garbage collection/cleanup
+   RegisterResource( hFont, "FONT" );
+   hmg_ret_raw_HANDLE( hFont );
 }
 
 /*
-   _SETFONT
-
-   This Harbour function sets a font to a specified window. It creates a new font based on the provided attributes and applies it to the window.
-
-   Parameters:
-      1: hwnd (HANDLE): The handle of the window to which the font should be applied.
-      2: FontName (STRING): The name of the font (e.g., "Arial").
-      3: FontSize (NUMERIC): The desired font size in points.
-      4: Bold (LOGICAL): A flag indicating whether the font should be bold (TRUE) or not (FALSE).
-      5: Italic (LOGICAL): A flag indicating whether the font should be italic (TRUE) or not (FALSE).
-      6: Underline (LOGICAL): A flag indicating whether the font should be underlined (TRUE) or not (FALSE).
-      7: StrikeOut (LOGICAL): A flag indicating whether the font should be struck out (TRUE) or not (FALSE).
-      8: Angle (NUMERIC): The angle of the font in tenths of a degree.
-      9: Charset (NUMERIC, optional): The character set to use for the font (e.g., DEFAULT_CHARSET). Defaults to DEFAULT_CHARSET if not provided.
-
-   Returns:
-      HANDLE: A handle to the created font.
-
-   Purpose:
-      This function provides a way to dynamically change the font of a window at runtime. It creates a new font with the specified attributes,
-      sets it as the window's font, registers the font as a resource, and returns the font handle.  It also includes error handling to ensure
-      that the window handle is valid.
-*/
+ * _SETFONT
+ * 
+ * Purpose:
+ * Creates a new font and immediately applies it to a specific UI control.
+ * 
+ * Parameters:
+ *    1: hWnd (H) - Handle to the window or control.
+ *    2: FontName (C)
+ *    3: Size (N)
+ *    4: Bold (L)
+ *    ... (Other font attributes)
+ * 
+ * Returns:
+ *    The new HFONT handle.
+ * 
+ * Side Effects:
+ * Updates the control's visual state and triggers a repaint.
+ */
 HB_FUNC( _SETFONT )
 {
-#ifdef UNICODE
-   LPWSTR   pStr;
-#endif
-   HWND     hwnd = hmg_par_raw_HWND( 1 );
+   HWND  hwnd = hmg_par_raw_HWND( 1 );
+   int   bold = hb_parl( 4 ) ? FW_BOLD : FW_NORMAL;
+   DWORD italic = ( DWORD ) hb_parl( 5 );
+   DWORD underline = ( DWORD ) hb_parl( 6 );
+   DWORD strikeout = ( DWORD ) hb_parl( 7 );
+   DWORD angle = hb_parnl( 8 );
+   DWORD charset = hb_parnldef( 9, DEFAULT_CHARSET );
+   HFONT hFont;
 
-   // Check if the window is valid
-   if( IsWindow( hwnd ) )
+   // Validate window handle to prevent application crashes
+   if( !IsWindow( hwnd ) )
    {
-      HFONT hFont;
-      int   bold = hb_parl( 4 ) ? FW_BOLD : FW_NORMAL;
-      DWORD italic = ( DWORD ) hb_parl( 5 );
-      DWORD underline = ( DWORD ) hb_parl( 6 );
-      DWORD strikeout = ( DWORD ) hb_parl( 7 );
-      DWORD angle = hb_parnl( 8 );
-      DWORD charset = hb_parnldef( 9, DEFAULT_CHARSET );
+      hb_errRT_BASE_SubstR( EG_ARG, 5001, "MiniGUI Error", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
+      return;
+   }
 
 #ifdef UNICODE
-      // Convert ANSI font name to Wide string if in UNICODE mode
-      pStr = AnsiToWide( hb_parc( 2 ) );
+   {
+      LPWSTR   pStr = AnsiToWide( hb_parc( 2 ) );
       hFont = PrepareFont( ( TCHAR * ) pStr, hb_parni( 3 ), bold, italic, underline, strikeout, angle, charset );
       hb_xfree( pStr );
+   }
+
 #else
-      hFont = PrepareFont( ( TCHAR * ) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, angle, charset );
+   hFont = PrepareFont( ( TCHAR * ) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, angle, charset );
 #endif
 
-      // Apply the font to the window
-      SetWindowFont( hwnd, hFont, TRUE );
-
-      RegisterResource( hFont, "FONT" );  // Register the font resource
-      hmg_ret_raw_HANDLE( hFont );        // Return the font handle
-   }
-   else
-   {
-      hb_errRT_BASE_SubstR( EG_ARG, 5001, "MiniGUI Error", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
-   }
+   // Apply font to control; TRUE forces an immediate redraw
+   SetWindowFont( hwnd, hFont, TRUE );
+   RegisterResource( hFont, "FONT" );
+   hmg_ret_raw_HANDLE( hFont );
 }
 
 /*
-   _SETFONTHANDLE
-
-   This Harbour function directly sets an existing font handle to a window.
-
-   Parameters:
-      1: hwnd (HANDLE): The handle of the window to which the font should be applied.
-      2: hFont (HANDLE): The handle of the font to be applied to the window.
-
-   Returns:
-      None.
-
-   Purpose:
-      This function provides a way to apply an existing font (identified by its handle) to a window.
-      It checks if the window and font handles are valid before applying the font.  It is more efficient than _SETFONT
-      if the font has already been created.
-*/
+ * _SETFONTHANDLE
+ * 
+ * Purpose:
+ * Assigns an existing HFONT handle to a control.
+ * 
+ * Reasoning:
+ * This is more efficient than _SETFONT when multiple controls share the same font, 
+ * as it avoids redundant GDI object creation.
+ */
 HB_FUNC( _SETFONTHANDLE )
 {
-   HWND  hwnd = hmg_par_raw_HWND( 1 );
+   HWND     hwnd = hmg_par_raw_HWND( 1 );
+   HGDIOBJ  hGdi = hmg_par_raw_HGDIOBJ( 2 );
 
-   if( IsWindow( hwnd ) )
+   if( !IsWindow( hwnd ) )
    {
-      if( GetObjectType( hmg_par_raw_HGDIOBJ( 2 ) ) == OBJ_FONT )
-      {
-         SetWindowFont( hwnd, hmg_par_raw_HFONT( 2 ), TRUE );
-      }
-      else
-      {
-         hb_errRT_BASE_SubstR( EG_ARG, 5050 + OBJ_FONT, "MiniGUI Error", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
-      }
+      hb_errRT_BASE_SubstR( EG_ARG, 5001, "MiniGUI Error", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
+      return;
+   }
+
+   // Verify the handle is actually a font before assignment
+   if( GetObjectType( hGdi ) == OBJ_FONT )
+   {
+      SetWindowFont( hwnd, ( HFONT ) hGdi, TRUE );
    }
    else
    {
-      hb_errRT_BASE_SubstR( EG_ARG, 5001, "MiniGUI Error", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
+      hb_errRT_BASE_SubstR( EG_ARG, 5050 + OBJ_FONT, "MiniGUI Error", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
    }
 }
 
 /*
-   GETSYSTEMFONT
-
-   This Harbour function retrieves the system font used in non-client area metrics (e.g., window borders, menus).
-
-   Parameters:
-      None.
-
-   Returns:
-      ARRAY: An array containing the font name (string) and font height (numeric).
-
-   Purpose:
-      This function allows Harbour applications to access the system's default font settings.
-      It retrieves the NONCLIENTMETRICS structure, extracts the font information, and returns it as an array.
-      This is useful for ensuring that custom controls and dialogs are consistent with the system's appearance.
-*/
+ * GETSYSTEMFONT
+ * 
+ * Purpose:
+ * Retrieves the default font used by the operating system for UI elements.
+ * 
+ * Returns:
+ * An array { cFontName, nPointSize }.
+ */
 HB_FUNC( GETSYSTEMFONT )
 {
-   LOGFONT           lfDlgFont;
    NONCLIENTMETRICS  ncm;
-
-#ifdef UNICODE
-   LPSTR             pStr;
-#endif
-   int               iPointSize;
+   LOGFONT           lf;
    HDC               hdc = GetDC( NULL );
    int               logPixY = GetDeviceCaps( hdc, LOGPIXELSY );
    ReleaseDC( NULL, hdc );
 
-   // Set the size of NONCLIENTMETRICS structure
+   // Initialize structure size for API compatibility
    ncm.cbSize = sizeof( ncm );
 
-   // Retrieve system metrics for non-client areas
+   // Retrieve system-wide UI metrics (MessageFont is the standard UI font)
    SystemParametersInfo( SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, 0 );
+   lf = ncm.lfMessageFont;
 
-   lfDlgFont = ncm.lfMessageFont;
+   hb_reta( 2 );
 
-   hb_reta( 2 );  // Return an array
 #ifndef UNICODE
-   HB_STORC( lfDlgFont.lfFaceName, -1, 1 );  // Store font name
+   HB_STORC( lf.lfFaceName, -1, 1 );
 #else
-   pStr = WideToAnsi( lfDlgFont.lfFaceName );
-   HB_STORC( pStr, -1, 1 );
-   hb_xfree( pStr );
+   {
+      LPSTR pStr = WideToAnsi( lf.lfFaceName );
+      HB_STORC( pStr, -1, 1 );
+      hb_xfree( pStr );
+   }
 #endif
 
-   /* lfHeight is negative when it encodes character height. 
-   PointSize = (-lfHeight) * 72 / LOGPIXELSY */
-   iPointSize = MulDiv( -lfDlgFont.lfHeight, 72, logPixY );
-
-   HB_STORNI( iPointSize, -1, 2 );           // Store font height
+   // Convert logical pixels back to point size for the Harbour return value
+   HB_STORNI( MulDiv( -lf.lfHeight, 72, logPixY ), -1, 2 );
 }
 
 /*
-   ENUMFONTSEX
-
-   This Harbour function enumerates fonts based on provided criteria.
-   This code is partially based on original work by Dr. Claudio Soto (2014)
-
-   EnumFontsEx ([ hDC ], [ cFontFamilyName ], [ nCharSet ], [ nPitch ], [ nFontType ], [ SortCodeBlock ], [ @aFontName ])
-
-   Parameters:
-      1: hDC (HANDLE, optional): The handle of the device context to enumerate fonts from. If not provided, the default DC is used.
-      2: cFontFamilyName (STRING, optional): The name of the font family to filter by (e.g., "Arial"). If not provided, all font families are enumerated.
-      3: nCharSet (NUMERIC, optional): The character set to filter by (e.g., DEFAULT_CHARSET). If not provided, the DC's character set is used.
-      4: nPitch (NUMERIC, optional): The pitch and family to filter by (e.g., DEFAULT_PITCH). If not provided, all pitches are enumerated.
-      5: nFontType (NUMERIC, optional): The font type to filter by.
-      6: SortCodeBlock (BLOCK, optional): A code block to sort the resulting array of font properties.
-      7: aFontName (ARRAY, by reference, optional): An array to store the font names.
-
-   Returns:
-      ARRAY: An array of font properties { { cFontName, nCharSet, nPitchAndFamily, nFontType }, ... }
-
-   Purpose:
-      This function provides a way to retrieve a list of available fonts on the system, filtered by various criteria.
-      It uses the Windows API EnumFontFamiliesEx to enumerate the fonts and returns an array of font properties.
-      It also allows for sorting the results and storing the font names in a separate array.
-*/
-int CALLBACK   EnumFontFamExProc( ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme, DWORD FontType, LPARAM lParam );
-
+ * ENUMFONTSEX
+ * 
+ * Purpose:
+ * Lists all available fonts matching specific criteria.
+ * 
+ * Parameters:
+ *    1: hDC (H, optional) - Device context to query.
+ *    2: FamilyName (C, optional) - Filter by family.
+ *    3: Charset (N, optional) - Filter by character set.
+ *    4: Pitch (N, optional) - Filter by pitch.
+ *    5: FontType (N, optional) - Filter by type.
+ *    6: SortBlock (B, optional) - Harbour codeblock for custom sorting.
+ *    7: @aNames (A, optional) - Array passed by reference to receive names.
+ * 
+ * Returns:
+ * A nested array containing font details (Name, Charset, Pitch, IsTrueType).
+ */
 HB_FUNC( ENUMFONTSEX )
 {
    HDC      hdc;
-   LOGFONT  lf;
+   LOGFONT  lf = { 0 };
    PHB_ITEM pArray = hb_itemArrayNew( 0 );
    BOOL     bReleaseDC = FALSE;
 
-   memset( &lf, 0, sizeof( LOGFONT ) );
-
-   // Check if a device context is provided, else get the default DC
+   // Determine which Device Context to query (provided or screen default)
    if( GetObjectType( hmg_par_raw_HGDIOBJ( 1 ) ) == OBJ_DC )
    {
       hdc = hmg_par_raw_HDC( 1 );
@@ -371,21 +325,25 @@ HB_FUNC( ENUMFONTSEX )
       bReleaseDC = TRUE;
    }
 
-   // Set font family name, if provided
+   // Configure search filters in the LOGFONT structure
    if( hb_parclen( 2 ) > 0 )
    {
       HB_STRNCPY( lf.lfFaceName, ( LPCTSTR ) hb_parc( 2 ), HB_MIN( LF_FACESIZE - 1, hb_parclen( 2 ) ) );
    }
-   else
+
+   lf.lfCharSet = HB_ISNUM( 3 ) ? ( BYTE ) hb_parni( 3 ) : ( BYTE ) GetTextCharset( hdc );
+   if( lf.lfCharSet == DEFAULT_CHARSET )
    {
-      lf.lfFaceName[0] = TEXT( '\0' );
+      lf.lfCharSet = ( BYTE ) GetTextCharset( hdc );
    }
 
-   // Set charset and pitch/family based on parameters or defaults
-   lf.lfCharSet = HB_ISNUM( 3 ) ? ( BYTE ) ( hb_parni( 3 ) == DEFAULT_CHARSET ? GetTextCharset( hdc ) : hb_parni( 3 ) ) : ( BYTE ) hb_parni( 3 );
-   lf.lfPitchAndFamily = HB_ISNUM( 4 ) ? ( BYTE ) ( hb_parni( 4 ) == DEFAULT_PITCH ? 0 : ( hb_parni( 4 ) | FF_DONTCARE ) ) : ( BYTE ) 0;
+   lf.lfPitchAndFamily = HB_ISNUM( 4 ) ? ( BYTE ) hb_parni( 4 ) : ( BYTE ) 0;
+   if( lf.lfPitchAndFamily == DEFAULT_PITCH )
+   {
+      lf.lfPitchAndFamily = 0;
+   }
 
-   // Enumerate fonts using the specified parameters
+   // Execute the Windows enumeration API
    EnumFontFamiliesEx( hdc, &lf, ( FONTENUMPROC ) EnumFontFamExProc, ( LPARAM ) pArray, ( DWORD ) 0 );
 
    if( bReleaseDC )
@@ -393,75 +351,64 @@ HB_FUNC( ENUMFONTSEX )
       ReleaseDC( NULL, hdc );
    }
 
-   // Sort the array if a sorting block is provided
+   // Optional: Sort the resulting array using a Harbour codeblock
    if( HB_ISBLOCK( 6 ) )
    {
       hb_arraySort( pArray, NULL, NULL, hb_param( 6, HB_IT_BLOCK ) );
    }
 
-   // If a by-reference array for font names is provided, store names in it
+   // Optional: Populate a reference array with just the font names
    if( HB_ISBYREF( 7 ) )
    {
-      PHB_ITEM aFontName = hb_param( 7, HB_IT_ANY );
-      int      nLen = ( int ) hb_arrayLen( pArray ), i;
-
-      hb_arrayNew( aFontName, nLen );
-
+      PHB_ITEM aNames = hb_param( 7, HB_IT_ANY );
+      HB_SIZE  nLen = hb_arrayLen( pArray ), i;
+      hb_arrayNew( aNames, nLen );
       for( i = 1; i <= nLen; i++ )
       {
-         hb_arraySetC( aFontName, i, hb_arrayGetC( hb_arrayGetItemPtr( pArray, i ), 1 ) );
+         hb_arraySetC( aNames, i, hb_arrayGetC( hb_arrayGetItemPtr( pArray, i ), 1 ) );
       }
    }
 
-   hb_itemReturnRelease( pArray );           // Return font enumeration array
+   hb_itemReturnRelease( pArray );
 }
 
 /*
-   EnumFontFamExProc
-
-   This is a callback function used by EnumFontFamiliesEx to handle each font found during enumeration.
-
-   Parameters:
-      lpelfe (ENUMLOGFONTEX*): A pointer to an ENUMLOGFONTEX structure containing information about the font.
-      lpntme (NEWTEXTMETRICEX*): A pointer to a NEWTEXTMETRICEX structure containing information about the physical font.
-      FontType (DWORD): The type of the font.
-      lParam (LPARAM): A user-defined value passed to the function (in this case, a pointer to the Harbour array to store the font properties).
-
-   Returns:
-      int: 1 to continue enumeration, 0 to stop.
-
-   Purpose:
-      This function is called for each font that matches the criteria specified in EnumFontFamiliesEx.
-      It extracts the font name, character set, pitch and family, and font type, and stores them in a Harbour array.
-      It avoids fonts prefixed with '@' (which are typically device fonts).
-*/
+ * EnumFontFamExProc (Internal Callback)
+ * 
+ * Purpose:
+ * Processes each font found by the Windows EnumFontFamiliesEx function.
+ * 
+ * Logic:
+ * Filters out vertical fonts (prefixed with '@') as they are specialized 
+ * for Asian vertical text and usually not desired in standard UI lists.
+ */
 int CALLBACK EnumFontFamExProc( ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme, DWORD FontType, LPARAM lParam )
 {
-#ifdef UNICODE
-   LPSTR pStr;
-#endif
    HB_SYMBOL_UNUSED( lpntme );
 
-   // Avoid fonts prefixed with '@'
+   // Ignore vertical-oriented fonts
    if( lpelfe->elfLogFont.lfFaceName[0] != '@' )
    {
-      PHB_ITEM pSubArray = hb_itemArrayNew( 4 );
+      PHB_ITEM pSub = hb_itemArrayNew( 4 );
 
 #ifdef UNICODE
-      pStr = WideToAnsi( lpelfe->elfLogFont.lfFaceName );
-      hb_arraySetC( pSubArray, 1, pStr );    // Font name
-#else
-      hb_arraySetC( pSubArray, 1, lpelfe->elfLogFont.lfFaceName );
-#endif
-      hb_arraySetNL( pSubArray, 2, lpelfe->elfLogFont.lfCharSet );   // Charset
-      hb_arraySetNI( pSubArray, 3, lpelfe->elfLogFont.lfPitchAndFamily & FIXED_PITCH );   // Pitch and Family
-      hb_arraySetNI( pSubArray, 4, FontType & TRUETYPE_FONTTYPE );   // Font type (TrueType)
-      hb_arrayAddForward( ( PHB_ITEM ) lParam, pSubArray );
-      hb_itemRelease( pSubArray );
-#ifdef UNICODE
+      LPSTR    pStr = WideToAnsi( lpelfe->elfLogFont.lfFaceName );
+      hb_arraySetC( pSub, 1, pStr );
       hb_xfree( pStr );
+#else
+      hb_arraySetC( pSub, 1, lpelfe->elfLogFont.lfFaceName );
 #endif
+
+      // Store metadata for the Harbour array
+      hb_arraySetNL( pSub, 2, lpelfe->elfLogFont.lfCharSet );
+      hb_arraySetNI( pSub, 3, lpelfe->elfLogFont.lfPitchAndFamily & FIXED_PITCH );
+      hb_arraySetNI( pSub, 4, FontType & TRUETYPE_FONTTYPE );
+
+      // Append this font's info to the master list
+      hb_arrayAddForward( ( PHB_ITEM ) lParam, pSub );
+      hb_itemRelease( pSub );
    }
 
-   return 1;   // Continue enumeration
+   // Return 1 to continue enumeration to the next font
+   return 1;
 }

@@ -88,7 +88,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
              aListImage -> List {img1,img2,imgn}
 
    Last Modified by Grigory Filatov at 12-07-2021
-   
+
    Last Modified by Ivanil Marcelino at 07-17-2025
 */
 
@@ -248,7 +248,7 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
       nSeconds :=  aOptions
       aOptions := { "&OK" }
    endif
-   
+
    nLenaOp :=  Len( aOptions )
 
    nVMARGIN_BUTTON := 3 * VMARGIN_BUTTON
@@ -293,7 +293,7 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
 
    nLenBotones := ( nMaxBoton + SEP_BUTTON ) * nLenaOp
 
-   nHeightBtn := nVMARGIN_BUTTON + nChrHeight 
+   nHeightBtn := nVMARGIN_BUTTON + nChrHeight
 
    // calculate the width of the client area
 
@@ -310,7 +310,7 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
    ELSE
       nMaxWidth := 0
    ENDIF
-   
+
    nWidthDlg += iif( nLineas < nMaxLines,40,0) //barra
 
    nHeightCli := ( Min( nMaxLines, nLineas ) + iif( nLineas == 1, 4, 3 ) ) * nChrHeight + nVMARGIN_BUTTON + nHeightBtn + GetBorderHeight()
@@ -339,9 +339,9 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
       nRow := nChrHeight
    ENDIF
 
-   
+
    DEFINE EDITBOX MsgAlert
-      PARENT  &( cForm ) 
+      PARENT  &( cForm )
       ROW nRow + GetBorderHeight()
       COL nCol
       Width  nWidthCli - nCol + (iif( nLineas < nMaxLines + 5, 0.9, 1 ) * MARGIN) - nMaxWidth
@@ -387,7 +387,7 @@ STATIC FUNCTION FillDlg( cMsg, aOptions, nLineas, cIcoFile, nIcoSize, aBtnColors
          CAPTION  aOptions[ n ]                      
          ACTION  ( _HMG_ModalDialogReturn := This.Cargo, lPressButton := .T., ThisWindow.Release() )                     
          FONTNAME  cFont                    
-         FONTCOLOR  aFontColor  
+         FONTCOLOR  aFontColor
          BACKCOLOR  IIF(!empty(aBtnColors),aBtnColors[ n ],Nil)        
          NOXPSTYLE  TRUE                   
          HANDCURSOR TRUE

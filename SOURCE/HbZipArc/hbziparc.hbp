@@ -5,7 +5,7 @@
 {bcc}-env:DEBUG=yes
 
 -hblib
--inc
+
 -o../../harbour/lib/hbziparc
 
 -I../../include

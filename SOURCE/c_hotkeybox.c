@@ -56,12 +56,19 @@ LPSTR       WideToAnsi( LPWSTR );
 #endif
 HINSTANCE   GetInstance( void );
 
-/**
+/*
  * Function: InterpretHotKey
- * Converts a hotkey setting (modifier keys and virtual key) to a human-readable string.
+ * -------------------------
+ * Translates a numeric hotkey bitmask into a localized, human-readable string.
+ *
  * Parameters:
- *   - setting: Encoded hotkey information, containing modifiers and virtual key code.
- *   - szKeyName: Output string where the formatted key combination will be stored.
+ *    - setting: A UINT containing the modifier flags in the high byte and 
+ *               the virtual key code in the low byte.
+ *    - szKeyName: A pointer to a TCHAR buffer that receives the formatted string.
+ *
+ * Logic:
+ *    The function extracts modifier flags (Ctrl, Alt, Shift) and uses the 
+ *    Windows API GetKeyNameText to retrieve the localized name of the primary key.
  */
 void InterpretHotKey( UINT setting, TCHAR *szKeyName )
 {
@@ -69,38 +76,46 @@ void InterpretHotKey( UINT setting, TCHAR *szKeyName )
    UINT  scanCode, uCode, uVKey, WorkKey;
    int   len;
 
-   uCode = ( setting & 0x0000FF00 ) >> 8; // Extract modifier codes
-   uVKey = setting & 255;                 // Extract virtual key code
+   // Extract the modifier flags from the high byte (bits 8-15)
+   uCode = ( setting & 0x0000FF00 ) >> 8;
+
+   // Extract the virtual key code from the low byte (bits 0-7)
+   uVKey = setting & 255;
    *szKeyName = 0;
 
-   // Check modifier states
+   // Determine which modifier keys are active based on HotKey control flags
    Ctrl = uCode & HOTKEYF_CONTROL;
    Alt = uCode & HOTKEYF_ALT;
    Shift = uCode & HOTKEYF_SHIFT;
 
-   // Append modifier text to output
+   // Build the prefix string for the hotkey combination
    lstrcat( szKeyName, Ctrl ? TEXT( "Ctrl + " ) : TEXT( "" ) );
    lstrcat( szKeyName, Shift ? TEXT( "Shift + " ) : TEXT( "" ) );
    lstrcat( szKeyName, Alt ? TEXT( "Alt + " ) : TEXT( "" ) );
 
-   // Map virtual key to scan code
+   // Convert the virtual key code to a hardware-dependent scan code for GetKeyNameText
    scanCode = MapVirtualKey( uVKey, 0 );
 
-   // Prepare lParam for GetKeyNameText
+   // Construct the lParam for GetKeyNameText:
+   // Bits 16-23: Scan code
+   // Bit 24: Extended key flag (e.g., right-side Alt or Ctrl)
    WorkKey = ( scanCode << 16 ) | ( ( uCode & HOTKEYF_EXT ) ? 0x01000000 : 0 );
 
-   // Get the key name text and append it to the existing string
+   // Append the localized name of the key (e.g., "A", "F1", "Home") to the modifiers
    len = lstrlen( szKeyName );
    GetKeyNameText( WorkKey, szKeyName + len, 100 - len );
 }
 
-/**
+/*
  * Function: C_GETHOTKEYNAME
- * Retrieves and returns the name of the currently set hotkey in a specified control.
+ * -------------------------
+ * Harbour wrapper to retrieve the display name of the current hotkey in a control.
+ *
  * Parameters:
- *   - Control's handle (parameter 1).
+ *    - hWnd (via hb_par): Handle to the HotKeyBox control.
+ *
  * Returns:
- *   - A string with the human-readable name of the hotkey.
+ *    - Character: The human-readable string (e.g., "Ctrl + Alt + K").
  */
 HB_FUNC( C_GETHOTKEYNAME )
 {
@@ -110,57 +125,68 @@ HB_FUNC( C_GETHOTKEYNAME )
 #ifdef UNICODE
    LPSTR pStr;
 #endif
-   wHotKey = ( WORD ) SendMessage( hmg_par_raw_HWND( 1 ), HKM_GETHOTKEY, 0, 0 ); // Get current hotkey setting
-   InterpretHotKey( wHotKey, szKeyName ); // Convert hotkey setting to readable text
+
+   // Request the current hotkey combination from the Win32 control
+   wHotKey = ( WORD ) SendMessage( hmg_par_raw_HWND( 1 ), HKM_GETHOTKEY, 0, 0 );
+
+   // Convert the raw WORD value into a readable string
+   InterpretHotKey( wHotKey, szKeyName );
+
 #ifndef UNICODE
-   hb_retclen( szKeyName, 100 );          // Return result as ANSI string
+   hb_retclen( szKeyName, 100 );
 #else
+   // Handle Unicode to ANSI conversion for Harbour's internal string management if necessary
    pStr = WideToAnsi( szKeyName );
    hb_retclen( pStr, 100 );
    hb_xfree( pStr );
 #endif
 }
 
-/**
+/*
  * Function: INITHOTKEYBOX
- * Initializes a hotkey control (edit box to capture hotkey input) with specified styles.
+ * -----------------------
+ * Initializes and creates the physical Win32 HotKey control.
+ *
  * Parameters:
- *   - Parent window handle (parameter 1).
- *   - X, Y coordinates, width, and height of the control (parameters 2-5).
- *   - Visibility and tab-stop options (parameters 8 and 9).
+ *    - 1: Parent Window Handle
+ *    - 2, 3: Col, Row (x, y)
+ *    - 4, 5: Width, Height
+ *    - 8: Invisible flag (Logical)
+ *    - 9: NoTabStop flag (Logical)
+ *
  * Returns:
- *   - Handle to the created hotkey control.
+ *    - HWND: The handle of the newly created control.
  */
 HB_FUNC( INITHOTKEYBOX )
 {
    DWORD Style = WS_CHILD;
 
-   // Apply visibility style if specified
+   // HMG logic: If the 'Invisible' parameter is false, add WS_VISIBLE style
    if( !hb_parl( 8 ) )
    {
       Style |= WS_VISIBLE;
    }
 
-   // Apply tab-stop style if specified
+   // HMG logic: If the 'NoTabStop' parameter is false, add WS_TABSTOP style
    if( !hb_parl( 9 ) )
    {
       Style |= WS_TABSTOP;
    }
 
-   // Create the hotkey control
+   // Create the control using the standard Windows HotKey class
    hmg_ret_raw_HWND
    (
       CreateWindowEx
          (
             0,
-            HOTKEY_CLASS,
+            HOTKEY_CLASS,  // Predefined Common Control class
             TEXT( "" ),
             Style,
-            hb_parni( 2 ),                // x-coordinate
-            hb_parni( 3 ),                // y-coordinate
-            hb_parni( 4 ),                // width
-            hb_parni( 5 ),                // height
-            hmg_par_raw_HWND( 1 ),        // parent window handle
+            hb_parni( 2 ),
+            hb_parni( 3 ),
+            hb_parni( 4 ),
+            hb_parni( 5 ),
+            hmg_par_raw_HWND( 1 ),
             NULL,
             GetInstance(),
             NULL
@@ -168,35 +194,47 @@ HB_FUNC( INITHOTKEYBOX )
    );
 }
 
-/**
+/*
  * Function: SETHOTKEYVALUE
- * Sets the hotkey value for a specified hotkey control.
+ * ------------------------
+ * Programmatically sets the key combination for the HotKeyBox.
+ *
  * Parameters:
- *   - hWnd: Handle to the hotkey control.
- *   - wHotKey: WORD value representing the hotkey to set.
+ *    - 1: Control Handle (HWND)
+ *    - 2: Hotkey value (WORD)
+ *
+ * Side Effects:
+ *    - Updates the UI of the control to show the new key.
+ *    - Defines rules to prevent invalid combinations (like Alt-only).
  */
 HB_FUNC( SETHOTKEYVALUE )
 {
    HWND  hWnd = hmg_par_raw_HWND( 1 );
    WORD  wHotKey = hmg_par_WORD( 2 );
 
-   // Set hotkey if valid value is provided
+   // Apply the hotkey value if it is non-zero
    if( wHotKey != 0 )
    {
       SendMessage( hWnd, HKM_SETHOTKEY, wHotKey, 0 );
    }
 
-   // Set invalid key combinations and restrict ALT-only combinations
+   // HKM_SETRULES defines invalid combinations.
+   // Here we prevent 'None' (HKCOMB_NONE) and 'Shift-only' (HKCOMB_S)
+   // by forcing them to use Alt (HOTKEYF_ALT) instead.
    SendMessage( hWnd, HKM_SETRULES, ( WPARAM ) HKCOMB_NONE | HKCOMB_S, MAKELPARAM( HOTKEYF_ALT, 0 ) );
 }
 
-/**
+/*
  * Function: C_GETHOTKEYVALUE
- * Retrieves the current hotkey setting (key code and modifier keys) in a hotkey control.
+ * --------------------------
+ * Retrieves the hotkey components as a Harbour array.
+ *
  * Parameters:
- *   - hWnd: Handle to the hotkey control.
+ *    - 1: Control Handle (HWND)
+ *
  * Returns:
- *   - Array with two elements: virtual key code and modifier keys.
+ *    - Array: { nVirtualKeyCode, nModifierFlags }
+ *      Note: Modifier flags are mapped to MOD_* constants used by RegisterHotKey.
  */
 HB_FUNC( C_GETHOTKEYVALUE )
 {
@@ -205,32 +243,38 @@ HB_FUNC( C_GETHOTKEYVALUE )
    UINT  uModifiers;
    UINT  iModifierKeys;
 
+   // Get the raw WORD from the control
    wHotKey = ( WORD ) SendMessage( hmg_par_raw_HWND( 1 ), HKM_GETHOTKEY, 0, 0 );
 
-   // Extract virtual key code and modifiers
+   // Extract components: Low byte is Virtual Key, High byte is Modifiers
    uVirtualKeyCode = LOBYTE( LOWORD( wHotKey ) );
    uModifiers = HIBYTE( LOWORD( wHotKey ) );
 
-   // Map modifiers to respective MOD_* values
+   // Map HotKey control flags (HOTKEYF_*) to standard Windows Modifier flags (MOD_*)
+   // This ensures compatibility with the RegisterHotKey API.
    iModifierKeys = ( ( uModifiers & HOTKEYF_CONTROL ) ? MOD_CONTROL : 0 ) | ( ( uModifiers & HOTKEYF_ALT ) ? MOD_ALT : 0 ) | ( ( uModifiers & HOTKEYF_SHIFT ) ? MOD_SHIFT : 0 );
 
-   // Return array with virtual key code and modifiers
+   // Return a 2-element array to the Harbour application
    hb_reta( 2 );
    HB_STORNI( ( UINT ) uVirtualKeyCode, -1, 1 );
    HB_STORNI( ( UINT ) iModifierKeys, -1, 2 );
 }
 
-/**
+/*
  * Function: C_GETHOTKEY
- * Retrieves the raw hotkey value from a specified hotkey control.
+ * ---------------------
+ * Retrieves the raw WORD value of the hotkey.
+ *
  * Parameters:
- *   - hWnd: Handle to the hotkey control.
+ *    - 1: Control Handle (HWND)
+ *
  * Returns:
- *   - Raw WORD hotkey value.
+ *    - Numeric: The raw WORD value (Modifiers + VKey).
  */
 HB_FUNC( C_GETHOTKEY )
 {
    WORD  wHotKey = ( WORD ) SendMessage( hmg_par_raw_HWND( 1 ), HKM_GETHOTKEY, 0, 0 );
 
-   hmg_ret_WORD( wHotKey );               // Return raw hotkey value
+   // Return the raw value directly for low-level manipulation
+   hmg_ret_WORD( wHotKey );
 }

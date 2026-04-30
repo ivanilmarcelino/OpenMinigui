@@ -2196,37 +2196,6 @@ HB_FUNC( REBAR_GETBANDINFO )
 }
 
 #if defined( __VERSION__ ) && defined( __clang__ ) && ! defined( __BORLANDC__ )
-#include <string.h>
-#include <ctype.h>
-
-/* Helper: case-insensitive strstr */
-static const char *strcasestr_local( const char *haystack, const char *needle )
-{
-   size_t   nlen;
-   if( !haystack || !needle )
-   {
-      return NULL;
-   }
-
-   nlen = strlen( needle );
-   if( nlen == 0 )
-   {
-      return haystack;
-   }
-
-   for( ; *haystack; haystack++ )
-   {
-      if( tolower( ( unsigned char ) *haystack ) == tolower( ( unsigned char ) *needle ) )
-      {
-         if( strncasecmp( haystack, needle, nlen ) == 0 )
-         {
-            return haystack;
-         }
-      }
-   }
-
-   return NULL;
-}
 
 /* ---------- Zig Detection ---------- */
 static int is_zig_compiler( void )
@@ -2235,8 +2204,8 @@ static int is_zig_compiler( void )
    int         detected = 0;
 
 #if defined( __clang__ ) && !defined( __INTEL_COMPILER )
-   /* Zig uses Clang frontend but version string includes "Zig" */
-   if( ver && ( strcasestr_local( ver, "Zig" ) != NULL ) )
+   /* Zig uses Clang frontend */
+   if( ver )
    {
       detected = 1;
    }

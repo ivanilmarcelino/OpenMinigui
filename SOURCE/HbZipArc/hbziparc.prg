@@ -23,64 +23,52 @@
 #include "hbcompat.ch"
 #include "hbmzip.ch"
 
+// Default buffer size for I/O operations to balance memory usage and speed.
 #define ZIP_READ_BUFFER  32768
 
-// Static variables for buffering and settings
-STATIC s_nReadBuffer := ZIP_READ_BUFFER
-STATIC s_cZipComment
+// Module-level state variables
+STATIC s_nReadBuffer := ZIP_READ_BUFFER // Current read buffer size
+STATIC s_cZipComment                    // Stores the global archive comment during creation
 
 /*
  * PROCEDURE hb_SetZipComment( cComment )
  *
- * Sets the global comment for a Zip archive.
+ * Purpose:
+ *    Assigns a global comment string to be embedded in the ZIP archive.
  *
  * Parameters:
- *   cComment (CHARACTER): The comment string to be associated with the Zip archive.
- *             If NIL is passed, the comment is cleared.
+ *    cComment : String - The text to store. Pass NIL to clear the comment.
  *
- * Return Value:
- *   None.
- *
- * Purpose:
- *   This procedure allows setting or clearing the global comment associated with a Zip archive.
- *   The comment can be used to store metadata or descriptive information about the archive.
- *
- * Notes:
- *   The comment is stored in the static variable s_cZipComment and is applied when the Zip archive is closed.
+ * Side Effects:
+ *    Updates the static variable s_cZipComment, which is used when closing an archive.
  */
 PROCEDURE hb_SetZipComment( cComment )
    IF cComment == NIL .OR. ISCHARACTER( cComment )
       s_cZipComment := cComment
    ENDIF
-
 RETURN
 
 /*
  * FUNCTION hb_GetZipComment( cFileName )
  *
- * Retrieves the global comment from a Zip archive.
+ * Purpose:
+ *    Extracts the global comment from an existing ZIP file.
  *
  * Parameters:
- *   cFileName (CHARACTER): The name of the Zip archive file.
+ *    cFileName : String - Path to the ZIP archive.
  *
- * Return Value:
- *   CHARACTER: The global comment associated with the Zip archive. Returns an empty string ("") if the archive does not exist or has no comment.
- *
- * Purpose:
- *   This function allows reading the global comment stored within a Zip archive.
- *   This can be useful for displaying information about the archive to the user or for programmatically accessing metadata.
- *
- * Notes:
- *   The function uses hb_UnzipOpen to open the archive, retrieves the comment using hb_UnzipGlobalInfo, and then closes the archive.
- *   The Zip_EnsureExtension function is used to ensure the filename has the correct ".zip" extension.
+ * Returns:
+ *    String : The archive comment, or an empty string if none exists or file is invalid.
  */
 FUNCTION hb_GetZipComment( cFileName )
 
    LOCAL hUnzip
    LOCAL cComment
 
+   // Ensure the file has a .zip extension if the environment setting allows it.
    cFileName := Zip_EnsureExtension( cFileName )
 
+   // Open the archive in read mode to access metadata.
    IF ! Empty( hUnzip := hb_UnzipOpen( cFileName ) )
       hb_UnzipGlobalInfo( hUnzip, NIL, @cComment )
       hb_UnzipClose( hUnzip )
@@ -93,21 +81,14 @@ RETURN cComment
 /*
  * FUNCTION hb_GetFileCount( cFileName )
  *
- * Retrieves the number of files contained within a Zip archive.
+ * Purpose:
+ *    Returns the total number of entries (files and directories) inside the ZIP.
  *
  * Parameters:
- *   cFileName (CHARACTER): The name of the Zip archive file.
+ *    cFileName : String - Path to the ZIP archive.
  *
- * Return Value:
- *   NUMERIC: The number of files in the Zip archive. Returns 0 if the archive does not exist or is empty.
- *
- * Purpose:
- *   This function provides a way to determine the number of files stored within a Zip archive without extracting them.
- *   This can be useful for displaying archive statistics or for pre-allocating memory before extracting files.
- *
- * Notes:
- *   The function uses hb_UnzipOpen to open the archive, retrieves the file count using hb_UnzipGlobalInfo, and then closes the archive.
- *   The Zip_EnsureExtension function is used to ensure the filename has the correct ".zip" extension.
+ * Returns:
+ *    Numeric : Count of entries. Returns 0 if the file cannot be opened.
  */
 FUNCTION hb_GetFileCount( cFileName )
 
@@ -117,6 +98,7 @@ FUNCTION hb_GetFileCount( cFileName )
    cFileName := Zip_EnsureExtension( cFileName )
 
    IF ! Empty( hUnzip := hb_UnzipOpen( cFileName ) )
+      // Retrieve global info; the first parameter returns the entry count.
       hb_UnzipGlobalInfo( hUnzip, @nEntries, NIL )
       hb_UnzipClose( hUnzip )
    ELSE
@@ -128,21 +110,18 @@ RETURN nEntries
 /*
  * FUNCTION hb_ZipWithPassword( cFileName )
  *
- * Determines if a Zip archive is password-protected.
+ * Purpose:
+ *    Checks if the ZIP archive contains encrypted content.
  *
  * Parameters:
- *   cFileName (CHARACTER): The name of the Zip archive file.
+ *    cFileName : String - Path to the ZIP archive.
  *
- * Return Value:
- *   LOGICAL: .T. if the Zip archive is password-protected (encrypted), .F. otherwise.
+ * Returns:
+ *    Logical : .T. if the first file entry is encrypted; otherwise .F.
  *
- * Purpose:
- *   This function allows checking whether a Zip archive requires a password for extraction.
- *   This is useful for prompting the user for a password before attempting to extract the archive's contents.
- *
- * Notes:
- *   The function opens the archive, reads the file information for the first file, and checks the encryption flag.
- *   The Zip_EnsureExtension function is used to ensure the filename has the correct ".zip" extension.
+ * Implementation Note:
+ *    This function checks the encryption flag of the first file as a heuristic 
+ *    for the whole archive.
  */
 FUNCTION hb_ZipWithPassword( cFileName )
 
@@ -152,9 +131,10 @@ FUNCTION hb_ZipWithPassword( cFileName )
    cFileName := Zip_EnsureExtension( cFileName )
 
    IF ! Empty( hUnzip := hb_UnzipOpen( cFileName ) )
-
+      // Move to the first file in the central directory.
       IF hb_UnzipFileFirst( hUnzip ) == 0
-         hb_UnzipFileInfo( hUnzip, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, @lCrypted ) // Check if encrypted
+         // Retrieve file info, specifically the 10th parameter (encryption flag).
+         hb_UnzipFileInfo( hUnzip, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, @lCrypted )
       ENDIF
       hb_UnzipClose( hUnzip )
    ENDIF
@@ -164,28 +144,15 @@ RETURN lCrypted
 /*
  * FUNCTION hb_GetFilesInZip( cFileName, lVerbose )
  *
- * Retrieves a list of files contained within a Zip archive.
+ * Purpose:
+ *    Generates a list of all files contained within the archive.
  *
  * Parameters:
- *   cFileName (CHARACTER): The name of the Zip archive file.
- *   lVerbose (LOGICAL, optional):  A logical value indicating whether to return detailed file information.
- *                If .T., returns an array of arrays, each containing file details.
- *                If .F. (default), returns an array of filenames.
+ *    cFileName : String  - Path to the ZIP archive.
+ *    lVerbose  : Logical - If .T., returns detailed metadata. If .F., returns only names.
  *
- * Return Value:
- *   ARRAY: An array containing the list of files in the Zip archive.
- *          If lVerbose is .T., each element of the array is an array containing detailed file information:
- *            { cFileName, nSize, nMethod, nCompSize, nRatio, dDate, cTime, hb_NumToHex( nCRC, 8 ), nInternalAttr, lCrypted, cComment }
- *          If lVerbose is .F., each element of the array is the filename.
- *
- * Purpose:
- *   This function provides a way to list the files stored within a Zip archive.
- *   The lVerbose parameter allows controlling the level of detail returned for each file.
- *   This can be useful for displaying a list of files to the user or for programmatically processing the archive's contents.
- *
- * Notes:
- *   The function opens the archive, iterates through the files, and extracts the desired information.
- *   The Zip_EnsureExtension function is used to ensure the filename has the correct ".zip" extension.
+ * Returns:
+ *    Array : A list of filenames or a multi-dimensional array of file details.
  */
 FUNCTION hb_GetFilesInZip( cFileName, lVerbose )
 
@@ -199,9 +166,11 @@ FUNCTION hb_GetFilesInZip( cFileName, lVerbose )
 
       nErr := hb_UnzipFileFirst( hUnzip )
       DO WHILE nErr == 0
+         // Extract all available metadata for the current entry.
          hb_UnzipFileInfo( hUnzip, @cFileName, @dDate, @cTime, @nInternalAttr, NIL, @nMethod, @nSize, @nCompSize, @lCrypted, @cComment, @nCRC )
 
          IF lVerbose
+            // Calculate compression ratio for reporting.
             IF nSize > 0
                nRatio := 100 - ( ( nCompSize * 100 ) / nSize )
                IF nRatio < 0
@@ -211,10 +180,11 @@ FUNCTION hb_GetFilesInZip( cFileName, lVerbose )
                nRatio := 0
             ENDIF
 
-            // Add detailed information to the array
+            // Construct a detailed record for the file.
             AAdd( aFiles, { cFileName, nSize, nMethod, nCompSize, nRatio, dDate, cTime, hb_NumToHex( nCRC, 8 ), nInternalAttr, lCrypted, cComment } )
          ELSE
-            AAdd( aFiles, cFileName ) // Add just the file name to the array
+            // Simple mode: just the path/filename.
+            AAdd( aFiles, cFileName )
          ENDIF
 
          nErr := hb_UnzipFileNext( hUnzip )
@@ -228,95 +198,64 @@ RETURN aFiles
 /*
  * PROCEDURE hb_SetBuffer( nWriteBuffer, nExtractBuffer, nReadBuffer )
  *
- * Sets the buffer sizes for Zip archive operations.
+ * Purpose:
+ *    Configures the internal I/O buffer size.
  *
  * Parameters:
- *   nWriteBuffer (NUMERIC): The size of the write buffer (currently unused).
- *   nExtractBuffer (NUMERIC): The size of the extract buffer (currently unused).
- *   nReadBuffer (NUMERIC): The size of the read buffer.  Limited to a maximum of ZIP_READ_BUFFER (32768).
+ *    nReadBuffer : Numeric - Desired buffer size in bytes.
  *
- * Return Value:
- *   None.
- *
- * Purpose:
- *   This procedure allows configuring the buffer sizes used for reading, writing, and extracting Zip archive data.
- *   Adjusting the buffer sizes can potentially improve performance, especially when working with large archives.
- *
- * Notes:
- *   Only the nReadBuffer parameter is currently used. The nWriteBuffer and nExtractBuffer parameters are ignored.
- *   The read buffer size is limited to a maximum of 32KB (ZIP_READ_BUFFER) to prevent excessive memory usage.
+ * Implementation Note:
+ *    The buffer is capped at 32KB (ZIP_READ_BUFFER) to prevent excessive 
+ *    memory allocation in constrained environments.
  */
 PROCEDURE hb_SetBuffer( nWriteBuffer, nExtractBuffer, nReadBuffer )
    HB_SYMBOL_UNUSED( nWriteBuffer )
    HB_SYMBOL_UNUSED( nExtractBuffer )
 
    IF HB_ISNUMERIC( nReadBuffer ) .AND. nReadBuffer >= 1
-      s_nReadBuffer := Min( nReadBuffer, ZIP_READ_BUFFER ) // Limit the buffer size to 32KB
+      s_nReadBuffer := Min( nReadBuffer, ZIP_READ_BUFFER )
    ENDIF
 
 RETURN
 
 /*
- * FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, cPassword, lWithPath, lWithDrive, bProgress, lFullPath, acExclude )
- *
- * Creates a Zip archive containing the specified files.
- *
- * Parameters:
- *   cFileName (CHARACTER): The name of the Zip archive file to create.
- *   acFiles (ARRAY or CHARACTER): An array of filenames to include in the archive, or a single filename.  Wildcards are supported.
- *   nLevel (NUMERIC): The compression level (0-9, where 0 is no compression and 9 is maximum compression).
- *   bUpdate (BLOCK, optional): A code block to be executed for each file being added to the archive.  Takes the filename and file number as parameters.
- *   lOverwrite (LOGICAL, optional): A logical value indicating whether to overwrite an existing archive file. Defaults to .F.
- *   cPassword (CHARACTER, optional): A password to encrypt the archive.
- *   lWithPath (LOGICAL, optional): A logical value indicating whether to include the path of the files in the archive. Defaults to .F.
- *   lWithDrive (LOGICAL, optional): A logical value indicating whether to include the drive letter in the path. Defaults to .F.
- *   bProgress (BLOCK, optional): A code block to be executed to display progress. Takes the number of bytes read and the total file size as parameters.
- *   lFullPath (LOGICAL, optional): A logical value indicating whether to use the full path. Defaults to .F.
- *   acExclude (ARRAY or CHARACTER, optional): An array of filenames or wildcard patterns to exclude from the archive, or a single filename/pattern.
- *
- * Return Value:
- *   LOGICAL: .T. if the archive was created successfully, .F. otherwise.
+ * FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, ... )
  *
  * Purpose:
- *   This function creates a Zip archive containing the specified files, with options for compression level, password protection, and path inclusion.
- *   It provides a flexible way to create Zip archives from within a Harbour application.
+ *    Creates a new ZIP archive or adds files to an existing one.
  *
- * Notes:
- *   The function uses hb_ZipOpen to create the archive, hb_ZipFileCreate to add files, and hb_ZipClose to finalize the archive.
- *   Wildcards are supported in the acFiles and acExclude parameters.
- *   The bUpdate and bProgress code blocks allow for custom processing and progress display during the archiving process.
- *   The Zip_EnsureExtension function is used to ensure the filename has the correct ".zip" extension.
+ * Parameters:
+ *    cFileName  : String   - Target ZIP file.
+ *    acFiles    : Array    - List of files/wildcards to include.
+ *    nLevel     : Numeric  - Compression level (0-9).
+ *    bUpdate    : Codeblock- Callback for file-start events (useful for Progress Bars).
+ *    lOverwrite : Logical  - If .T., deletes existing ZIP before starting.
+ *    cPassword  : String   - Optional encryption key.
+ *    lWithPath  : Logical  - Store relative paths in the ZIP.
+ *    bProgress  : Codeblock- Callback for byte-level progress.
+ *
+ * Returns:
+ *    Logical : .T. if successful.
  */
 FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, cPassword, lWithPath, lWithDrive, bProgress, lFullPath, acExclude )
 
    LOCAL lRetVal := .T.
-
-   LOCAL hZip
-   LOCAL hHandle
-   LOCAL nLen
+   LOCAL hZip, hHandle, nLen, nPos, nRead, nSize, tTime, nAttr
    LOCAL cBuffer := Space( s_nReadBuffer )
-   LOCAL cFileToZip
-   LOCAL nPos
-   LOCAL nRead
-   LOCAL cName, cExt, cDrive, cPath
-   LOCAL nSize
-   LOCAL tTime
-   LOCAL nAttr
-
-   LOCAL aExclFile
-   LOCAL aProcFile
-   LOCAL cFN
-   LOCAL aFile
+   LOCAL cFileToZip, cName, cExt, cDrive, cPath, cFN, aFile
+   LOCAL aExclFile, aProcFile
 
    DEFAULT lOverwrite TO .F.
    DEFAULT lFullPath TO .F.
 
    cFileName := Zip_EnsureExtension( cFileName )
 
+   // Handle overwrite logic before opening the archive handle.
    IF lOverwrite .AND. hb_FileExists( cFileName )
       FErase( cFileName )
    ENDIF
 
+   // Open ZIP for creation or appending.
    IF ! Empty( hZip := hb_ZipOpen( cFileName, iif( ! lOverwrite .AND. hb_FileExists( cFileName ), HB_ZIP_OPEN_ADDINZIP, NIL ) ) )
 
       DEFAULT acFiles TO {}
@@ -331,9 +270,14 @@ FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, cPassword,
          acExclude := { acExclude }
       ENDIF
 
-      /* NOTE: Try not to add the .zip file to itself. */
+      /* 
+       * Logic: Prevent the ZIP from trying to compress itself if it's in the 
+       * same directory as the source files. 
+       */
       hb_FNameSplit( cFileName, NIL, @cName, @cExt )
       aExclFile := { hb_FNameMerge( NIL, cName, cExt ) }
+      
+      // Process exclusion list (supports wildcards).
       FOR EACH cFN IN acExclude
          IF "?" $ cFN .OR. "*" $ cFN
             FOR EACH aFile IN Directory( cFN )
@@ -344,6 +288,7 @@ FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, cPassword,
          ENDIF
       NEXT
 
+      // Expand wildcards in the inclusion list and filter against exclusions.
       aProcFile := {}
       FOR EACH cFN IN acFiles
          IF "?" $ cFN .OR. "*" $ cFN
@@ -360,19 +305,21 @@ FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, cPassword,
          ENDIF
       NEXT
 
-      aExclFile := NIL
+      aExclFile := NIL // Cleanup memory
 
       nPos := 1
       FOR EACH cFileToZip IN aProcFile
 
-         IF ( hHandle := FOpen( cFileToZip, FO_READ ) ) != F_ERROR
+         IF ( hHandle := FOpen( cFileToZip ) ) != F_ERROR
 
+            // Handle absolute path conversion if requested.
             IF lFullPath
                IF ! hb_PathIsAbsolute( cFileToZip )
                   cFileToZip := hb_PathJoin( hb_cwd(), cFileToZip )
                ENDIF
             ENDIF
 
+            // Trigger UI update callback (e.g., updating a label).
             IF HB_ISBLOCK( bUpdate )
                Eval( bUpdate, cFileToZip, nPos++ )
             ENDIF
@@ -380,30 +327,33 @@ FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, cPassword,
             nRead := 0
             nSize := hb_FSize( cFileToZip )
 
+            // Preserve original file timestamps and attributes.
             hb_FGetDateTime( cFileToZip, @tTime )
             hb_FGetAttr( cFileToZip, @nAttr )
 
+            // Prepare the internal ZIP path name.
             hb_FNameSplit( hb_ANSIToOEM( cFileToZip ), @cPath, @cName, @cExt, @cDrive )
             IF ! lWithDrive .AND. ! Empty( cDrive ) .AND. hb_LeftEq( cPath, cDrive + ":" )
                cPath := SubStr( cPath, Len( cDrive + ":" ) + 1 )
             ENDIF
+            
+            // Create the file entry within the ZIP.
             hb_ZipFileCreate( hZip, hb_FNameMerge( iif( lWithPath, cPath, NIL ), cName, cExt, iif( lWithDrive, cDrive, NIL ) ), ;
                tTime, NIL, nAttr, nAttr, NIL, nLevel, cPassword, iif( Empty( cPassword ), NIL, hb_ZipFileCRC32( cFileToZip ) ), NIL )
 
+            // Stream file content into the ZIP using the configured buffer.
             DO WHILE ( nLen := FRead( hHandle, @cBuffer, hb_BLen( cBuffer ) ) ) > 0
-
                IF HB_ISBLOCK( bProgress )
                   nRead += nLen
                   Eval( bProgress, nRead, nSize )
                ENDIF
-
                hb_ZipFileWrite( hZip, cBuffer, nLen )
             ENDDO
 
             hb_ZipFileClose( hZip )
-
             FClose( hHandle )
 
+            // Clear the Archive attribute on the source file after successful backup.
             IF hb_FGetAttr( cFileToZip, @nAttr )
                hb_FSetAttr( cFileToZip, hb_bitAnd( nAttr, hb_bitNot( HB_FA_ARCHIVE ) ) )
             ENDIF
@@ -412,6 +362,7 @@ FUNCTION hb_ZipFile( cFileName, acFiles, nLevel, bUpdate, lOverwrite, cPassword,
          ENDIF
       NEXT
 
+      // Finalize the ZIP and write the global comment.
       hb_ZipClose( hZip, s_cZipComment )
    ELSE
       lRetVal := .F.
@@ -422,52 +373,24 @@ RETURN lRetVal
 /*
  * FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles, bProgress )
  *
- * Extracts files from a Zip archive.
+ * Purpose:
+ *    Extracts files from a ZIP archive to the disk or memory.
  *
  * Parameters:
- *   cFileName (CHARACTER): The name of the Zip archive file to extract.
- *   bUpdate (BLOCK, optional): A code block to be executed for each file being extracted. Takes the Zip filename, file number, and extracted filename as parameters.
- *   lWithPath (LOGICAL, optional): A logical value indicating whether to create subdirectories based on the paths stored in the archive. Defaults to .F.
- *   cPassword (CHARACTER, optional): A password to decrypt the archive, if it is password-protected.
- *   cPath (CHARACTER, optional): The destination directory for the extracted files. If "mem:", files are extracted to memory using virtual file system.
- *   acFiles (ARRAY or CHARACTER, optional): An array of filenames or file indexes to extract, or a single filename/index. If empty, all files are extracted.
- *   bProgress (BLOCK, optional): A code block to be executed to display progress. Takes the number of bytes read, the total file size, and the extracted filename as parameters.
+ *    cPath   : String - Destination directory. Use "mem:" for Virtual File System extraction.
+ *    acFiles : Array  - Specific files to extract. If empty, extracts everything.
  *
- * Return Value:
- *   LOGICAL: .T. if the extraction was successful, .F. otherwise.
- *
- * Purpose:
- *   This function extracts files from a Zip archive, with options for password protection, path creation, and selective extraction.
- *   It provides a flexible way to extract Zip archives from within a Harbour application.
- *
- * Notes:
- *   The function uses hb_UnzipOpen to open the archive, hb_UnzipFileFirst and hb_UnzipFileNext to iterate through the files, and hb_UnzipFileOpen and hb_unZipFileRead to extract the file data.
- *   The bUpdate and bProgress code blocks allow for custom processing and progress display during the extraction process.
- *   The Zip_EnsureExtension function is used to ensure the filename has the correct ".zip" extension.
- *   If cPath is "mem:", the files are extracted to a virtual file system (VFS) managed by Harbour.
+ * Implementation Note:
+ *    Supports progress tracking via bProgress and bUpdate blocks.
  */
 FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles, bProgress )
 
    LOCAL lRetVal := .T.
-
-   LOCAL hUnzip
-   LOCAL nErr
-   LOCAL nPos
-   LOCAL cZipName
-   LOCAL cExtName
-   LOCAL cSubPath
-   LOCAL cName
-   LOCAL cExt
-   LOCAL lExtract
-
-   LOCAL hHandle
-   LOCAL nSize
-   LOCAL nRead
-   LOCAL nLen
-   LOCAL dDate
-   LOCAL cTime
+   LOCAL hUnzip, nErr, nPos, cZipName, cExtName, cSubPath, cName, cExt, lExtract
+   LOCAL hHandle, nSize, nRead, nLen, dDate, cTime
    LOCAL cBuffer := Space( s_nReadBuffer )
 
+   // Check for Harbour's Virtual File System (VFS) target.
    IF HB_ISSTRING( cPath ) .AND. Lower( cPath ) == "mem:"
       cPath := Lower( cPath )
       lWithPath := .F.
@@ -475,6 +398,7 @@ FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles,
 
    DEFAULT lWithPath TO .F.
 
+   // Ensure destination directory exists.
    IF lWithPath .AND. ! hb_DirExists( cPath )
       lRetVal := hb_DirBuild( cPath )
    ENDIF
@@ -488,8 +412,8 @@ FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles,
    IF Empty( hUnzip := hb_UnzipOpen( cFileName ) )
       lRetVal := .F.
    ELSE
-      IF HB_ISNUMERIC( acFiles ) .OR. ;
-            HB_ISSTRING( acFiles )
+      // Normalize file list parameter.
+      IF HB_ISNUMERIC( acFiles ) .OR. HB_ISSTRING( acFiles )
          acFiles := { acFiles }
       ENDIF
 
@@ -504,15 +428,13 @@ FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles,
       nPos := 0
       nErr := hb_UnzipFileFirst( hUnzip )
       DO WHILE nErr == 0
-
          nPos++
 
          IF hb_UnzipFileInfo( hUnzip, @cZipName, @dDate, @cTime, , , , @nSize ) == 0
-
             hb_FNameSplit( hb_OEMToANSI( cZipName ), @cSubPath, @cName, @cExt )
             cExtName := hb_FNameMerge( NIL, cName, cExt )
 
-            /* NOTE: As opposed to original hbziparch we don't do a second match without path. */
+            // Determine if this specific file should be extracted based on filters.
             lExtract := ( Empty( acFiles ) .OR. ;
                AScan( acFiles, nPos ) > 0 .OR. ;
                AScan( acFiles, {| cMask | hb_FileMatch( cExtName, cMask ) } ) > 0 )
@@ -522,6 +444,7 @@ FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles,
                   cSubPath := ""
                   hb_vfErase( cPath + cSubPath + cExtName )
                ELSE
+                  // Create subdirectories if they exist in the ZIP structure.
                   IF ! Empty( cSubPath ) .AND. ! hb_DirExists( cPath + cSubPath ) .AND. ! hb_DirBuild( cPath + cSubPath )
                      lRetVal := .F.
                      EXIT
@@ -534,9 +457,13 @@ FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles,
                   lRetVal := .F.
                   EXIT
                ENDIF
+               
+               // Normalize path separators for the current OS.
                cExtName := cPath + cSubPath + cExtName
                cExtName := StrTran( cExtName, "\", hb_ps() )
                cExtName := StrTran( cExtName, "/", hb_ps() )
+               
+               // Open target file (physical or virtual).
                IF ( hHandle := hb_vfOpen( cExtName, hb_bitOr( FO_CREAT, FO_TRUNC, FO_WRITE ) ) ) != NIL
                   nRead := 0
                   DO WHILE ( nLen := hb_unZipFileRead( hUnzip, @cBuffer, hb_BLen( cBuffer ) ) ) > 0
@@ -550,6 +477,7 @@ FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles,
                   hb_UnzipFileClose( hUnzip )
                   hb_vfClose( hHandle )
 
+                  // Restore original file time to the extracted file.
                   hb_vfTimeSet( cExtName, dDate, cTime )
 
                   IF HB_ISEVALITEM( bUpdate )
@@ -568,66 +496,24 @@ FUNCTION hb_UnzipFile( cFileName, bUpdate, lWithPath, cPassword, cPath, acFiles,
 RETURN lRetVal
 
 /*
- * FUNCTION hb_UnzipFileIndex( ... )
- *
- * Extracts files from a Zip archive (alias for hb_UnzipFile).
- *
- * Parameters:
- *   ... (VARIABLE):  Accepts the same parameters as hb_UnzipFile.
- *
- * Return Value:
- *   LOGICAL: Returns the same value as hb_UnzipFile.
- *
- * Purpose:
- *   This function is an alias for hb_UnzipFile, providing an alternative name for the same functionality.
- *   It extracts files from a Zip archive based on their index.
- *
- * Notes:
- *   This function simply calls hb_UnzipFile with the provided parameters.
+ * Alias functions for hb_UnzipFile to maintain compatibility with 
+ * various Harbour coding styles.
  */
 FUNCTION hb_UnzipFileIndex( ... )
 RETURN hb_UnzipFile( ... )
 
-/*
- * FUNCTION hb_UnzipAllFile( ... )
- *
- * Extracts all files from a Zip archive (alias for hb_UnzipFile).
- *
- * Parameters:
- *   ... (VARIABLE):  Accepts the same parameters as hb_UnzipFile.
- *
- * Return Value:
- *   LOGICAL: Returns the same value as hb_UnzipFile.
- *
- * Purpose:
- *   This function is an alias for hb_UnzipFile, providing an alternative name for the same functionality.
- *   It extracts all files from a Zip archive.
- *
- * Notes:
- *   This function simply calls hb_UnzipFile with the provided parameters.
- */
 FUNCTION hb_UnzipAllFile( ... )
 RETURN hb_UnzipFile( ... )
 
 /*
  * FUNCTION hb_ZipDeleteFiles( cFileName, acFiles )
  *
- * Deletes files from a Zip archive.
+ * Purpose:
+ *    Removes specific entries from an existing ZIP archive.
  *
  * Parameters:
- *   cFileName (CHARACTER): The name of the Zip archive file.
- *   acFiles (ARRAY or CHARACTER): An array of filenames to delete from the archive, or a single filename.
- *
- * Return Value:
- *   LOGICAL: .T. if all files were deleted successfully, .F. otherwise.
- *
- * Purpose:
- *   This function allows deleting specific files from a Zip archive.
- *   This can be useful for updating or modifying the contents of an existing archive.
- *
- * Notes:
- *   The function iterates through the list of files to delete and calls hb_ZipDeleteFile for each file.
- *   The Zip_EnsureExtension function is used to ensure the filename has the correct ".zip" extension.
+ *    cFileName : String - The ZIP file to modify.
+ *    acFiles   : Array  - List of internal paths to delete.
  */
 FUNCTION hb_ZipDeleteFiles( cFileName, acFiles )
 
@@ -641,6 +527,7 @@ FUNCTION hb_ZipDeleteFiles( cFileName, acFiles )
    ENDIF
 
    FOR EACH cFileToProc IN acFiles
+      // Logical AND ensures we know if any single deletion failed.
       lRetVal := lRetVal .AND. ( hb_ZipDeleteFile( cFileName, cFileToProc ) == UNZ_OK )
    NEXT
 
@@ -649,21 +536,11 @@ RETURN lRetVal
 /*
  * FUNCTION hb_IsZipFile( cFilename )
  *
- * Checks if a file is a valid Zip archive based on its signature.
- *
- * Parameters:
- *   cFilename (CHARACTER): The name of the file to check.
- *
- * Return Value:
- *   LOGICAL: .T. if the file is a valid Zip archive, .F. otherwise.
- *
  * Purpose:
- *   This function determines whether a given file is a valid Zip archive by checking for the standard Zip file signature ("PK\003\004") at the beginning of the file.
- *   This can be useful for validating file types before attempting to extract or process them as Zip archives.
+ *    Validates if a file is a true ZIP archive by checking its "Magic Number" signature.
  *
- * Notes:
- *   The function reads the first four bytes of the file and compares them to the Zip file signature.
- *   It handles potential file errors using a TRY...CATCH...FINALLY block.
+ * Returns:
+ *    Logical : .T. if the file starts with the 'PK' (Phil Katz) header.
  */
 FUNCTION hb_IsZipFile( cFilename )
 
@@ -673,8 +550,9 @@ FUNCTION hb_IsZipFile( cFilename )
    LOCAL isZipFile := .F.
 
    TRY
+      // Open with shared read access to avoid locking issues.
       IF ( hHandle := FOpen( cFilename, FO_READ + FO_SHARED ) ) <> F_ERROR
-
+         // Ensure file is at least large enough to hold a header.
          IF FSeek( hHandle, 0, FS_END ) > nLength
             FSeek( hHandle, 0, FS_SET )
 
@@ -685,8 +563,7 @@ FUNCTION hb_IsZipFile( cFilename )
       ENDIF
 
    CATCH
-      // silently ignore errors
-
+      // Errors (like access denied) result in .F.
    FINALLY
       IF hHandle <> NIL
          FClose( hHandle )
@@ -698,20 +575,9 @@ RETURN isZipFile
 /*
  * STATIC FUNCTION Zip_EnsureExtension( cFileName )
  *
- * Ensures that a filename has the ".zip" extension.
- *
- * Parameters:
- *   cFileName (CHARACTER): The filename to check and modify.
- *
- * Return Value:
- *   CHARACTER: The filename with the ".zip" extension added if it was missing, or the original filename if it already had the extension.
- *
  * Purpose:
- *   This function ensures that a filename has the ".zip" extension, adding it if necessary.
- *   It uses the Set( _SET_DEFEXTENSIONS ) setting to determine whether to automatically add the extension.
- *
- * Notes:
- *   This function is used internally to ensure that filenames passed to Zip archive functions have the correct extension.
+ *    Internal helper to append ".zip" if missing, respecting the 
+ *    SET DEFEXTENSIONS environment setting.
  */
 STATIC FUNCTION Zip_EnsureExtension( cFileName )
 RETURN iif( Set( _SET_DEFEXTENSIONS ), hb_FNameExtSetDef( cFileName, ".zip" ), cFileName )
@@ -719,19 +585,8 @@ RETURN iif( Set( _SET_DEFEXTENSIONS ), hb_FNameExtSetDef( cFileName, ".zip" ), c
 /*
  * FUNCTION hb_PathIsAbsolute( cPath )
  *
- * Checks if a path is absolute.
- *
- * Parameters:
- *   cPath (CHARACTER): The path to check.
- *
- * Return Value:
- *   LOGICAL: .T. if the path is absolute, .F. otherwise.
- *
  * Purpose:
- *   This function determines whether a given path is absolute.
- *
- * Notes:
- *   Uses hb_FNameSplit to determine if the path has a drive or starts with a path separator.
+ *    Determines if a path string is absolute (starts with drive or root separator).
  */
 FUNCTION hb_PathIsAbsolute( cPath )
 

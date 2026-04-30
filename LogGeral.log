@@ -1,10 +1,246 @@
+Definição paths: 
+MG_ROOT=D:\prgplus\git\OpenMinigui\ 
+MG_LIB=D:\prgplus\git\OpenMinigui\lib 
+MG_HRB=D:\prgplus\git\OpenMinigui\harbour 
+MG_BCC=D:\prgplus\Youtube\IDE\Tools\BCC 
+HB_COMPILER=bcc 
+HB_ARCHITECTURE=w32 
 ===== INICIO DO BUILD ===== 
 [Compilando HMG] 
-CMD: hbmk2 hmg.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hmg.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
+hbmk2: Compiling Harbour sources...
+hbmk2: Harbour compiler command (built-in) job #1:
+(D:\prgplus\git\OpenMinigui\harbour\bin\harbour.exe) -n1 ..\source\h_tree.prg -gc3 -v -w3 -es2 -ko -q0 -o..\obj\bcc\hmg\ -iD:\prgplus\Youtube\IDE\Tools\BCC\Include -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -iD:\prgplus\git\OpenMinigui\harbour\include -i..\Include -iD:\prgplus\git\OpenMinigui\include
+hbmk2: Harbour compiler command (built-in) job #2:
+(D:\prgplus\git\OpenMinigui\harbour\bin\harbour.exe) -n1 ..\source\h_webcam.prg -gc3 -v -w3 -es2 -ko -q0 -o..\obj\bcc\hmg\ -iD:\prgplus\Youtube\IDE\Tools\BCC\Include -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -iD:\prgplus\git\OpenMinigui\harbour\include -i..\Include -iD:\prgplus\git\OpenMinigui\include
+hbmk2: Harbour compiler command (built-in) job #3:
+(D:\prgplus\git\OpenMinigui\harbour\bin\harbour.exe) -n1 ..\source\h_windows.prg -gc3 -v -w3 -es2 -ko -q0 -o..\obj\bcc\hmg\ -iD:\prgplus\Youtube\IDE\Tools\BCC\Include -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -iD:\prgplus\git\OpenMinigui\harbour\include -i..\Include -iD:\prgplus\git\OpenMinigui\include
+Cannot open statics.prg, assumed external
+hbmk2: Compiling...
+hbmk2: C/C++ compiler command job #1:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\ErrorSys.c ..\obj\bcc\hmg\h_activex.c ..\obj\bcc\hmg\h_alert.c ..\obj\bcc\hmg\h_animate.c ..\obj\bcc\hmg\h_browse.c ..\obj\bcc\hmg\h_btntextbox.c ..\obj\bcc\hmg\h_button.c ..\obj\bcc\hmg\h_buttonex.c ..\obj\bcc\hmg\h_checkbox.c ..\obj\bcc\hmg\h_checkres.c
+hbmk2: C/C++ compiler command job #2:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\h_chklabel.c ..\obj\bcc\hmg\h_chklistbox.c ..\obj\bcc\hmg\h_clbutton.c ..\obj\bcc\hmg\h_combo.c ..\obj\bcc\hmg\h_comboex.c ..\obj\bcc\hmg\h_controlmisc.c ..\obj\bcc\hmg\h_crypt.c ..\obj\bcc\hmg\h_datepicker.c ..\obj\bcc\hmg\h_dbf_aux.c ..\obj\bcc\hmg\h_dialog.c
+hbmk2: C/C++ compiler command job #3:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\h_dialogs.c ..\obj\bcc\hmg\h_draw.c ..\obj\bcc\hmg\h_edit.c ..\obj\bcc\hmg\h_edit_ex.c ..\obj\bcc\hmg\h_editbox.c ..\obj\bcc\hmg\h_error.c ..\obj\bcc\hmg\h_events.c ..\obj\bcc\hmg\h_filename.c ..\obj\bcc\hmg\h_folder.c ..\obj\bcc\hmg\h_font.c
+hbmk2: C/C++ compiler command job #4:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\h_frame.c ..\obj\bcc\hmg\h_getbox.c ..\obj\bcc\hmg\h_Gif89.c ..\obj\bcc\hmg\h_gradient.c ..\obj\bcc\hmg\h_graph.c ..\obj\bcc\hmg\h_GraphBitmap.c ..\obj\bcc\hmg\h_grid.c ..\obj\bcc\hmg\h_help.c ..\obj\bcc\hmg\h_hotkey.c ..\obj\bcc\hmg\h_hotkeybox.c
+hbmk2: C/C++ compiler command job #5:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\h_hyperlink.c ..\obj\bcc\hmg\h_image.c ..\obj\bcc\hmg\h_imagelist.c ..\obj\bcc\hmg\h_ini.c ..\obj\bcc\hmg\h_init.c ..\obj\bcc\hmg\h_ipaddress.c ..\obj\bcc\hmg\h_label.c ..\obj\bcc\hmg\h_listbox.c ..\obj\bcc\hmg\h_media.c ..\obj\bcc\hmg\h_menu.c
+hbmk2: C/C++ compiler command job #6:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\h_misc.c ..\obj\bcc\hmg\h_monthcal.c ..\obj\bcc\hmg\h_mru.c ..\obj\bcc\hmg\h_msgbox.c ..\obj\bcc\hmg\h_objects.c ..\obj\bcc\hmg\h_objmisc.c ..\obj\bcc\hmg\h_owntab.c ..\obj\bcc\hmg\h_pager.c ..\obj\bcc\hmg\h_progressbar.c ..\obj\bcc\hmg\h_progresswheel.c
+hbmk2: C/C++ compiler command job #7:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\h_pubfunc.c ..\obj\bcc\hmg\h_radio.c ..\obj\bcc\hmg\h_rating.c ..\obj\bcc\hmg\h_registry.c ..\obj\bcc\hmg\h_report.c ..\obj\bcc\hmg\h_richeditbox.c ..\obj\bcc\hmg\h_richeditex.c ..\obj\bcc\hmg\h_rptgen.c ..\obj\bcc\hmg\h_savepdf.c ..\obj\bcc\hmg\h_scrsaver.c
+hbmk2: C/C++ compiler command job #8:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\h_slider.c ..\obj\bcc\hmg\h_socket.c ..\obj\bcc\hmg\h_spinner.c ..\obj\bcc\hmg\h_splitbutton.c ..\obj\bcc\hmg\h_status.c ..\obj\bcc\hmg\h_tab.c ..\obj\bcc\hmg\h_taskdlg.c ..\obj\bcc\hmg\h_textbox.c ..\obj\bcc\hmg\h_timer.c ..\obj\bcc\hmg\h_toolbar.c
+hbmk2: C/C++ compiler command job #9:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\h_tree.c ..\obj\bcc\hmg\h_wbrush.c ..\obj\bcc\hmg\h_webcam.c ..\obj\bcc\hmg\h_winapimisc.c ..\obj\bcc\hmg\h_windows.c ..\obj\bcc\hmg\h_windowsMDI.c ..\obj\bcc\hmg\h_winprop.c ..\obj\bcc\hmg\alerts.c ..\obj\bcc\hmg\netfuncs.c ..\obj\bcc\hmg\tget.c
+hbmk2: C/C++ compiler command job #10:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\obj\bcc\hmg\tgetint.c ..\obj\bcc\hmg\h_cdomail.c ..\obj\bcc\hmg\statics.c ..\source\c_bitmap.c ..\source\c_browse.c ..\source\c_btntextbox.c ..\source\c_button.c ..\source\c_checkbox.c ..\source\c_chklabel.c ..\source\c_chklistbox.c
+hbmk2: C/C++ compiler command job #11:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\source\c_combo.c ..\source\c_controlmisc.c ..\source\c_cuebanner.c ..\source\c_cursor.c ..\source\c_datepicker.c ..\source\c_dialog.c ..\source\c_dialogs.c ..\source\c_draw.c ..\source\c_error.c ..\source\c_editbox.c
+hbmk2: C/C++ compiler command job #12:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\source\c_folder.c ..\source\c_font.c ..\source\c_frame.c ..\source\c_getbox.c ..\source\c_graph.c ..\source\c_grid.c ..\source\c_help.c ..\source\c_hmgapp.c ..\source\c_hotkey.c ..\source\c_hotkeybox.c
+hbmk2: C/C++ compiler command job #13:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\source\c_icon.c ..\source\c_image.c ..\source\c_imagelist.c ..\source\c_ini.c ..\source\c_ipaddress.c ..\source\c_label.c ..\source\c_listbox.c ..\source\c_media.c ..\source\c_menu.c ..\source\c_monitors.c
+hbmk2: C/C++ compiler command job #14:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\source\c_monthcal.c ..\source\c_msgbox.c ..\source\c_nonclient.c ..\source\c_pager.c ..\source\c_progressbar.c ..\source\c_radio.c ..\source\c_registry.c ..\source\c_resource.c ..\source\c_richeditbox.c ..\source\c_richeditex.c
+hbmk2: C/C++ compiler command job #15:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\source\c_scrsaver.c ..\source\c_slider.c ..\source\c_spinner.c ..\source\c_status.c ..\source\c_tab.c ..\source\c_taskdlgs.c ..\source\c_textbox.c ..\source\c_timer.c ..\source\c_toolbar.c ..\source\c_tooltip.c
+hbmk2: C/C++ compiler command job #16:
+bcc32.exe -c -q -CP437 -d -O2 -OS -Ov -Oc -Oi -6  -tWM -w -Q -n..\obj\bcc\hmg -ID:\prgplus\Youtube\IDE\Tools\BCC\Include -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -ID:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -ID:\prgplus\git\OpenMinigui\harbour\include -I..\Include -ID:\prgplus\git\OpenMinigui\include ..\source\c_tree.c ..\source\c_winapimisc.c ..\source\c_windows.c ..\source\c_windowsAPI.c ..\source\c_windowsCLS.c ..\source\c_windowsMDI.c ..\source\c_winprop.c ..\source\c_winxp.c ..\source\dbinsert.c ..\source\hbgdiplus.c
+..\obj\bcc\hmg\h_slider.c:
+..\obj\bcc\hmg\h_socket.c:
+..\obj\bcc\hmg\h_spinner.c:
+..\obj\bcc\hmg\h_splitbutton.c:
+..\obj\bcc\hmg\h_status.c:
+..\obj\bcc\hmg\h_tab.c:
+..\obj\bcc\hmg\h_taskdlg.c:
+..\obj\bcc\hmg\h_textbox.c:
+..\obj\bcc\hmg\h_timer.c:
+..\obj\bcc\hmg\h_toolbar.c:
+..\obj\bcc\hmg\h_pubfunc.c:
+..\obj\bcc\hmg\h_radio.c:
+..\obj\bcc\hmg\h_rating.c:
+..\obj\bcc\hmg\h_registry.c:
+..\obj\bcc\hmg\h_report.c:
+..\obj\bcc\hmg\h_richeditbox.c:
+..\obj\bcc\hmg\h_richeditex.c:
+..\obj\bcc\hmg\h_rptgen.c:
+..\obj\bcc\hmg\h_savepdf.c:
+..\obj\bcc\hmg\h_scrsaver.c:
+..\obj\bcc\hmg\h_hyperlink.c:
+..\obj\bcc\hmg\h_image.c:
+..\obj\bcc\hmg\h_imagelist.c:
+..\obj\bcc\hmg\h_ini.c:
+..\obj\bcc\hmg\h_init.c:
+..\obj\bcc\hmg\h_ipaddress.c:
+..\obj\bcc\hmg\h_label.c:
+..\obj\bcc\hmg\h_listbox.c:
+..\obj\bcc\hmg\h_media.c:
+..\obj\bcc\hmg\h_menu.c:
+..\obj\bcc\hmg\h_dialogs.c:
+..\obj\bcc\hmg\h_draw.c:
+..\obj\bcc\hmg\h_edit.c:
+..\obj\bcc\hmg\h_edit_ex.c:
+..\obj\bcc\hmg\h_editbox.c:
+..\obj\bcc\hmg\h_error.c:
+..\obj\bcc\hmg\h_events.c:
+..\obj\bcc\hmg\h_filename.c:
+..\obj\bcc\hmg\h_folder.c:
+..\obj\bcc\hmg\h_font.c:
+..\obj\bcc\hmg\h_frame.c:
+..\obj\bcc\hmg\h_getbox.c:
+..\obj\bcc\hmg\h_Gif89.c:
+..\obj\bcc\hmg\h_gradient.c:
+..\obj\bcc\hmg\h_graph.c:
+..\obj\bcc\hmg\h_GraphBitmap.c:
+..\obj\bcc\hmg\h_grid.c:
+..\obj\bcc\hmg\h_help.c:
+..\obj\bcc\hmg\h_hotkey.c:
+..\obj\bcc\hmg\h_hotkeybox.c:
+..\obj\bcc\hmg\h_chklabel.c:
+..\obj\bcc\hmg\h_chklistbox.c:
+..\obj\bcc\hmg\h_clbutton.c:
+..\obj\bcc\hmg\h_combo.c:
+..\obj\bcc\hmg\h_comboex.c:
+..\obj\bcc\hmg\h_controlmisc.c:
+..\obj\bcc\hmg\h_crypt.c:
+..\obj\bcc\hmg\h_datepicker.c:
+..\obj\bcc\hmg\h_dbf_aux.c:
+..\obj\bcc\hmg\h_dialog.c:
+..\obj\bcc\hmg\h_misc.c:
+..\obj\bcc\hmg\h_monthcal.c:
+..\obj\bcc\hmg\h_mru.c:
+..\obj\bcc\hmg\h_msgbox.c:
+..\obj\bcc\hmg\h_objects.c:
+..\obj\bcc\hmg\h_objmisc.c:
+..\obj\bcc\hmg\h_owntab.c:
+..\obj\bcc\hmg\h_pager.c:
+..\obj\bcc\hmg\h_progressbar.c:
+..\obj\bcc\hmg\h_progresswheel.c:
+..\obj\bcc\hmg\h_tree.c:
+..\obj\bcc\hmg\h_wbrush.c:
+..\obj\bcc\hmg\h_webcam.c:
+..\obj\bcc\hmg\h_winapimisc.c:
+..\obj\bcc\hmg\h_windows.c:
+..\obj\bcc\hmg\h_windowsMDI.c:
+..\obj\bcc\hmg\h_winprop.c:
+..\obj\bcc\hmg\alerts.c:
+..\obj\bcc\hmg\netfuncs.c:
+..\obj\bcc\hmg\tget.c:
+..\source\c_monthcal.c:
+..\source\c_msgbox.c:
+..\source\c_nonclient.c:
+..\source\c_pager.c:
+Warning W8027 D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shobjidl.h 19699: Functions containing for are not expanded inline
+ + Full parser context
+ + ..\source\c_pager.c, line 50: #include D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shlobj.h
+ + D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shlobj.h, line 105: #include D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shobjidl.h
+..\source\c_tree.c:
+..\source\c_winapimisc.c:
+Warning W8027 D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shobjidl.h 19699: Functions containing for are not expanded inline
+ + Full parser context
+ + ..\source\c_winapimisc.c, line 55: #include D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shlobj.h
+ + D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shlobj.h, line 105: #include D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shobjidl.h
+..\source\c_windows.c:
+..\source\c_windowsAPI.c:
+..\obj\bcc\hmg\ErrorSys.c:
+..\obj\bcc\hmg\h_activex.c:
+..\obj\bcc\hmg\h_alert.c:
+..\obj\bcc\hmg\h_animate.c:
+..\obj\bcc\hmg\h_browse.c:
+..\obj\bcc\hmg\h_btntextbox.c:
+..\obj\bcc\hmg\h_button.c:
+..\obj\bcc\hmg\h_buttonex.c:
+..\obj\bcc\hmg\h_checkbox.c:
+..\obj\bcc\hmg\h_checkres.c:
+..\obj\bcc\hmg\tgetint.c:
+..\obj\bcc\hmg\h_cdomail.c:
+..\obj\bcc\hmg\statics.c:
+..\source\c_bitmap.c:
+..\source\c_browse.c:
+..\source\c_btntextbox.c:
+..\source\c_button.c:
+..\source\c_checkbox.c:
+..\source\c_chklabel.c:
+..\source\c_chklistbox.c:
+..\source\c_combo.c:
+..\source\c_controlmisc.c:
+..\source\c_cuebanner.c:
+..\source\c_cursor.c:
+..\source\c_datepicker.c:
+..\source\c_dialog.c:
+..\source\c_dialogs.c:
+Warning W8027 D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shobjidl.h 19699: Functions containing for are not expanded inline
+ + Full parser context
+ + ..\source\c_dialogs.c, line 53: #include D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shlobj.h
+ + D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shlobj.h, line 105: #inc..\source\c_scrsaver.c:
+..\source\c_slider.c:
+..\source\c_spinner.c:
+..\source\c_status.c:
+..\source\c_tab.c:
+..\source\c_taskdlgs.c:
+..\source\c_textbox.c:
+..\source\c_timer.c:
+..\source\c_toolbar.c:
+..\source\c_tooltip.c:
+..\source\c_folder.c:
+..\source\c_font.c:
+..\source\c_frame.c:
+..\source\c_getbox.c:
+..\source\c_graph.c:
+..\source\c_grid.c:
+..\source\c_help.c:
+..\source\c_hmgapp.c:
+..\source\c_hotkey.c:
+..\source\c_hotkeybox.c:
+lude D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\shobjidl.h
+..\source\c_draw.c:
+..\source\c_error.c:
+..\source\c_editbox.c:
+..\source\c_icon.c:
+..\source\c_image.c:
+..\source\c_imagelist.c:
+..\source\c_ini.c:
+..\source\c_ipaddress.c:
+..\source\c_label.c:
+..\source\c_listbox.c:
+..\source\c_media.c:
+..\source\c_menu.c:
+..\source\c_monitors.c:
+..\source\c_progressbar.c:
+..\source\c_radio.c:
+..\source\c_registry.c:
+..\source\c_resource.c:
+..\source\c_richeditbox.c:
+..\source\c_richeditex.c:
+..\source\c_windowsCLS.c:
+..\source\c_windowsMDI.c:
+..\source\c_winprop.c:
+..\source\c_winxp.c:
+Warning W8062 D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\uxtheme.h 1772: Previous options and warnings not restored
+ + Full parser context
+ + ..\source\c_winxp.c, line 65: #include D:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk\uxtheme.h
+Warning W8062 ..\source\c_winxp.c 953: Previous options and warnings not restored
+..\source\dbinsert.c:
+..\source\hbgdiplus.c:
 hbmk2: Creating static library... ..\lib\bcc\minigui.lib
+hbmk2: Lib command:
+tlib.exe @C:\Users\ivani\AppData\Local\Temp\8k3ky0.lnk
+hbmk2: Lib script:
+/P128   ..\lib\bcc\minigui.lib -+ ..\obj\bcc\hmg\ErrorSys.obj -+ ..\obj\bcc\hmg\h_activex.obj -+ ..\obj\bcc\hmg\h_alert.obj -+ ..\obj\bcc\hmg\h_animate.obj -+ ..\obj\bcc\hmg\h_browse.obj -+ ..\obj\bcc\hmg\h_btntextbox.obj -+ ..\obj\bcc\hmg\h_button.obj -+ ..\obj\bcc\hmg\h_buttonex.obj -+ ..\obj\bcc\hmg\h_checkbox.obj -+ ..\obj\bcc\hmg\h_checkres.obj -+ ..\obj\bcc\hmg\h_chklabel.obj -+ ..\obj\bcc\hmg\h_chklistbox.obj -+ ..\obj\bcc\hmg\h_clbutton.obj -+ ..\obj\bcc\hmg\h_combo.obj -+ ..\obj\bcc\hmg\h_comboex.obj -+ ..\obj\bcc\hmg\h_controlmisc.obj -+ ..\obj\bcc\hmg\h_crypt.obj -+ ..\obj\bcc\hmg\h_datepicker.obj -+ ..\obj\bcc\hmg\h_dbf_aux.obj -+ ..\obj\bcc\hmg\h_dialog.obj -+ ..\obj\bcc\hmg\h_dialogs.obj -+ ..\obj\bcc\hmg\h_draw.obj -+ ..\obj\bcc\hmg\h_edit.obj -+ ..\obj\bcc\hmg\h_edit_ex.obj -+ ..\obj\bcc\hmg\h_editbox.obj -+ ..\obj\bcc\hmg\h_error.obj -+ ..\obj\bcc\hmg\h_events.obj -+ ..\obj\bcc\hmg\h_filename.obj -+ ..\obj\bcc\hmg\h_folder.obj -+ ..\obj\bcc\hmg\h_font.obj -+ ..\obj\bcc\hmg\h_frame.obj -+ ..\obj\bcc\hmg\h_getbox.obj -+ ..\obj\bcc\hmg\h_Gif89.obj -+ ..\obj\bcc\hmg\h_gradient.obj -+ ..\obj\bcc\hmg\h_graph.obj -+ ..\obj\bcc\hmg\h_GraphBitmap.obj -+ ..\obj\bcc\hmg\h_grid.obj -+ ..\obj\bcc\hmg\h_help.obj -+ ..\obj\bcc\hmg\h_hotkey.obj -+ ..\obj\bcc\hmg\h_hotkeybox.obj -+ ..\obj\bcc\hmg\h_hyperlink.obj -+ ..\obj\bcc\hmg\h_image.obj -+ ..\obj\bcc\hmg\h_imagelist.obj -+ ..\obj\bcc\hmg\h_ini.obj -+ ..\obj\bcc\hmg\h_init.obj -+ ..\obj\bcc\hmg\h_ipaddress.obj -+ ..\obj\bcc\hmg\h_label.obj -+ ..\obj\bcc\hmg\h_listbox.obj -+ ..\obj\bcc\hmg\h_media.obj -+ ..\obj\bcc\hmg\h_menu.obj -+ ..\obj\bcc\hmg\h_misc.obj -+ ..\obj\bcc\hmg\h_monthcal.obj -+ ..\obj\bcc\hmg\h_mru.obj -+ ..\obj\bcc\hmg\h_msgbox.obj -+ ..\obj\bcc\hmg\h_objects.obj -+ ..\obj\bcc\hmg\h_objmisc.obj -+ ..\obj\bcc\hmg\h_owntab.obj -+ ..\obj\bcc\hmg\h_pager.obj -+ ..\obj\bcc\hmg\h_progressbar.obj -+ ..\obj\bcc\hmg\h_progresswheel.obj -+ ..\obj\bcc\hmg\h_pubfunc.obj -+ ..\obj\bcc\hmg\h_radio.obj -+ ..\obj\bcc\hmg\h_rating.obj -+ ..\obj\bcc\hmg\h_registry.obj -+ ..\obj\bcc\hmg\h_report.obj -+ ..\obj\bcc\hmg\h_richeditbox.obj -+ ..\obj\bcc\hmg\h_richeditex.obj -+ ..\obj\bcc\hmg\h_rptgen.obj -+ ..\obj\bcc\hmg\h_savepdf.obj -+ ..\obj\bcc\hmg\h_scrsaver.obj -+ ..\obj\bcc\hmg\h_slider.obj -+ ..\obj\bcc\hmg\h_socket.obj -+ ..\obj\bcc\hmg\h_spinner.obj -+ ..\obj\bcc\hmg\h_splitbutton.obj -+ ..\obj\bcc\hmg\h_status.obj -+ ..\obj\bcc\hmg\h_tab.obj -+ ..\obj\bcc\hmg\h_taskdlg.obj -+ ..\obj\bcc\hmg\h_textbox.obj -+ ..\obj\bcc\hmg\h_timer.obj -+ ..\obj\bcc\hmg\h_toolbar.obj -+ ..\obj\bcc\hmg\h_tree.obj -+ ..\obj\bcc\hmg\h_wbrush.obj -+ ..\obj\bcc\hmg\h_webcam.obj -+ ..\obj\bcc\hmg\h_winapimisc.obj -+ ..\obj\bcc\hmg\h_windows.obj -+ ..\obj\bcc\hmg\h_windowsMDI.obj -+ ..\obj\bcc\hmg\h_winprop.obj -+ ..\obj\bcc\hmg\alerts.obj -+ ..\obj\bcc\hmg\netfuncs.obj -+ ..\obj\bcc\hmg\tget.obj -+ ..\obj\bcc\hmg\tgetint.obj -+ ..\obj\bcc\hmg\h_cdomail.obj -+ ..\obj\bcc\hmg\statics.obj -+ ..\obj\bcc\hmg\c_bitmap.obj -+ ..\obj\bcc\hmg\c_browse.obj -+ ..\obj\bcc\hmg\c_btntextbox.obj -+ ..\obj\bcc\hmg\c_button.obj -+ ..\obj\bcc\hmg\c_checkbox.obj -+ ..\obj\bcc\hmg\c_chklabel.obj -+ ..\obj\bcc\hmg\c_chklistbox.obj -+ ..\obj\bcc\hmg\c_combo.obj -+ ..\obj\bcc\hmg\c_controlmisc.obj -+ ..\obj\bcc\hmg\c_cuebanner.obj -+ ..\obj\bcc\hmg\c_cursor.obj -+ ..\obj\bcc\hmg\c_datepicker.obj -+ ..\obj\bcc\hmg\c_dialog.obj -+ ..\obj\bcc\hmg\c_dialogs.obj -+ ..\obj\bcc\hmg\c_draw.obj -+ ..\obj\bcc\hmg\c_error.obj -+ ..\obj\bcc\hmg\c_editbox.obj -+ ..\obj\bcc\hmg\c_folder.obj -+ ..\obj\bcc\hmg\c_font.obj -+ ..\obj\bcc\hmg\c_frame.obj -+ ..\obj\bcc\hmg\c_getbox.obj -+ ..\obj\bcc\hmg\c_graph.obj -+ ..\obj\bcc\hmg\c_grid.obj -+ ..\obj\bcc\hmg\c_help.obj -+ ..\obj\bcc\hmg\c_hmgapp.obj -+ ..\obj\bcc\hmg\c_hotkey.obj -+ ..\obj\bcc\hmg\c_hotkeybox.obj -+ ..\obj\bcc\hmg\c_icon.obj -+ ..\obj\bcc\hmg\c_image.obj -+ ..\obj\bcc\hmg\c_imagelist.obj -+ ..\obj\bcc\hmg\c_ini.obj -+ ..\obj\bcc\hmg\c_ipaddress.obj -+ ..\obj\bcc\hmg\c_label.obj -+ ..\obj\bcc\hmg\c_listbox.obj -+ ..\obj\bcc\hmg\c_media.obj -+ ..\obj\bcc\hmg\c_menu.obj -+ ..\obj\bcc\hmg\c_monitors.obj -+ ..\obj\bcc\hmg\c_monthcal.obj -+ ..\obj\bcc\hmg\c_msgbox.obj -+ ..\obj\bcc\hmg\c_nonclient.obj -+ ..\obj\bcc\hmg\c_pager.obj -+ ..\obj\bcc\hmg\c_progressbar.obj -+ ..\obj\bcc\hmg\c_radio.obj -+ ..\obj\bcc\hmg\c_registry.obj -+ ..\obj\bcc\hmg\c_resource.obj -+ ..\obj\bcc\hmg\c_richeditbox.obj -+ ..\obj\bcc\hmg\c_richeditex.obj -+ ..\obj\bcc\hmg\c_scrsaver.obj -+ ..\obj\bcc\hmg\c_slider.obj -+ ..\obj\bcc\hmg\c_spinner.obj -+ ..\obj\bcc\hmg\c_status.obj -+ ..\obj\bcc\hmg\c_tab.obj -+ ..\obj\bcc\hmg\c_taskdlgs.obj -+ ..\obj\bcc\hmg\c_textbox.obj -+ ..\obj\bcc\hmg\c_timer.obj -+ ..\obj\bcc\hmg\c_toolbar.obj -+ ..\obj\bcc\hmg\c_tooltip.obj -+ ..\obj\bcc\hmg\c_tree.obj -+ ..\obj\bcc\hmg\c_winapimisc.obj -+ ..\obj\bcc\hmg\c_windows.obj -+ ..\obj\bcc\hmg\c_windowsAPI.obj -+ ..\obj\bcc\hmg\c_windowsCLS.obj -+ ..\obj\bcc\hmg\c_windowsMDI.obj -+ ..\obj\bcc\hmg\c_winprop.obj -+ ..\obj\bcc\hmg\c_winxp.obj -+ ..\obj\bcc\hmg\dbinsert.obj -+ ..\obj\bcc\hmg\hbgdiplus.obj
 TLIB 6.3 Copyright (c) 1987-2011 Embarcadero Technologies, Inc.
-/P128   ..\lib\bcc\minigui.lib -+ ..\lib\hbmk\bcc\hmg\ErrorSys.obj -+ ..\lib\hbmk\bcc\hmg\h_activex.obj -+ ..\lib\hbmk\bcc\hmg\h_alert.obj -+ ..\lib\hbmk\bcc\hmg\h_animate.obj -+ ..\lib\hbmk\bcc\hmg\h_browse.obj -+ ..\lib\hbmk\bcc\hmg\h_btntextbox.obj -+ ..\lib\hbmk\bcc\hmg\h_button.obj -+ ..\lib\hbmk\bcc\hmg\h_buttonex.obj -+ ..\lib\hbmk\bcc\hmg\h_checkbox.obj -+ ..\lib\hbmk\bcc\hmg\h_checkres.obj -+ ..\lib\hbmk\bcc\hmg\h_chklabel.obj -+ ..\lib\hbmk\bcc\hmg\h_chklistbox.obj -+ ..\lib\hbmk\bcc\hmg\h_clbutton.obj -+ ..\lib\hbmk\bcc\hmg\h_combo.obj -+ ..\lib\hbmk\bcc\hmg\h_comboex.obj -+ ..\lib\hbmk\bcc\hmg\h_controlmisc.obj -+ ..\lib\hbmk\bcc\hmg\h_crypt.obj -+ ..\lib\hbmk\bcc\hmg\h_datepicker.obj -+ ..\lib\hbmk\bcc\hmg\h_dbf_aux.obj -+ ..\lib\hbmk\bcc\hmg\h_dialog.obj -+ ..\lib\hbmk\bcc\hmg\h_dialogs.obj -+ ..\lib\hbmk\bcc\hmg\h_draw.obj -+ ..\lib\hbmk\bcc\hmg\h_edit.obj -+ ..\lib\hbmk\bcc\hmg\h_edit_ex.obj -+ ..\lib\hbmk\bcc\hmg\h_editbox.obj -+ ..\lib\hbmk\bcc\hmg\h_error.obj -+ ..\lib\hbmk\bcc\hmg\h_events.obj -+ ..\lib\hbmk\bcc\hmg\h_filename.obj -+ ..\lib\hbmk\bcc\hmg\h_folder.obj -+ ..\lib\hbmk\bcc\hmg\h_font.obj -+ ..\lib\hbmk\bcc\hmg\h_frame.obj -+ ..\lib\hbmk\bcc\hmg\h_getbox.obj -+ ..\lib\hbmk\bcc\hmg\h_Gif89.obj -+ ..\lib\hbmk\bcc\hmg\h_gradient.obj -+ ..\lib\hbmk\bcc\hmg\h_graph.obj -+ ..\lib\hbmk\bcc\hmg\h_GraphBitmap.obj -+ ..\lib\hbmk\bcc\hmg\h_grid.obj -+ ..\lib\hbmk\bcc\hmg\h_help.obj -+ ..\lib\hbmk\bcc\hmg\h_hotkey.obj -+ ..\lib\hbmk\bcc\hmg\h_hotkeybox.obj -+ ..\lib\hbmk\bcc\hmg\h_hyperlink.obj -+ ..\lib\hbmk\bcc\hmg\h_image.obj -+ ..\lib\hbmk\bcc\hmg\h_imagelist.obj -+ ..\lib\hbmk\bcc\hmg\h_ini.obj -+ ..\lib\hbmk\bcc\hmg\h_init.obj -+ ..\lib\hbmk\bcc\hmg\h_ipaddress.obj -+ ..\lib\hbmk\bcc\hmg\h_label.obj -+ ..\lib\hbmk\bcc\hmg\h_listbox.obj -+ ..\lib\hbmk\bcc\hmg\h_media.obj -+ ..\lib\hbmk\bcc\hmg\h_menu.obj -+ ..\lib\hbmk\bcc\hmg\h_misc.obj -+ ..\lib\hbmk\bcc\hmg\h_monthcal.obj -+ ..\lib\hbmk\bcc\hmg\h_mru.obj -+ ..\lib\hbmk\bcc\hmg\h_msgbox.obj -+ ..\lib\hbmk\bcc\hmg\h_objects.obj -+ ..\lib\hbmk\bcc\hmg\h_objmisc.obj -+ ..\lib\hbmk\bcc\hmg\h_owntab.obj -+ ..\lib\hbmk\bcc\hmg\h_pager.obj -+ ..\lib\hbmk\bcc\hmg\h_progressbar.obj -+ ..\lib\hbmk\bcc\hmg\h_progresswheel.obj -+ ..\lib\hbmk\bcc\hmg\h_pubfunc.obj -+ ..\lib\hbmk\bcc\hmg\h_radio.obj -+ ..\lib\hbmk\bcc\hmg\h_rating.obj -+ ..\lib\hbmk\bcc\hmg\h_registry.obj -+ ..\lib\hbmk\bcc\hmg\h_report.obj -+ ..\lib\hbmk\bcc\hmg\h_richeditbox.obj -+ ..\lib\hbmk\bcc\hmg\h_richeditex.obj -+ ..\lib\hbmk\bcc\hmg\h_rptgen.obj -+ ..\lib\hbmk\bcc\hmg\h_savepdf.obj -+ ..\lib\hbmk\bcc\hmg\h_scrsaver.obj -+ ..\lib\hbmk\bcc\hmg\h_slider.obj -+ ..\lib\hbmk\bcc\hmg\h_socket.obj -+ ..\lib\hbmk\bcc\hmg\h_spinner.obj -+ ..\lib\hbmk\bcc\hmg\h_splitbutton.obj -+ ..\lib\hbmk\bcc\hmg\h_status.obj -+ ..\lib\hbmk\bcc\hmg\h_tab.obj -+ ..\lib\hbmk\bcc\hmg\h_taskdlg.obj -+ ..\lib\hbmk\bcc\hmg\h_textbox.obj -+ ..\lib\hbmk\bcc\hmg\h_timer.obj -+ ..\lib\hbmk\bcc\hmg\h_toolbar.obj -+ ..\lib\hbmk\bcc\hmg\h_tree.obj -+ ..\lib\hbmk\bcc\hmg\h_wbrush.obj -+ ..\lib\hbmk\bcc\hmg\h_webcam.obj -+ ..\lib\hbmk\bcc\hmg\h_winapimisc.obj -+ ..\lib\hbmk\bcc\hmg\h_windows.obj -+ ..\lib\hbmk\bcc\hmg\h_windowsMDI.obj -+ ..\lib\hbmk\bcc\hmg\h_winprop.obj -+ ..\lib\hbmk\bcc\hmg\alerts.obj -+ ..\lib\hbmk\bcc\hmg\netfuncs.obj -+ ..\lib\hbmk\bcc\hmg\tget.obj -+ ..\lib\hbmk\bcc\hmg\h_cdomail.obj -+ ..\lib\hbmk\bcc\hmg\statics.obj -+ ..\lib\hbmk\bcc\hmg\c_bitmap.obj -+ ..\lib\hbmk\bcc\hmg\c_browse.obj -+ ..\lib\hbmk\bcc\hmg\c_btntextbox.obj -+ ..\lib\hbmk\bcc\hmg\c_button.obj -+ ..\lib\hbmk\bcc\hmg\c_checkbox.obj -+ ..\lib\hbmk\bcc\hmg\c_chklabel.obj -+ ..\lib\hbmk\bcc\hmg\c_chklistbox.obj -+ ..\lib\hbmk\bcc\hmg\c_combo.obj -+ ..\lib\hbmk\bcc\hmg\c_controlmisc.obj -+ ..\lib\hbmk\bcc\hmg\c_cuebanner.obj -+ ..\lib\hbmk\bcc\hmg\c_cursor.obj -+ ..\lib\hbmk\bcc\hmg\c_datepicker.obj -+ ..\lib\hbmk\bcc\hmg\c_dialog.obj -+ ..\lib\hbmk\bcc\hmg\c_dialogs.obj -+ ..\lib\hbmk\bcc\hmg\c_draw.obj -+ ..\lib\hbmk\bcc\hmg\c_error.obj -+ ..\lib\hbmk\bcc\hmg\c_editbox.obj -+ ..\lib\hbmk\bcc\hmg\c_folder.obj -+ ..\lib\hbmk\bcc\hmg\c_font.obj -+ ..\lib\hbmk\bcc\hmg\c_frame.obj -+ ..\lib\hbmk\bcc\hmg\c_getbox.obj -+ ..\lib\hbmk\bcc\hmg\c_graph.obj -+ ..\lib\hbmk\bcc\hmg\c_grid.obj -+ ..\lib\hbmk\bcc\hmg\c_help.obj -+ ..\lib\hbmk\bcc\hmg\c_hmgapp.obj -+ ..\lib\hbmk\bcc\hmg\c_hotkey.obj -+ ..\lib\hbmk\bcc\hmg\c_hotkeybox.obj -+ ..\lib\hbmk\bcc\hmg\c_icon.obj -+ ..\lib\hbmk\bcc\hmg\c_image.obj -+ ..\lib\hbmk\bcc\hmg\c_imagelist.obj -+ ..\lib\hbmk\bcc\hmg\c_ini.obj -+ ..\lib\hbmk\bcc\hmg\c_ipaddress.obj -+ ..\lib\hbmk\bcc\hmg\c_label.obj -+ ..\lib\hbmk\bcc\hmg\c_listbox.obj -+ ..\lib\hbmk\bcc\hmg\c_media.obj -+ ..\lib\hbmk\bcc\hmg\c_menu.obj -+ ..\lib\hbmk\bcc\hmg\c_monitors.obj -+ ..\lib\hbmk\bcc\hmg\c_monthcal.obj -+ ..\lib\hbmk\bcc\hmg\c_msgbox.obj -+ ..\lib\hbmk\bcc\hmg\c_nonclient.obj -+ ..\lib\hbmk\bcc\hmg\c_pager.obj -+ ..\lib\hbmk\bcc\hmg\c_progressbar.obj -+ ..\lib\hbmk\bcc\hmg\c_radio.obj -+ ..\lib\hbmk\bcc\hmg\c_registry.obj -+ ..\lib\hbmk\bcc\hmg\c_resource.obj -+ ..\lib\hbmk\bcc\hmg\c_richeditbox.obj -+ ..\lib\hbmk\bcc\hmg\c_richeditex.obj -+ ..\lib\hbmk\bcc\hmg\c_scrsaver.obj -+ ..\lib\hbmk\bcc\hmg\c_slider.obj -+ ..\lib\hbmk\bcc\hmg\c_spinner.obj -+ ..\lib\hbmk\bcc\hmg\c_status.obj -+ ..\lib\hbmk\bcc\hmg\c_tab.obj -+ ..\lib\hbmk\bcc\hmg\c_taskdlgs.obj -+ ..\lib\hbmk\bcc\hmg\c_textbox.obj -+ ..\lib\hbmk\bcc\hmg\c_timer.obj -+ ..\lib\hbmk\bcc\hmg\c_toolbar.obj -+ ..\lib\hbmk\bcc\hmg\c_tooltip.obj -+ ..\lib\hbmk\bcc\hmg\c_tree.obj -+ ..\lib\hbmk\bcc\hmg\c_winapimisc.obj -+ ..\lib\hbmk\bcc\hmg\c_windows.obj -+ ..\lib\hbmk\bcc\hmg\c_windowsAPI.obj -+ ..\lib\hbmk\bcc\hmg\c_windowsCLS.obj -+ ..\lib\hbmk\bcc\hmg\c_windowsMDI.obj -+ ..\lib\hbmk\bcc\hmg\c_winprop.obj -+ ..\lib\hbmk\bcc\hmg\c_winxp.obj -+ ..\lib\hbmk\bcc\hmg\dbinsert.obj -+ ..\lib\hbmk\bcc\hmg\hbgdiplus.objWarning: 'ErrorSys' not found in library
+/P128   ..\lib\bcc\minigui.lib -+ ..\obj\bcc\hmg\ErrorSys.obj -+ ..\obj\bcc\hmg\h_activex.obj -+ ..\obj\bcc\hmg\h_alert.obj -+ ..\obj\bcc\hmg\h_animate.obj -+ ..\obj\bcc\hmg\h_browse.obj -+ ..\obj\bcc\hmg\h_btntextbox.obj -+ ..\obj\bcc\hmg\h_button.obj -+ ..\obj\bcc\hmg\h_buttonex.obj -+ ..\obj\bcc\hmg\h_checkbox.obj -+ ..\obj\bcc\hmg\h_checkres.obj -+ ..\obj\bcc\hmg\h_chklabel.obj -+ ..\obj\bcc\hmg\h_chklistbox.obj -+ ..\obj\bcc\hmg\h_clbutton.obj -+ ..\obj\bcc\hmg\h_combo.obj -+ ..\obj\bcc\hmg\h_comboex.obj -+ ..\obj\bcc\hmg\h_controlmisc.obj -+ ..\obj\bcc\hmg\h_crypt.obj -+ ..\obj\bcc\hmg\h_datepicker.obj -+ ..\obj\bcc\hmg\h_dbf_aux.obj -+ ..\obj\bcc\hmg\h_dialog.obj -+ ..\obj\bcc\hmg\h_dialogs.obj -+ ..\obj\bcc\hmg\h_draw.obj -+ ..\obj\bcc\hmg\h_edit.obj -+ ..\obj\bcc\hmg\h_edit_ex.obj -+ ..\obj\bcc\hmg\h_editbox.obj -+ ..\obj\bcc\hmg\h_error.obj -+ ..\obj\bcc\hmg\h_events.obj -+ ..\obj\bcc\hmg\h_filename.obj -+ ..\obj\bcc\hmg\h_folder.obj -+ ..\obj\bcc\hmg\h_font.obj -+ ..\obj\bcc\hmg\h_frame.obj -+ ..\obj\bcc\hmg\h_getbox.obj -+ ..\obj\bcc\hmg\h_Gif89.obj -+ ..\obj\bcc\hmg\h_gradient.obj -+ ..\obj\bcc\hmg\h_graph.obj -+ ..\obj\bcc\hmg\h_GraphBitmap.obj -+ ..\obj\bcc\hmg\h_grid.obj -+ ..\obj\bcc\hmg\h_help.obj -+ ..\obj\bcc\hmg\h_hotkey.obj -+ ..\obj\bcc\hmg\h_hotkeybox.obj -+ ..\obj\bcc\hmg\h_hyperlink.obj -+ ..\obj\bcc\hmg\h_image.obj -+ ..\obj\bcc\hmg\h_imagelist.obj -+ ..\obj\bcc\hmg\h_ini.obj -+ ..\obj\bcc\hmg\h_init.obj -+ ..\obj\bcc\hmg\h_ipaddress.obj -+ ..\obj\bcc\hmg\h_label.obj -+ ..\obj\bcc\hmg\h_listbox.obj -+ ..\obj\bcc\hmg\h_media.obj -+ ..\obj\bcc\hmg\h_menu.obj -+ ..\obj\bcc\hmg\h_misc.obj -+ ..\obj\bcc\hmg\h_monthcal.obj -+ ..\obj\bcc\hmg\h_mru.obj -+ ..\obj\bcc\hmg\h_msgbox.obj -+ ..\obj\bcc\hmg\h_objects.obj -+ ..\obj\bcc\hmg\h_objmisc.obj -+ ..\obj\bcc\hmg\h_owntab.obj -+ ..\obj\bcc\hmg\h_pager.obj -+ ..\obj\bcc\hmg\h_progressbar.obj -+ ..\obj\bcc\hmg\h_progresswheel.obj -+ ..\obj\bcc\hmg\h_pubfunc.obj -+ ..\obj\bcc\hmg\h_radio.obj -+ ..\obj\bcc\hmg\h_rating.obj -+ ..\obj\bcc\hmg\h_registry.obj -+ ..\obj\bcc\hmg\h_report.obj -+ ..\obj\bcc\hmg\h_richeditbox.obj -+ ..\obj\bcc\hmg\h_richeditex.obj -+ ..\obj\bcc\hmg\h_rptgen.obj -+ ..\obj\bcc\hmg\h_savepdf.obj -+ ..\obj\bcc\hmg\h_scrsaver.obj -+ ..\obj\bcc\hmg\h_slider.obj -+ ..\obj\bcc\hmg\h_socket.obj -+ ..\obj\bcc\hmg\h_spinner.obj -+ ..\obj\bcc\hmg\h_splitbutton.obj -+ ..\obj\bcc\hmg\h_status.obj -+ ..\obj\bcc\hmg\h_tab.obj -+ ..\obj\bcc\hmg\h_taskdlg.obj -+ ..\obj\bcc\hmg\h_textbox.obj -+ ..\obj\bcc\hmg\h_timer.obj -+ ..\obj\bcc\hmg\h_toolbar.obj -+ ..\obj\bcc\hmg\h_tree.obj -+ ..\obj\bcc\hmg\h_wbrush.obj -+ ..\obj\bcc\hmg\h_webcam.obj -+ ..\obj\bcc\hmg\h_winapimisc.obj -+ ..\obj\bcc\hmg\h_windows.obj -+ ..\obj\bcc\hmg\h_windowsMDI.obj -+ ..\obj\bcc\hmg\h_winprop.obj -+ ..\obj\bcc\hmg\alerts.obj -+ ..\obj\bcc\hmg\netfuncs.obj -+ ..\obj\bcc\hmg\tget.obj -+ ..\obj\bcc\hmg\tgetint.obj -+ ..\obj\bcc\hmg\h_cdomail.obj -+ ..\obj\bcc\hmg\statics.obj -+ ..\obj\bcc\hmg\c_bitmap.obj -+ ..\obj\bcc\hmg\c_browse.obj -+ ..\obj\bcc\hmg\c_btntextbox.obj -+ ..\obj\bcc\hmg\c_button.obj -+ ..\obj\bcc\hmg\c_checkbox.obj -+ ..\obj\bcc\hmg\c_chklabel.obj -+ ..\obj\bcc\hmg\c_chklistbox.obj -+ ..\obj\bcc\hmg\c_combo.obj -+ ..\obj\bcc\hmg\c_controlmisc.obj -+ ..\obj\bcc\hmg\c_cuebanner.obj -+ ..\obj\bcc\hmg\c_cursor.obj -+ ..\obj\bcc\hmg\c_datepicker.obj -+ ..\obj\bcc\hmg\c_dialog.obj -+ ..\obj\bcc\hmg\c_dialogs.obj -+ ..\obj\bcc\hmg\c_draw.obj -+ ..\obj\bcc\hmg\c_error.obj -+ ..\obj\bcc\hmg\c_editbox.obj -+ ..\obj\bcc\hmg\c_folder.obj -+ ..\obj\bcc\hmg\c_font.obj -+ ..\obj\bcc\hmg\c_frame.obj -+ ..\obj\bcc\hmg\c_getbox.obj -+ ..\obj\bcc\hmg\c_graph.obj -+ ..\obj\bcc\hmg\c_grid.obj -+ ..\obj\bcc\hmg\c_help.obj -+ ..\obj\bcc\hmg\c_hmgapp.obj -+ ..\obj\bcc\hmg\c_hotkey.obj -+ ..\obj\bcc\hmg\c_hotkeybox.obj -+ ..\obj\bcc\hmg\c_icon.obj -+ ..\obj\bcc\hmg\c_image.obj -+ ..\obj\bcc\hmg\c_imagelist.obj -+ ..\obj\bcc\hmg\c_ini.obj -+ ..\obj\bcc\hmg\c_ipaddress.obj -+ ..\obj\bcc\hmg\c_label.obj -+ ..\obj\bcc\hmg\c_listbox.obj -+ ..\obj\bcc\hmg\c_media.obj -+ ..\obj\bcc\hmg\c_menu.obj -+ ..\obj\bcc\hmg\c_monitors.obj -+ ..\obj\bcc\hmg\c_monthcal.obj -+ ..\obj\bcc\hmg\c_msgbox.obj -+ ..\obj\bcc\hmg\c_nonclient.obj -+ ..\obj\bcc\hmg\c_pager.obj -+ ..\obj\bcc\hmg\c_progressbar.obj -+ ..\obj\bcc\hmg\c_radio.obj -+ ..\obj\bcc\hmg\c_registry.obj -+ ..\obj\bcc\hmg\c_resource.obj -+ ..\obj\bcc\hmg\c_richeditbox.obj -+ ..\obj\bcc\hmg\c_richeditex.obj -+ ..\obj\bcc\hmg\c_scrsaver.obj -+ ..\obj\bcc\hmg\c_slider.obj -+ ..\obj\bcc\hmg\c_spinner.obj -+ ..\obj\bcc\hmg\c_status.obj -+ ..\obj\bcc\hmg\c_tab.obj -+ ..\obj\bcc\hmg\c_taskdlgs.obj -+ ..\obj\bcc\hmg\c_textbox.obj -+ ..\obj\bcc\hmg\c_timer.obj -+ ..\obj\bcc\hmg\c_toolbar.obj -+ ..\obj\bcc\hmg\c_tooltip.obj -+ ..\obj\bcc\hmg\c_tree.obj -+ ..\obj\bcc\hmg\c_winapimisc.obj -+ ..\obj\bcc\hmg\c_windows.obj -+ ..\obj\bcc\hmg\c_windowsAPI.obj -+ ..\obj\bcc\hmg\c_windowsCLS.obj -+ ..\obj\bcc\hmg\c_windowsMDI.obj -+ ..\obj\bcc\hmg\c_winprop.obj -+ ..\obj\bcc\hmg\c_winxp.obj -+ ..\obj\bcc\hmg\dbinsert.obj -+ ..\obj\bcc\hmg\hbgdiplus.objWarning: 'ErrorSys' not found in library
 Warning: 'h_activex' not found in library
 Warning: 'h_alert' not found in library
 Warning: 'h_animate' not found in library
@@ -94,6 +330,7 @@ Warning: 'h_winprop' not found in library
 Warning: 'alerts' not found in library
 Warning: 'netfuncs' not found in library
 Warning: 'tget' not found in library
+Warning: 'tgetint' not found in library
 Warning: 'h_cdomail' not found in library
 Warning: 'statics' not found in library
 Warning: 'c_bitmap' not found in library
@@ -167,279 +404,581 @@ Warning: 'hbgdiplus' not found in library
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando adordd] 
-CMD: hbmk2 adordd.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  adordd.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\adordd.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando bostaurus] 
-CMD: hbmk2 bostaurus.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  bostaurus.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\bostaurus.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando calldll] 
-CMD: hbmk2 calldll.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  calldll.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\calldll.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando debugger] 
-CMD: hbmk2 debugger.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  debugger.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\debugger.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando dll] 
-CMD: hbmk2 dll.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  dll.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\dll.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando GraphPlus] 
-CMD: hbmk2 GraphPlus.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  GraphPlus.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\GraphPlus.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbaes] 
-CMD: hbmk2 hbaes.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbaes.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbaes.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbcab] 
-CMD: hbmk2 hbcab.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbcab.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbcab.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbComm] 
-CMD: hbmk2 hbComm.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbComm.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbComm.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando HBCrypto] 
-CMD: hbmk2 HBCrypto.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  HBCrypto.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
+hbmk2: Processing: ..\source\HBCrypto\3rd\ed25519\ed25519.hbc
+hbmk2: Processing: ..\source\HBCrypto\3rd\scrypt\scrypt.hbc
 hbmk2: Target up to date: ..\lib\bcc\HBCrypto.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbfimage] 
-CMD: hbmk2 hbfimage.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbfimage.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbfimage.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbgdip] 
-CMD: hbmk2 hbgdip.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbgdip.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbgdip.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hblibxlsxwriter] 
-CMD: hbmk2 hblibxlsxwriter.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hblibxlsxwriter.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hblibxlsxwriter.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando nulsys] 
-CMD: hbmk2 nulsys.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  nulsys.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\nulsys.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando HbPrinter] 
-CMD: hbmk2 HbPrinter.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  HbPrinter.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\HbPrinter.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbsqlit3] 
-CMD: hbmk2 hbsqlit3.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbsqlit3.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbsqlit3.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbvpdf] 
-CMD: hbmk2 hbvpdf.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbvpdf.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbvpdf.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbxlsxml] 
-CMD: hbmk2 hbxlsxml.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbxlsxml.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbxlsxml.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbxml] 
-CMD: hbmk2 hbxml.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbxml.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbxml.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hbzeegrid] 
-CMD: hbmk2 hbzeegrid.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbzeegrid.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Compiling Harbour sources...
+hbmk2: Harbour compiler command (built-in):
+(D:\prgplus\git\OpenMinigui\harbour\bin\harbour.exe) -n1 ..\source\hbzeegrid\cells.prg -gc3 -v -w3 -es2 -ko -q0 -o..\obj\bcc\hbzeegrid\ -iD:\prgplus\Youtube\IDE\Tools\BCC\Include -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -iD:\prgplus\git\OpenMinigui\harbour\include -i..\include -i..\source\hbzeegrid
 ..\source\hbzeegrid\cells.prg(7) Error F0029  Can't open #include file 'zeegrid.ch'
 hbmk2[hbzeegrid]: Error: Running Harbour compiler (built-in). 1
-(D:\prgplus\git\OpenMinigui\harbour\bin\harbour.exe) -n1 ..\source\hbzeegrid\cells.prg -w3 -es2 -ko -q0 -o..\lib\hbmk\bcc\hbzeegrid\ -iD:\prgplus\Youtube\IDE\Tools\BCC\Include -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -iD:\prgplus\git\OpenMinigui\harbour\include -i..\include -i..\source\hbzeegrid
+(D:\prgplus\git\OpenMinigui\harbour\bin\harbour.exe) -n1 ..\source\hbzeegrid\cells.prg -gc3 -v -w3 -es2 -ko -q0 -o..\obj\bcc\hbzeegrid\ -iD:\prgplus\Youtube\IDE\Tools\BCC\Include -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\dinkumware -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\crtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\rtl -iD:\prgplus\Youtube\IDE\Tools\BCC\Include\windows\sdk -iD:\prgplus\git\OpenMinigui\harbour\include -i..\include -i..\source\hbzeegrid
+hbmk2[hbzeegrid]: Exit status: 6: failed in compilation (Harbour, C compiler, Resource compiler)
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 ERRO no passo: Compilando hbzeegrid 
 Codigo: 6 
 [Compilando hbziparc] 
-CMD: hbmk2 hbziparc.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hbziparc.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hbziparc.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando easy_sql] 
-CMD: hbmk2 easy_sql.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  easy_sql.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\easy_sql.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando hmg_hpdf] 
-CMD: hbmk2 hmg_hpdf.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  hmg_hpdf.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\hmg_hpdf.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando miniprint] 
-CMD: hbmk2 miniprint.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  miniprint.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\miniprint.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando miniprint2] 
-CMD: hbmk2 miniprint2.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  miniprint2.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\miniprint2.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando pscript] 
-CMD: hbmk2 pscript.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  pscript.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\pscript.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando PdfPrinter] 
-CMD: hbmk2 PdfPrinter.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  PdfPrinter.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\PdfPrinter.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando propgrid] 
-CMD: hbmk2 propgrid.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  propgrid.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\propgrid.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando propsheet] 
-CMD: hbmk2 propsheet.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  propsheet.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\propsheet.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando qhtm] 
-CMD: hbmk2 qhtm.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  qhtm.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\qhtm.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando selector] 
-CMD: hbmk2 selector.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  selector.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\selector.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando SevenZip] 
-CMD: hbmk2 SevenZip.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  SevenZip.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\SevenZip.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
-[Compilando Shell32] 
-CMD: hbmk2 Shell32.hbp 
-hbmk2: Processing environment options: -comp=bcc
-hbmk2: Target up to date: ..\lib\bcc\Shell32.lib
-*********************************************************************************** 
-/////////////////////////////////////////////////////////////////////////////////// 
-*********************************************************************************** 
 [Compilando socket] 
-CMD: hbmk2 socket.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  socket.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\socket.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando splitter] 
-CMD: hbmk2 splitter.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  splitter.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\splitter.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando sqlite3facade] 
-CMD: hbmk2 sqlite3facade.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  sqlite3facade.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\sqlite3facade.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando tmsagent] 
-CMD: hbmk2 tmsagent.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  tmsagent.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\tmsagent.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando tsbrowse] 
-CMD: hbmk2 tsbrowse.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  tsbrowse.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Target up to date: ..\lib\bcc\tsbrowse.lib
 *********************************************************************************** 
 /////////////////////////////////////////////////////////////////////////////////// 
 *********************************************************************************** 
 [Compilando winreport] 
-CMD: hbmk2 winreport.hbp 
+CMD: hbmk2 -exitstr -gc3 -info -trace -v -jobs=16  winreport.hbp 
 hbmk2: Processing environment options: -comp=bcc
+hbmk2: Auto-detected platform: win
+hbmk2: Using Harbour: D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\include
+       D:\prgplus\git\OpenMinigui\harbour\lib
+       D:\prgplus\git\OpenMinigui\harbour\bin
+       D:\prgplus\git\OpenMinigui\harbour\contrib
+       D:\prgplus\git\OpenMinigui\harbour\addons
+hbmk2: Using C compiler: D:\prgplus\Youtube\IDE\Tools\BCC\bin\bcc32.exe
 hbmk2: Triggered by #require directive: hbzebra.hbc
 hbmk2[winreport]: Warning: Cannot find hbzebra.hbc
 hbmk2: Target up to date: ..\lib\bcc\winreport.lib

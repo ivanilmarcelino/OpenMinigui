@@ -6,7 +6,8 @@
 
 -inc
 
--workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-workdir=../obj/${hb_comp}/${hb_name}
+
 -o../lib/${hb_comp}/${hb_name}
 
 -I../source/PdfPrinter/include

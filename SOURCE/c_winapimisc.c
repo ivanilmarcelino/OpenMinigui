@@ -42,8 +42,8 @@
 
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
-
  ---------------------------------------------------------------------------*/
+
 #include <mgdefs.h>
 
 #if defined( _MSC_VER )
@@ -62,7 +62,6 @@
 #if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0 < 0x030200 )
 #define HB_FILE_TYPE_MAX   128
 #else
-
 /* this has to be declared before hbapifs.h is included */
 #define _HB_FILE_INTERNAL_
 #endif
@@ -73,8 +72,10 @@
 #define HB_LONGLONG  LONGLONG
 extern HB_EXPORT void      hb_evalBlock0( PHB_ITEM pCodeBlock );
 #endif
+
 extern HB_EXPORT BOOL      Array2Rect( PHB_ITEM aRect, RECT *rc );
 extern HB_EXPORT PHB_ITEM  Rect2Array( RECT *rc );
+
 extern void                hmg_ErrorExit( LPCTSTR lpMessage, DWORD dwError, BOOL bExit );
 
 typedef HMODULE ( __stdcall *SHGETFOLDERPATH ) ( HWND, int, HANDLE, DWORD, LPTSTR );
@@ -83,7 +84,6 @@ typedef HMODULE ( __stdcall *SHGETFOLDERPATH ) ( HWND, int, HANDLE, DWORD, LPTST
 LPWSTR   AnsiToWide( LPCSTR );
 LPSTR    WideToAnsi( LPWSTR );
 #endif
-BOOL     SysRefresh( void );
 
 // Minigui Resources control system
 void     RegisterResource( HANDLE hResource, LPCSTR szType );
@@ -128,7 +128,7 @@ HB_FUNC( WAITRUNPIPE )
    STARTUPINFO          StartupInfo;
    PROCESS_INFORMATION  ProcessInfo;
    HANDLE               ReadPipeHandle;
-   HANDLE               WritePipeHandle;  // not used here
+   HANDLE               WritePipeHandle;
    char                 *Data;
 
 #ifndef UNICODE
@@ -238,7 +238,7 @@ HB_FUNC( WAITRUNPIPE )
    Returns:
      None.
 */
-HB_FUNC( COPYRTFTOCLIPBOARD ) // CopyRtfToClipboard(cRtfText) store cRTFText in Windows clipboard
+HB_FUNC( COPYRTFTOCLIPBOARD )
 {
    HGLOBAL     hglbCopy;
    char        *lptstrCopy;
@@ -270,7 +270,7 @@ HB_FUNC( COPYRTFTOCLIPBOARD ) // CopyRtfToClipboard(cRtfText) store cRTFText in 
 
    lptstrCopy = ( char * ) GlobalLock( hglbCopy );
    memcpy( lptstrCopy, cStr, nLen * sizeof( TCHAR ) );
-   lptstrCopy[nLen] = ( TCHAR ) 0;  // NULL character
+   lptstrCopy[nLen] = ( TCHAR ) 0;        // NULL character
    GlobalUnlock( hglbCopy );
 
    if( SetClipboardData( cf, hglbCopy ) )
@@ -291,7 +291,7 @@ HB_FUNC( COPYRTFTOCLIPBOARD ) // CopyRtfToClipboard(cRtfText) store cRTFText in 
    Returns:
      None.
 */
-HB_FUNC( COPYTOCLIPBOARD ) // CopyToClipboard(cText) store cText in Windows clipboard
+HB_FUNC( COPYTOCLIPBOARD )
 {
    HGLOBAL     hglbCopy;
    char        *lptstrCopy;
@@ -316,7 +316,7 @@ HB_FUNC( COPYTOCLIPBOARD ) // CopyToClipboard(cText) store cText in Windows clip
 
    lptstrCopy = ( char * ) GlobalLock( hglbCopy );
    memcpy( lptstrCopy, cStr, nLen * sizeof( TCHAR ) );
-   lptstrCopy[nLen] = ( TCHAR ) 0;  // null character
+   lptstrCopy[nLen] = ( TCHAR ) 0;        // null character
    GlobalUnlock( hglbCopy );
 
    if( SetClipboardData( HB_ISNUM( 2 ) ? hmg_par_UINT( 2 ) : CF_TEXT, hglbCopy ) )
@@ -541,9 +541,10 @@ HB_FUNC( INKEYGUI )
    UINT     uElapse = hb_parnidef( 1, USER_TIMER_MINIMUM );
    UINT_PTR uTimer;
    MSG      Msg;
-   BOOL     bRet, bBreak = FALSE;
-   UINT     uRet = 0;
+   BOOL     bExitLoop = FALSE;
+   UINT     uResult = 0;
 
+   /* Treat zero as the maximum supported timeout. */
    if( uElapse == 0 )
    {
       uElapse = USER_TIMER_MAXIMUM;
@@ -551,49 +552,49 @@ HB_FUNC( INKEYGUI )
 
    uTimer = SetTimer( NULL, 0, uElapse, NULL );
 
-   while( ( bRet = GetMessage( &Msg, NULL, 0, 0 ) ) != 0 )
+   while( GetMessage( &Msg, NULL, 0, 0 ) != 0 )
    {
-      if( bRet == -1 )
+      switch( Msg.message )
       {
-         // handle the error and possibly exit
-         hmg_ErrorExit( TEXT( "INKEYGUI" ), 0, TRUE );
+         case WM_KEYDOWN:
+         case WM_SYSKEYDOWN:
+            uResult = ( UINT ) Msg.wParam;
+            bExitLoop = TRUE;
+            break;
+
+         case WM_TIMER:
+            if( Msg.wParam == uTimer )
+            {
+               bExitLoop = TRUE;
+            }
+            break;
+
+         case WM_LBUTTONDOWN:
+         case WM_RBUTTONDOWN:
+            uResult = ( Msg.message == WM_LBUTTONDOWN ) ? K_LBUTTONDOWN : K_RBUTTONDOWN;
+
+            /* Repost mouse event to the original window. */
+            PostMessage( Msg.hwnd, Msg.message, Msg.wParam, Msg.lParam );
+
+            bExitLoop = TRUE;
+            break;
+
+         default:
+            /* Standard message processing */
+            TranslateMessage( &Msg );
+            DispatchMessage( &Msg );
+            break;
       }
-      else
+
+      if( bExitLoop )
       {
-         switch( Msg.message )
-         {
-            case WM_KEYDOWN:
-            case WM_SYSKEYDOWN:
-               bBreak = TRUE;
-               uRet = ( UINT ) Msg.wParam;
-               break;
-
-            case WM_TIMER:
-               bBreak = ( Msg.wParam == uTimer );
-               break;
-
-            case WM_LBUTTONDOWN:
-            case WM_RBUTTONDOWN:
-               bBreak = TRUE;
-               uRet = ( Msg.message == WM_LBUTTONDOWN ) ? K_LBUTTONDOWN : K_RBUTTONDOWN;
-               PostMessage( Msg.hwnd, Msg.message, Msg.wParam, Msg.lParam );
-               break;
-         }
-      }
-
-      if( bBreak )
-      {
-         KillTimer( NULL, uTimer );
          break;
-      }
-      else
-      {
-         TranslateMessage( &Msg );  // Translates virtual key codes
-         DispatchMessage( &Msg );   // Dispatches message to window
       }
    }
 
-   hb_retns( uRet );
+   KillTimer( NULL, uTimer );
+
+   hb_retns( uResult );
 }
 
 /*
@@ -698,7 +699,6 @@ HB_FUNC( C_GETSPECIALFOLDER ) // Contributed By Ryszard Ry ko
    hb_xfree( lpBuffer );
 }
 
-//#define __WIN98__
 #ifdef __WIN98__
 
 /*
@@ -763,11 +763,7 @@ HB_FUNC( GETPHYSICALLYINSTALLEDSYSTEMMEMORY )
 
    if( NULL != hDll )
    {
-      GetPhysicallyInstalledSystemMemory_ptr fn_GetPhysicallyInstalledSystemMemory = ( GetPhysicallyInstalledSystemMemory_ptr ) wapi_GetProcAddress
-         (
-            hDll,
-            "GetPhysicallyInstalledSystemMemory"
-         );
+      GetPhysicallyInstalledSystemMemory_ptr fn_GetPhysicallyInstalledSystemMemory = ( GetPhysicallyInstalledSystemMemory_ptr ) wapi_GetProcAddress( hDll, "GetPhysicallyInstalledSystemMemory" );
 
       if( NULL != fn_GetPhysicallyInstalledSystemMemory )
       {
@@ -1187,15 +1183,7 @@ HB_FUNC( SHELLEXECUTE )
    }
 
    CoInitialize( NULL );                        // Initialize COM library for ShellExecute
-   hInst = ShellExecute
-      (
-         hmg_par_raw_HWND( 1 ),
-         HB_ISNIL( 2 ) ? NULL : lpOperation,
-         lpFile,
-         HB_ISNIL( 4 ) ? NULL : lpParameters,
-         HB_ISNIL( 5 ) ? NULL : lpDirectory,
-         hb_parni( 6 )
-      );
+   hInst = ShellExecute( hmg_par_raw_HWND( 1 ), HB_ISNIL( 2 ) ? NULL : lpOperation, lpFile, HB_ISNIL( 4 ) ? NULL : lpParameters, HB_ISNIL( 5 ) ? NULL : lpDirectory, hb_parni( 6 ) );
 
    if( ( INT_PTR ) hInst <= SE_ERR_DLLNOTFOUND )
    {
@@ -1378,19 +1366,7 @@ HB_FUNC( WAITRUNTERM )
    stInfo.dwFlags = STARTF_USESHOWWINDOW;
    stInfo.wShowWindow = HB_ISNIL( 3 ) ? ( WORD ) 5 : hmg_par_WORD( 3 );
 
-   bResult = CreateProcess
-      (
-         NULL,
-         lpCommandLine,
-         NULL,
-         NULL,
-         TRUE,
-         CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS,
-         NULL,
-         HB_ISNIL( 2 ) ? NULL : lpCurrentDirectory,
-         &stInfo,
-         &prInfo
-      );
+   bResult = CreateProcess( NULL, lpCommandLine, NULL, NULL, TRUE, CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS, NULL, HB_ISNIL( 2 ) ? NULL : lpCurrentDirectory, &stInfo, &prInfo );
 
 #ifdef UNICODE
    hb_xfree( lpCommandLine );
@@ -1752,14 +1728,14 @@ HB_FUNC( WINVERSION )
       { 4, 0, 0, 0, VER_NT_SERVER, "Windows NT Server 4.0" },
    };
 
-   char                 osName[64] = "Unknown Operating System";
-   char                 sp[128] = "";
-   char                 buildStr[32] = "";
-   char                 edition[64] = "";
-   BOOL                 filled = FALSE;
+   char                       osName[64] = "Unknown Operating System";
+   char                       sp[128] = "";
+   char                       buildStr[32] = "";
+   char                       edition[64] = "";
+   BOOL                       filled = FALSE;
 
    /* --- Preferred path: RtlGetVersion --- */
-   HMODULE              hNtdll = GetModuleHandleA( "ntdll.dll" );
+   HMODULE                    hNtdll = GetModuleHandleA( "ntdll.dll" );
    if( hNtdll )
    {
       typedef LONG ( WINAPI *RtlGetVersionPtr ) ( OSVERSIONINFOEXW * );
@@ -1780,11 +1756,7 @@ HB_FUNC( WINVERSION )
             {
                if( osvi.dwMajorVersion == osTable[i].major && osvi.dwMinorVersion == osTable[i].minor && osvi.wProductType == osTable[i].productType )
                {
-                  if
-                  (
-                     osTable[i].buildMin == 0
-                  || ( osvi.dwBuildNumber >= osTable[i].buildMin && osvi.dwBuildNumber <= ( osTable[i].buildMax ? osTable[i].buildMax : osvi.dwBuildNumber ) )
-                  )
+                  if( osTable[i].buildMin == 0 || ( osvi.dwBuildNumber >= osTable[i].buildMin && osvi.dwBuildNumber <= ( osTable[i].buildMax ? osTable[i].buildMax : osvi.dwBuildNumber ) ) )
                   {
                      hb_strncpyTrim( osName, osTable[i].name, sizeof( osName ) );
                      break;
@@ -1839,7 +1811,7 @@ HB_FUNC( WINVERSION )
                DWORD build = osvi.dwBuildNumber;
                if( osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && osvi.dwMajorVersion <= 4 )
                {
-                  build &= 0xFFFF;      /* old NT style */
+                  build &= 0xFFFF;           /* old NT style */
                }
 
                hb_snprintf( buildStr, sizeof( buildStr ), "%lu", ( unsigned long ) build );
@@ -2798,17 +2770,10 @@ HB_FUNC( HMG_GETLOCALEINFO )
      sets its properties based on the input parameters, and then saves it to disk as a .lnk file.  It handles both ANSI and Unicode builds.
 */
 #ifndef UNICODE
-static HRESULT CreateShortCut
-   (
-      LPSTR pszTargetfile, LPSTR pszTargetargs, LPSTR pszLinkfile, LPSTR pszDescription, int iShowmode, LPSTR pszCurdir, LPSTR pszIconfile, int iIconindex, WORD
-         wHotKey
-   )
+static HRESULT CreateShortCut ( LPSTR pszTargetfile, LPSTR pszTargetargs, LPSTR pszLinkfile, LPSTR pszDescription, int iShowmode, LPSTR pszCurdir, LPSTR pszIconfile, int iIconindex, WORD wHotKey )
 #else
 static HRESULT CreateShortCut
-   (
-      LPWSTR pszTargetfile, LPWSTR pszTargetargs, LPWSTR pszLinkfile, LPWSTR pszDescription, int iShowmode, LPWSTR pszCurdir, LPWSTR pszIconfile, int iIconindex,
-         WORD wHotKey
-   )
+   ( LPWSTR pszTargetfile, LPWSTR pszTargetargs, LPWSTR pszLinkfile, LPWSTR pszDescription, int iShowmode, LPWSTR pszCurdir, LPWSTR pszIconfile, int iIconindex, WORD wHotKey )
 #endif
 {
    HRESULT        hRes = E_INVALIDARG;             // Default return value for invalid arguments.  Initialized to an error code.

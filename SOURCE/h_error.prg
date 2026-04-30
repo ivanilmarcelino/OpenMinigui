@@ -193,7 +193,7 @@ FUNCTION MiniGuiVersion( nVersion )
 
    LOCAL cVersion
 
-#define MG_VERSION "Harbour MiniGUI Extended Edition 26.03.0 ("
+#define MG_VERSION "Harbour MiniGUI Extended Edition 26.04.0 ("
 
 #ifndef __XHARBOUR__
    cVersion := MG_VERSION + hb_ntos( hb_Version( HB_VERSION_BITWIDTH ) ) + "-bit) "

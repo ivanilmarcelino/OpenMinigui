@@ -42,7 +42,6 @@
 
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
-
  ---------------------------------------------------------------------------*/
 
 // Define minimum Internet Explorer version as 5.01
@@ -168,8 +167,10 @@ HB_FUNC( DOMESSAGELOOP )
          // If specified, handle the error and optionally exit the application
          if( hb_parldef( 1, HB_TRUE ) )
          {
-            hmg_ErrorExit( TEXT( "DOMESSAGELOOP" ), 0, TRUE ); // Error handling function
+            hmg_ErrorExit( TEXT( "DOMESSAGELOOP" ), 0, FALSE );   // Error handling function
          }
+
+         continue;
       }
       else
       {
@@ -177,9 +178,9 @@ HB_FUNC( DOMESSAGELOOP )
          hDlgModeless = GetActiveWindow();
 
          // Process the message if it's not an accelerator key or dialog message
-         if( hDlgModeless == ( HWND ) NULL || !TranslateAccelerator( g_hWndMain, g_hAccel, &Msg ) )
+         if( hDlgModeless == NULL || !TranslateAccelerator( g_hWndMain, g_hAccel, &Msg ) )
          {
-            if( !IsDialogMessage( hDlgModeless, &Msg ) )       // If not a dialog message, translate and dispatch it
+            if( !IsDialogMessage( hDlgModeless, &Msg ) )          // If not a dialog message, translate and dispatch it
             {
                TranslateMessage( &Msg );                 // Prepare message for handling
                DispatchMessage( &Msg );                  // Dispatch message to the window procedure
@@ -207,7 +208,7 @@ HB_FUNC( DOEVENTS )
 {
    MSG   Msg;
 
-   while( PeekMessage( ( LPMSG ) & Msg, 0, 0, 0, PM_REMOVE ) )
+   while( PeekMessage( &Msg, 0, 0, 0, PM_REMOVE ) )
    {
       hDlgModeless = GetActiveWindow();
 
@@ -350,8 +351,7 @@ HB_FUNC( DESTROYWINDOW )
  */
 HB_FUNC( ISWINDOWVISIBLE )
 {
-   HWND  hwnd = hmg_par_raw_HWND( 1 );
-   hb_retl( IsWindow( hwnd ) ? IsWindowVisible( hwnd ) : FALSE );
+   hb_retl( IsWindowVisible( hmg_par_raw_HWND( 1 ) ) );
 }
 
 /*
@@ -370,8 +370,7 @@ HB_FUNC( ISWINDOWVISIBLE )
  */
 HB_FUNC( ISWINDOWENABLED )
 {
-   HWND  hwnd = hmg_par_raw_HWND( 1 );
-   hb_retl( IsWindow( hwnd ) ? IsWindowEnabled( hwnd ) : FALSE );
+   hb_retl( IsWindowEnabled( hmg_par_raw_HWND( 1 ) ) );
 }
 
 /*
@@ -627,11 +626,7 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )
       {
          typedef BOOL ( __stdcall *SetLayeredWindowAttributes_ptr ) ( HWND, COLORREF, BYTE, DWORD );
 
-         SetLayeredWindowAttributes_ptr   fn_SetLayeredWindowAttributes = ( SetLayeredWindowAttributes_ptr ) wapi_GetProcAddress
-            (
-               hDll,
-               "SetLayeredWindowAttributes"
-            );
+         SetLayeredWindowAttributes_ptr   fn_SetLayeredWindowAttributes = ( SetLayeredWindowAttributes_ptr ) wapi_GetProcAddress( hDll, "SetLayeredWindowAttributes" );
 
          if( NULL != fn_SetLayeredWindowAttributes )
          {
@@ -644,7 +639,7 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )
                SetWindowLongPtr( hWnd, GWL_EXSTYLE, GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
             }
 
-            hmg_ret_L( fn_SetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags ) );
+            hb_retl( fn_SetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags ) );
          }
       }
       else
@@ -929,14 +924,7 @@ HB_FUNC( SENDMESSAGE )
    // Validate inputs
    if( !IsWindow( hwnd ) || !msg )
    {
-      hb_errRT_BASE_SubstR
-      (
-         EG_ARG,
-         !IsWindow( hwnd ) ? 5001 : 5002,
-         !IsWindow( hwnd ) ? "Invalid window handle" : "Invalid message ID",
-         HB_ERR_FUNCNAME,
-         HB_ERR_ARGS_BASEPARAMS
-      );
+      hb_errRT_BASE_SubstR( EG_ARG, !IsWindow( hwnd ) ? 5001 : 5002, !IsWindow( hwnd ) ? "Invalid window handle" : "Invalid message ID", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
       return;
    }
 
@@ -977,14 +965,7 @@ HB_FUNC( SENDMESSAGESTRING )
 #endif
    if( !IsWindow( hwnd ) || !msg )
    {
-      hb_errRT_BASE_SubstR
-      (
-         EG_ARG,
-         !IsWindow( hwnd ) ? 5001 : 5002,
-         !IsWindow( hwnd ) ? "Invalid window handle" : "Invalid message ID",
-         HB_ERR_FUNCNAME,
-         HB_ERR_ARGS_BASEPARAMS
-      );
+      hb_errRT_BASE_SubstR( EG_ARG, !IsWindow( hwnd ) ? 5001 : 5002, !IsWindow( hwnd ) ? "Invalid window handle" : "Invalid message ID", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
       return;
    }
 
@@ -1446,7 +1427,9 @@ HB_FUNC( GETCURSORPOS )
 
    if( !GetCursorPos( &pt ) )
    {
-      hb_errRT_BASE_SubstR( EG_ARG, 3012, "Failed to get cursor position", HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
+      hb_reta( 2 );
+      HB_STORNI( 0, -1, 1 );
+      HB_STORNI( 0, -1, 2 );
       return;
    }
 
@@ -1889,7 +1872,7 @@ HB_FUNC( C_ENUMCHILDWINDOWS )
    {
       // Call EnumChildWindows with the provided window handle, the callback function, and the code block as a parameter
       // Return the result of EnumChildWindows as a logical value
-      hmg_ret_L( EnumChildWindows( hWnd, EnumChildProc, ( LPARAM ) pCodeBlock ) );
+      hb_retl( EnumChildWindows( hWnd, EnumChildProc, ( LPARAM ) pCodeBlock ) );
    }
 }
 
@@ -2863,7 +2846,7 @@ HB_FUNC( SETMINMAXINFO )   // ( pMinMaxInfo, aMinMaxInfo ) --> 0
 HB_FUNC( LOCKWINDOWUPDATE )
 {
    // Lock updates for the specified window and return the result
-   hmg_ret_L( LockWindowUpdate( hmg_par_raw_HWND( 1 ) ) );
+   hb_retl( LockWindowUpdate( hmg_par_raw_HWND( 1 ) ) );
 }
 
 // Function: SETSTANDBY
@@ -2888,7 +2871,7 @@ HB_FUNC( SETSTANDBY )
 HB_FUNC( ISWINDOWHANDLE )
 {
    // Check if the handle is a valid window handle and return the result
-   hmg_ret_L( IsWindow( hmg_par_raw_HWND( 1 ) ) );
+   hb_retl( IsWindow( hmg_par_raw_HWND( 1 ) ) );
 }
 
 // Function: ISICONIC

@@ -1,4 +1,3 @@
-Echoo off
 ::=======================================================================
 ::Configure apenas estas variáveis de ambiente; o Hbmk2 resolve automaticamente o restante.
 ::Configure only these environment variables; Hbmk2 automatically resolves the rest.
@@ -15,6 +14,10 @@ Echoo off
 ::Defina PATH DO BORLAND/MINGW
 Set MG_BCC=D:\prgplus\Youtube\IDE\Tools\BCC
 
+Set path=%MG_HRB%\BIN;%MG_BCC%\BIN
+
+
 ::/*FIM*/
 ::=======================================================================
 Call CriaLibsAll.bat
+pause

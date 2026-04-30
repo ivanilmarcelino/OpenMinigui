@@ -42,155 +42,171 @@
 
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
-
  ---------------------------------------------------------------------------*/
-#include <mgdefs.h>                 // Include Minigui framework definitions
 
-// Displays a message box that automatically closes after a specified timeout period
+#include <mgdefs.h>
+
+/* 
+ * External Win32 API declarations not always present in standard headers
+ * or requiring specific dynamic linking.
+ */
 int WINAPI        MessageBoxTimeout( HWND, LPCTSTR, LPCTSTR, UINT, WORD, DWORD );
-
-// Declaration of external functions to retrieve the HINSTANCE and function addresses dynamically
 HINSTANCE         GetInstance( void );
-extern HB_PTRUINT wapi_GetProcAddress( HMODULE hModule, LPCSTR lpProcName );
+extern HB_PTRUINT wapi_GetProcAddress( HMODULE, LPCSTR );
+
+/* ------------------------------------------------------------------------ */
+/* Helper Macros                                                            */
+/* These macros simplify the extraction of parameters from the Harbour      */
+/* virtual machine stack, providing default values when parameters are      */
+/* missing or of the wrong type.                                            */
+/* ------------------------------------------------------------------------ */
+
+// Safely retrieves a Window Handle (HWND) from a Harbour parameter.
+#define _GET_HWND( n, def )   ( HB_ISNUM( n ) ? hmg_par_raw_HWND( n ) : ( def ) )
+
+// Safely retrieves an Instance Handle (HINSTANCE) from a Harbour parameter.
+#define _GET_HINST( n, def )  ( HB_ISNUM( n ) ? hmg_par_raw_HINSTANCE( n ) : ( def ) )
+
+// Safely retrieves a 32-bit unsigned integer (DWORD) from a Harbour parameter.
+#define _GET_DWORD( n, def )  ( HB_ISNUM( n ) ? hmg_par_DWORD( n ) : ( def ) )
+
+/* 
+ * Text / Resource Resolver Macro
+ * Handles the dual nature of Win32 API arguments that can be either a
+ * string pointer or a resource ID (MAKEINTRESOURCE).
+ * It also manages Unicode/ANSI encoding based on the build configuration.
+ */
+#ifdef UNICODE
+#define _STR( n ) ( HB_ISCHAR( n ) ? ( LPCWSTR ) hb_osStrU16Encode( hb_parc( n ) ) : ( HB_ISNUM( n ) ? MAKEINTRESOURCE( hb_parni( n ) ) : NULL ) )
+#else
+#define _STR( n ) ( HB_ISCHAR( n ) ? hb_parc( n ) : ( HB_ISNUM( n ) ? MAKEINTRESOURCE( hb_parni( n ) ) : NULL ) )
+#endif
 
 /*
- * FUNCTION: MESSAGEBOXINDIRECT
+ * FUNCTION: MESSAGEBOXINDIRECT()
+ * 
+ * Purpose:
+ * Wraps the Win32 MessageBoxIndirect API, allowing for complex message boxes
+ * that can include custom icons, help contexts, and specific language IDs.
  *
- * Displays a message box using the MSGBOXPARAMS structure, allowing for greater control over the message box's appearance and behavior.
- *
- * Parameters:
- *   hWnd: (Optional) Handle of the owner window. If omitted or invalid, the active window is used. Type: HWND.
- *   cText: Text to display in the message box. Can be a string or a resource ID. Type: STRING or NUMERIC.
- *   cCaption: Caption of the message box. Can be a string or a resource ID. Type: STRING or NUMERIC.
- *   nStyle: Style of the message box (e.g., MB_OK, MB_YESNO, MB_ICONERROR). Type: NUMERIC.
- *   xIcon: (Optional) Icon to display in the message box. Can be a string (icon name) or a resource ID. Type: STRING or NUMERIC.
- *   hInst: (Optional) Instance handle of the application. If omitted, the default instance is used. Type: HINSTANCE.
- *   nHelpId: (Optional) Help context ID for the message box. Type: NUMERIC.
- *   nProc: (Not used) Reserved for future use.
- *   nLang: (Optional) Language ID for the message box. Type: NUMERIC.
+ * Parameters (from Harbour):
+ * 1: hWndOwner (Numeric) - Handle to the owner window. Defaults to Active Window.
+ * 2: lpText    (String)  - The message body text or resource ID.
+ * 3: lpCaption (String)  - The title bar text or resource ID.
+ * 4: dwStyle   (Numeric) - Flags determining buttons and behavior (e.g., MB_YESNO).
+ * 5: lpIcon    (String)  - Resource name or ID for a custom icon.
+ * 6: hInstance (Numeric) - Module handle for resource loading.
+ * 7: dwContextHelpId (Numeric) - Help context identifier.
+ * 9: dwLanguageId (Numeric) - Language identifier for button text.
  *
  * Returns:
- *   The ID of the button pressed by the user (e.g., IDOK, IDCANCEL, IDYES, IDNO). Type: NUMERIC.
- *
- * Purpose:
- *   This function provides a flexible way to display message boxes with various customization options.
- *   It allows specifying the owner window, text, caption, icon, style, help context ID, and language ID.
- *   It leverages the Windows API function MessageBoxIndirect. This is useful for creating visually appealing
- *   and informative message boxes tailored to the specific needs of the application.
+ * Numeric - The ID of the button pressed by the user (e.g., IDOK, IDCANCEL).
  */
 HB_FUNC( MESSAGEBOXINDIRECT )
 {
-   // Initialize the MSGBOXPARAMS structure with default values
-   MSGBOXPARAMS   mbp = { 0 };
-   mbp.cbSize = sizeof( MSGBOXPARAMS );
+   MSGBOXPARAMS   mbp;
+   
+   // Initialize structure to zero to ensure unused members don't contain garbage.
+   memset( &mbp, 0, sizeof( mbp ) );
 
-   // Determine the owner window or use the active window by default
-   mbp.hwndOwner = HB_ISNUM( 1 ) ? hmg_par_raw_HWND( 1 ) : GetActiveWindow();
-   mbp.hInstance = HB_ISNUM( 6 ) ? hmg_par_raw_HINSTANCE( 6 ) : GetInstance();
+   mbp.cbSize = sizeof( mbp );
+   
+   // Determine the owner window; if not provided, use the current active window 
+   // to ensure the dialog is modal to the application.
+   mbp.hwndOwner = _GET_HWND( 1, GetActiveWindow() );
+   
+   // Determine the instance handle for loading resources (icons/strings).
+   mbp.hInstance = _GET_HINST( 6, GetInstance() );
 
-#ifndef UNICODE
-   // For non-Unicode builds, assign text, caption, and icon directly or as resource identifiers
-   mbp.lpszText = HB_ISCHAR( 2 ) ? hb_parc( 2 ) : ( HB_ISNUM( 2 ) ? MAKEINTRESOURCE( hb_parni( 2 ) ) : NULL );
-   mbp.lpszCaption = HB_ISCHAR( 3 ) ? hb_parc( 3 ) : ( HB_ISNUM( 3 ) ? MAKEINTRESOURCE( hb_parni( 3 ) ) : "" );
-   mbp.lpszIcon = HB_ISCHAR( 5 ) ? hb_parc( 5 ) : ( HB_ISNUM( 5 ) ? MAKEINTRESOURCE( hb_parni( 5 ) ) : NULL );
-#else
-   // For Unicode builds, convert text, caption, and icon to wide strings if provided
-   mbp.lpszText = ( LPCWSTR ) ( HB_ISCHAR( 2 ) ? hb_osStrU16Encode( hb_parc( 2 ) ) : ( HB_ISNUM( 2 ) ? MAKEINTRESOURCE( hb_parni( 2 ) ) : NULL ) );
-   mbp.lpszCaption = ( LPCWSTR ) ( HB_ISCHAR( 3 ) ? hb_osStrU16Encode( hb_parc( 3 ) ) : ( HB_ISNUM( 3 ) ? MAKEINTRESOURCE( hb_parni( 3 ) ) : TEXT( "" ) ) );
-   mbp.lpszIcon = ( LPCWSTR ) ( HB_ISCHAR( 5 ) ? hb_osStrU16Encode( hb_parc( 5 ) ) : ( HB_ISNUM( 5 ) ? MAKEINTRESOURCE( hb_parni( 5 ) ) : NULL ) );
-#endif
+   // Resolve text, caption, and icon resources using the helper macro.
+   mbp.lpszText = _STR( 2 );
+   mbp.lpszCaption = _STR( 3 ) ? _STR( 3 ) : TEXT( "" );
+   mbp.lpszIcon = _STR( 5 );
 
-   // Assign style, help context ID, and language ID for the message box
+   // Extract bitwise style flags.
    mbp.dwStyle = hmg_par_DWORD( 4 );
-   mbp.dwContextHelpId = HB_ISNUM( 7 ) ? hmg_par_DWORD( 7 ) : 0;
-   mbp.lpfnMsgBoxCallback = NULL;   // No callback function
-   mbp.dwLanguageId = HB_ISNUM( 9 ) ? hmg_par_DWORD( 9 ) : MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL );
+   
+   // Help and Language settings.
+   mbp.dwContextHelpId = _GET_DWORD( 7, 0 );
+   mbp.lpfnMsgBoxCallback = NULL; // Callbacks are not currently bridged to Harbour.
+   mbp.dwLanguageId = _GET_DWORD( 9, MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ) );
 
-   // Display the message box and return the button ID selected by the user
+   // Execute the API and return the result to the Harbour environment.
    hmg_ret_NINT( MessageBoxIndirect( &mbp ) );
 }
 
 /*
- * FUNCTION: MESSAGEBOXTIMEOUT
+ * FUNCTION: MESSAGEBOXTIMEOUT()
+ * 
+ * Purpose:
+ * Displays a message box that automatically closes after a specified duration.
+ * This uses an undocumented but widely available function in user32.dll.
  *
- * Displays a message box with a specified timeout period. If the user does not interact with the message box within the timeout, the function returns.
- *
- * Parameters:
- *   Text: The text to display in the message box. Type: STRING.
- *   Caption: The caption of the message box. Type: STRING.
- *   nTypeButton: (Optional) The type of buttons to display in the message box (e.g., MB_OK, MB_YESNO). Defaults to MB_OK. Type: NUMERIC.
- *   nMilliseconds: (Optional) The timeout duration in milliseconds. If omitted, the message box will not timeout. Type: NUMERIC.
+ * Parameters (from Harbour):
+ * 1: lpText    (String)  - The message body text.
+ * 2: lpCaption (String)  - The title bar text.
+ * 3: uType     (Numeric) - Flags for buttons/icons. Defaults to MB_OK.
+ * 4: dwTimeout (Numeric) - Time in milliseconds before auto-closing.
  *
  * Returns:
- *   The ID of the button pressed by the user (e.g., IDOK, IDCANCEL, IDYES, IDNO). If the message box times out, it may return a value indicating timeout (typically 0). Type: NUMERIC.
- *
- * Purpose:
- *   This function allows displaying message boxes that automatically close after a specified period of time.
- *   This is useful for displaying informational messages that do not require user interaction, or for preventing the application from being blocked indefinitely if the user does not respond to a message box.
+ * Numeric - The button ID pressed, or 32000 (MB_TIMEDOUT) if the timer expired.
  */
 HB_FUNC( MESSAGEBOXTIMEOUT )
 {
-   HWND        hWnd = GetActiveWindow();                    // Use the active window as the message box owner
-#ifndef UNICODE
-   const char  *lpText = hb_parc( 1 );                      // Text of the message box (ANSI string)
-   const char  *lpCaption = hb_parc( 2 );                   // Caption of the message box (ANSI string)
+   HWND        hWnd = GetActiveWindow();
+
+   // Handle string encoding based on Unicode/ANSI build settings.
+#ifdef UNICODE
+   TCHAR       *lpText = ( TCHAR * ) hb_osStrU16Encode( hb_parc( 1 ) );
+   TCHAR       *lpCaption = ( TCHAR * ) hb_osStrU16Encode( hb_parc( 2 ) );
 #else
-   TCHAR       *lpText = hb_osStrU16Encode( hb_parc( 1 ) ); // Convert text to Unicode if needed
-   TCHAR       *lpCaption = hb_osStrU16Encode( hb_parc( 2 ) ); // Convert caption to Unicode if needed
+   const char  *lpText = hb_parc( 1 );
+   const char  *lpCaption = hb_parc( 2 );
 #endif
 
-   // Message box type and timeout duration (default to MB_OK button and no timeout if not specified)
    UINT        uType = hmg_par_UINT_def( 3, MB_OK );
-   WORD        wLanguageId = MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL );
-   DWORD       dwMilliseconds = HB_ISNUM( 4 ) ? hmg_par_DWORD( 4 ) : ( DWORD ) 0xFFFFFFFF;   // Timeout duration
+   WORD        wLang = MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL );
+   
+   // Default to a very large value (effectively no timeout) if not specified.
+   DWORD       dwTimeout = _GET_DWORD( 4, 0xFFFFFFFF );
 
-   // Display the message box with a timeout and return the selected button ID
-   hmg_ret_NINT( MessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds ) );
+   hmg_ret_NINT( MessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLang, dwTimeout ) );
 }
 
 /*
- * FUNCTION: MessageBoxTimeout
- *
- * A wrapper function for the Windows API function MessageBoxTimeout. It dynamically loads the MessageBoxTimeout function from User32.dll at runtime.
- *
- * Parameters:
- *   hWnd: Handle to the owner window. Type: HWND.
- *   lpText: Text to display in the message box. Type: LPCTSTR.
- *   lpCaption: Caption of the message box. Type: LPCTSTR.
- *   uType: Type of buttons to display in the message box (e.g., MB_OK, MB_YESNO). Type: UINT.
- *   wLanguageId: Language ID for the message box. Type: WORD.
- *   dwMilliseconds: Timeout duration in milliseconds. Type: DWORD.
- *
- * Returns:
- *   The ID of the button pressed by the user (e.g., IDOK, IDCANCEL, IDYES, IDNO). If the message box times out or the function is not found, it returns 0. Type: INTEGER.
- *
- * Purpose:
- *   This function provides a way to use the MessageBoxTimeout API even on systems where it is not natively available (older Windows versions).
- *   It dynamically loads the function from User32.dll at runtime, allowing the application to run without crashing on older systems.
- *   If the function is not found, it gracefully returns 0, indicating that the message box timed out or that the timeout functionality is not available.
+ * INTERNAL FUNCTION: MessageBoxTimeout (Dynamic Loader)
+ * 
+ * Reasoning:
+ * MessageBoxTimeout is an exported function in user32.dll but is not 
+ * officially documented in standard Windows SDK headers. To ensure 
+ * compatibility across different compilers and Windows versions, we 
+ * load it dynamically at runtime.
  */
 int WINAPI MessageBoxTimeout( HWND hWnd, LPCTSTR lpText, LPCTSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds )
 {
-   // Define a pointer to the MessageBoxTimeout function type
-   typedef int ( WINAPI *PMessageBoxTimeout ) ( HWND, LPCTSTR, LPCTSTR, UINT, WORD, DWORD );
+   // Define the function signature for the pointer.
+   typedef int ( WINAPI *PFN_MBT ) ( HWND, LPCTSTR, LPCTSTR, UINT, WORD, DWORD );
 
-   // Static function pointer to avoid reloading the function
-   static PMessageBoxTimeout  pMessageBoxTimeout = NULL;
+   // Use a static variable to cache the function pointer after the first lookup.
+   static PFN_MBT pFunc = NULL;
 
-   if( pMessageBoxTimeout == NULL ) // Load the function only if not already loaded
+   if( pFunc == NULL )
    {
-      // Load the User32.dll library and retrieve the MessageBoxTimeout function address
-      HMODULE  hLib = LoadLibrary( TEXT( "User32.dll" ) );
+      // Attempt to load the User32 library.
+      HMODULE  hLib = LoadLibrary( TEXT( "user32.dll" ) );
 
+      if( hLib )
+      {
+         // Resolve the address of the function, choosing the A or W variant 
+         // based on the compilation environment.
 #ifdef UNICODE
-      // Load the Unicode version of MessageBoxTimeout if available
-      pMessageBoxTimeout = ( PMessageBoxTimeout ) wapi_GetProcAddress( hLib, "MessageBoxTimeoutW" );
+         pFunc = ( PFN_MBT ) wapi_GetProcAddress( hLib, "MessageBoxTimeoutW" );
 #else
-      // Load the ANSI version of MessageBoxTimeout if available
-      pMessageBoxTimeout = ( PMessageBoxTimeout ) wapi_GetProcAddress( hLib, "MessageBoxTimeoutA" );
+         pFunc = ( PFN_MBT ) wapi_GetProcAddress( hLib, "MessageBoxTimeoutA" );
 #endif
+      }
    }
 
-   // Call the dynamically loaded MessageBoxTimeout function if available, or return 0 on failure
-   return pMessageBoxTimeout == NULL ? 0 : pMessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
+   // If the function was found, call it; otherwise, return 0 (failure).
+   return pFunc ? pFunc( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds ) : 0;
 }

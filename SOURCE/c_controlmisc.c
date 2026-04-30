@@ -42,251 +42,254 @@
 
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
-
  ---------------------------------------------------------------------------*/
 
 // Set compatibility for Windows/Internet Explorer features at version 5.01
+// This ensures access to common control features available since IE 5.01.
 #define _WIN32_IE 0x0501
 
 #include <mgdefs.h>
 #include <commctrl.h>
 
 #ifdef UNICODE
-LPWSTR      AnsiToWide( LPCSTR );                  // Convert ANSI string to Wide string
+// Converts ANSI strings to Wide Character (UTF-16) for Unicode builds.
+LPWSTR      AnsiToWide( LPCSTR );
 #endif
 
-void pascal DelResource( HANDLE hResource );       // Frees resources associated with a handle.
+// Internal HMG function to remove a handle from the internal resource tracking system.
+void pascal DelResource( HANDLE hResource );
 
-// Compatibility for older Harbour versions with function translation
+/* ------------------------------------------------------------------------ */
+/* Compatibility Layer                                                      */
+/* ------------------------------------------------------------------------ */
+
 #ifndef HMG_LEGACY_OFF
+/* 
+ * Translates HB_SETCODEPAGE to HB_CDPSELECT for specific Harbour versions 
+ * to maintain backward compatibility with older codebases.
+ */
 #if !defined( __MINGW32__ ) && !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 > 0x020000 ) && ( __HARBOUR__ - 0 < 0x030200 )
-HB_FUNC_TRANSLATE( HB_SETCODEPAGE, HB_CDPSELECT )  // Translate HB_SETCODEPAGE to HB_CDPSELECT for compatibility.
+HB_FUNC_TRANSLATE( HB_SETCODEPAGE, HB_CDPSELECT )
 #endif
 #endif
+
+/* ------------------------------------------------------------------------ */
+/* Utility Wrappers                                                         */
+/* ------------------------------------------------------------------------ */
 
 /*
- *  HB_FUNC( MAKELONG )
- *
- *  Combines two 16-bit integers into a 32-bit LONG value.
- *
- *  Parameters:
- *      1: <nLowWord> - The low-order word (16 bits).
- *      2: <nHighWord> - The high-order word (16 bits).
- *
- *  Returns:
- *      A LONG value constructed from the two input integers.
+ * HB_FUNC( MAKELONG )
+ * Purpose: Combines two 16-bit integers into a single 32-bit unsigned integer.
+ * Parameters: 1 (Low-order word), 2 (High-order word).
+ * Returns: A 32-bit LONG value.
+ * Usage: Often used to pack coordinates or flags into a single message parameter (LPARAM).
  */
 HB_FUNC( MAKELONG )
 {
-   hmg_ret_LONG( MAKELONG( hb_parni( 1 ), hb_parni( 2 ) ) );  // Return combined LONG value
+   hmg_ret_LONG( MAKELONG( hb_parni( 1 ), hb_parni( 2 ) ) );
 }
 
 /*
- *  HB_FUNC( _ENABLESCROLLBARS )
- *
- *  Enables or disables scroll bars for a window.
- *
- *  Parameters:
- *      1: <hWnd> - The handle of the window.
- *      2: <wSBflags> - Scroll bar flags (SB_HORZ, SB_VERT, SB_BOTH).
- *      3: <wArrows> - Arrow enabling/disabling flags (ESB_ENABLE_BOTH, ESB_DISABLE_LTUP, ESB_DISABLE_RTDN).
- *
- *  Returns:
- *      None.
+ * HB_FUNC( _ENABLESCROLLBARS )
+ * Purpose: Enables or disables one or both arrows of a scroll bar.
+ * Parameters: 
+ *    1 - Window Handle (HWND).
+ *    2 - Flags (SB_HORZ, SB_VERT, or SB_BOTH).
+ *    3 - Arrows (ESB_ENABLE_BOTH, ESB_DISABLE_LTUP, etc.).
+ * Side Effects: Updates the UI state of the specified window's scrollbars.
  */
 HB_FUNC( _ENABLESCROLLBARS )
 {
-   EnableScrollBar( hmg_par_raw_HWND( 1 ), hb_parni( 2 ), hb_parni( 3 ) );
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
+   int   nFlags = hb_parni( 2 );
+   int   nArrows = hb_parni( 3 );
+
+   if( hWnd )
+   {
+      EnableScrollBar( hWnd, nFlags, nArrows );
+   }
 }
 
 /*
- *  HB_FUNC( DELETEOBJECT )
- *
- *  Deletes a GDI object (pen, brush, font, bitmap) and frees associated resources.
- *
- *  Parameters:
- *      1: <hResource> - The handle of the GDI object to delete.
- *
- *  Returns:
- *      .T. (TRUE) on success, .F. (FALSE) on failure.
+ * HB_FUNC( DELETEOBJECT )
+ * Purpose: Deletes a logical pen, brush, font, bitmap, region, or palette.
+ * Parameters: 1 - Handle to the GDI object (HGDIOBJ).
+ * Returns: Logical (.T. if successful).
+ * Side Effects: Frees system resources. 
+ * Note: Calls DelResource to ensure HMG's internal tracker is synchronized.
  */
 HB_FUNC( DELETEOBJECT )
 {
    HANDLE   hRes = hmg_par_raw_HANDLE( 1 );
 
-   if( hRes )
+   if( !hRes )
    {
-      DelResource( hRes ); // Release associated resources
-      hb_retl( DeleteObject( ( HGDIOBJ ) hRes ) ); // Return deletion success
+      hb_retl( HB_FALSE );
+      return;
    }
-   else
-   {
-      hb_retl( HB_FALSE );                // Return false if handle is invalid
-   }
+
+   // Remove from HMG internal resource management before system deletion.
+   DelResource( hRes );
+   hb_retl( DeleteObject( ( HGDIOBJ ) hRes ) );
 }
 
 /*
- *  HB_FUNC( IMAGELIST_DESTROY )
- *
- *  Destroys an image list and frees its memory.
- *
- *  Parameters:
- *      1: <himl> - The handle of the image list to destroy.
- *
- *  Returns:
- *      .T. (TRUE) on success, .F. (FALSE) on failure.
+ * HB_FUNC( IMAGELIST_DESTROY )
+ * Purpose: Destroys an image list and removes it from memory.
+ * Parameters: 1 - Handle to the ImageList (HIMAGELIST).
+ * Returns: Logical (.T. if successful).
+ * Note: Essential for preventing memory leaks when dynamic image lists are used.
  */
 HB_FUNC( IMAGELIST_DESTROY )
 {
-   HIMAGELIST  himl = hmg_par_raw_HIMAGELIST( 1 );
+   HIMAGELIST  hImg = hmg_par_raw_HIMAGELIST( 1 );
 
-   DelResource( himl );                   // Free resources related to the image list
-   hb_retl( ImageList_Destroy( himl ) );  // Return success status of destruction
+   if( !hImg )
+   {
+      hb_retl( HB_FALSE );
+      return;
+   }
+
+   // Synchronize with HMG resource tracker.
+   DelResource( hImg );
+   hb_retl( ImageList_Destroy( hImg ) );
 }
 
 /*
- *  HB_FUNC( SETFOCUS )
- *
- *  Sets the keyboard focus to the specified window.
- *
- *  Parameters:
- *      1: <hWnd> - The handle of the window to receive focus.
- *
- *  Returns:
- *      The handle of the window that previously had focus, or NULL.
+ * HB_FUNC( SETFOCUS )
+ * Purpose: Sets the keyboard focus to the specified window.
+ * Parameters: 1 - Window Handle (HWND).
+ * Returns: The handle of the window that previously had the focus.
  */
 HB_FUNC( SETFOCUS )
 {
-   hmg_ret_raw_HWND( SetFocus( hmg_par_raw_HWND( 1 ) ) );
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
+   if( IsWindow( hWnd ) )
+   {
+      hmg_ret_raw_HWND( SetFocus( hWnd ) );
+   }
+   else
+   {
+      hmg_ret_raw_HANDLE( NULL );   // Return null if window is invalid
+   }
 }
 
 /*
- *  HB_FUNC( INSERTSHIFTTAB )
- *
- *  Simulates a Shift+Tab key press.
- *
- *  Parameters:
- *      None.
- *
- *  Returns:
- *      None.
+ * HB_FUNC( INSERTSHIFTTAB )
+ * Purpose: Simulates a Shift+Tab key combination.
+ * Side Effects: Triggers backward tab navigation in the UI.
+ * Reasoning: Used to programmatically move focus to the previous control.
  */
 HB_FUNC( INSERTSHIFTTAB )
 {
-   keybd_event( VK_SHIFT, 0, 0, 0 );      // Press Shift key
-   keybd_event( VK_TAB, 0, 0, 0 );        // Press Tab key
-   keybd_event( VK_SHIFT, 0, KEYEVENTF_KEYUP, 0 ); // Release Shift key
+   keybd_event( VK_SHIFT, 0, 0, 0 );
+   keybd_event( VK_TAB, 0, 0, 0 );
+   keybd_event( VK_SHIFT, 0, KEYEVENTF_KEYUP, 0 );
 }
 
 /*
- *  HB_FUNC( SYSTEMPARAMETERSINFO )
- *
- *  Retrieves or sets system-wide parameters.
- *
- *  Parameters:
- *      1: <uiAction> - The system parameter to query or set (e.g., SPI_GETSCREENSAVEACTIVE).
- *      2: <uiParam> - Parameter specific to the action.
- *      3: <pvParam> - Pointer to a buffer to receive or set the parameter value.
- *      4: <fWinIni> - Flags controlling update behavior (e.g., SPIF_UPDATEINIFILE).
- *
- *  Returns:
- *      .T. (TRUE) on success, .F. (FALSE) on failure.
+ * HB_FUNC( SYSTEMPARAMETERSINFO )
+ * Purpose: Retrieves or sets system-wide parameters (accessibility, desktop, etc.).
+ * Parameters: 
+ *    1 - Action (UINT), 2 - Parameter 1 (UINT), 
+ *    3 - Parameter 2 (Pointer/String), 4 - Update Flags (UINT).
+ * Returns: Logical (.T. if successful).
  */
 HB_FUNC( SYSTEMPARAMETERSINFO )
 {
-   hb_retl( SystemParametersInfo( hmg_par_UINT( 1 ), hmg_par_UINT( 2 ), ( VOID * ) hb_parc( 3 ), hmg_par_UINT( 4 ) ) );
+   UINT  uiAction = hmg_par_UINT( 1 );
+   UINT  uiParam = hmg_par_UINT( 2 );
+   VOID  *pParam = ( VOID * ) hb_parc( 3 );
+   UINT  uiFlags = hmg_par_UINT( 4 );
+
+   hb_retl( SystemParametersInfo( uiAction, uiParam, pParam, uiFlags ) );
 }
 
 /*
- *  HB_FUNC( GETTEXTWIDTH )
- *
- *  Calculates the width of a text string in pixels, using a specified font.
- *
- *  Parameters:
- *      1: <hDC> - The handle of the device context (HDC). If NULL, a DC is created and destroyed.
- *      2: <lpString> - The text string to measure.
- *      3: <hFont> - The handle of the font (HFONT). If NULL, the current DC font is used.
- *
- *  Returns:
- *      The width of the string in pixels.
+ * HB_FUNC( GETTEXTWIDTH )
+ * Purpose: Calculates the width of a string in pixels based on a specific font.
+ * Parameters: 
+ *    1 - Device Context (HDC, optional).
+ *    2 - Text string.
+ *    3 - Font Handle (HFONT, optional).
+ * Returns: Width in pixels (LONG).
+ * Logic: If no HDC is provided, it uses the active window's DC. It temporarily 
+ * selects the font into the DC to ensure accurate measurement.
  */
 HB_FUNC( GETTEXTWIDTH )
 {
-   HDC      hDC = hmg_par_raw_HDC( 1 );            // Get device context
-   HWND     hWnd = ( HWND ) NULL;
-   BOOL     bDestroyDC = FALSE;
+   HDC      hDC = hmg_par_raw_HDC( 1 );
+   HWND     hWnd = NULL;
+   BOOL     bOwnDC = FALSE;
    HFONT    hFont = hmg_par_raw_HFONT( 3 );
-   HFONT    hOldFont = ( HFONT ) NULL;
+   HFONT    hOld = NULL;
    SIZE     sz;
 
 #ifndef UNICODE
-   LPCSTR   lpString = hb_parc( 2 );
+   LPCSTR   lpText = hb_parc( 2 );
 #else
-   LPCWSTR  lpString = AnsiToWide( ( char * ) hb_parc( 2 ) );
+   LPCWSTR  lpText = AnsiToWide( ( char * ) hb_parc( 2 ) );
 #endif
+
+   // If no DC is provided, obtain the DC of the currently active window.
    if( !hDC )
    {
       hWnd = GetActiveWindow();
-      hDC = GetDC( hWnd ); // Acquire device context if not provided
-      bDestroyDC = TRUE;
+      hDC = GetDC( hWnd );
+      bOwnDC = TRUE;
    }
 
+   // Select the custom font if provided, storing the old one for restoration.
    if( hFont )
    {
-      hOldFont = ( HFONT ) SelectObject( hDC, hFont );   // Select specified font if provided
+      hOld = ( HFONT ) SelectObject( hDC, hFont );
    }
 
-   GetTextExtentPoint32( hDC, lpString, ( int ) lstrlen( lpString ), &sz );   // Calculate text width
-   if( hFont )
+   GetTextExtentPoint32( hDC, lpText, ( int ) lstrlen( lpText ), &sz );
+
+   // Restore the original font to prevent GDI leaks.
+   if( hFont && hOld )
    {
-      SelectObject( hDC, hOldFont );   // Restore original font
+      SelectObject( hDC, hOld );
    }
 
-   if( bDestroyDC )
+   // Release the DC if we created it locally.
+   if( bOwnDC )
    {
-      ReleaseDC( hWnd, hDC );          // Release device context if created
+      ReleaseDC( hWnd, hDC );
    }
 
-   hmg_ret_LONG( sz.cx );              // Return calculated text width
+   hmg_ret_LONG( sz.cx );
+
 #ifdef UNICODE
-   if( lpString )
+   if( lpText )
    {
-      hb_xfree( ( TCHAR * ) lpString );
+      hb_xfree( ( TCHAR * ) lpText );
    }
 #endif
 }
 
 /*
- *  HB_FUNC( KEYBD_EVENT )
- *
- *  Synthesizes a keystroke event.
- *
- *  Parameters:
- *      1: <bVk> - The virtual-key code (e.g., VK_A for 'A').
- *      2: <bScan> - The hardware scan code for the key.
- *      3: <dwFlags> - Flags controlling the event (KEYEVENTF_KEYUP, KEYEVENTF_SCANCODE, etc.).
- *      4: <dwExtraInfo> - Application-defined extra information.
- *
- *  Returns:
- *      None.
+ * HB_FUNC( KEYBD_EVENT )
+ * Purpose: Synthesizes a keystroke.
+ * Parameters: 
+ *    1 - Virtual Key Code (BYTE).
+ *    2 - Key Up flag (Logical: .T. for release, .F. for press).
+ * Logic: Automatically maps the virtual key to a hardware scan code.
  */
 HB_FUNC( KEYBD_EVENT )
 {
-   UINT  scan = MapVirtualKey( hmg_par_UINT( 1 ), 0 );
+   BYTE  bVk = hmg_par_BYTE( 1 );
+   BOOL  bUp = hb_parl( 2 );
+   BYTE  scan = ( BYTE ) MapVirtualKey( bVk, 0 );
 
-   keybd_event( hmg_par_BYTE( 1 ), ( BYTE ) scan, hb_parl( 2 ) ? KEYEVENTF_KEYUP : 0, 0 );
+   keybd_event( bVk, scan, bUp ? KEYEVENTF_KEYUP : 0, 0 );
 }
 
 /*
- *  HB_FUNC( INSERTVKEY )
- *
- *  Inserts a virtual key press event.
- *
- *  Parameters:
- *      1: <bVk> - The virtual-key code of the key to press.
- *
- *  Returns:
- *      None.
+ * HB_FUNC( INSERTVKEY )
+ * Purpose: Simulates a single key press (down event).
+ * Parameters: 1 - Virtual Key Code (BYTE).
  */
 HB_FUNC( INSERTVKEY )
 {
@@ -294,196 +297,160 @@ HB_FUNC( INSERTVKEY )
 }
 
 /*
- *  HB_FUNC( _HMG_SETVSCROLLVALUE )
- *
- *  Sets the vertical scroll bar position.
- *
- *  Parameters:
- *      1: <hWnd> - The handle of the window.
- *      2: <nPos> - The new scroll position.
- *
- *  Returns:
- *      None.
+ * HB_FUNC( _HMG_SETVSCROLLVALUE )
+ * Purpose: Programmatically sets the vertical scroll position of a window.
+ * Parameters: 1 - Window Handle (HWND), 2 - Position (Numeric).
+ * Logic: Sends a WM_VSCROLL message with SB_THUMBPOSITION to force the update.
  */
 HB_FUNC( _HMG_SETVSCROLLVALUE )
 {
-   SendMessage( hmg_par_raw_HWND( 1 ), WM_VSCROLL, MAKEWPARAM( SB_THUMBPOSITION, hb_parni( 2 ) ), 0 );
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
+   int   nPos = hb_parni( 2 );
+
+   if( hWnd )
+   {
+      SendMessage( hWnd, WM_VSCROLL, MAKEWPARAM( SB_THUMBPOSITION, nPos ), 0 );
+   }
 }
 
 /*
- *  HB_FUNC( _HMG_SETHSCROLLVALUE )
- *
- *  Sets the horizontal scroll bar position.
- *
- *  Parameters:
- *      1: <hWnd> - The handle of the window.
- *      2: <nPos> - The new scroll position.
- *
- *  Returns:
- *      None.
+ * HB_FUNC( _HMG_SETHSCROLLVALUE )
+ * Purpose: Programmatically sets the horizontal scroll position of a window.
+ * Parameters: 1 - Window Handle (HWND), 2 - Position (Numeric).
  */
 HB_FUNC( _HMG_SETHSCROLLVALUE )
 {
-   SendMessage( hmg_par_raw_HWND( 1 ), WM_HSCROLL, MAKEWPARAM( SB_THUMBPOSITION, hb_parni( 2 ) ), 0 );
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
+   int   nPos = hb_parni( 2 );
+
+   if( hWnd )
+   {
+      SendMessage( hWnd, WM_HSCROLL, MAKEWPARAM( SB_THUMBPOSITION, nPos ), 0 );
+   }
 }
 
 /*
- *  HB_FUNC( SHOWCARET )
- *
- *  Displays the caret (cursor) in a window.
- *
- *  Parameters:
- *      1: <hWnd> - The handle of the window.
- *
- *  Returns:
- *      .T. (TRUE) on success, .F. (FALSE) on failure.
+ * Caret Management Functions
+ * Purpose: Control the visibility and creation of the text insertion point (caret).
  */
+
 HB_FUNC( SHOWCARET )
 {
    hb_retl( ShowCaret( hmg_par_raw_HWND( 1 ) ) );
 }
 
-/*
- *  HB_FUNC( HIDECARET )
- *
- *  Hides the caret (cursor) in a window.
- *
- *  Parameters:
- *      1: <hWnd> - The handle of the window.
- *
- *  Returns:
- *      .T. (TRUE) on success, .F. (FALSE) on failure.
- */
 HB_FUNC( HIDECARET )
 {
    hb_retl( HideCaret( hmg_par_raw_HWND( 1 ) ) );
 }
 
-/*
- *  HB_FUNC( DESTROYCARET )
- *
- *  Destroys the caret.
- *
- *  Parameters:
- *      None.
- *
- *  Returns:
- *      .T. (TRUE) on success, .F. (FALSE) on failure.
- */
 HB_FUNC( DESTROYCARET )
 {
    hb_retl( DestroyCaret() );
 }
 
-/*
- *  HB_FUNC( CREATECARET )
- *
- *  Creates a caret.
- *
- *  Parameters:
- *      1: <hWnd> - The handle of the window.
- *      2: <hBitmap> - The handle of the bitmap for the caret (or NULL for a solid block).
- *      3: <nWidth> - The width of the caret.
- *      4: <nHeight> - The height of the caret.
- *
- *  Returns:
- *      .T. (TRUE) on success, .F. (FALSE) on failure.
- */
 HB_FUNC( CREATECARET )
 {
    hb_retl( CreateCaret( hmg_par_raw_HWND( 1 ), hmg_par_raw_HBITMAP( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
 }
 
 /*
- *  HB_FUNC( CHANGESTYLE )
- *
- *  Changes the style of a window.
- *
- *  Parameters:
- *      1: <hWnd> - The handle of the window.
- *      2: <dwAdd> - Style bits to add.
- *      3: <dwRemove> - Style bits to remove.
- *      4: <lExStyle> - .T. (TRUE) for extended style, .F. (FALSE) for normal style.
- *
- *  Returns:
- *      The previous style of the window.
+ * HB_FUNC( CHANGESTYLE )
+ * Purpose: Dynamically adds or removes window styles (GWL_STYLE or GWL_EXSTYLE).
+ * Parameters: 
+ *    1 - Window Handle (HWND).
+ *    2 - Styles to add (LONG_PTR).
+ *    3 - Styles to remove (LONG_PTR).
+ *    4 - Extended Style flag (Logical: .T. for EXSTYLE, .F. for STYLE).
+ * Returns: The previous style value.
+ * Logic: Uses SetWindowLongPtr for compatibility. Calls SetWindowPos with 
+ * SWP_FRAMECHANGED to force Windows to recalculate the non-client area (borders).
  */
 HB_FUNC( CHANGESTYLE )
 {
    HWND     hWnd = hmg_par_raw_HWND( 1 );
    LONG_PTR dwAdd = hmg_par_raw_LONG_PTR( 2 );
    LONG_PTR dwRemove = hmg_par_raw_LONG_PTR( 3 );
-   int      iStyle = hb_parl( 4 ) ? GWL_EXSTYLE : GWL_STYLE;               // Determine style type
-   LONG_PTR dwStyle, dwNewStyle;
+   int      iIndex = hb_parl( 4 ) ? GWL_EXSTYLE : GWL_STYLE;
 
-   dwStyle = GetWindowLongPtr( hWnd, iStyle );
-   dwNewStyle = ( dwStyle & ( ~dwRemove ) ) | dwAdd;                       // Calculate new style by adding and removing styles
-   HB_RETNL( ( LONG_PTR ) SetWindowLongPtr( hWnd, iStyle, dwNewStyle ) );  // Apply new style
-   SetWindowPos( hWnd, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER ); // Update window style
+   LONG_PTR dwOld = GetWindowLongPtr( hWnd, iIndex );
+   LONG_PTR dwNew = ( dwOld &~dwRemove ) | dwAdd;
+
+   HB_RETNL( ( LONG_PTR ) SetWindowLongPtr( hWnd, iIndex, dwNew ) );
+
+   // Force the window to refresh its frame to reflect style changes.
+   SetWindowPos( hWnd, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER );
 }
 
 /*
- *  HB_FUNC( MOVEBTNTEXTBOX )
- *
- *  Repositions and resizes a text box and associated buttons.
- *
- *  Parameters:
- *      1: <hEdit> - The handle of the text box.
- *      2: <hBtn1> - The handle of the first button.
- *      3: <hBtn2> - The handle of the second button (optional).
- *      4: <fBtn2> - .T. (TRUE) if a second button is present, .F. (FALSE) otherwise.
- *      5: <BtnWidth> - The desired width of the buttons.
- *      6: <width> - The total width of the area.
- *      7: <height> - The total height of the area.
- *
- *  Returns:
- *      None.
+ * HB_FUNC( MOVEBTNTEXTBOX )
+ * Purpose: Internal HMG helper to position buttons inside or adjacent to a textbox.
+ * Parameters:
+ *    1 - Edit Control Handle (HWND).
+ *    2 - Button 1 Handle (HWND).
+ *    3 - Button 2 Handle (HWND).
+ *    4 - Button 2 Visibility (Logical).
+ *    5 - Button Width (Numeric).
+ *    6 - Total Width (Numeric).
+ *    7 - Total Height (Numeric).
+ * Logic: Calculates the layout for controls like DatePickers or Lookup boxes where 
+ * buttons are embedded at the end of the text entry area.
  */
 HB_FUNC( MOVEBTNTEXTBOX )
 {
-   HWND  hedit = hmg_par_raw_HWND( 1 );
+   HWND  hEdit = hmg_par_raw_HWND( 1 );
    HWND  hBtn1 = hmg_par_raw_HWND( 2 );
    HWND  hBtn2 = hmg_par_raw_HWND( 3 );
-   BOOL  fBtn2 = hb_parl( 4 );   // Flag indicating if a second button is used
-   int   BtnWidth = hb_parni( 5 );
-   int   BtnWidth2;
-   int   width = hb_parni( 6 );
-   int   height = hb_parni( 7 );
+
+   BOOL  fBtn2 = hb_parl( 4 );
+   int   nBtnW = hb_parni( 5 );
+   int   nWidth = hb_parni( 6 );
+   int   nHeight = hb_parni( 7 );
+
    BOOL  fBtns = ( hb_parnl( 2 ) > 0 );
+   int   nMinBtn = GetSystemMetrics( SM_CYSIZE ) - 1;
+   int   nBtnW2;
 
-   BtnWidth = ( BtnWidth >= GetSystemMetrics( SM_CYSIZE ) ? BtnWidth : GetSystemMetrics( SM_CYSIZE ) - 1 );          // Minimum button width
-   BtnWidth = fBtns ? BtnWidth : 0;
-   BtnWidth2 = fBtn2 ? BtnWidth : 0;
+   // Ensure button width meets minimum system standards for usability.
+   if( nBtnW < nMinBtn )
+   {
+      nBtnW = nMinBtn;
+   }
 
-   SetWindowPos( hedit, NULL, 0, 0, width, height, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER );  // Resize text box
+   if( !fBtns )
+   {
+      nBtnW = 0;
+   }
+
+   nBtnW2 = fBtn2 ? nBtnW : 0;
+
+   // Resize the main edit control.
+   SetWindowPos( hEdit, NULL, 0, 0, nWidth, nHeight, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER );
+
+   // Position the buttons at the right edge of the textbox.
    if( fBtns )
    {
-      SetWindowPos( hBtn1, NULL, width - BtnWidth - 4, -1, BtnWidth, height - 2, SWP_NOACTIVATE | SWP_NOZORDER );    // Position first button
+      SetWindowPos( hBtn1, NULL, nWidth - nBtnW - 4, -1, nBtnW, nHeight - 2, SWP_NOACTIVATE | SWP_NOZORDER );
+
       if( fBtn2 )
       {
-         SetWindowPos( hBtn2, NULL, width - BtnWidth - BtnWidth2 - 4, -1, BtnWidth2, height - 2, SWP_NOACTIVATE | SWP_NOZORDER );   // Position second button if needed
+         SetWindowPos( hBtn2, NULL, nWidth - nBtnW - nBtnW2 - 4, -1, nBtnW2, nHeight - 2, SWP_NOACTIVATE | SWP_NOZORDER );
       }
    }
 }
 
-// Compatibility functions for Harbour/xHarbour, handling date and string operations
+/* ------------------------------------------------------------------------ */
+/* Compatibility (Date / String)                                            */
+/* ------------------------------------------------------------------------ */
+
 #if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0 < 0x030200 )
 #include "hbapiitm.h"
 #include "hbapicdp.h"
 #include "hbapierr.h"
 
 /*
- *  HB_FUNC( HB_DATE )
- *
- *  Creates a Harbour date value from year, month, and day.
- *
- *  Parameters:
- *      1: <nYear> - The year.
- *      2: <nMonth> - The month (1-12).
- *      3: <nDay> - The day (1-31).
- *
- *  Returns:
- *      A Harbour date value.
+ * HB_FUNC( HB_DATE )
+ * Purpose: Legacy wrapper to return a Date type from Year, Month, Day.
  */
 HB_FUNC( HB_DATE )
 {
@@ -491,33 +458,28 @@ HB_FUNC( HB_DATE )
 }
 
 #if !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 < 0x030200 )
-#define hb_cdppage   hb_vmCDP // Define code page pointer
+#define hb_cdppage   hb_vmCDP
 #endif
 
 /*
- *  HB_FUNC( HB_LEFTEQI )
- *
- *  Case-insensitive comparison of the left portion of two strings.
- *
- *  Parameters:
- *      1: <pItem1> - The first string.
- *      2: <pItem2> - The second string.
- *
- *  Returns:
- *      .T. (TRUE) if the left portion of the first string equals the second string (case-insensitive), .F. (FALSE) otherwise.
+ * HB_FUNC( HB_LEFTEQI )
+ * Purpose: Case-insensitive comparison of the start of two strings.
+ * Parameters: 1 - String A, 2 - String B.
+ * Returns: Logical .T. if String A starts with String B (case-insensitive).
  */
 HB_FUNC( HB_LEFTEQI )
 {
-   PHB_ITEM pItem1 = hb_param( 1, HB_IT_STRING );
-   PHB_ITEM pItem2 = hb_param( 2, HB_IT_STRING );
+   PHB_ITEM p1 = hb_param( 1, HB_IT_STRING );
+   PHB_ITEM p2 = hb_param( 2, HB_IT_STRING );
 
-   if( pItem1 && pItem2 )
+   if( p1 && p2 )
    {
-      hb_retl( hb_cdpicmp( hb_itemGetCPtr( pItem1 ), hb_itemGetCLen( pItem1 ), hb_itemGetCPtr( pItem2 ), hb_itemGetCLen( pItem2 ), hb_cdppage(), HB_FALSE ) == 0 );
+      // Performs a case-insensitive comparison using the current code page.
+      hb_retl( hb_cdpicmp( hb_itemGetCPtr( p1 ), hb_itemGetCLen( p1 ), hb_itemGetCPtr( p2 ), hb_itemGetCLen( p2 ), hb_cdppage(), HB_FALSE ) == 0 );
    }
    else
    {
-      hb_errRT_BASE_SubstR( EG_ARG, 1071, NULL, HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );   // Raise error if arguments are invalid
+      hb_errRT_BASE_SubstR( EG_ARG, 1071, NULL, HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
    }
 }
 #endif

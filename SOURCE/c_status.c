@@ -42,654 +42,608 @@
 
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
-
  ---------------------------------------------------------------------------*/
-#define _WIN32_IE 0x0501                  // Sets the minimum required version of Internet Explorer to 5.01 for compatibility.
-#include <mgdefs.h>                       // Includes necessary definitions and macros.
-#include <commctrl.h>                     // Includes common controls header for status bar and tooltips.
-#include "hbapierr.h"                     // Include Harbour error handling API
+
+#define _WIN32_IE 0x0501
+
+#include <mgdefs.h>
+#include <commctrl.h>
+#include "hbapierr.h"
+
+// Maximum number of segments (parts) allowed in a single status bar.
+// This limit prevents stack overflow and aligns with common UI design constraints.
+#define MAX_PARTS 40
+
+// Standard width reserved for the sizing grip (the triangle at the bottom-right).
+// Used to ensure the last part doesn't overlap the resize handle.
+#define SIZE_GRIP_WIDTH 21
+
+// Internal padding used when calculating part distributions to ensure visual spacing.
+#define PART_PADDING 8
+
+/* 
+ * Unicode/ANSI Compatibility Layer
+ * -------------------------------
+ * These macros and function prototypes facilitate the conversion between Harbour's 
+ * internal string representation and the Windows API requirements.
+ * In UNICODE builds, Harbour strings (usually UTF-8 or ANSI) are converted to 
+ * Wide characters (LPWSTR) before being passed to the Win32 API.
+ */
 #ifdef UNICODE
-LPWSTR      AnsiToWide( LPCSTR );         // Converts ANSI string to Unicode.
-LPSTR       WideToAnsi( LPWSTR );         // Converts Unicode string to ANSI.
+   LPWSTR   AnsiToWide( LPCSTR );
+   LPSTR    WideToAnsi( LPWSTR );
+   #define HB_TEXT( x ) ( ( x ) ? AnsiToWide( x ) : NULL )
+   #define HB_TEXT_FREE( x )  if( x ) hb_xfree( x )
+#else
+   #define HB_TEXT( x ) ( x )
+   #define HB_TEXT_FREE( x )
 #endif
 
-// Function prototypes for obtaining instances and resources.
 HINSTANCE   GetInstance( void );
 HINSTANCE   GetResources( void );
 
-/*
- * FUNCTION:  INITMESSAGEBAR
- *
- *  Description:
- *      Initializes a status bar with a single section.  This function creates
- *      a status bar window and sets it up with one part, effectively making
- *      it a simple message bar.
- *
- *  Parameters:
- *      1: Parent window handle (HWND). The status bar will be created as a child of this window.
- *      2: Status bar ID (numeric).  An identifier for the status bar control.
- *
- *  Returns:
- *      HWND: The handle to the created status bar window.  Returns NULL if the
- *            status bar creation fails.
- *
- *  Purpose:
- *      This function provides a basic status bar for displaying simple messages.
- *      It's a starting point for more complex status bar configurations.
+/* 
+ * LoadStatusIcon
+ * Internal helper function to load an icon for a status bar segment.
+ * 
+ * Parameters:
+ *    - name: The resource name or file path of the icon.
+ *    - cx, cy: Desired dimensions (usually matched to status bar height).
+ * 
+ * Logic:
+ *    1. Attempts to load from the application's compiled resources.
+ *    2. If not found, attempts to load from an external .ico file.
+ */
+static HICON LoadStatusIcon( LPCTSTR name, int cx, int cy )
+{
+   HICON hIcon = NULL;
+   if( name && *name )
+   {
+      // Try loading from internal resources first (standard HMG behavior)
+      hIcon = ( HICON ) LoadImage( GetResources(), name, IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR );
+      if( !hIcon )
+      {
+         // Fallback to external file if resource loading fails
+         hIcon = ( HICON ) LoadImage( NULL, name, IMAGE_ICON, cx, cy, LR_LOADFROMFILE | LR_DEFAULTCOLOR );
+      }
+   }
+
+   return hIcon;
+}
+
+/* 
+ * GetStatusParts
+ * Retrieves the current right-edge coordinates of all segments in the status bar.
+ * 
+ * Returns: The number of parts currently existing.
+ */
+static int GetStatusParts( HWND hWndSB, int *parts )
+{
+   return ( int ) SendMessage( hWndSB, SB_GETPARTS, MAX_PARTS, ( LPARAM ) parts );
+}
+
+/* 
+ * HasSizeGrip
+ * Checks if the parent window has the WS_SIZEBOX style.
+ * 
+ * Reasoning: If the parent is resizable, the status bar automatically displays 
+ * a sizing grip. We need to know this to adjust the width of the last segment.
+ */
+static BOOL HasSizeGrip( HWND hWndParent )
+{
+   return hWndParent && ( GetWindowLong( hWndParent, GWL_STYLE ) & WS_SIZEBOX );
+}
+
+/* 
+ * HB_FUNC( INITMESSAGEBAR )
+ * Purpose: Initializes the main Status Bar container for a window.
+ * 
+ * Parameters:
+ *    1: HWND - Handle of the parent window.
+ *    2: INT  - Control ID for the status bar.
+ * 
+ * Returns: HWND of the created status bar.
  */
 HB_FUNC( INITMESSAGEBAR )
 {
-   HWND  hWndSB;                          // Handle for the status bar window.
-
-   // Creates a visible status bar window as a child of the specified parent.
-   hWndSB = CreateStatusWindow( WS_CHILD | WS_VISIBLE | SBT_TOOLTIPS, NULL, hmg_par_raw_HWND( 1 ), hb_parni( 2 ) );
+   // Create the status window. SBT_TOOLTIPS is included to support per-part tooltips.
+   HWND  hWndSB = CreateStatusWindow( WS_CHILD | WS_VISIBLE | SBT_TOOLTIPS, NULL, hmg_par_raw_HWND( 1 ), hb_parni( 2 ) );
 
    if( hWndSB )
    {
-      int   ptArray[1] = { -1 };
-
-      // Sets the status bar to one section.
-      SendMessage( hWndSB, SB_SETPARTS, 1, ( LPARAM ) ptArray );
+      // Initialize with a single part spanning the full width (-1).
+      int   parts[1] = { -1 };
+      SendMessage( hWndSB, SB_SETPARTS, 1, ( LPARAM ) parts );
    }
 
-   hmg_ret_raw_HWND( hWndSB );            // Returns the status bar handle.
+   hmg_ret_raw_HWND( hWndSB );
 }
 
-/*
- * FUNCTION: INITITEMBAR
- *
- *  Description:
- *      Initializes a customized item bar (status bar) with icons and text.
- *      This function allows for creating a status bar with multiple sections,
- *      each potentially containing an icon, text, and tooltip.
- *
- *  Parameters:
- *      1: Status bar window handle (HWND). The handle of the status bar to initialize.
- *      2: Text for the item (character). The text to display in the status bar section.
- *      3: (Unused)
- *      4: Space between items (numeric).  The amount of space to leave between sections.
- *      5: Initialize from existing parts (logical).  If .T., the function will add a new part to the existing status bar. If .F., it will create a new status bar.
- *      6: Icon name (character). The name of the icon resource or the path to an icon file.
- *      7: Tooltip text (character). The text to display as a tooltip when the mouse hovers over the item.
- *      8: Display flags (numeric).  Flags to control the appearance of the item (e.g., SBT_POPOUT, SBT_NOBORDERS).
- *
- *  Returns:
- *      Numeric: The updated number of parts in the status bar.
- *
- *  Purpose:
- *      This function provides a way to create a more sophisticated status bar
- *      with multiple interactive elements, such as icons and tooltips.  It's
- *      useful for providing detailed status information to the user.
+/* 
+ * HB_FUNC( INITITEMBAR )
+ * Purpose: Adds or configures a specific segment (part) within the status bar.
+ * 
+ * Parameters:
+ *    1: HWND    - Status Bar handle.
+ *    2: STRING  - Text to display in the part.
+ *    3: INT     - Width (legacy/unused in some contexts).
+ *    4: INT     - Space/Width for the new part.
+ *    5: LOGICAL - Append mode (.T. to add to existing, .F. to reset/overwrite).
+ *    6: STRING  - Icon name or path.
+ *    7: STRING  - Tooltip text.
+ *    8: INT     - Style flags (1: Raised/Popout, 2: Flat/No Borders).
+ * 
+ * Returns: INT - The total number of parts now in the bar.
  */
 HB_FUNC( INITITEMBAR )
 {
    HWND     hWndSB = hmg_par_raw_HWND( 1 );
    HWND     hWndParent = GetParent( hWndSB );
-   DWORD    Style = hWndParent ? GetWindowLong( hWndParent, GWL_STYLE ) : 0;
-   int      n, nSpace = hb_parni( 4 );
-   int      nrOfParts = hb_parnl( 5 ) ? ( int ) SendMessage( hWndSB, SB_GETPARTS, 40, 0 ) : 0;
-   int      ptArray[40] = { 0 };
+   int      nSpace = hb_parni( 4 );
+   BOOL     lAppend = hb_parnl( 5 );
+   int      parts[MAX_PARTS];
+   int      nParts;
+   int      i;
 #ifndef UNICODE
-   LPCSTR   lpText = hb_parc( 2 ), lpIconName = hb_parc( 6 ), lpTipText = hb_parc( 7 );
+   LPCSTR   text, iconName, tip;
 #else
-   LPWSTR   lpText = AnsiToWide( hb_parc( 2 ) ), lpIconName = AnsiToWide( hb_parc( 6 ) ), lpTipText = AnsiToWide( hb_parc( 7 ) );
+   LPWSTR   text, iconName, tip;
 #endif
-   RECT     rect;
-   WORD     displayFlags;
+   RECT     rc;
+   WORD     flags = 0;
 
-   if( hb_parnl( 5 ) )
+   // Initialize parts array to zero.
+   for( i = 0; i < MAX_PARTS; i++ )
    {
-      SendMessage( hWndSB, SB_GETPARTS, 40, ( LPARAM ) ptArray );
+      parts[i] = 0;
    }
 
-   nrOfParts++;
+   // If appending, we retrieve existing part boundaries to calculate new offsets.
+   nParts = lAppend ? GetStatusParts( hWndSB, parts ) : 0;
 
-   GetClientRect( hWndSB, &rect );
+   // Convert Harbour strings to appropriate C strings (ANSI or Wide).
+   text = HB_TEXT( hb_parc( 2 ) );
+   iconName = HB_TEXT( hb_parc( 6 ) );
+   tip = HB_TEXT( hb_parc( 7 ) );
 
-   if( !hb_parnl( 5 ) )
+   GetClientRect( hWndSB, &rc );
+
+   if( lAppend )
    {
-      ptArray[nrOfParts - 1] = rect.right;
+      SendMessage( hWndSB, SB_GETPARTS, 40, ( LPARAM ) parts );
+   }
+
+   nParts++;
+
+   if( !lAppend )
+   {
+      // Single part mode: The part spans the entire width of the control.
+      parts[nParts - 1] = rc.right;
    }
    else
    {
-      for( n = 0; n < nrOfParts - 1; n++ )
+      /* 
+       * Logic for Multi-Part Bars:
+       * When adding a new part, we shift existing parts to the left to make room.
+       * This implementation assumes parts are added from right-to-left or 
+       * that the new part takes precedence in the layout.
+       */
+      for( i = 0; i < nParts - 1; i++ )
       {
-         ptArray[n] -= nSpace - 8;
+         parts[i] -= nSpace - PART_PADDING;
       }
 
-      // Adjusts the first section for the size grip if present.
-      if( Style & WS_SIZEBOX )
+      // Adjust for the size grip if this is the second part being added.
+      if( HasSizeGrip( hWndParent ) && nParts == 2 )
       {
-         if( nrOfParts == 2 )
-         {
-            ptArray[0] -= 21;
-         }
+         parts[0] -= SIZE_GRIP_WIDTH;
       }
 
-      ptArray[nrOfParts - 1] = ( Style & WS_SIZEBOX ) ? rect.right - rect.bottom - rect.top + 2 : rect.right;
+      // The last part's right edge is anchored to the window edge,
+      // minus the height of the bar to avoid the sizing grip area.
+      parts[nParts - 1] = HasSizeGrip( hWndParent ) ? rc.right - rc.bottom - rc.top + 2 : rc.right;
    }
 
-   SendMessage( hWndSB, SB_SETPARTS, nrOfParts, ( LPARAM ) ptArray );
+   // Apply the new partitioning to the control.
+   SendMessage( hWndSB, SB_SETPARTS, nParts, ( LPARAM ) parts );
 
-   if( lpIconName && *lpIconName )
+   // Determine visual style based on the 8th parameter.
+   switch( hb_parni( 8 ) )
    {
-      int   cx = rect.bottom - rect.top - 4, cy = cx;
-      HICON hIcon = ( HICON ) LoadImage( GetResources(), lpIconName, IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR );
-      if( !hIcon )
-      {
-         hIcon = ( HICON ) LoadImage( NULL, lpIconName, IMAGE_ICON, cx, cy, LR_LOADFROMFILE | LR_DEFAULTCOLOR );
-      }
+      case 1:
+         flags = SBT_POPOUT;           // Raised appearance
+         break;
 
+      case 2:
+         flags = SBT_NOBORDERS;        // Flat appearance
+         break;
+   }
+
+   // Set the text for the newly created part.
+   if( text )
+   {
+      SendMessage( hWndSB, SB_SETTEXT, ( nParts - 1 ) | flags, ( LPARAM ) text );
+   }
+
+   // Load and set the icon if provided.
+   if( iconName && *iconName )
+   {
+      // Calculate icon size based on status bar height (minus small padding).
+      int   cy = rc.bottom - rc.top - 4;
+      HICON hIcon = LoadStatusIcon( iconName, cy, cy );
       if( hIcon )
       {
-         SendMessage( hWndSB, SB_SETICON, nrOfParts - 1, ( LPARAM ) hIcon );
+         SendMessage( hWndSB, SB_SETICON, nParts - 1, ( LPARAM ) hIcon );
       }
    }
 
-   displayFlags = ( WORD ) ( hb_parni( 8 ) == 1 ? SBT_POPOUT : ( hb_parni( 8 ) == 2 ? SBT_NOBORDERS : 0 ) );
-
-   if( lpText )
+   // Set the tooltip for the specific part.
+   if( tip )
    {
-      SendMessage( hWndSB, SB_SETTEXT, ( nrOfParts - 1 ) | displayFlags, ( LPARAM ) lpText );
+      SendMessage( hWndSB, SB_SETTIPTEXT, nParts - 1, ( LPARAM ) tip );
    }
 
-   if( lpTipText )
-   {
-      SendMessage( hWndSB, SB_SETTIPTEXT, nrOfParts - 1, ( LPARAM ) lpTipText );
-   }
+   // Clean up allocated memory for Unicode strings.
+   HB_TEXT_FREE( text );
+   HB_TEXT_FREE( iconName );
+   HB_TEXT_FREE( tip );
 
-#ifdef UNICODE
-   hb_xfree( lpText );
-   hb_xfree( lpIconName );
-   hb_xfree( lpTipText );
-#endif
-   hb_retni( nrOfParts );
+   hb_retni( nParts );
 }
 
-/*
- * FUNCTION: SETITEMBAR
- *
- *  Description:
- *      Updates the text in a specified part of the item bar (status bar).
- *      This function allows you to change the text displayed in a specific
- *      section of the status bar.
- *
- *  Parameters:
- *      1: Status bar window handle (HWND). The handle of the status bar to update.
- *      2: Text to set (character). The new text to display in the specified section.
- *      3: Item position (numeric). The index of the section to update (1-based).
- *
- *  Returns:
- *      None.
- *
- *  Purpose:
- *      This function is useful for dynamically updating the status bar with
- *      information that changes during the application's execution.
+/* 
+ * HB_FUNC( SETITEMBAR )
+ * Purpose: Updates the text of an existing status bar segment.
+ * 
+ * Parameters:
+ *    1: HWND   - Status Bar handle.
+ *    2: STRING - New text.
+ *    3: INT    - Part index (1-based).
  */
 HB_FUNC( SETITEMBAR )
 {
-   HWND     hWnd = hmg_par_raw_HWND( 1 ); // Handle for the status bar.
-   int      iPos = hb_parni( 3 ) - 1;     // Position of the item to update.
-   WORD     nFlags;                 // Current display flags for the text.
+   HWND     hWnd = hmg_par_raw_HWND( 1 );
+   int      iPos = hb_parni( 3 ) - 1;  // Convert Harbour 1-based index to C 0-based.
 #ifndef UNICODE
-   LPCSTR   lpText = hb_parc( 2 );  // ANSI text to set.
+   LPCSTR   lpText = HB_TEXT( hb_parc( 2 ) );
 #else
-   LPWSTR   lpText = AnsiToWide( ( char * ) hb_parc( 2 ) );             // Convert to Unicode text if needed.
+   LPWSTR   lpText = HB_TEXT( hb_parc( 2 ) );
 #endif
 
-   // Retrieve the current text length and style flags for the part.
-   nFlags = HIWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, iPos, 0 ) );
-   SendMessage( hWnd, SB_SETTEXT, iPos | nFlags, ( LPARAM ) lpText );   // Update the text.
-#ifdef UNICODE
-   hb_xfree( lpText );                 // Free allocated memory if using Unicode.
-#endif
+   /* 
+    * Design Decision:
+    * We retrieve the existing flags (like SBT_POPOUT) from the current text 
+    * to ensure that updating the text doesn't reset the visual style of the part.
+    */
+   WORD     flags = HIWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, iPos, 0 ) );
+
+   SendMessage( hWnd, SB_SETTEXT, iPos | flags, ( LPARAM ) lpText );
+   HB_TEXT_FREE( lpText );
 }
 
-/*
- * FUNCTION: GETITEMBAR
- *
- *  Description:
- *      Retrieves and returns the text of a specified part of the item bar (status bar).
- *      This function allows you to read the text displayed in a specific
- *      section of the status bar.
- *
- *  Parameters:
- *      1: Status bar window handle (HWND). The handle of the status bar to query.
- *      2: Item position (numeric). The index of the section to retrieve text from (1-based).
- *
- *  Returns:
- *      Character: The text currently displayed in the specified section of the status bar.
- *
- *  Purpose:
- *      This function is useful for retrieving the current status information
- *      displayed in the status bar, allowing other parts of the application
- *      to react to changes in the status.
+/* 
+ * HB_FUNC( GETITEMBAR )
+ * Purpose: Retrieves the text currently displayed in a status bar segment.
+ * 
+ * Parameters:
+ *    1: HWND - Status Bar handle.
+ *    2: INT  - Part index (1-based).
+ * 
+ * Returns: STRING - The text content of the segment.
  */
 HB_FUNC( GETITEMBAR )
 {
-#ifdef UNICODE
-   LPSTR pStr;
-#endif
-   HWND  hWnd = hmg_par_raw_HWND( 1 ); // Handle for the status bar.
-   int   iPos = hb_parni( 2 ) - 1;     // Position of the item to retrieve.
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
+   int   iPos = hb_parni( 2 ) - 1;
+
+   // First, determine the length of the text to allocate a buffer.
    int   nLen = LOWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, iPos, 0 ) ) + 1;
+   TCHAR *buffer = ( TCHAR * ) hb_xgrab( nLen * sizeof( TCHAR ) );
 
-   // Allocate memory based on text length and retrieve the text.
-   TCHAR *cString = ( TCHAR * ) hb_xgrab( nLen * sizeof( TCHAR ) );
-   SendMessage( hWnd, SB_GETTEXT, iPos, ( LPARAM ) cString );
+   SendMessage( hWnd, SB_GETTEXT, iPos, ( LPARAM ) buffer );
 
-#ifndef UNICODE
-   hb_retc( cString );                 // Return the ANSI string directly.
+#ifdef UNICODE
+   // Convert Wide string back to ANSI for Harbour if necessary.
+   {
+      LPSTR ansi = WideToAnsi( buffer );
+      hb_retc( ansi );
+      hb_xfree( ansi );
+   }
+
 #else
-   pStr = WideToAnsi( cString );       // Convert to ANSI and return.
-   hb_retc( pStr );
-   hb_xfree( pStr );                   // Free memory after conversion.
+   hb_retc( buffer );
 #endif
-   hb_xfree( cString );                // Free the initial memory allocation.
+   hb_xfree( buffer );
 }
 
-/*
- * FUNCTION: REFRESHITEMBAR
- *
- *  Description:
- *      Refreshes the layout and dimensions of parts in the item bar (status bar).
- *      This function recalculates and updates the size and position of each
- *      section in the status bar, ensuring that they are correctly displayed,
- *      especially after resizing or other layout changes.
- *
- *  Parameters:
- *      1: Status bar window handle (HWND). The handle of the status bar to refresh.
- *      2: Size (numeric). The new size for the first part of the status bar.
- *
- *  Returns:
- *      Numeric: The updated number of parts in the status bar.
- *
- *  Purpose:
- *      This function is essential for maintaining the correct appearance of
- *      the status bar when the application window is resized or when the
- *      content of the status bar changes dynamically.
- *      It ensures that the status bar sections are properly aligned and
- *      that the text and icons are displayed correctly.
+/* 
+ * HB_FUNC( REFRESHITEMBAR )
+ * Purpose: Recalculates part widths when the parent window is resized.
+ * 
+ * Parameters:
+ *    1: HWND - Status Bar handle.
+ *    2: INT  - Minimum size for the first part (prevents it from disappearing).
+ * 
+ * Logic:
+ *    This function calculates a 'delta' (the change in window width) and 
+ *    applies it to the segments. It ensures the rightmost part stays 
+ *    anchored to the right edge while respecting the sizing grip.
  */
 HB_FUNC( REFRESHITEMBAR )
 {
    HWND  hWndSB = hmg_par_raw_HWND( 1 );
-   int   n, size = hb_parni( 2 );
-   int   nrOfParts = ( int ) SendMessage( hWndSB, SB_GETPARTS, 40, 0 );
-   int   ptArray[40];
-   RECT  rect;
    HWND  hWndParent = GetParent( hWndSB );
-   DWORD Style = hWndParent ? GetWindowLong( hWndParent, GWL_STYLE ) : 0;
-   int   nDev;
-   BOOL  s = TRUE;                     // Indicates if adjustment is feasible.
-   SendMessage( hWndSB, SB_GETPARTS, 40, ( LPARAM ) ptArray );
+   int   size = hb_parni( 2 );
+   int   parts[MAX_PARTS];
+   int   nParts = GetStatusParts( hWndSB, parts );
+   RECT  rc;
+   int   delta;
+   BOOL  propagate = TRUE;
+   int   i;
 
-   GetClientRect( hWndSB, &rect );
+   GetClientRect( hWndSB, &rc );
 
-   // Calculates required adjustment based on window state and size.
-   if( ( nrOfParts == 1 ) || ( IsZoomed( hWndParent ) || !( Style & WS_SIZEBOX ) ) )
-   {
-      nDev = rect.right - ptArray[nrOfParts - 1];
-   }
-   else
-   {
-      nDev = rect.right - ptArray[nrOfParts - 1] - rect.bottom - rect.top + 2;
-   }
+   /* 
+    * Calculate Delta:
+    * If the window is maximized or has no size grip, delta is simply the 
+    * difference between the client area and the last part's edge.
+    * Otherwise, we subtract the size grip area from the calculation.
+    */
+   delta = ( nParts == 1 || IsZoomed( hWndParent ) || !HasSizeGrip( hWndParent ) ) ? rc.right - parts[nParts - 1] : rc.right - parts[nParts - 1] - rc.bottom - rc.top + 2;
 
-   if( rect.right > 0 )
+   if( rc.right > 0 )
    {
-      for( n = 0; n <= nrOfParts - 1; n++ )
+      for( i = 0; i < nParts; i++ )
       {
-         if( n == 0 )
+         if( i == 0 )
          {
-            if( size >= ptArray[n] && nDev < 0 )
+            // Ensure the first part doesn't shrink below the user-defined minimum.
+            if( size >= parts[i] && delta < 0 )
             {
-               s = FALSE;
+               propagate = FALSE;
             }
             else
             {
-               if( ptArray[n] + nDev < size )
+               if( parts[i] + delta < size )
                {
-                  nDev = size - ptArray[n];
+                  delta = size - parts[i];
                }
 
-               ptArray[n] += nDev;     // Apply adjustment.
+               parts[i] += delta;
             }
          }
-         else if( s )
+         else if( propagate )
          {
-            ptArray[n] += nDev;        // Apply adjustment if s remains true.
+            // Shift subsequent parts by the same delta to maintain relative spacing.
+            parts[i] += delta;
          }
       }
    }
 
-   SendMessage( hWndSB, SB_SETPARTS, nrOfParts, ( LPARAM ) ptArray );   // Update parts with new layout.
-   hb_retni( nrOfParts );                          // Return the updated part count.
+   SendMessage( hWndSB, SB_SETPARTS, nParts, ( LPARAM ) parts );
+   hb_retni( nParts );
 }
 
-/*
- * FUNCTION: KEYTOGGLE
- *
- *  Description:
- *      Toggles the state of a specific key on the keyboard (e.g., Caps Lock, Num Lock).
- *      This function simulates pressing and releasing a key, effectively
- *      changing its state.
- *
- *  Parameters:
- *      1: Key code (WORD). The virtual key code of the key to toggle.
- *
- *  Returns:
- *      None.
- *
- *  Purpose:
- *      This function is useful for programmatically controlling keyboard
- *      settings, such as enabling or disabling Caps Lock or Num Lock.
+/* 
+ * HB_FUNC( KEYTOGGLE )
+ * Purpose: Toggles the state of keyboard keys (Caps Lock, Num Lock, Scroll Lock).
+ * 
+ * Parameters:
+ *    1: WORD - Virtual Key code (e.g., VK_CAPITAL).
+ * 
+ * Side Effects: Updates the system keyboard state buffer.
  */
 HB_FUNC( KEYTOGGLE )
 {
-   BYTE  pBuffer[256];                             // Buffer to hold the keyboard state for each key.
-   WORD  wKey = hmg_par_WORD( 1 );                 // Key code to toggle, passed as a parameter.
-   GetKeyboardState( pBuffer );                    // Retrieves the current state of each key.
+   BYTE  pBuffer[256];
+   WORD  wKey = hmg_par_WORD( 1 );
 
-   // Checks if the specified key is currently "on" (1) or "off" (0).
+   GetKeyboardState( pBuffer );
+
+   // Toggle the low-order bit (0x01) which represents the toggle state.
    if( pBuffer[wKey] & 0x01 )
    {
-      pBuffer[wKey] &= 0xFE;                       // Turns the key "off" by clearing the least significant bit.
+      pBuffer[wKey] &= 0xFE;
    }
    else
    {
-      pBuffer[wKey] |= 0x01;                       // Turns the key "on" by setting the least significant bit.
+      pBuffer[wKey] |= 0x01;
    }
 
-   SetKeyboardState( pBuffer );                    // Updates the keyboard state to reflect the toggle.
+   SetKeyboardState( pBuffer );
 }
 
-/*
- * FUNCTION: KEYTOGGLENT
- *
- *  Description:
- *      Simulates a key press and release for a specified key using keybd_event.
- *      This function provides a more direct way to simulate keyboard input.
- *
- *  Parameters:
- *      1: Key code (BYTE). The virtual key code of the key to simulate.
- *
- *  Returns:
- *      None.
- *
- *  Purpose:
- *      This function is useful for sending specific key presses to the
- *      operating system, which can be used to trigger actions in other
- *      applications or within the current application.
+/* 
+ * HB_FUNC( KEYTOGGLENT )
+ * Purpose: Toggles keyboard keys using simulated hardware events.
+ * 
+ * Reasoning: On Windows NT/2000/XP and later, simulating a key press 
+ * via keybd_event is often more reliable for updating system-wide 
+ * indicator lights than modifying the keyboard state buffer.
  */
 HB_FUNC( KEYTOGGLENT )
 {
-   BYTE  wKey = hmg_par_BYTE( 1 );                 // Key code to simulate, passed as a parameter.
+   BYTE  wKey = hmg_par_BYTE( 1 );
 
-   // Simulates key press with extended key flag.
-   keybd_event( wKey, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0 );
+   // Simulate Key Down
+   keybd_event( wKey, 0x45, KEYEVENTF_EXTENDEDKEY, 0 );
 
-   // Simulates key release with key-up flag.
+   // Simulate Key Up
    keybd_event( wKey, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0 );
 }
 
-/*
- * FUNCTION: SETSTATUSITEMICON
- *
- *  Description:
- *      Sets an icon on a specific item in the status bar.
- *      This function allows you to associate an icon with a particular
- *      section of the status bar, providing a visual indicator of the
- *      status or function of that section.
- *
- *  Parameters:
- *      1: Status bar window handle (HWND). The handle of the status bar to modify.
- *      2: Item position (numeric). The index of the section to set the icon for (1-based).
- *      3: Icon name (character). The name of the icon resource or the path to an icon file.
- *      4: Icon handle (HICON).  Optional. If provided, uses this handle directly instead of loading by name.
- *
- *  Returns:
- *      None.
- *
- *  Purpose:
- *      This function is useful for visually enhancing the status bar and
- *      providing users with a clear understanding of the current state of
- *      different aspects of the application.
- *      For example, it can be used to display an icon indicating the
- *      status of a network connection, the battery level, or the presence
- *      of new messages.
- *
- *  Notes:
- *      The function attempts to load the icon from resources first, and if
- *      that fails, it attempts to load it from a file.
- *      If an icon handle is provided in parameter 4, it is used directly,
- *      bypassing the loading process.
+/* 
+ * HB_FUNC( SETSTATUSITEMICON )
+ * Purpose: Changes the icon of a specific status bar segment.
+ * 
+ * Parameters:
+ *    1: HWND   - Status Bar handle.
+ *    2: INT    - Part index (1-based).
+ *    3: STRING - Icon name or path.
+ *    4: HICON  - Optional raw handle to an existing icon.
  */
 HB_FUNC( SETSTATUSITEMICON )
 {
-   HWND     hwnd = hmg_par_raw_HWND( 1 );
-   int      nPart = hb_parni( 2 ) - 1;             /* zero-based part index */
+   HWND     hWnd = hmg_par_raw_HWND( 1 );
+   int      nPart = hb_parni( 2 ) - 1;
    HICON    hIcon = HB_ISNUM( 4 ) ? hmg_par_raw_HICON( 4 ) : NULL;
-
+   HICON    oldIcon;
+   RECT     rc;
+   int      cy;
 #ifndef UNICODE
-   LPCSTR   lpIconName = hb_parc( 3 );
+   LPCSTR   name;
 #else
-   LPWSTR   lpIconName = AnsiToWide( ( char * ) hb_parc( 3 ) );
+   LPWSTR   name;
 #endif
-   HICON    hOldIcon = ( HICON ) SendMessage( hwnd, SB_GETICON, nPart, ( LPARAM ) 0 );
 
-   // Removes the current icon from the specified status bar item.
-   if( hOldIcon )
+   /* 
+    * Memory Management:
+    * Before setting a new icon, we retrieve and destroy the old one 
+    * to prevent GDI resource leaks.
+    */
+   oldIcon = ( HICON ) SendMessage( hWnd, SB_GETICON, nPart, 0 );
+   if( oldIcon )
    {
-      DestroyIcon( hOldIcon );
+      DestroyIcon( oldIcon );
    }
 
-   /* if caller passed an HICON handle in parameter 4, use it */
-   if( !hIcon && lpIconName && *lpIconName )
+   // If no raw handle was provided, load the icon from the name string.
+   if( !hIcon )
    {
-      /* load icon from resources then fallback to file */
-      RECT  rc;
-      int   cx, cy;                                // Dimensions for the icon.
-      GetClientRect( hwnd, &rc );
-
-      cy = ( rc.bottom - rc.top ) - 4;
-      cx = cy;
-
-      hIcon = ( HICON ) LoadImage( GetResources(), lpIconName, IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR );
-      if( !hIcon )
-      {
-         hIcon = ( HICON ) LoadImage( NULL, lpIconName, IMAGE_ICON, cx, cy, LR_LOADFROMFILE | LR_DEFAULTCOLOR );
-      }
+      GetClientRect( hWnd, &rc );
+      cy = rc.bottom - rc.top - 4;
+      name = HB_TEXT( hb_parc( 3 ) );
+      hIcon = LoadStatusIcon( name, cy, cy );
+      HB_TEXT_FREE( name );
    }
 
    if( hIcon )
    {
-      /* set icon for the specified part (zero-based index) */
-      SendMessage( hwnd, SB_SETICON, nPart, ( LPARAM ) hIcon );
+      SendMessage( hWnd, SB_SETICON, nPart, ( LPARAM ) hIcon );
    }
-
-#ifdef UNICODE
-   hb_xfree( lpIconName );
-#endif
 }
 
-/*
- * FUNCTION: SETSTATUSBARSIZE
- *
- *  Description:
- *      Configures the width of each part/section in the status bar.
- *      This function allows you to define the size of each section in the
- *      status bar, providing precise control over the layout of the status
- *      bar elements.
- *
- *  Parameters:
- *      1: Status bar window handle (HWND). The handle of the status bar to configure.
- *      2: Array of widths (array). An array containing the width of each section in the status bar.
- *
- *  Returns:
- *      None.
- *
- *  Purpose:
- *      This function is useful for creating a status bar with sections of
- *      varying sizes, allowing you to optimize the display of different
- *      types of information.
+/* 
+ * HB_FUNC( SETSTATUSBARSIZE )
+ * Purpose: Manually sets the widths of all parts in the status bar using an array.
+ * 
+ * Parameters:
+ *    1: HWND  - Status Bar handle.
+ *    2: ARRAY - Array of integers representing the width of each part.
+ * 
+ * Logic:
+ *    The Win32 SB_SETPARTS message requires an array of absolute right-edge 
+ *    coordinates. This function converts a Harbour array of relative widths 
+ *    into these absolute coordinates by accumulating the values.
  */
 HB_FUNC( SETSTATUSBARSIZE )
 {
-   HWND     hwndStatus = hmg_par_raw_HWND( 1 );    // Status bar handle.
-   int      nParts = ( int ) hb_parinfa( 2, 0 );   // Number of parts defined in the array.
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
+   int   nParts = ( int ) hb_parinfa( 2, 0 );
+   int   *parts = ( int * ) hb_xgrab( sizeof( int ) * nParts );
+   int   acc = 0;
+   int   i;
 
-   // Allocates memory to hold the widths of each status bar part.
-   HLOCAL   hloc = LocalAlloc( LHND, sizeof( int ) * nParts );
-   LPINT    lpParts = LocalLock( hloc );
-
-   int      nWidth = 0;                // Cumulative width for each part.
-   int      i;
-
-   // Assigns each part width based on the provided array.
    for( i = 0; i < nParts; i++ )
    {
-      nWidth += HB_PARNI( 2, i + 1 );  // Adds width for current part.
-      lpParts[i] = nWidth;
+      acc += HB_PARNI( 2, i + 1 );
+      parts[i] = acc;
    }
 
-   SendMessage( hwndStatus, SB_SETPARTS, nParts, ( LPARAM ) lpParts );  // Sets the parts on the status bar.
-   MoveWindow( hwndStatus, 0, 0, 0, 0, TRUE );  // Redraws the window to apply changes.
-   LocalUnlock( hloc ); // Releases the allocated memory.
-   LocalFree( hloc );
+   SendMessage( hWnd, SB_SETPARTS, nParts, ( LPARAM ) parts );
+
+   // Force a window move/resize with 0 dimensions to trigger an internal
+   // repaint and layout update of the status bar.
+   MoveWindow( hWnd, 0, 0, 0, 0, TRUE );
+   hb_xfree( parts );
 }
 
-/*
- * FUNCTION: REFRESHPROGRESSITEM
- *
- *  Description:
- *      Updates the position of a progress bar in a status bar item to match the item's current position.
- *      This function ensures that the progress bar remains correctly aligned
- *      within its designated section of the status bar, even when the status
- *      bar is resized or repositioned.
- *
- *  Parameters:
- *      1: Status bar window handle (HWND). The handle of the status bar containing the progress bar.
- *      2: Item position (numeric). The index of the section containing the progress bar (1-based).
- *      3: Progress bar window handle (HWND). The handle of the progress bar control.
- *
- *  Returns:
- *      None.
- *
- *  Purpose:
- *      This function is essential for maintaining the correct visual
- *      relationship between the progress bar and its containing status bar
- *      section, ensuring a consistent and user-friendly display.
- *      It is typically called after the status bar has been resized or
- *      repositioned, or when the progress bar's position needs to be
- *      updated for any other reason.
+/* 
+ * HB_FUNC( REFRESHPROGRESSITEM )
+ * Purpose: Synchronizes the position of a progress bar embedded in a status bar.
+ * 
+ * Parameters:
+ *    1: HWND - Status Bar handle.
+ *    2: INT  - Part index (1-based) where the progress bar is located.
+ *    3: HWND - Progress Bar handle.
+ * 
+ * Logic:
+ *    Retrieves the bounding rectangle of the status bar segment and 
+ *    moves the progress bar control to perfectly overlay that area.
  */
 HB_FUNC( REFRESHPROGRESSITEM )
 {
-   HWND  hwndStatus = hmg_par_raw_HWND( 1 ); // Handle to the status bar.
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
    RECT  rc;
 
-   // Gets the rectangle for the specified status bar item.
-   SendMessage( hwndStatus, SB_GETRECT, hb_parni( 2 ) - 1, ( LPARAM ) & rc );
+   SendMessage( hWnd, SB_GETRECT, hb_parni( 2 ) - 1, ( LPARAM ) & rc );
 
-   // Adjusts the position of the progress bar within the item.
    SetWindowPos( hmg_par_raw_HWND( 3 ), 0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE );
 }
 
-/*
- * FUNCTION: CREATEPROGRESSBARITEM
- *
- *  Description:
- *      Creates a progress bar control within a specified status bar item.
- *      This function dynamically creates a progress bar control and places it
- *      within a designated section of the status bar, allowing you to visually
- *      indicate the progress of a task.
- *
- *  Parameters:
- *      1: Status bar window handle (HWND). The handle of the status bar to add the progress bar to.
- *      2: Item position (numeric). The index of the section to place the progress bar in (1-based).
- *      3: Visible (numeric).  1 to make the progress bar visible, 0 to hide it.
- *      4: Minimum range (numeric). The minimum value for the progress bar range.
- *      5: Maximum range (numeric). The maximum value for the progress bar range.
- *
- *  Returns:
- *      HWND: The handle to the created progress bar window.  Returns NULL if the
- *            progress bar creation fails.
- *
- *  Purpose:
- *      This function is useful for providing users with a visual representation
- *      of the progress of long-running tasks, improving the user experience.
+/* 
+ * HB_FUNC( CREATEPROGRESSBARITEM )
+ * Purpose: Creates a Progress Bar control as a child of the Status Bar.
+ * 
+ * Parameters:
+ *    1: HWND    - Status Bar handle (Parent).
+ *    2: INT     - Part index (1-based) to occupy.
+ *    3: INT     - Initial position value.
+ *    4: INT     - Range Minimum.
+ *    5: INT     - Range Maximum.
+ * 
+ * Returns: HWND of the created Progress Bar.
  */
 HB_FUNC( CREATEPROGRESSBARITEM )
 {
-   HWND  hwndStatus = hmg_par_raw_HWND( 1 ); // Handle to the status bar.
-   HWND  hwndProgressBar;
+   HWND  hWnd = hmg_par_raw_HWND( 1 );
    RECT  rc;
-   DWORD Style = WS_CHILD | PBS_SMOOTH;      // Style for a smooth child progress bar.
+   DWORD style = WS_CHILD | PBS_SMOOTH;
+   HWND  hProg;
 
-   // Retrieves the rectangle for the specified item in the status bar.
-   SendMessage( hwndStatus, SB_GETRECT, hb_parni( 2 ) - 1, ( LPARAM ) & rc );
-   if( hb_parni( 3 ) )                 // If visible flag is set, add WS_VISIBLE style.
+   // Get the coordinates of the target segment to size the progress bar.
+   SendMessage( hWnd, SB_GETRECT, hb_parni( 2 ) - 1, ( LPARAM ) & rc );
+
+   // If an initial position is provided, make the control visible immediately.
+   if( hb_parni( 3 ) )
    {
-      Style |= WS_VISIBLE;
+      style |= WS_VISIBLE;
    }
 
-   // Creates the progress bar control within the item rectangle.
-   if
-   (
-      (
-         hwndProgressBar = CreateWindowEx
-            (
-               0,                      // No extended styles.
-               PROGRESS_CLASS,         // Class name for progress bars.
-               ( LPCTSTR ) NULL,       // No title text.
-               Style,                  // Defined style.
-               rc.left,                // Left position.
-               rc.top,                 // Top position.
-               rc.right - rc.left,     // Width.
-               rc.bottom - rc.top - 1, // Height.
-               hwndStatus,             // Parent window is the status bar.
-               ( HMENU ) NULL,         // No menu.
-               GetInstance(),          // Instance handle.
-               ( LPVOID ) NULL         // No additional data.
-            )
-      ) != NULL
-   )
+   // Create the progress bar. Height is reduced by 1 pixel to prevent
+   // overlapping the status bar's bottom border.
+   hProg = CreateWindowEx( 0, PROGRESS_CLASS, NULL, style, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top - 1, hWnd, NULL, GetInstance(), NULL );
+
+   if( hProg )
    {
-      // Sets the range and initial position of the progress bar.
-      SendMessage( hwndProgressBar, PBM_SETRANGE, 0, MAKELONG( hb_parni( 4 ), hb_parni( 5 ) ) );
-      SendMessage( hwndProgressBar, PBM_SETPOS, hb_parni( 3 ), 0 );
-      hmg_ret_raw_HWND( hwndProgressBar );   // Returns the handle to the new progress bar.
+      SendMessage( hProg, PBM_SETRANGE, 0, MAKELONG( hb_parni( 4 ), hb_parni( 5 ) ) );
+      SendMessage( hProg, PBM_SETPOS, hb_parni( 3 ), 0 );
+      hmg_ret_raw_HWND( hProg );
    }
    else
    {
-      hb_ret();   // Returns NULL if creation failed.
+      hb_ret();
    }
 }
 
-/*
- * FUNCTION: SETPOSPROGRESSBARITEM
- *
- *  Description:
- *      Sets the position and visibility of a progress bar in a status bar item.
- *      This function allows you to control the current position of the
- *      progress bar, as well as its visibility, providing dynamic feedback
- *
- *  Purpose:
- *      This function provides a way to dynamically update the progress bar
- *      within a status bar item.  It's used to visually represent the
- *      progress of a long-running operation to the user.  The visibility
- *      control allows the progress bar to be shown only when needed,
- *      avoiding unnecessary screen clutter.
+/* 
+ * HB_FUNC( SETPOSPROGRESSBARITEM )
+ * Purpose: Updates the value of an embedded progress bar and manages visibility.
+ * 
+ * Parameters:
+ *    1: HWND - Progress Bar handle.
+ *    2: INT  - New position value.
+ * 
+ * Logic:
+ *    In HMG, a progress bar in a status bar is often hidden when its 
+ *    value is 0 to allow the underlying status text to be visible.
  */
 HB_FUNC( SETPOSPROGRESSBARITEM )
 {
-   HWND  hwndProgressBar = hmg_par_raw_HWND( 1 );  // Handle to the progress bar.
+   HWND  hProg = hmg_par_raw_HWND( 1 );
    int   nPos = hb_parni( 2 );
 
-   // Shows or hides the progress bar based on nPos (0 to hide, non-0 to show).
-   ShowWindow( hwndProgressBar, nPos ? SW_SHOW : SW_HIDE );
-
-   // Sets the current position of the progress bar.
-   SendMessage( hwndProgressBar, PBM_SETPOS, nPos, 0 );
+   // Toggle visibility: Show if position > 0, Hide if 0.
+   ShowWindow( hProg, nPos ? SW_SHOW : SW_HIDE );
+   SendMessage( hProg, PBM_SETPOS, nPos, 0 );
 }

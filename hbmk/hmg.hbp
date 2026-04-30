@@ -9,10 +9,11 @@
 
 -inc
 
--workdir=../lib/hbmk/${hb_comp}/${hb_name}
+-workdir=../obj/${hb_comp}/${hb_name}
 -o../lib/${hb_comp}/minigui
 
--I../include
+-I../Include 
+-I${MG_ROOT}include
 
 -w3 -es2 -ko -q0
 
@@ -153,7 +154,6 @@
 ../source/h_pager.prg
 ../source/h_progressbar.prg
 ../source/h_progresswheel.prg
-#{DEBUG}../source/h_pubfunc.prg
 ../source/h_pubfunc.prg
 ../source/h_radio.prg
 ../source/h_rating.prg
@@ -186,5 +186,6 @@
 ../source/alerts.prg
 ../source/netfuncs.prg
 ../source/tget/tget.prg
+../source/tget/tgetint.prg
 ../source/h_cdomail.prg
 ../source/statics.prg

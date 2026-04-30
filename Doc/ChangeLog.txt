@@ -1,3 +1,111 @@
+2026/04/24: HMG Extended Edition version 26.04.
+  * Modified: Control miscellaneous module (C layer).
+           Major refactoring and cleanup:
+           * Reorganized code into well-defined sections
+           * Added NULL checks and improved defensive programming
+           * Standardized variable naming and overall consistency
+           * Simplified function implementations
+           * Improved formatting and readability
+           Contributed by Grigory Filatov
+  * Modified: Font handling (C layer).
+           Refactored for clarity, safety, and compatibility:
+           * Unicode handling consistency
+             * Standardized AnsiToWide / WideToAnsi conversions across all entry
+               points
+             * Ensured consistent allocation/free patterns for temporary strings
+           * Parameter validation
+             * Added IsWindow() checks in _SETFONT and _SETFONTHANDLE to prevent
+               invalid handle usage
+           * Resource lifecycle management
+             * Introduced explicit RegisterResource() usage for GDI object
+               tracking and cleanup
+           * Refined ENUMFONTSEX enumeration behavior
+           * Normalized charset and pitch handling
+           Contributed by Grigory Filatov
+  * Modified: Cursor handling (C layer).
+           Refactored for consistency and maintainability:
+           * Unicode memory management
+             * Unified allocation/free patterns using AnsiToWide and hb_xfree
+             * Added stricter conditional deallocation checks
+           * Helper function usage
+             * Centralized cursor name resolution via GetCursorNameAnsi/Wide
+             * Reduced duplicated inline logic
+           * Fallback handling
+             * Clearly separated resource-based and file-based loading paths
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\CURSOR_2)
+  * Modified: Icon handling (C layer).
+           Refactored for clarity and maintainability (no functional changes):
+           * Standardized variable naming and simplified logic
+           * Added input validation in DRAWICONEX
+           * Improved internal documentation and resource management comments
+           Contributed by Grigory Filatov
+           (see demos in folder \samples\Basic\Icons)
+  * Modified: ToolBar handling (C layer).
+           Refactored INITTOOLBAR, INITTOOLBAREX, INITTOOLBUTTON, INITTOOLBUTTONEX
+           for cleaner structure, reduced duplication, consistent style and spacing:
+           - Removed redundant ShowWindow calls and verbose comments;
+           - Simplified locals, conditionals and padding/text calculations in
+             INITTOOLBUTTONEX and related functions;
+           - WidestBtn, GETSIZETOOLBAR and MAXTEXTBTNTOOLBAR cleaned for readability
+             while preserving exact logic.
+           Contributed by Grigory Filatov
+           (see demos in \Samples\Basic\ToolBarEx)
+  * Modified: StatusBar handling (C layer).
+           Refactored for improved readability and consistency:
+           - Added helper functions (LoadStatusIcon, GetStatusParts, HasSizeGrip).
+           - Introduced constants (MAX_PARTS, SIZE_GRIP_WIDTH, PART_PADDING).
+           - Unified ANSI/UNICODE handling with HB_TEXT/HB_TEXT_FREE macros.
+           - Reduced code duplication while preserving original behavior.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\Statusbar)
+  * Modified: MessageBox handling (C layer).
+           Refactored for readability, consistency, and safety:
+           * Improved overall structure and reduced code duplication
+           * Introduced helper macros for standardized parameter extraction
+           * Centralized Unicode/ANSI handling via shared macros
+           * Clarified MSGBOXPARAMS initialization flow
+           * Cleaned up default handling for style, language, and timeout
+             parameters
+           * Improved dynamic loading of MessageBoxTimeout with safer
+             initialization checks
+           * Maintained full backward compatibility
+           Contributed by Grigory Filatov
+           (see demo in folders \samples\Basic\MsgBox and
+           \samples\Basic\MsgBoxTimeout)
+  * Updated: HbSQLite3 library:
+           - update for using SQLITE3 version 3.53.0 (from 3.52.0). [PRO VERSION]
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\SQLITE_2)
+  * Updated: Harbour Compiler 3.2.0dev (SVN 2026-02-28 15:33):
+           * Updated libpng to version 1.6.56 (from 1.6.55).
+           Contributed by Grigory Filatov
+           (look at ReadMe.txt in folder \harbour) [PRO VERSION]
+  * Updated: 'Get Form Client Height' sample:
+           - added detailed inline code documentation.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\GetClientSize)
+  * Updated: 'Font Measurement Utility' sample has been fully refactored:
+           - added repaint-safe drawing via ON PAINT and clean architecture;
+           - improved measurement accuracy, state handling, and rendering
+             consistency.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\GetTextWidth)
+  * Updated: 'HbZipArc usage' sample:
+           - fixed issue in the FillFiles() function.
+           Contributed by Grigory Filatov
+           (see demo2.prg in folder \samples\Basic\Zip)
+  * Updated: 'Arkanoid Mini Game 3.0' application by HMG user Edward:
+           - refactored collision detection into separate static functions;
+           - improved readability and maintainability of GameLoop();
+           - added consistent naming for collisions.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Applications\Arkanoid) [PRO VERSION]
+  * Updated: 'Tetris game' application by Claudio Soto:
+           - updated detailed inline code documentation.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Applications\HMG_Tetris) [PRO VERSION]
+
 2026/03/26: HMG Extended Edition version 26.03.
   * Modified: Refactored MsgBox routines for modern Harbour/MiniGUI standards:
            - standardized parameter naming matching core MiniGUI conventions;

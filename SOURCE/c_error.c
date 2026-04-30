@@ -48,6 +48,7 @@
    Parts of this code are contributed and used here under permission of his
    author: Copyright 2016 (C) P.Chornyj <myorg63@mail.ru>
 */
+
 #include <mgdefs.h>
 
 // Define rsize_t and declare swprintf_s for Watcom C compiler.
@@ -79,7 +80,7 @@ void hmg_ErrorExit( LPCTSTR lpszMessage, DWORD dwError, BOOL bExit )
 {
    LPVOID   lpMsgBuf = NULL;     // Buffer for the system error message
    LPVOID   lpDisplayBuf = NULL; // Buffer for the formatted error message
-   DWORD    nError = ( dwError != 0 ) ? dwError : GetLastError();  // Use the provided error code or get the last error code
+   DWORD    nError = ( dwError != 0 ) ? dwError : GetLastError(); // Use the provided error code or get the last error code
 
    /*
     * Format the system error message corresponding to the error code.
@@ -110,27 +111,12 @@ void hmg_ErrorExit( LPCTSTR lpszMessage, DWORD dwError, BOOL bExit )
 #if defined( __BORLANDC__ ) && ( __BORLANDC__ <= 1410 )
          swprintf( ( LPTSTR ) lpDisplayBuf, TEXT( "'%s' failed with error %lu: %s" ), lpszMessage, nError, ( LPTSTR ) lpMsgBuf );
 #else
-         swprintf_s
-         (
-            ( LPTSTR ) lpDisplayBuf,
-            LocalSize( lpDisplayBuf ) / sizeof( TCHAR ),
-            TEXT( "'%s' failed with error %lu: %s" ),
-            lpszMessage,
-            nError,
-            ( LPTSTR ) lpMsgBuf
-         );
+         swprintf_s( ( LPTSTR ) lpDisplayBuf, LocalSize( lpDisplayBuf ) / sizeof( TCHAR ), TEXT( "'%s' failed with error %lu: %s" ), lpszMessage, nError, ( LPTSTR ) lpMsgBuf );
 #endif
 #else
-         hb_snprintf
-         (
-            ( LPTSTR ) lpDisplayBuf,
-            LocalSize( lpDisplayBuf ) / sizeof( TCHAR ),
-            TEXT( "'%s' failed with error %lu: %s" ),
-            lpszMessage,
-            nError,
-            ( LPTSTR ) lpMsgBuf
-         );
+         hb_snprintf( ( LPTSTR ) lpDisplayBuf, LocalSize( lpDisplayBuf ) / sizeof( TCHAR ), TEXT( "'%s' failed with error %lu: %s" ), lpszMessage, nError, ( LPTSTR ) lpMsgBuf );
 #endif
+
          // Show the formatted error message in a message box
          MessageBox( NULL, ( LPCTSTR ) lpDisplayBuf, TEXT( "MiniGUI Error" ), MB_OK );
       }

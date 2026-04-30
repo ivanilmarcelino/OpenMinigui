@@ -42,85 +42,48 @@
 
     "HWGUI"
     Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
-
  ---------------------------------------------------------------------------*/
 
 /*
    File:           c_cursor.c
-   Contributors:   Jacek Kubica <kubica@wssk.wroc.pl>
-                   Grigory Filatov <gfilatov@gmail.com>
-   Description:    Handles mouse cursor shapes for MiniGUI.
-   Status:         Public Domain
+   Description:    Low-level C routines for mouse cursor management in HMG Extended.
+   Functionality:  Provides wrappers for Windows API cursor functions, handling 
+                   resource loading, file-based cursors, and Unicode compatibility.
  */
 
 #include <mgdefs.h>
 
 #ifdef UNICODE
-
-/**
- * Function: AnsiToWide
- * --------------------
- * Converts a null-terminated ANSI string (LPCSTR) to a wide (Unicode) string (LPWSTR).
- *
- * Parameters:
- *   str  - ANSI string to convert.
- *
- * Returns:
- *   Newly allocated wide-character string. Caller is responsible for freeing it.
- *
- * Notes:
- *   Used in Unicode builds to bridge between ANSI strings from Harbour and WinAPI.
- */
+/* 
+   Function: AnsiToWide
+   Purpose: Converts a standard ANSI string to a Wide (Unicode) string.
+   Parameters: LPCSTR - The source ANSI string.
+   Returns: LPWSTR - The allocated Unicode string.
+   Note: Essential for HMG Unicode builds to interface with Windows 'W' APIs.
+*/
 LPWSTR      AnsiToWide( LPCSTR );
 #endif
 
-/**
- * Function: GetInstance
- * ---------------------
- * Retrieves the current application instance handle.
- *
- * Parameters:
- *   None
- *
- * Returns:
- *   The HINSTANCE of the running application.
- */
+/* 
+   Functions: GetInstance / GetResources
+   Purpose: Retrieves the application or resource instance handles.
+   Returns: HINSTANCE - Handle to the module containing the executable or resources.
+*/
 HINSTANCE   GetInstance( void );
-
-/**
- * Function: GetResources
- * ----------------------
- * Retrieves the current application resource handle (useful for custom cursors/icons).
- *
- * Parameters:
- *   None
- *
- * Returns:
- *   The HINSTANCE containing resources.
- */
 HINSTANCE   GetResources( void );
 
 /*-------------------------------------------------------------------------*/
-/* Helper Functions for Cursor Resource Naming and Retrieval              */
+/* Internal Helper Functions                                               */
 /*-------------------------------------------------------------------------*/
 
 #ifdef UNICODE
-
-/**
- * Function: GetCursorNameWide
- * ---------------------------
- * Determines the correct wide-character cursor name or resource ID based on input type.
- *
- * Parameters:
- *   paramIndex - Index of parameter passed from Harbour (expected as string or integer).
- *
- * Returns:
- *   If parameter is string: pointer to wide string (allocated via AnsiToWide).
- *   If parameter is integer: resource identifier cast as wide string.
- *
- * Notes:
- *   Memory allocation must be freed by caller if a string was passed.
- */
+/*
+   Function: GetCursorNameWide
+   Purpose: Resolves a Harbour parameter into a Unicode cursor identifier.
+   Logic: If the parameter is a string, it converts it to WideChar. 
+          If it's a number, it treats it as a Resource ID (MAKEINTRESOURCE).
+   Returns: LPCWSTR - Pointer to the resource name or ID.
+*/
 static LPCWSTR GetCursorNameWide( int paramIndex )
 {
    if( hb_parinfo( paramIndex ) & HB_IT_STRING )
@@ -132,20 +95,12 @@ static LPCWSTR GetCursorNameWide( int paramIndex )
       return MAKEINTRESOURCE( hb_parni( paramIndex ) );
    }
 }
-
 #else
-
-/**
- * Function: GetCursorNameAnsi
- * ---------------------------
- * Determines the correct ANSI cursor name or resource ID based on input type.
- *
- * Parameters:
- *   paramIndex - Index of parameter passed from Harbour (string or integer).
- *
- * Returns:
- *   ANSI string or resource ID cast as ANSI pointer.
- */
+/*
+   Function: GetCursorNameAnsi
+   Purpose: Resolves a Harbour parameter into an ANSI cursor identifier.
+   Returns: LPCSTR - Pointer to the resource name or ID.
+*/
 static LPCSTR GetCursorNameAnsi( int paramIndex )
 {
    return( hb_parinfo( paramIndex ) & HB_IT_STRING ) ? hb_parc( paramIndex ) : MAKEINTRESOURCE( hb_parni( paramIndex ) );
@@ -153,26 +108,21 @@ static LPCSTR GetCursorNameAnsi( int paramIndex )
 #endif
 
 /*-------------------------------------------------------------------------*/
-/* Main Cursor Functions                                                   */
+/* Harbour API Wrappers                                                    */
 /*-------------------------------------------------------------------------*/
 
-/**
- * Function: LOADCURSOR
- * --------------------
- * Loads a cursor from resources or name and returns a handle to Harbour caller.
- *
- * Parameters:
- *   1: HINSTANCE (optional) - Instance handle for resource lookup or NULL for default.
- *   2: STRING or INTEGER  - Cursor name or resource ID.
- *
- * Returns:
- *   Handle to the loaded cursor (HCURSOR) or NULL if loading fails.
- *
- * Notes:
- *   Handles memory freeing in Unicode builds when string names are used.
- */
+/*
+   Function: LOADCURSOR( [hInst], cnCursorName )
+   Purpose: Loads a cursor resource from an executable or DLL.
+   Parameters:
+      1: hInst (Optional) - Handle to the module. If NIL, system cursors are used.
+      2: cnCursorName - String (name) or Integer (ID) of the cursor.
+   Returns: HCURSOR handle.
+   Side Effects: Allocates memory for string conversion in Unicode mode.
+*/
 HB_FUNC( LOADCURSOR )
 {
+   // Determine if we are loading a system cursor (NULL) or a specific instance resource
    HINSTANCE   hInstance = HB_ISNIL( 1 ) ? NULL : hmg_par_raw_HINSTANCE( 1 );
 
 #ifndef UNICODE
@@ -181,26 +131,21 @@ HB_FUNC( LOADCURSOR )
 #else
    LPCWSTR  lpCursorName = GetCursorNameWide( 2 );
    hmg_ret_raw_HANDLE( LoadCursor( hInstance, lpCursorName ) );
+   
+   // Clean up temporary wide string if one was allocated by AnsiToWide
    if( HB_ISCHAR( 2 ) && lpCursorName )
    {
-      hb_xfree( ( void * ) lpCursorName );   /* Free allocated wide string */
+      hb_xfree( ( void * ) lpCursorName );
    }
 #endif
 }
 
-/* Function: LOADCURSORFROMFILE
- * ----------------------------
- * Loads a cursor from a file path specified by the user and returns its handle.
- *
- * Parameters:
- *   1: STRING - File path to cursor file.
- *
- * Returns:
- *   Handle to the loaded cursor (HCURSOR) or NULL on failure.
- *
- * Notes:
- *   Converts ANSI to Unicode string in Unicode builds and frees memory afterward.
- */
+/*
+   Function: LOADCURSORFROMFILE( cFileName )
+   Purpose: Creates a cursor based on data contained in a file (.cur or .ani).
+   Parameters: cFileName - Path to the cursor file.
+   Returns: HCURSOR handle.
+*/
 HB_FUNC( LOADCURSORFROMFILE )
 {
 #ifdef UNICODE
@@ -215,33 +160,23 @@ HB_FUNC( LOADCURSORFROMFILE )
 #endif
 }
 
-/**
- * Function: SETRESCURSOR
- * ----------------------
- * Sets the active cursor using a provided cursor handle.
- *
- * Parameters:
- *   1: HCURSOR - Handle of the cursor to activate.
- *
- * Returns:
- *   The handle to the previously active cursor.
- */
+/*
+   Function: SETRESCURSOR( hCursor )
+   Purpose: Sets the cursor shape for the current thread using a handle.
+   Parameters: hCursor - Handle to the cursor.
+   Returns: Handle to the previous cursor.
+*/
 HB_FUNC( SETRESCURSOR )
 {
    hmg_ret_raw_HANDLE( SetCursor( hmg_par_raw_HCURSOR( 1 ) ) );
 }
 
-/**
- * Function: FILECURSOR
- * --------------------
- * Loads a cursor from file and sets it as the active cursor.
- *
- * Parameters:
- *   1: STRING - Path to the cursor file.
- *
- * Returns:
- *   Handle to the cursor that was set.
- */
+/*
+   Function: FILECURSOR( cFileName )
+   Purpose: Loads a cursor from a file and immediately applies it.
+   Parameters: cFileName - Path to the cursor file.
+   Returns: Handle to the newly set cursor.
+*/
 HB_FUNC( FILECURSOR )
 {
 #ifdef UNICODE
@@ -256,68 +191,67 @@ HB_FUNC( FILECURSOR )
 #endif
 }
 
-/**
- * Function: SETWINDOWCURSOR
- * -------------------------
- * Sets a specified window's cursor based on name or resource ID.
- *
- * Parameters:
- *   1: HWND   - Window handle whose class cursor should be changed.
- *   2: STRING or INTEGER - Cursor name or resource ID.
- *
- * Returns:
- *   (void) - updates window class cursor if successful.
- *
- * Notes:
- *   Attempts resource-based loading first, then file-based fallback.
- *   Frees Unicode string memory when necessary.
- */
+/*
+   Function: SETWINDOWCURSOR( hWnd, cnCursor )
+   Purpose: Changes the default cursor for a specific window class.
+   Parameters:
+      1: hWnd - Handle to the window.
+      2: cnCursor - Resource name (String), Resource ID (Integer), or File Path (String).
+   Logic: 
+      1. Attempts to load from application resources.
+      2. If loading fails and input is a string, attempts to load as a file.
+      3. Updates the window class using SetClassLongPtr.
+*/
 HB_FUNC( SETWINDOWCURSOR )
 {
    HCURSOR  ch;
+   BOOL     bIsString = HB_ISCHAR( 2 );
+
 #ifdef UNICODE
    LPCWSTR  lpCursorName = GetCursorNameWide( 2 );
 #else
    LPCSTR   lpCursorName = GetCursorNameAnsi( 2 );
 #endif
 
-   /* Try loading from resources */
-   ch = LoadCursor( HB_ISCHAR( 2 ) ? GetResources() : NULL, lpCursorName );
+   // Attempt to load from resources first (internal or system)
+   ch = LoadCursor( bIsString ? GetResources() : NULL, lpCursorName );
 
-   /* Fallback: load from file if not found and parameter is string */
-   if( ch == NULL && HB_ISCHAR( 2 ) )
+   // If resource load fails and it's a string, try loading as an external file
+   if( ch == NULL && bIsString )
    {
-      ch = LoadCursorFromFile( lpCursorName );
+#ifdef UNICODE
+      LPCWSTR  lpFile = AnsiToWide( hb_parc( 2 ) );
+      ch = LoadCursorFromFile( lpFile );
+      if( lpFile )
+      {
+         hb_xfree( ( void * ) lpFile );
+      }
+#else
+      ch = LoadCursorFromFile( hb_parc( 2 ) );
+#endif
    }
 
-   /* If a cursor was successfully loaded, assign it to the window class */
+   // If a valid cursor was obtained, update the window class attribute
    if( ch != NULL )
    {
       SetClassLongPtr( hmg_par_raw_HWND( 1 ), GCLP_HCURSOR, ( LONG_PTR ) ch );
    }
 
 #ifdef UNICODE
-   if( HB_ISCHAR( 2 ) )
+   if( bIsString && lpCursorName )
    {
       hb_xfree( ( void * ) lpCursorName );
    }
 #endif
 }
 
-/**
- * Function: LoadHandCursor
- * ------------------------
- * Internal helper: obtains the "hand"-style cursor or a fallback if unavailable.
- *
- * Parameters:
- *   None
- *
- * Returns:
- *   HCURSOR handle for the hand or fallback cursor.
- *
- * Notes:
- *   Uses IDC_HAND for Windows equal or more than 0x0500, otherwise uses a custom Minigui resource.
- */
+/*
+   Function: LoadHandCursor
+   Purpose: Internal helper to provide the 'Hand' cursor across different Windows versions.
+   Logic: Windows 2000 (0x0500) and later have IDC_HAND built-in. 
+          For older systems, HMG uses a custom resource "MINIGUI_FINGER".
+   Returns: HCURSOR handle.
+*/
 static HCURSOR LoadHandCursor( void )
 {
 #if ( WINVER >= 0x0500 )
@@ -327,20 +261,16 @@ static HCURSOR LoadHandCursor( void )
 #endif
 }
 
-/**
- * Function: CURSORHAND
- * --------------------
- * Sets the cursor to the hand cursor, returning the previous cursor handle.
- *
- * Parameters:
- *   None
- *
- * Returns:
- *   Handle to the previously active cursor.
- */
+/*
+   Function: CURSORHAND()
+   Purpose: Sets the current mouse pointer to the Hand shape.
+   Returns: Handle to the previous cursor.
+*/
 HB_FUNC( CURSORHAND )
 {
    HCURSOR  hCursor = LoadHandCursor();
+   
+   // Fallback to standard arrow if hand cursor cannot be loaded
    if( !hCursor )
    {
       hCursor = LoadCursor( NULL, IDC_ARROW );
@@ -349,23 +279,19 @@ HB_FUNC( CURSORHAND )
    hmg_ret_raw_HANDLE( SetCursor( hCursor ) );
 }
 
-/**
- * Function: SETHANDCURSOR
- * -----------------------
- * Sets a specific window's cursor to the hand style.
- *
- * Parameters:
- *   1: HWND - Window handle to update.
- *
- * Returns:
- *   Logical flag (true if successful, false otherwise).
- */
+/*
+   Function: SETHANDCURSOR( hWnd )
+   Purpose: Assigns the Hand cursor to a specific window's class.
+   Parameters: hWnd - Handle to the target window.
+   Returns: Logical - True if successful.
+*/
 HB_FUNC( SETHANDCURSOR )
 {
    HCURSOR  hCursor = LoadHandCursor();
    if( hCursor )
    {
       HWND  hWnd = hmg_par_raw_HWND( 1 );
+      // Update the class cursor so the hand appears whenever the mouse enters this window
       hmg_ret_L( SetClassLongPtr( hWnd, GCLP_HCURSOR, ( LONG_PTR ) hCursor ) != 0 );
    }
    else

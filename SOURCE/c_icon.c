@@ -52,371 +52,287 @@
 #include <mgdefs.h>
 #include <shellapi.h>
 
-// Function prototype for converting ANSI strings to UNICODE (wide strings)
 #ifdef UNICODE
 LPWSTR      AnsiToWide( LPCSTR );
 #endif
-
-// Function prototypes for getting instances and resource handles for MiniGUI
 HINSTANCE   GetInstance( void );
 HINSTANCE   GetResources( void );
 
-// Resource management functions for MiniGUI
-// Registers a resource to manage and keep track of loaded resources
+/* 
+ * Internal HMG Resource Management Prototypes 
+ * These functions track GDI objects to prevent memory leaks during application execution.
+ */
 void        RegisterResource( HANDLE hResource, LPCSTR szType );
-
-// Deletes or releases a registered resource
 void pascal DelResource( HANDLE hResource );
 
 /*
- * FUNCTION COPYICON( hIcon )
- *
- * Creates a duplicate of an existing icon.
- *
+ * FUNCTION COPYICON
+ * ------------------
+ * Purpose: Creates a duplicate of a specified icon.
+ * 
  * Parameters:
- *   hIcon : HICON - The handle of the icon to duplicate.
- *
+ *    1: hIcon (HANDLE) - The handle of the icon to be copied.
+ * 
  * Returns:
- *   HICON - The handle of the newly created duplicate icon.
- *
- * Purpose:
- *   This function is used to create a copy of an icon. This is useful when you need to use the same icon in multiple places
- *   but want to avoid potential issues with resource sharing or ownership.  For example, you might copy an icon to use it in
- *   both a main window and a system tray icon.
- *
- * Notes:
- *   The function registers the duplicated icon as a resource within the MiniGUI framework, ensuring proper resource management.
+ *    HANDLE - The handle to the new icon duplicate.
+ * 
+ * Implementation Detail:
+ *    Uses the Windows CopyIcon API. The new handle is registered with HMG's 
+ *    resource manager to ensure it is tracked for eventual cleanup.
  */
 HB_FUNC( COPYICON )
 {
-   HICON hIcon;
-
-   // Duplicate the icon provided as input
-   hIcon = CopyIcon( hmg_par_raw_HICON( 1 ) );
-
-   // Register the duplicated icon as a resource in MiniGUI
+   // Retrieve the icon handle from the first Harbour parameter
+   HICON hIcon = CopyIcon( hmg_par_raw_HICON( 1 ) );
+   
+   // Register the new handle in the HMG internal resource table
    RegisterResource( hIcon, "ICON" );
-
-   // Return the duplicated icon handle to Harbor
+   
+   // Return the raw handle back to the Harbour virtual machine
    hmg_ret_raw_HANDLE( hIcon );
 }
 
 /*
- * FUNCTION DESTROYICON( hIcon )
- *
- * Destroys an icon and releases its associated resources.
- *
+ * FUNCTION DESTROYICON
+ * ---------------------
+ * Purpose: Destroys an icon and releases any memory the icon occupied.
+ * 
  * Parameters:
- *   hIcon : HICON - The handle of the icon to destroy.
- *
+ *    1: hIcon (HANDLE) - The handle of the icon to destroy.
+ * 
  * Returns:
- *   LOGICAL - .T. if the icon was successfully destroyed, .F. otherwise.
- *
- * Purpose:
- *   This function is used to free the memory and system resources associated with an icon. It's crucial to call this function
- *   when an icon is no longer needed to prevent memory leaks and ensure proper application behavior.
- *
- * Notes:
- *   The function first unregisters the icon from the MiniGUI resource management system before destroying it.
+ *    LOGICAL - .T. if successful, .F. otherwise.
+ * 
+ * Side Effects:
+ *    Removes the icon from the HMG resource tracking system.
  */
 HB_FUNC( DESTROYICON )
 {
    HICON hIcon = hmg_par_raw_HICON( 1 );
-
-   // Unregister the icon from MiniGUI resource management
+   
+   // Unregister from HMG tracking before physical destruction
    DelResource( hIcon );
-
-   // Destroy the icon and return the result (TRUE if successful)
+   
+   // Call Windows API to free GDI resources
    hb_retl( DestroyIcon( hIcon ) );
 }
 
 /*
- * FUNCTION DUPLICATEICON( hIcon )
- *
- * Creates a duplicate of an existing icon using DuplicateIcon API.
- *
+ * FUNCTION DUPLICATEICON
+ * -----------------------
+ * Purpose: Creates a duplicate of an icon using the DuplicateIcon API.
+ * 
  * Parameters:
- *   hIcon : HICON - The handle of the icon to duplicate.
- *
+ *    1: hIcon (HANDLE) - The handle of the icon to duplicate.
+ * 
  * Returns:
- *   HICON - The handle of the newly created duplicate icon.
- *
- * Purpose:
- *   This function is similar to COPYICON, but uses the DuplicateIcon API.  This API might be useful in specific scenarios where
- *   a simple copy is not sufficient, or when dealing with specific types of icons.
- *
- * Notes:
- *   The source instance is set to NULL, indicating that the icon is not associated with a specific module.
- *   The function registers the duplicated icon as a resource within the MiniGUI framework.
+ *    HANDLE - The handle to the duplicated icon.
+ * 
+ * Implementation Detail:
+ *    Unlike CopyIcon, DuplicateIcon is often used when the icon belongs to 
+ *    another module or process.
  */
 HB_FUNC( DUPLICATEICON )
 {
-   HICON hIcon;
-
-   // Duplicate the icon (source instance is NULL)
-   hIcon = DuplicateIcon( ( HINSTANCE ) NULL, hmg_par_raw_HICON( 1 ) );
-
-   // Register the duplicated icon as a resource
+   // NULL instance indicates the icon is not associated with a specific module
+   HICON hIcon = DuplicateIcon( NULL, hmg_par_raw_HICON( 1 ) );
+   
    RegisterResource( hIcon, "ICON" );
-
-   // Return the duplicated icon handle
    hmg_ret_raw_HANDLE( hIcon );
 }
 
 /*
- * FUNCTION LOADICON( hInstance, cIconNameOrID )
- *
- * Loads an icon from a resource or file.
- *
+ * FUNCTION LOADICON
+ * ------------------
+ * Purpose: Loads an icon resource from an executable or DLL.
+ * 
  * Parameters:
- *   hInstance : HINSTANCE - The instance handle of the module containing the icon resource. If NIL, the function uses the system's default icon set.
- *   cIconNameOrID : STRING or NUMERIC - The name of the icon resource (string) or its resource ID (numeric).
- *
+ *    1: hInstance (HANDLE/NIL) - Module handle. If NIL, loads a system icon.
+ *    2: cIconName (STRING/NUMERIC) - Resource name or integer ID.
+ * 
  * Returns:
- *   HICON - The handle of the loaded icon. Returns NULL if the icon could not be loaded.
- *
- * Purpose:
- *   This function allows loading icons from various sources, including application resources and system-defined icons. It provides a flexible way to
- *   incorporate icons into the application's user interface.  For example, you can load an icon from your application's resource file to use as the
- *   application's main icon.
- *
- * Notes:
- *   The function handles both ANSI and UNICODE environments. In UNICODE environments, it converts the icon name to a wide string before loading the icon.
- *   The loaded icon is registered as a resource within the MiniGUI framework.
+ *    HANDLE - The loaded icon handle.
  */
 HB_FUNC( LOADICON )
 {
-   // Retrieve the instance to load the icon from; if none provided, set to NULL
-   HINSTANCE   hinstance = ( HB_ISNIL( 1 ) ? NULL : hmg_par_raw_HINSTANCE( 1 ) );
+   // Determine if we are using a specific instance or system resources
+   HINSTANCE   hInst = HB_ISNIL( 1 ) ? NULL : hmg_par_raw_HINSTANCE( 1 );
    HICON       hIcon;
 
 #ifndef UNICODE
-   // Load the icon by name or resource ID if not UNICODE
-   hIcon = LoadIcon( hinstance, HB_ISCHAR( 2 ) ? hb_parc( 2 ) : MAKEINTRESOURCE( hb_parni( 2 ) ) );
+   // Standard ANSI loading logic
+   hIcon = LoadIcon( hInst, HB_ISCHAR( 2 ) ? hb_parc( 2 ) : MAKEINTRESOURCE( hb_parni( 2 ) ) );
 #else
-   // Convert ANSI string to wide string for UNICODE systems
-   LPWSTR   pW = AnsiToWide( ( char * ) hb_parc( 2 ) );
-   hIcon = LoadIcon( hinstance, HB_ISCHAR( 2 ) ? pW : ( LPCWSTR ) MAKEINTRESOURCE( hb_parni( 2 ) ) );
+   // Convert Harbour string to Wide String for Unicode compatibility
+   LPWSTR   pW = AnsiToWide( hb_parc( 2 ) );
+   hIcon = LoadIcon( hInst, HB_ISCHAR( 2 ) ? pW : ( LPCWSTR ) MAKEINTRESOURCE( hb_parni( 2 ) ) );
+   hb_xfree( pW );
 #endif
 
-   // Register the loaded icon as a resource
    RegisterResource( hIcon, "ICON" );
-
-   // Return the icon handle
    hmg_ret_raw_HANDLE( hIcon );
-
-#ifdef UNICODE
-   hb_xfree( pW );   // Free memory allocated for wide string conversion
-#endif
 }
 
 /*
- * FUNCTION EXTRACTICON( cFileName, nIconIndex )
- *
- * Extracts an icon from an executable file at a specified index.
- *
+ * FUNCTION EXTRACTICON
+ * ---------------------
+ * Purpose: Extracts an icon from a file (EXE, DLL, or ICO).
+ * 
  * Parameters:
- *   cFileName : STRING - The name of the executable file from which to extract the icon.
- *   nIconIndex : NUMERIC - The index of the icon to extract.  Use -1 to extract the application icon.
- *
+ *    1: cFileName (STRING) - Path to the file.
+ *    2: nIconIndex (NUMERIC) - Zero-based index of the icon to extract.
+ * 
  * Returns:
- *   HICON - The handle of the extracted icon. Returns NULL if the icon could not be extracted.
- *
- * Purpose:
- *   This function allows extracting icons from executable files, such as .exe or .dll files. This is useful for displaying icons associated with other
- *   applications or libraries within your application's user interface.  For example, you might extract the icon from a .dll file to display it in a
- *   file browser.
- *
- * Notes:
- *   The function handles both ANSI and UNICODE environments. In UNICODE environments, it converts the file name to a wide string before extracting the icon.
- *   The extracted icon is registered as a resource within the MiniGUI framework.
+ *    HANDLE - The extracted icon handle.
+ * 
+ * Implementation Detail:
+ *    If nIconIndex is -1, the function returns the count of icons in the file.
  */
 HB_FUNC( EXTRACTICON )
 {
 #ifndef UNICODE
-   // Get file name as ANSI string if not UNICODE
-   char     *lpFileName = ( char * ) hb_parc( 1 );
+   const char  *lpFileName = hb_parc( 1 );
 #else
-   // Convert to wide string for UNICODE systems
-   LPWSTR   lpFileName = AnsiToWide( ( char * ) hb_parc( 1 ) );
+   LPWSTR      lpFileName = AnsiToWide( hb_parc( 1 ) );
 #endif
-   int      nIconIndex = hmg_par_INT( 2 );         // Icon index in the file
+   int         nIconIndex = hmg_par_INT( 2 );
+
    if( nIconIndex == -1 )
    {
+      // Return the count of icons available in the file
 #if defined( __BORLANDC__ )
-      // Extract icon count if the index is -1
       hb_retni( ( int ) ExtractIcon( GetInstance(), lpFileName, nIconIndex ) );
 #else
-      // Extract icon handle if the index is -1
       hmg_ret_raw_HANDLE( ExtractIcon( GetInstance(), lpFileName, nIconIndex ) );
 #endif
    }
    else
    {
-      HICON hIcon;
-
-      // Extract and register the icon at the specified index
-      hIcon = ExtractIcon( GetInstance(), lpFileName, nIconIndex );
+      // Extract the specific icon and register it for HMG management
+      HICON hIcon = ExtractIcon( GetInstance(), lpFileName, nIconIndex );
       RegisterResource( hIcon, "ICON" );
       hmg_ret_raw_HANDLE( hIcon );
    }
 
 #ifdef UNICODE
-   hb_xfree( lpFileName );                         // Free allocated memory for wide string
+   hb_xfree( lpFileName );
 #endif
 }
 
 /*
- * FUNCTION EXTRACTICONEX( cFileName, nIconIndex, nWidth, nHeight )
- *
- * Extracts multiple icons with custom sizes from a file.
- *
+ * FUNCTION EXTRACTICONEX
+ * -----------------------
+ * Purpose: Advanced icon extraction allowing size specification.
+ * 
  * Parameters:
- *   cFileName : STRING - The name of the executable file from which to extract the icon.
- *   nIconIndex : NUMERIC - The index of the icon to extract. Use -1 to get the total number of icons.
- *   nWidth : NUMERIC (Optional) - The desired width of the extracted icon. If omitted, the system default icon width is used.
- *   nHeight : NUMERIC (Optional) - The desired height of the extracted icon. If omitted, the system default icon height is used.
- *
+ *    1: cFileName (STRING) - Path to the file.
+ *    2: nIconIndex (NUMERIC) - Index or -1 for count.
+ *    3: nWidth (NUMERIC, Optional) - Desired width.
+ *    4: nHeight (NUMERIC, Optional) - Desired height.
+ * 
  * Returns:
- *   If nIconIndex is -1:
- *     NUMERIC - The total number of icons in the file.
- *   Otherwise:
- *     ARRAY - An array containing two elements:
- *       [1] : HICON - The handle of the extracted icon.
- *       [2] : NUMERIC - The ID of the extracted icon.
- *
- * Purpose:
- *   This function provides more advanced icon extraction capabilities, allowing you to extract icons with specific dimensions. This is useful when you need
- *   to display icons at different sizes within your application's user interface.  For example, you might extract icons with different sizes for use in
- *   a toolbar and a list view.
- *
- * Notes:
- *   The function handles both ANSI and UNICODE environments. In UNICODE environments, it converts the file name to a wide string before extracting the icon.
- *   The extracted icon is registered as a resource within the MiniGUI framework.
- *   The function uses different APIs (ExtractIconEx or PrivateExtractIcons) depending on the compiler being used.
+ *    If index is -1: NUMERIC (Count).
+ *    Otherwise: ARRAY { hIcon, nIconId }.
  */
 HB_FUNC( EXTRACTICONEX )
 {
 #ifndef UNICODE
-   char     *lpFileName = ( char * ) hb_parc( 1 ); // File name for non-UNICODE
+   const char  *lpFileName = hb_parc( 1 );
 #else
-   LPWSTR   lpFileName = AnsiToWide( ( char * ) hb_parc( 1 ) );   // Wide string for UNICODE
+   LPWSTR      lpFileName = AnsiToWide( hb_parc( 1 ) );
 #endif
-   int      nIconIndex = hb_parni( 2 );   // Icon index in file
+   int         nIconIndex = hb_parni( 2 );
+
    if( nIconIndex == -1 )
    {
+      // Query total icon count using the most appropriate API for the compiler
 #if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 )
-      // Extract icons using ExtractIconEx for Borland 5.5 compiler
       hmg_ret_UINT( ExtractIconEx( lpFileName, nIconIndex, NULL, NULL, 0 ) );
 #else
-      // Use PrivateExtractIcons for other compilers
       hmg_ret_UINT( PrivateExtractIcons( lpFileName, nIconIndex, 0, 0, NULL, NULL, 0, 0 ) );
 #endif
    }
    else
    {
       HICON hIcon;
-#if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 )
       UINT  nIconId = 0;
+      UINT  nIconCount;
 
-      // Extract single icon for Borland 5.5 compiler
-      UINT  nIconCount = ExtractIconEx( lpFileName, nIconIndex, &hIcon, NULL, 1 );
+#if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 )
+      // Legacy Borland compilers use the standard ExtractIconEx
+      nIconCount = ExtractIconEx( lpFileName, nIconIndex, &hIcon, NULL, 1 );
 #else
-      UINT  nIconId;
-      int   cx = hb_parnidef( 3, GetSystemMetrics( SM_CXICON ) ); // Icon width
-      int   cy = hb_parnidef( 4, GetSystemMetrics( SM_CYICON ) ); // Icon height
-
-      // Extract icon using PrivateExtractIcons
-      UINT  nIconCount = PrivateExtractIcons( lpFileName, nIconIndex, cx, cy, &hIcon, &nIconId, 1, 0 );
+      // Modern compilers use PrivateExtractIcons for better control over dimensions
+      int   cx = hb_parnidef( 3, GetSystemMetrics( SM_CXICON ) );
+      int   cy = hb_parnidef( 4, GetSystemMetrics( SM_CYICON ) );
+      nIconCount = PrivateExtractIcons( lpFileName, nIconIndex, cx, cy, &hIcon, &nIconId, 1, 0 );
 #endif
       if( nIconCount > 0 )
       {
-         hb_reta( 2 );
-
-         // Register the icon at the specified index
          RegisterResource( hIcon, "ICON" );
-
-         // Store icon and ID in return array
+         hb_reta( 2 ); // Return array with handle and ID
          hmg_storvnl_HANDLE( hIcon, -1, 1 );
          HB_STORNI( nIconId, -1, 2 );
       }
    }
 
 #ifdef UNICODE
-   hb_xfree( lpFileName );                   // Free wide string memory
+   hb_xfree( lpFileName );
 #endif
 }
 
 /*
- * FUNCTION ISHICON( hIcon )
- *
- * Checks if a given handle is a valid icon handle.
- *
+ * FUNCTION ISHICON
+ * -----------------
+ * Purpose: Validates if a handle is a valid Icon handle.
+ * 
  * Parameters:
- *   hIcon : HANDLE - The handle to check.
- *
+ *    1: hIcon (HANDLE) - The handle to validate.
+ * 
  * Returns:
- *   LOGICAL - .T. if the handle is a valid icon handle, .F. otherwise.
- *
- * Purpose:
- *   This function is used to validate a handle before attempting to use it as an icon. This can prevent errors and improve the robustness of the application.
- *   For example, you might use this function to check if a handle returned by another function is a valid icon before attempting to draw it.
- *
- * Notes:
- *   The function retrieves icon information using GetIconInfo and checks the fIcon member to determine if it's an icon.
- *   The function deletes any associated bitmaps to release memory.
+ *    LOGICAL - .T. if valid, .F. otherwise.
+ * 
+ * Implementation Detail:
+ *    Uses GetIconInfo to probe the handle. Crucially, it deletes the 
+ *    bitmaps created by GetIconInfo to prevent a GDI leak.
  */
 HB_FUNC( ISHICON )
 {
-   ICONINFO iconinfo;
-   BOOL     bTrue;
+   ICONINFO ii;
+   BOOL     bIsIcon = GetIconInfo( hmg_par_raw_HICON( 1 ), &ii );
 
-   // Get icon information; if successful, confirm if it's an icon
-   bTrue = GetIconInfo( hmg_par_raw_HICON( 1 ), &iconinfo );
-
-   if( bTrue )
+   if( bIsIcon )
    {
-      bTrue = iconinfo.fIcon;
-
-      // Delete associated bitmaps to release memory
-      if( iconinfo.hbmMask )
+      bIsIcon = ii.fIcon;
+      
+      // GetIconInfo creates new bitmap handles that MUST be deleted by the caller
+      if( ii.hbmMask )
       {
-         DeleteObject( iconinfo.hbmMask );
+         DeleteObject( ii.hbmMask );
       }
 
-      if( iconinfo.hbmColor )
+      if( ii.hbmColor )
       {
-         DeleteObject( iconinfo.hbmColor );
+         DeleteObject( ii.hbmColor );
       }
    }
 
-   // Return TRUE if the handle is an icon
-   hb_retl( bTrue );
+   hb_retl( bIsIcon );
 }
 
 /*
- * FUNCTION LOADICONBYNAME( cIconName, nWidth, nHeight, hInstance )
- *
- * Loads an icon by name from resources or a file, allowing custom icon sizes.
- *
+ * FUNCTION LOADICONBYNAME
+ * ------------------------
+ * Purpose: Loads an icon by name from resources or an external file.
+ * 
  * Parameters:
- *   cIconName : STRING - The name of the icon resource or the path to the icon file.
- *   nWidth : NUMERIC - The desired width of the icon.
- *   nHeight : NUMERIC - The desired height of the icon.
- *   hInstance : HINSTANCE (Optional) - The instance handle of the module containing the icon resource. If omitted, the function uses the application's resource handle.
- *
+ *    1: cIconName (STRING) - Resource name or file path.
+ *    2: nWidth (NUMERIC) - Desired width.
+ *    3: nHeight (NUMERIC) - Desired height.
+ *    4: hInstance (HANDLE, Optional) - Instance handle.
+ * 
  * Returns:
- *   HICON - The handle of the loaded icon. Returns NULL if the icon could not be loaded.
- *
- * Purpose:
- *   This function provides a flexible way to load icons from either resources or files, with the ability to specify the desired icon size. This is useful
- *   when you need to load icons dynamically and adjust their size to fit different UI elements.  For example, you might use this function to load icons
- *   from a configuration file and display them in a toolbar with a specific size.
- *
- * Notes:
- *   The function first attempts to load the icon from resources. If that fails, it attempts to load it from a file.
- *   The function handles both ANSI and UNICODE environments. In UNICODE environments, it converts the icon name to a wide string before loading the icon.
- *   The loaded icon is registered as a resource within the MiniGUI framework.
+ *    HANDLE - The loaded icon handle.
  */
 HB_FUNC( LOADICONBYNAME )
 {
@@ -425,86 +341,90 @@ HB_FUNC( LOADICONBYNAME )
    if( hb_parclen( 1 ) > 0 )
    {
 #ifndef UNICODE
-      const char  *pszResOrFile = hb_parc( 1 );
+      const char  *pszName = hb_parc( 1 );
 #else
-      LPCWSTR     pszResOrFile = AnsiToWide( ( char * ) hb_parc( 1 ) );
+      LPWSTR      pszName = AnsiToWide( hb_parc( 1 ) );
 #endif
-      int         cxDesired = hb_parni( 2 ); // Desired icon width
-      int         cyDesired = hb_parni( 3 ); // Desired icon height
-      HINSTANCE   hInstance = HB_ISNIL( 4 ) ? GetResources() : hmg_par_raw_HINSTANCE( 4 );
+      int         cx = hb_parni( 2 );
+      int         cy = hb_parni( 3 );
+      HINSTANCE   hInst = HB_ISNIL( 4 ) ? GetResources() : hmg_par_raw_HINSTANCE( 4 );
 
-      // Load icon from resources or file with specified size
-      hIcon = ( HICON ) LoadImage( hInstance, pszResOrFile, IMAGE_ICON, cxDesired, cyDesired, LR_DEFAULTCOLOR );
-
-      if( hIcon == NULL )
+      // Attempt 1: Load from internal resources
+      hIcon = ( HICON ) LoadImage( hInst, pszName, IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR );
+      
+      // Attempt 2: If not in resources, try loading from an external file
+      if( !hIcon )
       {
-         // Fallback to loading from file if resource loading fails
-         hIcon = ( HICON ) LoadImage( 0, pszResOrFile, IMAGE_ICON, cxDesired, cyDesired, LR_LOADFROMFILE | LR_DEFAULTCOLOR );
+         hIcon = ( HICON ) LoadImage( NULL, pszName, IMAGE_ICON, cx, cy, LR_LOADFROMFILE | LR_DEFAULTCOLOR );
       }
 
-      if( hIcon != NULL )
+      if( hIcon )
       {
-         // Register loaded icon as a resource
          RegisterResource( hIcon, "ICON" );
       }
 
 #ifdef UNICODE
-      hb_xfree( ( TCHAR * ) pszResOrFile );  // Free wide string memory
+      hb_xfree( pszName );
 #endif
    }
 
-   hmg_ret_raw_HANDLE( hIcon );              // Return icon handle
+   hmg_ret_raw_HANDLE( hIcon );
 }
 
 /*
- * FUNCTION DRAWICONEX( hWnd, nX, nY, hIcon, nWidth, nHeight, crBackColor, lDestroy )
- *
- * Draws an icon on a window with a specified background color to reduce flickering.
- *
+ * FUNCTION DRAWICONEX
+ * --------------------
+ * Purpose: Draws an icon on a window with flicker-reduction logic.
+ * 
  * Parameters:
- *   hWnd : HWND - The handle of the window on which to draw the icon.
- *   nX : NUMERIC - The x-coordinate of the upper-left corner of the icon.
- *   nY : NUMERIC - The y-coordinate of the upper-left corner of the icon.
- *   hIcon : HICON - The handle of the icon to draw.
- *   nWidth : NUMERIC - The width of the icon.
- *   nHeight : NUMERIC - The height of the icon.
- *   crBackColor : COLORREF - The background color to use for flicker-free drawing.
- *   lDestroy : LOGICAL (Optional) - .T. if the icon should be destroyed after drawing; otherwise, .F.. Defaults to .T..
- *
+ *    1: hWnd (HANDLE) - Target window handle.
+ *    2: nX, 3: nY (NUMERIC) - Coordinates.
+ *    4: hIcon (HANDLE) - Icon to draw.
+ *    5: nWidth, 6: nHeight (NUMERIC) - Dimensions.
+ *    7: crBackColor (COLORREF) - Background color for the brush.
+ *    8: lDestroy (LOGICAL) - If .T., the icon is destroyed after drawing.
+ * 
  * Returns:
- *   LOGICAL - .T. if the icon was successfully drawn, .F. otherwise.
- *
- * Purpose:
- *   This function provides a flicker-free way to draw icons on a window. It creates a solid brush with the specified background color and uses it to
- *   draw the icon, which helps to reduce flickering, especially when drawing icons frequently.  For example, you might use this function to draw icons
- *   in a custom control that is updated frequently.
- *
- * Notes:
- *   The function creates a solid brush for the background color and deletes it after drawing the icon.
- *   The function optionally destroys the icon after drawing it, which is useful when the icon is no longer needed.
+ *    LOGICAL - Success status.
+ * 
+ * Implementation Detail:
+ *    Uses a solid brush to fill the background during the draw operation, 
+ *    which significantly reduces flickering in event-driven UI updates.
  */
 HB_FUNC( DRAWICONEX )
 {
-   HWND  hwnd = hmg_par_raw_HWND( 1 );
-
-   if( IsWindow( hwnd ) )
+   HDC      hDC;
+   HBRUSH   hBrush;
+   BOOL     bResult;
+   HWND     hWnd = hmg_par_raw_HWND( 1 );
+   HICON    hIcon = hmg_par_raw_HICON( 4 );
+   
+   // Validation to prevent crashes on invalid handles
+   if( !IsWindow( hWnd ) || hIcon == NULL )
    {
-      HICON    hIcon = hmg_par_raw_HICON( 4 );
-      HDC      hdc = GetDC( hwnd );          // Get device context for drawing
-      HBRUSH   hbrFlickerFreeDraw = CreateSolidBrush( hmg_par_COLORREF( 7 ) );   // Create background brush
-
-      // Draw the icon at specified coordinates with flicker-free background
-      hb_retl( DrawIconEx( hdc, hb_parni( 2 ), hb_parni( 3 ), hIcon, hb_parni( 5 ), hb_parni( 6 ), 0, hbrFlickerFreeDraw, DI_NORMAL ) );
-
-      // Release resources
-      DeleteObject( hbrFlickerFreeDraw );
-
-      if( hb_parldef( 8, HB_TRUE ) )
-      {
-         DelResource( hIcon );   // Unregister the icon
-         DestroyIcon( hIcon );   // Destroy the icon handle
-      }
-
-      ReleaseDC( hwnd, hdc );    // Release device context
+      hb_retl( HB_FALSE );
+      return;
    }
+
+   hDC = GetDC( hWnd );
+   
+   // Create a brush with the specified background color for flicker-free drawing
+   hBrush = CreateSolidBrush( hmg_par_COLORREF( 7 ) );
+   
+   // Perform the actual drawing using the extended Windows API
+   bResult = DrawIconEx( hDC, hb_parni( 2 ), hb_parni( 3 ), hIcon, hb_parni( 5 ), hb_parni( 6 ), 0, hBrush, DI_NORMAL );
+
+   // Cleanup GDI brush immediately
+   DeleteObject( hBrush );
+
+   // Optional auto-destruction of the icon handle to simplify Harbour-side logic
+   if( hb_parldef( 8, HB_TRUE ) )
+   {
+      DelResource( hIcon );
+      DestroyIcon( hIcon );
+   }
+
+   ReleaseDC( hWnd, hDC );
+
+   hb_retl( bResult );
 }
