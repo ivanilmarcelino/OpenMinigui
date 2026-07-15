@@ -13,7 +13,9 @@
 -o../lib/${hb_comp}/minigui
 
 -I../Include 
--I${MG_ROOT}include
+-I${MG_ROOT}/include
+-I${MG_ROOT}/source
+-I${MG_HRB}/include
 
 -w3 -es2 -ko -q0
 

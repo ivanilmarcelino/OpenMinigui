@@ -1,3 +1,464 @@
+2026/07/15: HMG Extended Edition version 26.07.
+  * Modified: Major cleanup of MENU customization API (C Layer).
+           * Refactored XGETMENUCAPTION / XSETMENUCAPTION: added error checks, early
+             returns, consistent string handling, reduced duplication and leaks.
+           * Extracted GetMenuStyle() helper to eliminate duplicated style logic.
+           * Standardized NULL pointer checks across all functions for consistency and
+             readability.
+           * Better memory management and structure while preserving original behavior.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\MenuEx)
+  * Modified: Date/Time Picker refactoring (C Layer):
+           * Significantly reduced code duplication between INITDATEPICK and INITTIMEPICK.
+           * Introduced common helper functions:
+             InitDateTimeControls() and CreatePickerControl().
+           * Consolidated repeated SYSTEMTIME handling into FillSystemTime() helper.
+           * Improved overall code structure, readability, and consistency.
+           * Standardized variable naming and cleaned up conditional style building.
+           * Minor cleanups in OwnPickProc, SETDATEPICK, DTP_SETDATETIME and supporting
+             functions.
+           * Preserved 100% original logic, behavior, public API and UI layout.
+           * No new dependencies or breaking changes.
+           Contributed by Grigory Filatov
+  * Modified: DatePicker/TimePicker controls: Refactored internal implementation by
+           extracting common initialization and registration code into shared helper
+           functions, reducing code duplication and improving maintainability.
+           No functional changes.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\datetime)
+  * Modified: StatusBar control handling:
+           * Refactored internal control registration by introducing a shared helper
+             routine to initialize common control metadata.
+           * Eliminated duplicated control initialization code across MessageBar and
+             StatusItem implementations.
+           * Centralized default initialization of HMG Control arrays, improving
+             maintainability and reducing code duplication.
+           * Preserved existing behavior, API compatibility, and UI layout;
+             no functional changes were introduced.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\Statusbar)
+  * Modified: Refactored Windows registry handling (TReg32 class):
+           * Introduced _RegistryAccess() to eliminate duplicated WOW64 access-flag
+             logic.
+           * Standardized initialization of all class members in constructors.
+           * Unified error handling through consistent use of ::nError and ::lError.
+           * Improved formatting, indentation, spacing, and line wrapping throughout.
+           * Grouped methods and helper functions by responsibility.
+           * Simplified comments to focus on intent rather than restating
+             the implementation.
+           * Kept all public APIs, registry semantics, conversion logic, and
+             UI behavior unchanged.
+           * Retained compatibility with older Harbour/xHarbour versions and
+             avoided any external dependencies.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\REGISTRY)
+  * Updated: MySql library source code has been replaced with refactored and
+           improved version:
+           - Introduced common hb_mysqlError() helper to reduce code duplication.
+           - Fixed potential crash/undefined behavior in MYSQL_LIST_DBS() and
+             MYSQL_LIST_TABLES() when MySQL functions return NULL.
+           - Corrected integer conversion bug in legacy MYSQL_GET_SERVER_VERSION()
+             fallback path.
+           - Added explicit type casts for better portability and warning reduction.
+           - Improved MYSQL_ESCAPE_STRING_FROM_FILE() to return empty string on file
+             load failure.
+           - Enhanced code style, variable naming consistency, and overall readability.
+           - Minor cleanups in several functions (MYSQL_FETCH_FIELD(), MYSQL_FETCH_ROW()),
+             and GC helpers.
+           - Preserved full backward compatibility with no changes to public API behavior.
+           Contributed by Grigory Filatov
+           (see mysql.c in folder \Source\HbMySql)
+  * Updated: Harbour contrib SevenZip library for 7zip compression:
+           - Code refactoring and cleanup.
+           - Improved formatting, consistency, readability and maintainability
+             of the T7Zip class without changing functionality or API compatibility.
+           Contributed by Grigory Filatov
+           (see t7zip.prg in folder \Source\SevenZip)
+  * Updated: HbSQLite3 library:
+           - update for using SQLITE3 version 3.53.3 (from 3.53.2). [PRO VERSION]
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\SQLITE_2)
+  * Updated: Harbour Compiler 3.2.0 final (SVN 2026-07-07 12:00).
+           Contributed by Grigory Filatov
+           (look at ReadMe.txt in folder \harbour) [PRO VERSION]
+  * Updated: The following samples of Petr Chornyj were updated with comprehensive
+           documentation:
+           - \samples\Basic\MenuRES;
+           - \samples\Advanced\AppEvents;
+           - \samples\Advanced\MESSAGEONLY_WINDOW.
+  * Updated: 'TagBox Search Filter' example:
+           - Refactored for cleaner, more maintainable code.
+           - Added case-insensitive duplicate detection.
+           - Tags are now sorted automatically.
+           - Centralized UI update logic.
+           - Improved comments to better demonstrate MiniGUI best practices.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\ChatGPT\TagBox)
+  * Updated: 'Console To GUI Enter Form' sample:
+           - added detailed comments to the code.
+           Contributed by Grigory Filatov
+           (see demo2.prg in folder \samples\Basic\ConsoleToGUI)
+  * Updated: 'Disk space usage graph' sample:
+           - added detailed comments to the code.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\DiskspaceGraph)
+  * Updated: Refactored the SQLMIX demo to improve code organization and readability.
+           * Isolated database initialization and data generation into helper routines.
+           * No functional or behavioral changes.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\ArrayRDD)
+
+2026/06/24: HMG Extended Edition version 26.06.
+  * Fixed: Added missing AutoSize width recalculation for radio buttons 2+ in
+           RadioGroup handling (introduced in build 26.05). This fix is essential
+           for correct AutoSize behavior in RadioGroups with multiple options.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\MAINDEMO_(SYNTAX_I))
+  * Modified: Refactored font management for better structure and readability:
+           * Added modular helpers: _ResetControlSlot, _BuildFontAttr, _FontExists.
+           * Added constants (e.g. CONTROL_TYPE_FONT).
+           * Reduced duplication, cleaner control array setup and consistent naming.
+           Contributed by Grigory Filatov
+           (see demo.prg in folder \samples\Basic\Font)
+  * Modified: Refactored AnimateRes control property handling to reduce code
+           duplication and improve maintainability:
+           * Fixed control visibility initialization by correctly applying
+             the WS_VISIBLE style according to the INVISIBLE parameter.
+           * Improved source code readability, naming consistency, and internal
+             documentation comments.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\AVI_Animation)
+  * Modified: Refactored CheckBox, CheckButton, and Image CheckButton control creation
+           code for improved readability and maintainability:
+           * Added shared helper routines for style construction, parent/form
+             preparation, control validation, font application, and tooltip handling.
+           * Reduced duplicated dialog and non-dialog initialization logic across
+             checkbox-related controls.
+           * Corrected InitDialogCheckButton() check state handling consistency for
+             three-state controls.
+           * Standardized local variable naming and formatting conventions.
+           * Preserved original behavior and UI layout compatibility.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\CheckBox_ThreeState)
+  * Modified: Refactored ComboBox control implementation for improved readability and
+           maintainability:
+           * Extracted repeated font initialization into a helper routine.
+           * Centralized ComboBox style construction.
+           * Reduced duplicated code paths and validation logic.
+           * Improved formatting, naming consistency, and code organization.
+           * Simplified control creation flow while preserving existing behavior.
+           * No functional changes; UI layout, runtime logic, and backward compatibility
+             remain unchanged.
+           Contributed by Grigory Filatov
+           (see demos in folder \samples\Basic\COMBO_5)
+  * Modified: Refactored Listbox control for improved readability and maintainability.
+           * Standardized spacing, indentation, and variable naming conventions.
+           * Grouped logic into clearer sections:
+             defaults, preprocessing, validation, creation, and initialization.
+           * Simplified conditional flow and reduced duplicated code paths.
+           * Improved listbox style construction for better clarity.
+           * Normalized multi-tab row preprocessing and width handling.
+           * Added explanatory comments throughout the implementation.
+           * Cleaned up dialog and runtime initialization handling without changing
+             behavior.
+           * No functional or UI behavior changes introduced.
+           Contributed by Grigory Filatov
+           (see demos in folder \samples\Basic\Listbox)
+  * Modified: Refactored ProgressBar control for improved readability and maintenance.
+           * Reorganized code into logical sections:
+             validation, initialization, runtime setup, metadata registration, colors,
+             and OOP integration.
+           * Improved consistency of style flag initialization and control setup.
+           * Simplified color/theme handling while preserving existing behavior.
+           * No functional changes; existing ProgressBar behavior and compatibility
+             preserved.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\PROGRESSBAR)
+  * Modified: Refactored RichEditBoxEx control internal implementation:
+           * Split _DefineRichEditBoxEx() into helper functions.
+           * Reduced duplicated initialization and font handling code.
+           * Improved readability and maintainability.
+           * Preserved backward compatibility and existing behavior.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\RichEditBox)
+  * Modified: Refactored RichEditBox control code:
+           * Minor cleanups: consistent defaults, empty checks, variable scoping.  
+           * No functional changes.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\RichEdit)
+  * Modified: Updated ownerdraw colored Tab code with comprehensive documentation,
+           consistent naming, and improved code structure for better maintainability.
+           No behavior changes.
+           Contributed by Grigory Filatov
+           (see demo.prg in folder \samples\Basic\TAB)
+  * Modified: Refactored Rating control code:
+           * Extracted duplicated image-name logic into reusable helper functions.
+           * Centralized rating paint/update logic.
+           * Simplified nested logic with early returns.
+           * Reduced duplicated loops.
+           * Improved vertical spacing and block formatting.
+           * Grouped related operations for easier scanning.
+           * Separated border rendering into its own helper.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\RATING)
+  * Modified: Refactored Task Dialog classes code.
+           * Improved code readability, maintainability, and internal documentation.
+           * Reduced duplicated logic through shared helper methods.
+           * Simplified property handling and flag management.
+           * No functional changes intended.
+           Contributed by Grigory Filatov
+           (see demos in folder \samples\Basic\TaskDialogs\TTaskDialog)
+  * Modified: Refactored Windows registry handling for improved readability and
+           maintainability:
+           * Cleaner, consistent code style.
+           * Better structured comments and method documentation.
+           * Fixed Close() method (proper handle check).
+           * Reduced redundancy while preserving full functionality. 
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\RegistryUnitTests)
+  * Updated: HbSQLite3 library:
+           - update for using SQLITE3 version 3.53.2 (from 3.53.1). [PRO VERSION]
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\SQLITE_2)
+  * Updated: 'OwnerDraw Box and Letters' sample has been fully refactored:
+           * Added centralized DrawLabel() helper to eliminate duplicated
+             DEFINE LABEL blocks.
+           * Simplified repeated property handling and default values.
+           * Reduced redundant local variables and repeated logic.
+           * Simplified border/shadow condition handling.
+           * Reorganized procedures into cleaner logical sections.
+           * No UI or behavioral changes introduced.
+           * Existing layout, rendering, colors, and effects remain unchanged.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\LABEL_3)
+  * Updated: 'Tsbrowse object: Test windows type MAIN, STANDARD, MODAL' sample.
+           Contributed by Sergej Kiselev and Verchenko Andrey
+           (see in folder \samples\Advanced\Tsb_2WndType)
+
+2026/05/25: HMG Extended Edition version 26.05.
+  * Modified: Fixed redundant parameter parsing in MOVEBTNTEXTBOX (C layer).
+           Issue: the code calls hmg_par_raw_HWND(2) and then later calls
+           hb_parnl(2) to check if the handle exists. It is more efficient
+           to check the variable already assigned.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\BtnTextBox)
+  * Modified: Refactored font management and enumeration code (C layer) for
+           improved consistency and maintainability.
+           * Introduced internal helper functions to centralize font creation,
+             parameter handling, and window validation, reducing code duplication.
+           * Simplified Unicode handling by encapsulating string conversions.
+           * Standardized parameter extraction and casting, and improved structure
+             of ENUMFONTSEX and its callback for better readability.
+           * No functional changes; behavior and API remain fully compatible.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\GetFonts)
+  * Modified: Dialogs and common controls interface (C layer).
+           Refactored for clarity and maintainability (no functional changes):
+           * Expanded and standardized function-level documentation and parameter
+             descriptions
+           * Improved variable naming and structural consistency across API wrappers
+           * Clarified Unicode/ANSI handling and memory management (string
+             conversions, cleanup)
+           * Simplified initialization of WinAPI structures (CHOOSEFONT, BROWSEINFO,
+             CHOOSECOLOR)
+           * Added defensive checks and clearer default handling for optional
+             parameters
+           * Improved callback documentation and internal state handling
+           * Minor cleanup of resource management (DC, PIDL, allocated buffers)
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\COMMON_DIALOGS)
+  * Modified: Refactored INI functions for improved consistency, readability,
+           and maintainability:
+           * Reduced extensive UNICODE conditional duplication by introducing macros
+             for string conversion and return handling.
+           * Centralized memory cleanup via helper wrapper to minimize risk of leaks.
+           * Standardized use of TCHAR-based WinAPI calls instead of mixed A/W variants.
+           * Simplified buffer management and substring iteration logic, replacing
+             redundant patterns with reusable helpers.
+           * No functional changes; behavior remains fully compatible with previous
+             implementation.
+           Contributed by Grigory Filatov
+           (see demo2.prg in folder \samples\Basic\ini)
+  * Modified: BROWSE handling (C layer).
+           Refactored code for better readability and consistent structure:
+           * Simplified subclass procedure (removed redundant calls)
+           * Added basic handle safety checks
+           * Standardized C89-style variable declarations
+           * No functional or UI changes; behavior preserved.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\Browse_4)
+  * Modified: GRID handling (C layer).
+           Refactored code for readability, consistency, and safety:
+           * Enforced C89 style (variable declarations at block start)
+           * Cached frequently used handles (e.g. HWND) to reduce repetition
+           * Initialized all WinAPI structures (LV_ITEM, LV_COLUMN, LVGROUP, etc.)
+             to prevent undefined behavior
+           * Replaced unnecessary heap allocations (e.g. RECT) with stack-based usage
+           * Simplified and unified UNICODE/ANSI handling patterns
+           * Reduced duplicated logic in column and item manipulation routines
+           * Improved naming consistency across related functions
+           * Added safer handling for pointer-based parameters and WinAPI calls
+           * Minor performance improvements through reduced allocations and
+             cleaner loops
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\Grid_Test)
+  * Modified: EDITBOX handling (C layer).
+           Refactored for improved readability and maintainability:
+           * Standardized parameter extraction into typed local variables.
+           * Clarified and documented style construction with consistent logic
+             and grouping.
+           * Normalized boolean flag handling (notably inverted flags like NoEdge,
+             NotVisible, etc.).
+           * Added safe handle check before applying messages and subclassing.
+           * Enhanced inline documentation, especially around scrollbar behavior
+             and subclassing mechanism.
+           * Retained full backward compatibility and existing behavior.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\EditBoxOverwrite)
+  * Modified: CheckLabel handling (C layer).
+           Refactored for clarity and maintainability (no functional changes):
+           * Expanded and standardized inline documentation (functions, structures,
+             WinAPI flow)
+           * Improved variable naming consistency and code readability
+           * Clarified structure semantics (INSCHK) and internal state handling
+           * Simplified and commented GDI operations (bitmap mask creation,
+             DC lifecycle)
+           * Minor defensive checks and cleaner resource handling (DC cleanup,
+             NULL guards)
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\CheckLabel_3)
+  * Modified: LABEL handling (C layer).
+           Refactored for improved clarity and maintainability:
+           * Standardized parameter extraction to eliminate positional ambiguity,
+             consolidated style and extended style construction.
+           * Simplified subclass procedure by separating mouse tracking and event
+             dispatch logic.
+           * Preserved existing behavior while improving code structure and
+             consistency.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\Label)
+  * Modified: RADIOGROUP handling (C layer).
+           Refactored radio button creation code for better maintainability:
+           * Extracted common logic into internal helpers.
+           * Removed code duplication between INITRADIOGROUP and INITRADIOBUTTON.
+           * Cleaned up style, reduced verbosity, and enforced C89 variable
+             declarations.
+           * Improved consistency and readability while preserving original behavior.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\RadioGroup)
+  * Modified: Refactored BUTTONEX Control code for better readability and maintainability:
+           * Cleaner code structure and consistent indentation.
+           * Improved variable scoping.
+           * Fixed text color handling in disabled state.
+           * Minor optimizations in drawing logic.
+           * Removed redundant variables and streamlined conditionals.
+           Contributed by Grigory Filatov
+           (see demos in folder \samples\Basic\ButtonEx)
+  * Modified: Refactored Image Control code for better structure, readability and
+           maintainability:
+           * Added section comments and improved variable names.
+           * Enhanced flag handling and reduced code duplication.
+           * Cleaned up InitDialogImage(), HasAlpha() and HMG_SaveImage().
+           * No functional changes.
+           Contributed by Grigory Filatov
+           (see demos in folder \samples\Basic\IMAGE_3)
+  * Modified: Refactored Label Control code for better structure and maintainability:
+           * Added helpers: _LabelApplyAutoSize(), _LabelEnableBlink().
+           * Simplified caption handling, color conversion, style setup.
+           * Modernized vars and code structure.
+           * Reduced duplication in dialog init.
+           * Minor cleanups and formatting.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\Label_2)
+  * Modified: Refactored core MENU engine for better maintainability and reduced
+           code duplication. This is a major refactoring and cleanup:
+           * Reduced duplicated menu/control initialization logic.
+           * Added centralized common control initialization.
+           * Unified context menu initialization logic.
+           * Improved code structure and consistency without changing external behavior.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\MenuEx)
+  * Modified: Refactored SHELLEXECUTE() and SHELLEXECUTEEX() for improved readability
+           and consistent formatting.
+           * Simplified WOW64 redirection handling and grouped related
+             initialization/cleanup logic.
+           * Added proper CoUninitialize() call after CoInitialize().
+           * Standardized variable naming and structure without changing
+             existing behavior.
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Basic\ON_KEY_F12)
+  * Modified: Refactored TGif class code structure and formatting:
+           * Improved readability and internal consistency.
+           * Reduced redundant property lookups and comments.
+           * Added safer initialization and cleanup handling.
+           * Improved file I/O error handling in GIF loader.
+           * Simplified timer and animation management.
+           * Preserved existing behavior and MiniGUI compatibility.
+           Contributed by Grigory Filatov
+           (see demo3.prg in folder \samples\Basic\ANIMATEDEMO)
+  * Modified: MRU (Most Recently Used) module improved:
+           - Refactored h_mru.prg for better readability and maintainability.
+           - Added named constants for array indexes.
+           - Split complex logic into dedicated helper functions.
+           - Cleaner code structure with improved variable names and menu handling.
+           - Behavior remains identical to original.
+           Contributed by Grigory Filatov
+           (see demo2.prg in folder \samples\Advanced\MRU)
+  * Modified: Refactored TCDOMail class to version 1.1:
+           - added helper functions;
+           - improved address formatting robustness, reduced duplication;
+           - cleaner structure and comments;
+           - maintains identical email sending behavior.
+           Contributed by Grigory Filatov
+  * Updated: HbSQLite3 library:
+           - update for using SQLITE3 version 3.53.1 (from 3.53.0). [PRO VERSION]
+           Contributed by Grigory Filatov
+           (see demo in folder \samples\Advanced\SQLITE_2)
+  * Updated: Harbour Compiler 3.2.0dev (SVN 2026-05-14 14:50):
+           * Updated: SddSqlt3 library source code
+             (see in folder \Source\HbSqlDD)
+           Contributed by Grigory Filatov
+           (look at ReadMe.txt in folder \harbour) [PRO VERSION]
+  * Updated: 'EditBox Overwrite' sample:
+           - added detailed inline code documentation.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\EditBoxOverwrite)
+  * Updated: 'Virtual Grid Usage' sample:
+           - added detailed inline code documentation.
+           Contributed by Grigory Filatov
+           (see demo2.prg in folder \samples\Basic\Grid_8)
+  * Updated: 'Label properties' sample:
+           - added detailed inline code documentation.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\LABEL_4)
+  * Updated: 'Labels as buttons' sample:
+           - updated detailed inline code documentation.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\LABEL_5)
+  * Updated: 'Message Test Function' sample: refactored MsgTest utility
+           functions for improved readability and maintainability.
+           * Standardized variable naming and formatting across dialog/browse
+             helpers.
+           * Reduced duplicated code by centralizing dialog positioning logic.
+           * Replaced repeated AllTrim( Str() ) expressions with hb_ntos()
+             where appropriate.
+           * Improved array/hash browse preparation logic and loop clarity.
+           * Simplified conditional expressions and multiline string assembly.
+           * Added layout constants for dialog/grid dimensions.
+           * Preserved existing UI behavior, layout, and runtime functionality.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Basic\TestMsg)
+  * Updated: 'System idle time monitoring' sample:
+           - added constants for timers and levels;
+           - simplified CheckIdleTimeout() and ScreenSaver() logic;
+           - cleaner comments and variable naming.
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\SysIdle_2)
+  * Updated: UnRar sample:
+           - updated unrar.dll to the current version 7.22 (from 7.20).
+           Contributed by Grigory Filatov
+           (see in folder \samples\Advanced\UnRar)
+
 2026/04/24: HMG Extended Edition version 26.04.
   * Modified: Control miscellaneous module (C layer).
            Major refactoring and cleanup:
@@ -78,7 +539,7 @@
            Contributed by Grigory Filatov
            (see demo in folder \samples\Advanced\SQLITE_2)
   * Updated: Harbour Compiler 3.2.0dev (SVN 2026-02-28 15:33):
-           * Updated libpng to version 1.6.56 (from 1.6.55).
+           * Updated libpng to version 1.6.58 (from 1.6.55).
            Contributed by Grigory Filatov
            (look at ReadMe.txt in folder \harbour) [PRO VERSION]
   * Updated: 'Get Form Client Height' sample:

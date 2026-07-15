@@ -1,0 +1,15 @@
+-hblib
+-inc
+
+-o../../harbour/lib/hbfimage
+
+-I.
+
+-hbx=../../include/hbfimage.hbx
+
+-w3 -es2
+
+# For FreeImage headers
+-c=gnu90
+
+core.c

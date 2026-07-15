@@ -1,0 +1,32 @@
+#
+# socket.hbp
+#
+
+-hblib
+-inc
+-o../../harbour/lib/socket
+
+-I../../include
+
+-warn=yes
+
+-w2 -es2 -ko -q0
+
+-cflag=-D_WINSOCK_DEPRECATED_NO_WARNINGS
+{bcc}-cflag=-w-8057
+{bcc}-cflag=-w-8008
+{bcc}-cflag=-w-8066
+
+-hbx=../../include/socket.hbx
+
+tftp.prg
+tpair.prg
+tdecode.prg
+thttp.prg
+tpop3.prg
+tsmtp.prg
+tsocket.prg
+socket.c
+base64.c
+md5c.c
+hmac_md5.c

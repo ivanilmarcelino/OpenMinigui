@@ -1,0 +1,14 @@
+#
+# selector.hbp
+#
+
+-hblib
+-inc
+-o../../harbour/lib/selector
+
+-I../../include
+
+-w3 -es2 -ko -q0
+
+selector.prg
+

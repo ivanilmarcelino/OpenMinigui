@@ -46,171 +46,142 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  ---------------------------------------------------------------------------*/
 
 #ifdef __XHARBOUR__
-#define __SYSDATA__
+   // Ensure __SYSDATA__ is defined for xHarbour compatibility layers
+   #define __SYSDATA__
 #endif
+
 #include "minigui.ch"
 #include "error.ch"
 #include "hbver.ch"
 
-/*-----------------------------------------------------------------------------*
-* PROCEDURE ClipInit()
-*
-* Description:
-*   This procedure is the initialization routine for the application.
-*   It checks the Windows version and displays an error message if it's running on
-*   Windows 95 or 98, as these versions are not supported. If the Windows version
-*   is acceptable, it calls the Init() function to perform further initialization.
-*-----------------------------------------------------------------------------*/
+/*
+ * PROCEDURE: ClipInit()
+ * Purpose:   Automatic initialization routine executed before the main application entry point.
+ * Logic:     Validates the operating system environment to ensure compatibility with HMG Extended.
+ * Side Effects: Terminates the process if the OS is a legacy Windows 9x version.
+ */
 INIT PROCEDURE ClipInit()
-
 #ifndef __XHARBOUR__
+   // Harbour-specific check for Windows 95/98/Me. 
+   // HMG Extended requires NT-based kernels for modern API support.
    IF hb_osIsWin9x()
 #else
+   // xHarbour-specific check for legacy Windows versions.
    IF os_isWin95() .OR. os_isWin98()
 #endif
+      // Display a modal exclamation message using HMG's standard UI messaging.
+      // Parameters: Message, Title, Icon, SystemModal, TopMost.
       MsgExclamation( "The " + hb_ArgV( 0 ) + " file" + CRLF + ;
          "expects a newer version of Windows." + CRLF + ;
          "Upgrade your Windows version.", "Error Starting Program", , .F., .T. )
+      
+      // Force immediate termination of the process with exit code 1.
       ExitProcess( 1 )
    ENDIF
-
+   
+   // Call the internal HMG initialization routine to set up global structures.
    Init()
-
 RETURN
 
-/*-----------------------------------------------------------------------------*
-* PROCEDURE ClipExit()
-*
-* Description:
-*   This procedure is the exit routine for the application.
-*   It terminates the application process.
-*-----------------------------------------------------------------------------*/
+/*
+ * PROCEDURE: ClipExit()
+ * Purpose:   Cleanup routine executed automatically upon application termination.
+ * Logic:     Ensures the Windows process is properly closed.
+ */
 EXIT PROCEDURE ClipExit()
-
    ExitProcess()
-
 RETURN
 
 #ifndef __XHARBOUR__
 /*
-* PROCEDURE hb_GTSYS
-*
-* Description:
-*   This procedure requests the default GUI graphics terminal system (GTSYS) for Harbour.
-*   It ensures that the GUI is initialized correctly.
-*/
+ * PROCEDURE: hb_GTSYS()
+ * Purpose:   Configures the Harbour Graphics Terminal (GT) system.
+ * Logic:     Requests the GUI driver instead of the default console driver.
+ * Why:       This prevents a console window from flashing or persisting when 
+ *            launching a GUI-based HMG application.
+ */
 PROCEDURE hb_GTSYS
-
    REQUEST HB_GT_GUI_DEFAULT
-
 RETURN
-
 #endif
 
-/*-----------------------------------------------------------------------------*
-* FUNCTION MsgMiniGuiError( cErrorMessage, lAddText )
-*
-* Description:
-*   This function displays an error message using the MiniGUI framework.
-*   It takes an error message string as input and optionally appends a default
-*   termination message. It then evaluates the ErrorBlock() with a generated
-*   HMG error object, effectively triggering the error handling mechanism.
-*
-*   This function provides a standardized way to display error messages within
-*   MiniGUI applications.  It leverages the Harbour error handling system to
-*   ensure that errors are reported consistently and can be handled gracefully.
-*
-* Parameters:
-*   cErrorMessage: The error message to display.
-*   lAddText: Optional. If .T. (default), appends " Program terminated." to the message.
-*
-* Return Value:
-*   The return value depends on the ErrorBlock() implementation.
-*-----------------------------------------------------------------------------*/
+/*
+ * FUNCTION: MsgMiniGuiError( cErrorMessage, lAddText )
+ * Purpose:   Standardized error reporting for the HMG framework.
+ * Parameters:
+ *    - cErrorMessage (String): The specific error description.
+ *    - lAddText (Logical): If true, appends a "Program terminated" suffix.
+ * Returns:   The result of the current ErrorBlock evaluation.
+ * Side Effects: Triggers the Harbour error handling system.
+ */
 FUNCTION MsgMiniGuiError( cErrorMessage, lAddText )
-
+   // Default lAddText to .T. if not provided to ensure consistent user feedback.
    IF hb_defaultValue( lAddText, .T. )
       cErrorMessage += " Program terminated."
    ENDIF
-
+   
+   // Generate a custom error object and pass it to the global error handler.
+   // This allows developers to intercept HMG errors via ErrorBlock().
 RETURN Eval( ErrorBlock(), HMG_GenError( cErrorMessage ) )
 
-/*-----------------------------------------------------------------------------*
-* STATIC FUNCTION HMG_GenError( cMsg )
-*
-* Description:
-*   This function generates a Harbour error object with specific MiniGUI-related
-*   information. It sets the subsystem, subcode, severity, description, and operation
-*   properties of the error object.
-*
-*   This function is a helper function for MsgMiniGuiError.  It creates a
-*   standardized error object that can be used by the Harbour error handling
-*   system.  The error object contains information about the error, such as its
-*   severity and description.
-*
-* Parameters:
-*   cMsg: The error message to be stored in the error object's description.
-*
-* Return Value:
-*   oError: A Harbour error object populated with MiniGUI-specific error details.
-*-----------------------------------------------------------------------------*/
+/*
+ * STATIC FUNCTION: HMG_GenError( cMsg )
+ * Purpose:   Creates and populates a Harbour Error object.
+ * Parameters:
+ *    - cMsg (String): The error message to be encapsulated.
+ * Returns:   An Error object configured for the HMG subsystem.
+ */
 STATIC FUNCTION HMG_GenError( cMsg )
-
    LOCAL oError := ErrorNew()
-
-   oError:SubSystem := "MGERROR"
-   oError:SubCode := 0
-   oError:Severity := ES_CATASTROPHIC
+   
+   // Define the subsystem as "MGERROR" to distinguish it from standard RTL or RDD errors.
+   oError:SubSystem   := "MGERROR"
+   oError:SubCode     := 0
+   oError:Severity    := ES_CATASTROPHIC
    oError:Description := cMsg
-   oError:Operation := NIL
-
+   oError:Operation   := NIL
+   
 RETURN oError
 
-/*-----------------------------------------------------------------------------*
-* FUNCTION MiniGuiVersion( nVersion )
-*
-* Description:
-*   This function returns the version string of the Harbour MiniGUI Extended Edition.
-*   It constructs the version string based on the Harbour version and the character set.
-*   It also includes a "DEBUG" suffix if the debug mode is enabled. The function allows
-*   for different levels of version information to be returned based on the nVer parameter.
-*
-*   This function provides a way to retrieve the version of the MiniGUI library.
-*   This can be useful for debugging, logging, or displaying the version information
-*   to the user. The different levels of version information allow for flexibility
-*   in how the version is displayed.
-*
-* Parameters:
-*   nVersion: Optional. Specifies the level of version information to return.
-*                   0 (default): Returns the full version string.
-*                   1: Returns a shorter version string (40 characters).
-*                   2: Returns an even shorter version string (15 characters).
-*
-* Return Value:
-*   cVersion: The version string of the Harbour MiniGUI Extended Edition, truncated based on nVersion.
-*-----------------------------------------------------------------------------*/
+/*
+ * FUNCTION: MiniGuiVersion( nVersion )
+ * Purpose:   Retrieves the current version string of the HMG Extended library.
+ * Parameters:
+ *    - nVersion (Numeric): Format selector (0=Full, 1=Short, 2=Minimal).
+ * Returns:   A string containing version, architecture, and charset info.
+ */
 FUNCTION MiniGuiVersion( nVersion )
-
    LOCAL cVersion
-
-#define MG_VERSION "Harbour MiniGUI Extended Edition 26.04.0 ("
-
+   
+   // Define the base version string.
+   #define MG_VERSION "Harbour MiniGUI Extended Edition 26.07.0 ("
+   
 #ifndef __XHARBOUR__
+   // Use Harbour's native version function to detect 32-bit vs 64-bit builds.
    cVersion := MG_VERSION + hb_ntos( hb_Version( HB_VERSION_BITWIDTH ) ) + "-bit) "
 #else
+   // Use xHarbour compatibility check for executable architecture.
    cVersion := MG_VERSION + iif( IsExe64(), "64", "32" ) + "-bit) "
 #endif
+   
+   // Append the active character set (e.g., ANSI, UTF8) for debugging localization issues.
    cVersion += HMG_CharsetName()
+   
+   // If the application is compiled with debug flags, append a suffix.
    IF Set( _SET_DEBUG )
       cVersion += " (DEBUG)"
    ENDIF
-
+   
+   // Ensure nVersion is within valid bounds [0-2].
    hb_default( @nVersion, 0 )
    nVersion := Max( 0, Min( nVersion, 2 ) )
-
+   
+   // Return the version string truncated based on the requested level of detail.
    SWITCH nVersion
-      CASE 1 ; RETURN Left( cVersion, 40 )
-      CASE 2 ; RETURN Left( cVersion, 15 )
+      CASE 1 
+         RETURN Left( cVersion, 40 )
+      CASE 2 
+         RETURN Left( cVersion, 15 )
    ENDSWITCH
-
+   
 RETURN cVersion

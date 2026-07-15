@@ -1,0 +1,22 @@
+#
+# hbzeegrid.hbp
+#
+
+-hblib
+-inc
+-o../../harbour/lib/hbzeegrid
+
+-I../../include
+
+-warn=max
+
+-w3 -es2 -ko -q0
+
+-hbx=../../include/hbzeegrid.hbx
+
+hbzggrid.c
+zgflat.c
+zgdate.c
+hbutils.c
+
+cells.prg

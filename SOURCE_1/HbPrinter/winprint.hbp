@@ -1,0 +1,22 @@
+#
+# winprint.hbp
+#
+
+{bcc}-env:DEBUG=yes
+
+-hblib
+-inc
+-o../../harbour/lib/hbprinter
+
+-I../../include;${hb_curdir}
+
+-warn=max 
+
+{!DEBUG&bcc|mingw}-l
+
+-hbx=../../include/winprint.hbx
+
+-w3 -es2 -ko -q0
+
+h_winprint.prg
+c_winprint.c

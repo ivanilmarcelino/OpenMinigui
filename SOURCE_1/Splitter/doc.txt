@@ -1,0 +1,66 @@
+SYNTAX:
+
+    DEFINE SPLITTER <ControlName>
+    [ ID <nId> ]
+    [ OF, PARENT, DIALOG> <ParentWindowName> ]
+    [ AT <nRow> ,<nCol> ]
+    [ WIDTH <nWidth> ]
+    [ HEIGHT <nHeight> ]
+    [ VERTICAL ] [ HORIZONTAL ]
+    [ HIDEARROW ]
+    [ NOHOVER ]
+    [ USEGRADIENT ]
+    [ ROUNDED ]
+    [ COLOR <color> ]
+    [ BACKCOLOR <backColor> ]
+    [ COLORHOVER <hoverColor> ]
+    [ BACKCOLORHOVER <hoverBackColor> ]
+    [ GRADIENT <leftColor>, <middleColor> [, <rightColor> ] ]
+    [ GRADIENTHOVER <hoverLeftColor>, <hoverMiddleColor> [, <hoverRightColor> ] ]
+    [ SPLIT <aLeftControls> FROM <aRightControls> ]
+    [ LIMITS <aLimits> ]
+
+
+
+SPLITTER object properties:
+
+ - aLeft            Get/Set left (or top) controls of a splitter
+ - aRight           Get/Set right (or bottom) controls of a splitter
+ - nLeftLimit       Get/Set left (or top) limit of a splitter 
+ - nRightLimit      Get/Set right (or bottom) limit of a splitter
+ - lShowArrow       Set whether arrow on a splitter is displayed
+ - lUseHover        Set whether hover effect on a splitter is applied
+ - lUseGradient     Set whether a gradient is used to paint a splitter instead of flat color
+ - lRounded         Set whether splitter's corners are rounded
+ - color            Get/Set an RGB value corresponding to a splitter's foreground color
+ - bcolor           Get/Set an RGB value corresponding to a splitter's background color
+ - colorHover       Get/Set an RGB value corresponding to a splitter's foreground color when hovered
+ - bColorHover      Get/Set an RGB value corresponding to a splitter's background color when hovered
+ - gradient         Get/Set a tuple of 2 or 3 RGB values corresponding to gradient colors (the order is leftColor then middleColor)
+ - gradientHover    Get/Set a tuple of 2 or 3 RGB values corresponding to gradient colors (the order is leftColor then middleColor)
+
+
+
+
+ADDITIONAL NOTES:
+
+ - 'left' and 'right' in variable names might be a little bit misleading - left refers not only to left controls (for vertical splitter) but also to top controls if a splitter
+    is horizontal, same goes for right which also refers to bottom controls
+
+ - the arrow in the splitter is of fixed width/height and will only appear if there's enough space for it
+
+ - USEGRADIENT on its own applies default gradient (with default hovering effect)
+    should a user decide to provide different gradient colouring, GRADIENT (and GRADIENTHOVER) can be added after USEGRADIENT keyword (GRADIENT without USEGRADIENT keyword won't work)
+
+ - row, col, width and height can all be skipped during splitter definition - splitter will try to automatically calculate it's position and dimensions if feasible
+
+ - limit values restrict how far a splitter can be moved left/right (or up/down)
+    defaults to {0, 0}, which f.e. for left limit means that the splitter can be moved as far as the leftmost control's col value
+
+ - nested splitters of the same orientation, as well as resizing windows containing splitters is supported, however sometimes visual artifacts might appear so I recommend
+    using it for those scenarios with caution
+
+ - by default, when both color and backcolor are specified, color is used to paint the middle part of a splitter and takes roughly 1/2 of it's width/height
+                                                            while backcolor paints the remaining background (duh)
+
+ - some of the splitter's properties (listed above) can be changed via object created during definition

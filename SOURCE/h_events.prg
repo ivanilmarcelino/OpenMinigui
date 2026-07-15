@@ -940,7 +940,7 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
          IF _HMG_aFormVirtualHeight [i] > 0 .AND. lParam == 0
 
             IF _HMG_aFormRebarhandle [i] > 0
-            *   MsgMiniGuiError( "SplitBox's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
+               *MsgMiniGuiError( "SplitBox's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
             ENDIF
 
             z := iif( _HMG_aScrollStep [1] > 0, _HMG_aScrollStep [1], GetScrollRangeMax ( hwnd , SB_VERT ) / _HMG_aScrollStep [2] )
@@ -1015,11 +1015,11 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
 
                      *ELSEIF _HMG_aControlType [x] == 'TOOLBAR'
 
-                     *   MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
+                        *MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
 
                      ELSE
-                        _HMG_aControlCol [x] := IIF(_HMG_aControlCol [x] =Nil,0,_HMG_aControlCol [x] )
-                        _HMG_aControlRow [x] := IIF(_HMG_aControlRow [x] =Nil,0,_HMG_aControlRow [x] )
+                        _HMG_aControlCol [x] := IIF(_HMG_aControlCol [x]=Nil,0,_HMG_aControlCol [x])
+                        _HMG_aControlRow [x] := IIF(_HMG_aControlRow [x]=Nil,0,_HMG_aControlRow [x])
                         MoveWindow ( _HMG_aControlhandles [x] , _HMG_aControlCol [x] - NewHPos , _HMG_aControlRow [x] - NewPos , _HMG_aControlWidth [x] , _HMG_aControlHeight [x] , .T. )
 
                      ENDIF
@@ -1223,7 +1223,7 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
          IF _HMG_aFormVirtualWidth [i] > 0 .AND. lParam == 0
 
             IF _HMG_aFormRebarhandle [i] > 0
-               *MsgMiniGuiError( "SplitBox's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
+              * MsgMiniGuiError( "SplitBox's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
             ENDIF
 
             z := iif( _HMG_aScrollStep [1] > 0, _HMG_aScrollStep [1], GetScrollRangeMax ( hwnd , SB_HORZ ) / _HMG_aScrollStep [2] )
@@ -1302,12 +1302,12 @@ FUNCTION Events ( hWnd, nMsg, wParam, lParam )
 
                      *ELSEIF _HMG_aControlType [x] == 'TOOLBAR'
 
-                     *   MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
+                        *MsgMiniGuiError( "ToolBar's Parent Window cannot be a 'Virtual Dimensioned' window (use 'Virtual Dimensioned' SplitChild instead)." )
 
                      ELSE
 
-                        _HMG_aControlCol [x] := IIF(_HMG_aControlCol [x] =Nil,0,_HMG_aControlCol [x] )
-                        _HMG_aControlRow [x] := IIF(_HMG_aControlRow [x] =Nil,0,_HMG_aControlRow [x] )
+                        _HMG_aControlCol [x] := IIF(_HMG_aControlCol [x]=Nil,0,_HMG_aControlCol [x])
+                        _HMG_aControlRow [x] := IIF(_HMG_aControlRow [x]=Nil,0,_HMG_aControlRow [x])
                         MoveWindow ( _HMG_aControlhandles [x] , _HMG_aControlCol [x] - NewHPos , _HMG_aControlRow [x] - NewVPos , _HMG_aControlWidth [x] , _HMG_aControlHeight [x] , .T. )
 
                      ENDIF

@@ -1,0 +1,22 @@
+#
+# pscript.hbp
+#
+
+#{bcc}-env:DEBUG=yes
+
+-hblib
+-inc
+-workdir=../../lib/hbmk/obj
+
+-w2 -es2 -ko -ql
+
+-warn=max 
+
+-I../../include
+-o../../harbour/lib/pscript
+
+{!DEBUG&bcc|mingw}-l
+
+{bcc|mingw}-hbx=../../include/pscript.hbx
+
+TPScript.prg

@@ -4,16 +4,12 @@ rem SET DO COMPILADOR MINGW
 CALL "D:\Prgplus\Tools\Bat\Mingw.bat"
 Set basedir=S:\Mega\Dev\32
 
-SET SOURCE=%BaseDir%\%xMingw32%\MINIGUI\SOURCE
-
 SET HB=%basedir%\%xMingw32%\harbour
 SET CONTRIB=%hb%\contrib
 
 SET PATH=%HB%\bin;%basedir%\%xMingw32%\mingw32\bin;%PATH%
 
 rem set include=%include%;%contrib%\hbwin;%contrib%\hbzebra;%contrib%\hbhpdf;;%contrib%\xhb
-
-
 
 
 ::=======================================================================

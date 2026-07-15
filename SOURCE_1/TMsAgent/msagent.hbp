@@ -1,0 +1,15 @@
+#
+# tmsagent.hbp
+#
+
+-hblib
+-inc
+-o../../harbour/lib/tmsagent
+
+-I../../include
+
+-hbx=../../include/msagent.hbx
+
+-w3 -es2 -ko -q0
+
+tmsagent.prg

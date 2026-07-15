@@ -1,0 +1,18 @@
+#
+# qhtm.hbp
+#
+
+-hblib
+-inc
+-o../../lib/hmg_qhtm
+
+-I../../include
+
+-warn=max
+
+-w2 -es2 -ko -q0
+
+-hbx=../../include/hmg_qhtm.hbx
+
+h_qhtm.prg
+c_qhtm.c

@@ -1,0 +1,15 @@
+#
+# calldll.hbp
+#
+
+-hblib
+-inc
+-o../../harbour/lib/calldll
+
+-I../../include
+
+-w3 -es2 -ko -q0
+
+-hbx=../../include/calldll.hbx
+
+calldll.prg

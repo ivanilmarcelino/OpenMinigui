@@ -1,0 +1,16 @@
+#
+# hbcab.hbp
+#
+
+-hblib
+-inc
+
+-o../../harbour/lib/hbcab
+
+-I./;../../include
+
+-warn=max
+
+cabinet.c
+compress.c
+decompress.c

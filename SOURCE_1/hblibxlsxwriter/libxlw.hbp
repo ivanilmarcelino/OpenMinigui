@@ -1,0 +1,18 @@
+#
+# libxlw.hbp
+#
+
+{bcc}-env:DEBUG=yes
+
+-hblib
+
+-o../../lib/hblibxlsxwriter
+
+-I../../include;./
+
+-w2 -es2
+
+{!DEBUG&bcc|mingw}-l
+
+hblibxlsxwriter.prg
+ 

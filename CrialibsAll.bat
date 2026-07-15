@@ -12,10 +12,6 @@ setlocal EnableDelayedExpansion
 set LOG=%MG_ROOT%LogGeral.log
 
 
-
-@set Path=%MG_BCC%\bin;%MG_HRB%\bin;%path%
-@Set include=%MG_ROOT%include
-
 echo Definição paths: > %LOG%
 echo MG_ROOT=%MG_ROOT% >> %LOG%
 echo MG_LIB=%MG_LIB% >> %LOG%
@@ -24,6 +20,8 @@ echo MG_BCC=%MG_BCC% >> %LOG%
 
 ECHO HB_COMPILER=%HB_COMPILER% >> %LOG%
 ECHO HB_ARCHITECTURE=%HB_ARCHITECTURE% >> %LOG%
+
+@set Path=%MG_BCC%\bin;%MG_HRB%\bin;%path%
 
 
 CD hbmk

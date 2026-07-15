@@ -55,178 +55,253 @@
 //------------------------------------------------------------------------------
 CREATE CLASS T7ZIP
 
-   DATA hWndOwner AS INTEGER INIT 0              // handle of parent window
-   DATA nError AS INTEGER INIT 0                 // Error Message
+   DATA hWndOwner AS INTEGER INIT 0
+   DATA nError AS INTEGER INIT 0
    DATA handle AS INTEGER INIT 0
-   DATA lShowProcessDlg AS LOGICAL INIT .F.      // .T. - show progress dialog
-   DATA lAlwaysOverWrite AS LOGICAL INIT .T.     // overwrite when extract
-   DATA cArcName                                 // Output filename
-   DATA cBuffer AS STRING INIT ""                // Buffer to hold DLL output
-   DATA nBuffer AS INTEGER INIT 0                // Buffer Size to hold DLL output
-   DATA cCompressionMethod AS STRING INIT "PPMd" // "LZMA" - LZ-based algorithm
-                                                 // "LZMA2" - LZMA-based algorithm
-                                                 // "PPMd" - Dmitry Shkarin's PPMdH with small changes
-                                                 // "BZip2" - BWT algorithm
-                                                 // "Deflate" - LZ+Huffman
-                                                 // "Copy" - No Compression
-   DATA nCompressionMethod AS INTEGER INIT 3     // 3 = PPMd, default
-   DATA nZipCompressionLevel AS INTEGER INIT 6   // Zip compression Level
-                                                 // Range: 0 - 9
-   DATA cCommand AS STRING INIT ""               // Command line to pass
-   DATA nArctype AS INTEGER INIT 1               // "7z" - 7z format
-   DATA cArcType AS STRING INIT "7z"             // "7z" - 7z Format
-                                                 // "zip" - zip format
-   DATA aFiles /*AS ARRAY INIT {}*/              // array of files
-                                                 // if empty, all files in current
-                                                 // directory will be archived
-   DATA cPassword AS STRING INIT ""              // password for archive file
-   DATA lRecursive AS LOGICAL INIT .F.           // .T. = include sub-dir
-   DATA aExcludeFiles /*AS ARRAY INIT {}*/       // do not include these files
-                                                 // in archive.
-   DATA aVolumes /*AS ARRAY INIT {}*/            // creates multi-volume archive
-   DATA lSolid AS LOGICAL INIT .T.               // create solid archive. if set
-                                                 // to .T., archive cannot be updated
-                                                 // Note: setting this to .F. will enable
-                                                 // update but the compression
-                                                 // will be degraded, ie bigger size
-   DATA lMultiCPU AS LOGICAL INIT .F.            // set this to .T. when using
-                                                 // multi CPU such as dual[quad]-core
-   DATA lConvertANSIToOEM AS LOGICAL INIT .T.    // Some system requires to convert
-                                                 // ANSI file name to OEM
+
+   DATA lShowProcessDlg AS LOGICAL INIT .F.
+   DATA lAlwaysOverWrite AS LOGICAL INIT .T.
+
+   DATA cArcName
+   DATA cBuffer AS STRING INIT ""
+   DATA nBuffer AS INTEGER INIT 0
+
+   DATA cCompressionMethod AS STRING INIT "PPMd"
+   DATA nCompressionMethod AS INTEGER INIT 3
+
+   DATA nZipCompressionLevel AS INTEGER INIT 6
+
+   DATA cCommand AS STRING INIT ""
+
+   DATA nArcType AS INTEGER INIT 1
+   DATA cArcType AS STRING INIT "7z"
+
+   DATA aFiles
+   DATA cPassword AS STRING INIT ""
+
+   DATA lRecursive AS LOGICAL INIT .F.
+
+   DATA aExcludeFiles
+   DATA aVolumes
+
+   DATA lSolid AS LOGICAL INIT .T.
+   DATA lMultiCPU AS LOGICAL INIT .F.
+
+   DATA lConvertANSIToOEM AS LOGICAL INIT .T.
 
    METHOD New() INLINE Self
-   METHOD Create()                               // Create archive
+   METHOD Create()
 
-   METHOD Open() INLINE;
+   METHOD Open() INLINE ;
       ::handle := HB_SevenZipOpenArchive( ::hWndOwner, ::cArcName, 0 )
 
-   METHOD List() INLINE;
-      ::nError := HB_SevenZip( ::hWndOwner, 'l "' + HB_ANSITOOEM( ::cArcName ) + '"', @::cBuffer, ::nBuffer )
+   METHOD List() INLINE ;
+      ::nError := HB_SevenZip( ;
+         ::hWndOwner, ;
+         'l "' + HB_ANSITOOEM( ::cArcName ) + '"', ;
+         @::cBuffer, ;
+         ::nBuffer )
 
-   METHOD Test() INLINE;
-      ::nError := HB_SevenZip( ::hWndOwner, 't "' + HB_ANSITOOEM( ::cArcName ) + '"', @::cBuffer, ::nBuffer )
+   METHOD Test() INLINE ;
+      ::nError := HB_SevenZip( ;
+         ::hWndOwner, ;
+         't "' + HB_ANSITOOEM( ::cArcName ) + '"', ;
+         @::cBuffer, ;
+         ::nBuffer )
 
-   METHOD Extract( lWithPath ) INLINE;
-      ::nError := HB_SevenZip( ::hWndOwner, if( valtype( lWithPath ) == "L" .AND. lWithPath, 'x ', 'e ' ) + if( ::lAlwaysOverWrite, '-y ', '' ) + if( ::lShowProcessDlg, '-hide ', '' ) + '"' + HB_ANSITOOEM( ::cArcName ) + '"', @::cBuffer, ::nBuffer )
+   METHOD Extract( lWithPath ) INLINE ;
+      ::nError := HB_SevenZip( ;
+         ::hWndOwner, ;
+         If( ValType( lWithPath ) == "L" .AND. lWithPath, "x ", "e " ) + ;
+         If( ::lAlwaysOverWrite, "-y ", "" ) + ;
+         If( ::lShowProcessDlg, "-hide ", "" ) + ;
+         '"' + HB_ANSITOOEM( ::cArcName ) + '"', ;
+         @::cBuffer, ;
+         ::nBuffer )
 
    METHOD ErrorDescription()
 
    METHOD Close()                INLINE HB_SevenZipCloseArchive( ::handle )
-   METHOD GetArcFileSize      () INLINE HB_SevenZipGetArcfilesize      ( ::handle )
-   METHOD GetArcOriginalSize  () INLINE HB_SevenZipGetArcoriginalsize  ( ::handle )
+   METHOD GetArcFileSize()       INLINE HB_SevenZipGetArcfilesize( ::handle )
+   METHOD GetArcOriginalSize()   INLINE HB_SevenZipGetArcoriginalsize( ::handle )
    METHOD GetArcCompressedSize() INLINE HB_SevenZipGetArccompressedsize( ::handle )
-   METHOD GetArcRatio         () INLINE HB_SevenZipGetArcratio         ( ::handle )
-   METHOD GetOriginaLSize     () INLINE HB_SevenZipGetOriginalsize     ( ::handle )
-   METHOD GetCompressedSize   () INLINE HB_SevenZipGetCompressedsize   ( ::handle )
-   METHOD GetRatio            () INLINE HB_SevenZipGetRatio            ( ::handle )
+   METHOD GetArcRatio()          INLINE HB_SevenZipGetArcratio( ::handle )
 
-   METHOD Version()              INLINE GetVersion()
+   METHOD GetOriginalSize()      INLINE HB_SevenZipGetOriginalsize( ::handle )
+   METHOD GetCompressedSize()    INLINE HB_SevenZipGetCompressedsize( ::handle )
+   METHOD GetRatio()             INLINE HB_SevenZipGetRatio( ::handle )
+
+   METHOD Version() INLINE GetVersion()
 
 END CLASS
 
 //------------------------------------------------------------------------------
-METHOD T7Zip:Create()
+METHOD T7ZIP:Create()
 
-   LOCAL cFile, nCPU
+   LOCAL cFile
+   LOCAL nCPU
 
-   // Currently only support 7z and zip
-   IF Valtype( ::nArcType ) == "N" .AND. ::nArcType > 0 .AND. ::nArcType <= 2
+   // Currently only supports 7z and zip
+   IF ValType( ::nArcType ) != "N" .OR. ;
+      ::nArcType < 1 .OR. ;
+      ::nArcType > 2
 
-      ::cArcType := aArcType[ ::nArcType ]
-      ::cCommand := 'a'
-
-      IF !::lShowProcessDlg
-         ::cCommand += ' ' + '-hide'
-      ENDIF
-
-      ::cCommand += ' ' + '-t' + ::cArcType
-
-      SWITCH ::nArcType
-
-         CASE ARCTYPE_ZIP
-            IF ::nZipCompressionLevel >= 0 .AND. ::nZipCompressionLevel <= 9
-               ::cCommand += ' ' + '-mx' + LTRIM( STR( ::nZipCompressionLevel ) )
-            ENDIF
-            EXIT
-
-#ifndef __XHARBOUR__
-         OTHERWISE
-#else
-         DEFAULT
-#endif
-            IF ValType( ::nCompressionMethod ) == "N" .AND. ::nCompressionMethod > 0 .AND. ::nCompressionMethod <= Len( aArcMethod )
-               ::cCompressionMethod := aArcMethod[ ::nCompressionMethod ]
-               ::cCommand += ' ' + '-m0=' + ::cCompressionMethod
-            ENDIF
-            IF ::nZipCompressionLevel >= 0 .AND. ::nZipCompressionLevel <= 9
-               ::cCommand += ' ' + '-mx' + LTRIM( STR( ::nZipCompressionLevel ) )
-            ENDIF
-
-      END
-
-      IF Valtype( ::cPassword ) == "C" .AND. Len( ::cPassword ) > 0
-         ::cCommand += ' ' + '-p' + ALLTRIM( ::cPassword )
-      ENDIF
-
-      IF Valtype( ::lRecursive ) == "L" .AND. ::lRecursive
-         ::cCommand += ' ' + '-r'
-      ENDIF
-
-      IF Valtype( ::lSolid ) == "L" .AND. !::lSolid
-         ::cCommand += ' ' + '-ms=off'
-      ENDIF
-
-      IF Valtype( ::lMultiCPU ) == "L" .AND. ::lMultiCPU
-         ::cCommand += ' ' + '-mmt'
-         IF ( nCPU := Val( GetEnv( "NUMBER_OF_PROCESSORS" ) ) ) > 2
-            ::cCommand += '=' + LTRIM( STR( nCPU ) )
-         ENDIF
-      ENDIF
-
-      IF Valtype( ::aExcludeFiles ) == "A"
-         FOR EACH cFile IN ::aExcludeFiles
-            IF "*." $ cFile .OR. ".*" $ cFile
-               ::cCommand += ' ' + '-x!' + ALLTRIM( cFile )
-            ELSE
-               ::cCommand += ' ' + '-xr!' + ALLTRIM( cFile )
-            ENDIF
-         NEXT
-      ELSEIF Valtype( ::aExcludeFiles ) == "C"
-         ::cCommand += ' ' + '-x!' + ALLTRIM( ::aExcludeFiles )
-      ENDIF
-
-      IF Valtype( ::aVolumes ) == "A"
-         FOR EACH cFile IN ::aVolumes
-            ::cCommand += ' ' + '-v' + LTRIM( STR( cFile ) ) + 'b'
-         NEXT
-      ELSEIF Valtype( ::aVolumes ) == "N"
-         ::cCommand += ' ' + '-v' + LTRIM( STR( ::aVolumes ) ) + 'b'
-      ENDIF
-
-      ::cCommand += ' ' + HB_7ZIPCONVERTFILENAME( ::cArcName, ::lConvertANSIToOEM )
-
-      IF Valtype( ::aFiles ) == "A"
-         FOR EACH cFile IN ::aFiles
-            ::cCommand += ' ' + HB_7ZIPCONVERTFILENAME( cFile, ::lConvertANSIToOEM )
-         NEXT
-      ELSEIF Valtype( ::aFiles ) == "C"
-         ::cCommand += ' ' + HB_7ZIPCONVERTFILENAME( ::aFiles, ::lConvertANSIToOEM )
-      ENDIF
-
-      RETURN ::nError := HB_SevenZip( ::hWndOwner, ::cCommand, @::cBuffer, ::nBuffer )
+      RETURN ::nError := ERROR_NOT_SUPPORT
    ENDIF
 
-   RETURN ::nError := ERROR_NOT_SUPPORT
+   ::cArcType := aArcType[ ::nArcType ]
+   ::cCommand := "a"
+
+   IF !::lShowProcessDlg
+      ::cCommand += " -hide"
+   ENDIF
+
+   ::cCommand += " -t" + ::cArcType
+
+   SWITCH ::nArcType
+
+      CASE ARCTYPE_ZIP
+
+         IF ::nZipCompressionLevel >= 0 .AND. ;
+            ::nZipCompressionLevel <= 9
+
+            ::cCommand += ;
+               " -mx" + LTrim( Str( ::nZipCompressionLevel ) )
+         ENDIF
+
+         EXIT
+
+#ifndef __XHARBOUR__
+      OTHERWISE
+#else
+      DEFAULT
+#endif
+
+         IF ValType( ::nCompressionMethod ) == "N" .AND. ;
+            ::nCompressionMethod > 0 .AND. ;
+            ::nCompressionMethod <= Len( aArcMethod )
+
+            ::cCompressionMethod := ;
+               aArcMethod[ ::nCompressionMethod ]
+
+            ::cCommand += ;
+               " -m0=" + ::cCompressionMethod
+         ENDIF
+
+         IF ::nZipCompressionLevel >= 0 .AND. ;
+            ::nZipCompressionLevel <= 9
+
+            ::cCommand += ;
+               " -mx" + LTrim( Str( ::nZipCompressionLevel ) )
+         ENDIF
+
+   END
+
+   IF !Empty( ::cPassword )
+      ::cCommand += " -p" + AllTrim( ::cPassword )
+   ENDIF
+
+   IF ::lRecursive
+      ::cCommand += " -r"
+   ENDIF
+
+   IF !::lSolid
+      ::cCommand += " -ms=off"
+   ENDIF
+
+   IF ::lMultiCPU
+
+      ::cCommand += " -mmt"
+
+      nCPU := Val( GetEnv( "NUMBER_OF_PROCESSORS" ) )
+
+      IF nCPU > 2
+         ::cCommand += "=" + LTrim( Str( nCPU ) )
+      ENDIF
+
+   ENDIF
+
+   // Excluded files
+   IF ValType( ::aExcludeFiles ) == "A"
+
+      FOR EACH cFile IN ::aExcludeFiles
+
+         IF "*." $ cFile .OR. ".*" $ cFile
+            ::cCommand += " -x!" + AllTrim( cFile )
+         ELSE
+            ::cCommand += " -xr!" + AllTrim( cFile )
+         ENDIF
+
+      NEXT
+
+   ELSEIF ValType( ::aExcludeFiles ) == "C"
+
+      ::cCommand += ;
+         " -x!" + AllTrim( ::aExcludeFiles )
+
+   ENDIF
+
+   // Multi-volume archives
+   IF ValType( ::aVolumes ) == "A"
+
+      FOR EACH cFile IN ::aVolumes
+         ::cCommand += ;
+            " -v" + LTrim( Str( cFile ) ) + "b"
+      NEXT
+
+   ELSEIF ValType( ::aVolumes ) == "N"
+
+      ::cCommand += ;
+         " -v" + LTrim( Str( ::aVolumes ) ) + "b"
+
+   ENDIF
+
+   // Archive name
+   ::cCommand += ;
+      " " + HB_7ZIPCONVERTFILENAME( ;
+         ::cArcName, ;
+         ::lConvertANSIToOEM )
+
+   // Files to add
+   IF ValType( ::aFiles ) == "A"
+
+      FOR EACH cFile IN ::aFiles
+
+         ::cCommand += ;
+            " " + HB_7ZIPCONVERTFILENAME( ;
+               cFile, ;
+               ::lConvertANSIToOEM )
+
+      NEXT
+
+   ELSEIF ValType( ::aFiles ) == "C"
+
+      ::cCommand += ;
+         " " + HB_7ZIPCONVERTFILENAME( ;
+            ::aFiles, ;
+            ::lConvertANSIToOEM )
+
+   ENDIF
+
+   RETURN ::nError := HB_SevenZip( ;
+      ::hWndOwner, ;
+      ::cCommand, ;
+      @::cBuffer, ;
+      ::nBuffer )
 
 //------------------------------------------------------------------------------
-METHOD T7Zip:ErrorDescription()
+METHOD T7ZIP:ErrorDescription()
 
    LOCAL i
 
    IF ::nError == 0
       RETURN "ERROR_OK"
-   ELSEIF ( i := AScan( AERRDEF, { | e | e[ 2 ] == ::nError } ) ) > 0
-      RETURN AERRDEF[ i ] [ 1 ]
+   ENDIF
+
+   i := AScan( AERRDEF, { |e| e[ 2 ] == ::nError } )
+
+   IF i > 0
+      RETURN AERRDEF[ i ][ 1 ]
    ENDIF
 
    RETURN "ERROR_UNKNOWN"
@@ -234,42 +309,39 @@ METHOD T7Zip:ErrorDescription()
 //------------------------------------------------------------------------------
 STATIC FUNCTION GetVersion()
 
-   LOCAL nVersion := hb_SevenZipGetVersion(), ;    // 7-zip
-      nSubversion := hb_SevenZipGetSubVersion(), ; // 7-zip32.dll
-      cVersion    := 'Version'
+   LOCAL nVersion    := hb_SevenZipGetVersion()
+   LOCAL nSubVersion := hb_SevenZipGetSubVersion()
+   LOCAL cVersion    := "Version"
 
-   cVersion += Str( nVersion / 100, 5, 2 ) + '.' + StrZero( nSubversion / 100, 5, 2 )
+   cVersion += ;
+      Str( nVersion / 100, 5, 2 ) + "." + ;
+      StrZero( nSubVersion / 100, 5, 2 )
 
    RETURN cVersion
 
 //------------------------------------------------------------------------------
 STATIC FUNCTION GetFileInPath( cFile )
 
-   LOCAL cPath  := GetEnv( 'PATH' ) + ';'
-   LOCAL lFound := .N.
-   LOCAL nLPos  := 0
-   LOCAL nRPos  := 0
+   LOCAL cPath    := GetEnv( "PATH" ) + ";"
+   LOCAL lFound   := .F.
+   LOCAL nLPos    := 0
+   LOCAL nRPos    := 0
    LOCAL cSearch
 
-   WHILE nRPos < Len( cPath ) .AND. !lFound
-      nRPos   := hb_At( ';', cPath, nLPos + 1 )
-      cSearch := AddSlash( SubStr( cPath, nLPos + 1, nRPos - nLPos -1 ) )
-      lFound  := File( cSearch + cFile )
-      nLPos   := nRPos
-   END WHILE
+   DO WHILE nRPos < Len( cPath ) .AND. !lFound
 
-RETURN lFound
+      nRPos := hb_At( ";", cPath, nLPos + 1 )
 
-//------------------------------------------------------------------------------
-STATIC FUNCTION AddSlash( cInFolder )
+      cSearch := hb_DirSepAdd( ;
+         SubStr( cPath, nLPos + 1, nRPos - nLPos - 1 ) )
 
-   LOCAL cOutFolder := AllTrim( cInFolder )
+      lFound := hb_FileExists( cSearch + cFile )
 
-   IF !Empty( cOutFolder ) .AND. Right( cOutfolder, 1 ) != '\'
-      cOutFolder += '\'
-   ENDIF
+      nLPos := nRPos
 
-RETURN cOutFolder
+   ENDDO
+
+   RETURN lFound
 
 //------------------------------------------------------------------------------
 STATIC FUNCTION HB_7ZIPCONVERTFILENAME( cFileName, lConvert )
@@ -281,17 +353,22 @@ STATIC FUNCTION HB_7ZIPCONVERTFILENAME( cFileName, lConvert )
    RETURN cFileName
 
 //------------------------------------------------------------------------------
-#define SEVENZIPDLL  "7-zip32.dll"
+#define SEVENZIPDLL "7-zip32.dll"
 
+//------------------------------------------------------------------------------
 INIT PROCEDURE _7ZINIT
 
-   IF hb_FileExists( SEVENZIPDLL ) .OR. GetFileInPath( SEVENZIPDLL )
+   IF hb_FileExists( SEVENZIPDLL ) .OR. ;
+      GetFileInPath( SEVENZIPDLL )
+
       INIT7ZIPDLL()
    ENDIF
+
    RETURN
 
 //------------------------------------------------------------------------------
 EXIT PROCEDURE _7ZEXIT
 
    EXIT7ZIPDLL()
+
    RETURN

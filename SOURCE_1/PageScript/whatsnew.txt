@@ -1,0 +1,43 @@
+2023/04/14: 4.0.1.157 (Stable)
+2023/04/14: 3.0.4.178 (Stable)
+
+Updated: PDF signing for new and existing PDF files
+Updated: PDF printing from code and new preview window
+Updated: New preview window which can be used separate or used non-modal from PS (Version 4)
+
+2022/01/08: 4.0.1.144 (Beta)
+
+New: PSSetImageQuality - Sets images quality in PDF files
+New: PSPrintPDF - Prints a PDF file silent or with printer dialog
+New: PSSignPDF - Digitally signs PDF file
+New: PSExport2Txt - Export PDF file to text file
+New: PSSetHyperlinks - enable or disable hyperlinks in PDF file ( www/mail )
+New: External PDF viewer ( replacement for old Preview )
+
+2019/07/25: 3.0.4.124 (Stable)
+
+Fixed several small bugs (Thanks to Michael Hagl for reporting), running at several clients without any issues.
+
+2018/05/21: 3.0.4.119 (Beta)
+
+New: PSSetPWTopMost 
+New: PSUnicodeChar - Prints a Unicode character at position X,Y using parameters
+New: PDF/A output
+
+2017/12/23: 3.0.4.105 (Beta)
+
+New: Extra barcode's and QRCode ( PSQrCode) 
+New: PSSetPDFEncoding
+New: PSSetPDfEmbeddedFonts
+New: PsSetPDFVersion
+Fixed: Preview and printer output was not scaled right on ms-Surface laptops and
+       on new Windows 8 and 10 systems when scaling (DPI) was not 100% ( Thanks to Michael Hagl for reporting ) 
+Fixed: PSSetPWZoomLevel was using values set ( Thanks to jimmy for reporting )
+Fixed: PDF Patterns now work
+Fixed: Fill color in PSFrame was not working. (Thanks to Grigory Filatov for reporting )
+Fixed: PsSetUnit was not reset to its default values ( Thanks to Grigory Filatov for reporting )
+
+2017/10/02: 3.0.4.52 (Beta)
+
+New : Rewrite of PDF engine, it now support metric font sizes
+Fixed : Issue when aborting Preview screen

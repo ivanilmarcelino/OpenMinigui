@@ -46,183 +46,138 @@
    Parts of this code are contributed and used here under permission of the author:
    Copyright 2005 (C) Jacek Kubica <kubica@wssk.wroc.pl>
  ---------------------------------------------------------------------------*/
-// Define the minimum required version of Internet Explorer (IE 5.01 in this case)
+
+// Define the minimum required version of Internet Explorer
 #define _WIN32_IE 0x0501
 
-// Include essential header files needed for the program
-#include <mgdefs.h>        // Contains basic macro definitions and common includes
-#include <commctrl.h>      // Contains definitions for common controls, such as date picker
+#include <mgdefs.h>
+#include <commctrl.h>
 
-// Harbour language header files for VM and date handling functions
 #include "hbvm.h"
 #include "hbdate.h"
 
-// Declare function prototypes and definitions
 #ifdef UNICODE
-// Function to convert ANSI string to Wide (Unicode) string
-LPWSTR AnsiToWide( LPCSTR );
+LPWSTR                  AnsiToWide( LPCSTR );
 #endif
+HINSTANCE               GetInstance( void );
 
-// Function to retrieve the current instance handle of the application
-HINSTANCE GetInstance( void );
+LRESULT CALLBACK        OwnPickProc( HWND hbutton, UINT msg, WPARAM wParam, LPARAM lParam );
 
-// Custom window procedure for handling events specific to the date picker control
-LRESULT CALLBACK OwnPickProc( HWND hbutton, UINT msg, WPARAM wParam, LPARAM lParam );
-
-// XHarbour and Harbour compatibility
 #ifdef __XHARBOUR__
-// If using xHarbour, define the date-time check macro directly
-#define HB_ISDATETIME ISDATETIME
+#define HB_ISDATETIME   ISDATETIME
 #else
-// If using Harbour, declare an external function for creating a timestamp from date and time components
 extern HB_EXPORT double hb_timeStampPack( int iYear, int iMonth, int iDay, int iHour, int iMinutes, int iSeconds, int iMSec );
 #endif
 
-// Function to initialize a date picker control
+// Common helper to initialize common controls
+static void InitDateTimeControls( void )
+{
+   INITCOMMONCONTROLSEX i;
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   i.dwICC = ICC_DATE_CLASSES;
+   InitCommonControlsEx( &i );
+}
+
+// Common helper for picker creation
+static HWND CreatePickerControl( HWND hParent, HMENU hMenu, DWORD baseStyle, int x, int y, int w, int h )
+{
+   return CreateWindowEx( WS_EX_CLIENTEDGE, DATETIMEPICK_CLASS, TEXT( "DateTime" ), baseStyle, x, y, w, h, hParent, hMenu, GetInstance(), NULL );
+}
+
+// Initialize date picker
 HB_FUNC( INITDATEPICK )
 {
-   HWND hbutton;          // Handle to the date picker control
-   DWORD Style = WS_CHILD; // Base window style for the control
+   DWORD Style = WS_CHILD;
+   HWND  hbutton;
 
-   // Structure to initialize the common controls library
-   INITCOMMONCONTROLSEX i;
-   i.dwSize = sizeof( INITCOMMONCONTROLSEX ); // Size of the structure
-   i.dwICC = ICC_DATE_CLASSES;                // Specify that date picker controls are to be initialized
-   InitCommonControlsEx( &i );                // Initialize the common controls library
+   InitDateTimeControls();
 
-   // Conditional checks for various styles based on parameters passed to INITDATEPICK
-   if( hb_parl( 9 ) ) // If the 9th parameter is true, set the DTS_SHOWNONE style (to allow a "none" state)
+   if( hb_parl( 9 ) )
    {
       Style |= DTS_SHOWNONE;
    }
 
-   if( hb_parl( 10 ) ) // If the 10th parameter is true, set the DTS_UPDOWN style (for an up/down arrow button)
+   if( hb_parl( 10 ) )
    {
       Style |= DTS_UPDOWN;
    }
 
-   if( hb_parl( 11 ) ) // If the 11th parameter is true, set the DTS_RIGHTALIGN style (right-aligned dropdown)
+   if( hb_parl( 11 ) )
    {
       Style |= DTS_RIGHTALIGN;
    }
 
-   if( !hb_parl( 12 ) ) // If the 12th parameter is false, set WS_VISIBLE style to make the control visible
+   if( !hb_parl( 12 ) )
    {
       Style |= WS_VISIBLE;
    }
 
-   if( !hb_parl( 13 ) ) // If the 13th parameter is false, set WS_TABSTOP to enable tabbing to the control
+   if( !hb_parl( 13 ) )
    {
       Style |= WS_TABSTOP;
    }
 
-   // Create the date picker control with the specified styles and dimensions from parameters
-   hbutton = CreateWindowEx
-      (
-         WS_EX_CLIENTEDGE,                // Extended window style for a border around the control
-         DATETIMEPICK_CLASS,              // Class name for date-time picker control
-         TEXT( "DateTime" ),              // Window name (title), set to "DateTime" here
-         Style,                           // Combined window style
-         hb_parni( 3 ),                   // X-position from 3rd parameter
-         hb_parni( 4 ),                   // Y-position from 4th parameter
-         hb_parni( 5 ),                   // Width from 5th parameter
-         hb_parni( 6 ),                   // Height from 6th parameter
-         hmg_par_raw_HWND( 1 ),           // Parent window handle from 1st parameter
-         hmg_par_raw_HMENU( 2 ),          // Menu handle from 2nd parameter
-         GetInstance(),                   // Application instance handle
-         NULL                             // No additional data passed to the control
-      );
+   hbutton = CreatePickerControl( hmg_par_raw_HWND( 1 ), hmg_par_raw_HMENU( 2 ), Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) );
 
-   // Store the original window procedure for the date picker control, which will be needed for subclassing
    SetProp( hbutton, TEXT( "oldpickproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hbutton, GWLP_WNDPROC ) );
-
-   // Subclass the control to use the custom window procedure for handling specific messages
    SubclassWindow2( hbutton, OwnPickProc );
 
-   // Return the handle to the created date picker control
    hmg_ret_raw_HWND( hbutton );
 }
 
-// Function to initialize a time picker control
+// Initialize time picker
 HB_FUNC( INITTIMEPICK )
 {
-   HWND hbutton;               // Handle for the time picker control
-   DWORD Style = WS_CHILD | DTS_TIMEFORMAT; // Initial style with child and time format display
+   DWORD Style = WS_CHILD | DTS_TIMEFORMAT;
+   HWND  hbutton;
 
-   // Initialize common controls for date and time picker classes
-   INITCOMMONCONTROLSEX i;
-   i.dwSize = sizeof( INITCOMMONCONTROLSEX ); // Size of the INITCOMMONCONTROLSEX structure
-   i.dwICC = ICC_DATE_CLASSES;                // Indicate we need date/time control classes
-   InitCommonControlsEx( &i );                // Initialize the common controls library
+   InitDateTimeControls();
 
-   // Additional style flags based on input parameters
-   if( hb_parl( 9 ) ) // If parameter 9 is true, allow a "None" option
+   if( hb_parl( 9 ) )
    {
       Style |= DTS_SHOWNONE;
    }
 
-   if( !hb_parl( 10 ) ) // If parameter 10 is false, make the control visible
+   if( !hb_parl( 10 ) )
    {
       Style |= WS_VISIBLE;
    }
 
-   if( !hb_parl( 11 ) ) // If parameter 11 is false, add tab-stop functionality
+   if( !hb_parl( 11 ) )
    {
       Style |= WS_TABSTOP;
    }
 
-   // Create the time picker control with specified styles and positions from parameters
-   hbutton = CreateWindowEx
-      (
-         WS_EX_CLIENTEDGE,                // Extended style with a client edge border
-         DATETIMEPICK_CLASS,              // Class name for date-time picker control
-         TEXT( "DateTime" ),              // Control title
-         Style,                           // Combined styles for the control
-         hb_parni( 3 ),                   // X-position from parameter 3
-         hb_parni( 4 ),                   // Y-position from parameter 4
-         hb_parni( 5 ),                   // Width from parameter 5
-         hb_parni( 6 ),                   // Height from parameter 6
-         hmg_par_raw_HWND( 1 ),           // Parent window handle from parameter 1
-         hmg_par_raw_HMENU( 2 ),          // Menu handle from parameter 2
-         GetInstance(),                   // Current application instance
-         NULL                             // No extra parameters
-      );
+   hbutton = CreatePickerControl( hmg_par_raw_HWND( 1 ), hmg_par_raw_HMENU( 2 ), Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) );
 
-   // Store the original window procedure for subclassing later
    SetProp( hbutton, TEXT( "oldpickproc" ), ( HANDLE ) ( LONG_PTR ) GetWindowLongPtr( hbutton, GWLP_WNDPROC ) );
-
-   // Subclass the control to allow custom event handling
    SubclassWindow2( hbutton, OwnPickProc );
 
-   // Return the handle to the created control
    hmg_ret_raw_HWND( hbutton );
 }
 
-// Custom window procedure for handling time picker messages
+// Custom window procedure
 LRESULT CALLBACK OwnPickProc( HWND hButton, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
-   static PHB_SYMB pSymbol = NULL;  // Static symbol for Harbor VM events
-   LRESULT r;                       // Result of message processing
-   WNDPROC OldWndProc;              // Pointer to original window procedure
+   static PHB_SYMB   pSymbol = NULL;
+   WNDPROC           OldWndProc;
 
-   // Retrieve the stored original window procedure
    OldWndProc = ( WNDPROC ) ( LONG_PTR ) GetProp( hButton, TEXT( "oldpickproc" ) );
 
-   // Handle specific messages
    switch( Msg )
    {
-      case WM_DESTROY: // When the control is being destroyed
-         SubclassWindow2( hButton, OldWndProc );          // Restore the original window procedure
-         RemoveProp( hButton, TEXT( "oldpickproc" ) );    // Remove the old procedure property
+      case WM_DESTROY:
+         SubclassWindow2( hButton, OldWndProc );
+         RemoveProp( hButton, TEXT( "oldpickproc" ) );
          break;
 
-      case WM_ERASEBKGND: // When erasing the background
+      case WM_ERASEBKGND:
          if( !pSymbol )
          {
-            pSymbol = hb_dynsymSymbol( hb_dynsymGet( "OPICKEVENTS" ) ); // Initialize the symbol if needed
+            pSymbol = hb_dynsymSymbol( hb_dynsymGet( "OPICKEVENTS" ) );
          }
 
-         if( pSymbol ) // If symbol is set, push parameters to the VM and call event handler
+         if( pSymbol )
          {
             hb_vmPushSymbol( pSymbol );
             hb_vmPushNil();
@@ -232,153 +187,203 @@ LRESULT CALLBACK OwnPickProc( HWND hButton, UINT Msg, WPARAM wParam, LPARAM lPar
             hb_vmPushNumInt( lParam );
             hb_vmDo( 4 );
          }
-
-         r = hmg_par_LRESULT( -1 ); // Get the return result for handling
-
-         if( r != 0 ) // If custom result is not zero, return it
          {
-            return r;
+            LRESULT  r = hmg_par_LRESULT( -1 );
+            if( r != 0 )
+            {
+               return r;
+            }
          }
-         else
-         {
-            return CallWindowProc( OldWndProc, hButton, Msg, wParam, lParam ); // Otherwise, call the original procedure
-         }
+         break;
    }
 
-   // Default case: call the original window procedure
    return CallWindowProc( OldWndProc, hButton, Msg, wParam, lParam );
 }
 
-// Function to set a specific date in a date picker control
+// Helper to fill SYSTEMTIME from date/datetime
+static void FillSystemTime( SYSTEMTIME *sysTime, BOOL *bTimeToZero )
+{
+   if( HB_ISDATETIME( 2 ) )
+   {
+      int   iYear, iMonth, iDay, iHour, iMinute, iSecond, iMSec;
+#ifndef __XHARBOUR__
+      hb_timeStampUnpack( hb_partd( 2 ), &iYear, &iMonth, &iDay, &iHour, &iMinute, &iSecond, &iMSec );
+#else
+      long  lJulian, lMilliSec;
+      if( hb_partdt( &lJulian, &lMilliSec, 2 ) )
+      {
+         hb_dateDecode( lJulian, &iYear, &iMonth, &iDay );
+         hb_timeStampDecode( lMilliSec, &iHour, &iMinute, &iSecond, &iMSec );
+      }
+#endif
+      sysTime->wYear = ( WORD ) iYear;
+      sysTime->wMonth = ( WORD ) iMonth;
+      sysTime->wDay = ( WORD ) iDay;
+      sysTime->wHour = ( WORD ) iHour;
+      sysTime->wMinute = ( WORD ) iMinute;
+      sysTime->wSecond = ( WORD ) iSecond;
+      sysTime->wMilliseconds = ( WORD ) iMSec;
+   }
+   else if( HB_ISDATE( 2 ) )
+   {
+      long  lJulian = hb_pardl( 2 );
+      int   iYear, iMonth, iDay;
+      hb_dateDecode( lJulian, &iYear, &iMonth, &iDay );
+      sysTime->wYear = ( WORD ) iYear;
+      sysTime->wMonth = ( WORD ) iMonth;
+      sysTime->wDay = ( WORD ) iDay;
+      *bTimeToZero = TRUE;
+   }
+   else
+   {
+      sysTime->wYear = hmg_par_WORD_def( 2, 2005 );
+      sysTime->wMonth = hmg_par_WORD_def( 3, 1 );
+      sysTime->wDay = hmg_par_WORD_def( 4, 1 );
+      if( hb_pcount() >= 7 )
+      {
+         sysTime->wHour = hmg_par_WORD( 5 );
+         sysTime->wMinute = hmg_par_WORD( 6 );
+         sysTime->wSecond = hmg_par_WORD( 7 );
+         sysTime->wMilliseconds = hmg_par_WORD( 8 );
+      }
+      else
+      {
+         *bTimeToZero = TRUE;
+      }
+   }
+
+   sysTime->wDayOfWeek = 0;
+   if( *bTimeToZero )
+   {
+      sysTime->wHour = 0;
+      sysTime->wMinute = 0;
+      sysTime->wSecond = 0;
+      sysTime->wMilliseconds = 0;
+   }
+}
+
+// Set date
 HB_FUNC( SETDATEPICK )
 {
-   SYSTEMTIME sysTime;  // System time structure to hold date values
+   SYSTEMTIME  sysTime = { 0 };
 
-   if( hb_pcount() == 2 && HB_ISDATE( 2 ) ) // If two parameters and the second is a date
+   if( hb_pcount() == 2 && HB_ISDATE( 2 ) )
    {
-      long lJulian;
-      int iYear, iMonth, iDay;
-
-      lJulian = hb_pardl( 2 );              // Get Julian date
-      hb_dateDecode( lJulian, &iYear, &iMonth, &iDay ); // Decode to year, month, day
-
+      long  lJulian = hb_pardl( 2 );
+      int   iYear, iMonth, iDay;
+      hb_dateDecode( lJulian, &iYear, &iMonth, &iDay );
       sysTime.wYear = ( WORD ) iYear;
       sysTime.wMonth = ( WORD ) iMonth;
       sysTime.wDay = ( WORD ) iDay;
    }
-   else if( hb_pcount() > 2 ) // If more parameters, extract date from parameters
+   else if( hb_pcount() > 2 )
    {
       sysTime.wYear = hmg_par_WORD( 2 );
       sysTime.wMonth = hmg_par_WORD( 3 );
       sysTime.wDay = hmg_par_WORD( 4 );
    }
-   else // Default date if no parameters
+   else
    {
       sysTime.wYear = 2005;
       sysTime.wMonth = 1;
       sysTime.wDay = 1;
    }
 
-   sysTime.wDayOfWeek = 0;
-   sysTime.wHour = 0;
-   sysTime.wMinute = 0;
-   sysTime.wSecond = 0;
-   sysTime.wMilliseconds = 0;
-
-   // Set the time in the date picker control and return success/failure as boolean
-   hmg_ret_L( SendMessage( hmg_par_raw_HWND( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) & sysTime ) == GDT_VALID );
+   hmg_ret_L( SendMessage( hmg_par_raw_HWND( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime ) == GDT_VALID );
 }
 
-// Function to set time in a time picker control
+// Set time
 HB_FUNC( SETTIMEPICK )
 {
-   SYSTEMTIME sysTime; // Structure to hold system time
-
-   sysTime.wYear = 2005;        // Default year
-   sysTime.wMonth = 1;          // Default month
-   sysTime.wDay = 1;            // Default day
+   SYSTEMTIME  sysTime = { 0 };
+   sysTime.wYear = 2005;
+   sysTime.wMonth = 1;
+   sysTime.wDay = 1;
    sysTime.wDayOfWeek = 0;
-
-   sysTime.wHour = hmg_par_WORD( 2 );       // Hour from parameter
-   sysTime.wMinute = hmg_par_WORD( 3 );     // Minute from parameter
-   sysTime.wSecond = hmg_par_WORD( 4 );     // Second from parameter
+   sysTime.wHour = hmg_par_WORD( 2 );
+   sysTime.wMinute = hmg_par_WORD( 3 );
+   sysTime.wSecond = hmg_par_WORD( 4 );
    sysTime.wMilliseconds = 0;
 
-   // Set the time in the control and return success/failure
-   hmg_ret_L( SendMessage( hmg_par_raw_HWND( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) & sysTime ) == GDT_VALID );
+   hmg_ret_L( SendMessage( hmg_par_raw_HWND( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime ) == GDT_VALID );
 }
 
-// Function to get date from a date picker control and return as date value
+// Set full datetime
+HB_FUNC( DTP_SETDATETIME )
+{
+   HWND        hwnd = hmg_par_raw_HWND( 1 );
+   SYSTEMTIME  sysTime = { 0 };
+   BOOL        bTimeToZero = FALSE;
+
+   FillSystemTime( &sysTime, &bTimeToZero );
+
+   hmg_ret_L( SendMessage( hwnd, DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime ) == GDT_VALID );
+}
+
+// Get full datetime
+HB_FUNC( DTP_GETDATETIME )
+{
+   SYSTEMTIME  st;
+   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
+
+#ifdef __XHARBOUR__
+   hb_retdtl( hb_dateEncode( st.wYear, st.wMonth, st.wDay ), hb_timeStampEncode( st.wHour, st.wMinute, st.wSecond, st.wMilliseconds ) );
+#else
+   hb_rettd( hb_timeStampPack( st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds ) );
+#endif
+}
+
+// Simple getters
 HB_FUNC( GETDATEPICKDATE )
 {
-   SYSTEMTIME st; // Structure to hold system time
-
-   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) & st ); // Retrieve date
-
-   hb_retd( st.wYear, st.wMonth, st.wDay ); // Return date as encoded format
+   SYSTEMTIME  st;
+   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
+   hb_retd( st.wYear, st.wMonth, st.wDay );
 }
 
-// Function to get the year from a date picker control and return it as a WORD value.
 HB_FUNC( GETDATEPICKYEAR )
 {
    SYSTEMTIME  st;
-
-   // Send a message to get the current system time of the date picker control.
-   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) & st );
-
-   // Return the year part (wYear) from SYSTEMTIME.
+   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
    hmg_ret_WORD( st.wYear );
 }
 
-// Function to get the month from a date picker control and return it as a WORD value.
 HB_FUNC( GETDATEPICKMONTH )
 {
    SYSTEMTIME  st;
-
-   // Send a message to get the current system time of the date picker control.
-   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) & st );
-
-   // Return the month part (wMonth) from SYSTEMTIME.
+   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
    hmg_ret_WORD( st.wMonth );
 }
 
-// Function to get the day from a date picker control and return it as a WORD value.
 HB_FUNC( GETDATEPICKDAY )
 {
    SYSTEMTIME  st;
-
-   // Send a message to get the current system time of the date picker control.
-   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) & st );
-
-   // Return the day part (wDay) from SYSTEMTIME.
+   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
    hmg_ret_WORD( st.wDay );
 }
 
-// Function to get the hour from a date picker control; returns -1 if invalid.
 HB_FUNC( GETDATEPICKHOUR )
 {
    SYSTEMTIME  st;
 
-   // Send a message to retrieve the system time and check if it is valid.
-   if( SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) & st ) == GDT_VALID )
+   // Check if system time is valid for the date picker control.
+   if( SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st ) == GDT_VALID )
    {
       // Return the hour part (wHour) from SYSTEMTIME.
       hmg_ret_WORD( st.wHour );
    }
    else
    {
-      // Return -1 if the date picker value is invalid.
-      hb_retni( -1 );
+      hb_retni( -1 );  // Return -1 if invalid.
    }
 }
 
-// Function to get the minute from a date picker control; returns -1 if invalid.
 HB_FUNC( GETDATEPICKMINUTE )
 {
    SYSTEMTIME  st;
 
    // Check if system time is valid for the date picker control.
-   if( SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) & st ) == GDT_VALID )
+   if( SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st ) == GDT_VALID )
    {
       // Return the minute part (wMinute) from SYSTEMTIME.
       hmg_ret_WORD( st.wMinute );
@@ -389,13 +394,12 @@ HB_FUNC( GETDATEPICKMINUTE )
    }
 }
 
-// Function to get the second from a date picker control; returns -1 if invalid.
 HB_FUNC( GETDATEPICKSECOND )
 {
    SYSTEMTIME  st;
 
-   // Retrieve and check system time validity for the date picker control.
-   if( SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) & st ) == GDT_VALID )
+   // Check if system time is valid for the date picker control.
+   if( SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st ) == GDT_VALID )
    {
       // Return the second part (wSecond) from SYSTEMTIME.
       hmg_ret_WORD( st.wSecond );
@@ -406,118 +410,12 @@ HB_FUNC( GETDATEPICKSECOND )
    }
 }
 
-// Function to set the date and time for a date picker control.
-HB_FUNC( DTP_SETDATETIME )
-{
-   HWND        hwnd;
-   SYSTEMTIME  sysTime;
-   BOOL        bTimeToZero = FALSE;
-
-   hwnd = hmg_par_raw_HWND( 1 );  // Get handle for the date picker control.
-
-   // Check if input is a valid date and time value.
-   if( HB_ISDATETIME( 2 ) )
-   {
-      int iYear, iMonth, iDay, iHour, iMinute, iSecond, iMSec;
-#ifdef __XHARBOUR__
-      long lJulian, lMilliSec;
-#endif
-#ifndef __XHARBOUR__
-      // Unpack the date and time into individual components.
-      hb_timeStampUnpack( hb_partd( 2 ), &iYear, &iMonth, &iDay, &iHour, &iMinute, &iSecond, &iMSec );
-#else
-      if( hb_partdt( &lJulian, &lMilliSec, 2 ) )
-      {
-         // Decode date and timestamp if using xHarbour.
-         hb_dateDecode( lJulian, &iYear, &iMonth, &iDay );
-         hb_timeStampDecode( lMilliSec, &iHour, &iMinute, &iSecond, &iMSec );
-      }
-#endif
-      // Set SYSTEMTIME structure fields for year, month, day, hour, minute, second, and milliseconds.
-      sysTime.wYear = ( WORD ) iYear;
-      sysTime.wMonth = ( WORD ) iMonth;
-      sysTime.wDay = ( WORD ) iDay;
-      sysTime.wDayOfWeek = 0;
-      sysTime.wHour = ( WORD ) iHour;
-      sysTime.wMinute = ( WORD ) iMinute;
-      sysTime.wSecond = ( WORD ) iSecond;
-      sysTime.wMilliseconds = ( WORD ) iMSec;
-   }
-   else if( HB_ISDATE( 2 ) )
-   {
-      long  lJulian;
-      int   iYear, iMonth, iDay;
-
-      lJulian = hb_pardl( 2 ); // Extract Julian date.
-      hb_dateDecode( lJulian, &iYear, &iMonth, &iDay );
-
-      // Set year, month, and day, and indicate no time is specified.
-      sysTime.wYear = ( WORD ) iYear;
-      sysTime.wMonth = ( WORD ) iMonth;
-      sysTime.wDay = ( WORD ) iDay;
-      sysTime.wDayOfWeek = 0;
-      bTimeToZero = TRUE;
-   }
-   else
-   {
-      // Set default date if no valid date or datetime is provided.
-      sysTime.wYear = hmg_par_WORD_def( 2, 2005 );
-      sysTime.wMonth = hmg_par_WORD_def( 3, 1 );
-      sysTime.wDay = hmg_par_WORD_def( 4, 1 );
-      sysTime.wDayOfWeek = 0;
-
-      if( hb_pcount() >= 7 )
-      {
-         // Set hour, minute, second, and milliseconds if specified.
-         sysTime.wHour = hmg_par_WORD( 5 );
-         sysTime.wMinute = hmg_par_WORD( 6 );
-         sysTime.wSecond = hmg_par_WORD( 7 );
-         sysTime.wMilliseconds = hmg_par_WORD( 8 );
-      }
-      else
-      {
-         bTimeToZero = TRUE;
-      }
-   }
-
-   // Zero out time if specified.
-   if( bTimeToZero )
-   {
-      sysTime.wHour = 0;
-      sysTime.wMinute = 0;
-      sysTime.wSecond = 0;
-      sysTime.wMilliseconds = 0;
-   }
-
-   // Send message to set system time on the date picker control.
-   hmg_ret_L( SendMessage( hwnd, DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) & sysTime ) == GDT_VALID );
-}
-
-// Function to get the full date and time from a date picker control.
-HB_FUNC( DTP_GETDATETIME )
-{
-   SYSTEMTIME  st;
-
-   // Send message to retrieve system time for the date picker control.
-   SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) & st );
-
-#ifdef __XHARBOUR__
-   // Return date and time as a Julian and timestamp combination in xHarbour.
-   hb_retdtl( hb_dateEncode( st.wYear, st.wMonth, st.wDay ), hb_timeStampEncode( st.wHour, st.wMinute, st.wSecond, st.wMilliseconds ) );
-#else
-   // Return date and time as a timestamp.
-   hb_rettd( hb_timeStampPack( st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds ) );
-#endif
-}
-
-// Function to set the date picker control to null.
+// Other functions
 HB_FUNC( SETDATEPICKNULL )
 {
-   // Send message to set the date picker control value to null.
-   hb_retl( ( BOOL ) SendMessage( hmg_par_raw_HWND( 1 ), DTM_SETSYSTEMTIME, GDT_NONE, ( LPARAM ) 0 ) );
+   hb_retl( ( BOOL ) SendMessage( hmg_par_raw_HWND( 1 ), DTM_SETSYSTEMTIME, GDT_NONE, 0 ) );
 }
 
-// Function to set the date range on a date picker control.
 HB_FUNC( SETDATEPICKRANGE )
 {
    SYSTEMTIME  sysTime[2];
@@ -528,58 +426,49 @@ HB_FUNC( SETDATEPICKRANGE )
    if( HB_ISDATE( 2 ) && HB_ISDATE( 3 ) )
    {
       cDate = ( char * ) hb_pards( 2 );
-      if( !( cDate[0] == ' ' ) )
+      if( cDate[0] != ' ' )
       {
-         // Extract and set minimum date (sysTime[0]).
-         y = ( DWORD ) ( ( cDate[0] - '0' ) * 1000 ) + ( ( cDate[1] - '0' ) * 100 ) + ( ( cDate[2] - '0' ) * 10 ) + ( cDate[3] - '0' );
+         y = ( DWORD ) ( ( cDate[0] - '0' ) * 1000 + ( cDate[1] - '0' ) * 100 + ( cDate[2] - '0' ) * 10 + ( cDate[3] - '0' ) );
          sysTime[0].wYear = ( WORD ) y;
-         m = ( DWORD ) ( ( cDate[4] - '0' ) * 10 ) + ( cDate[5] - '0' );
+         m = ( DWORD ) ( ( cDate[4] - '0' ) * 10 + ( cDate[5] - '0' ) );
          sysTime[0].wMonth = ( WORD ) m;
-         d = ( DWORD ) ( ( cDate[6] - '0' ) * 10 ) + ( cDate[7] - '0' );
+         d = ( DWORD ) ( ( cDate[6] - '0' ) * 10 + ( cDate[7] - '0' ) );
          sysTime[0].wDay = ( WORD ) d;
          wLimit |= GDTR_MIN;
       }
 
-      // Extract and set maximum date (sysTime[1]).
       cDate = ( char * ) hb_pards( 3 );
-      if( !( cDate[0] == ' ' ) )
+      if( cDate[0] != ' ' )
       {
-         y = ( DWORD ) ( ( cDate[0] - '0' ) * 1000 ) + ( ( cDate[1] - '0' ) * 100 ) + ( ( cDate[2] - '0' ) * 10 ) + ( cDate[3] - '0' );
+         y = ( DWORD ) ( ( cDate[0] - '0' ) * 1000 + ( cDate[1] - '0' ) * 100 + ( cDate[2] - '0' ) * 10 + ( cDate[3] - '0' ) );
          sysTime[1].wYear = ( WORD ) y;
-         m = ( DWORD ) ( ( cDate[4] - '0' ) * 10 ) + ( cDate[5] - '0' );
+         m = ( DWORD ) ( ( cDate[4] - '0' ) * 10 + ( cDate[5] - '0' ) );
          sysTime[1].wMonth = ( WORD ) m;
-         d = ( DWORD ) ( ( cDate[6] - '0' ) * 10 ) + ( cDate[7] - '0' );
+         d = ( DWORD ) ( ( cDate[6] - '0' ) * 10 + ( cDate[7] - '0' ) );
          sysTime[1].wDay = ( WORD ) d;
          wLimit |= GDTR_MAX;
       }
 
-      // Apply date range to date picker control.
       hb_retl( DateTime_SetRange( hmg_par_raw_HWND( 1 ), wLimit, sysTime ) );
    }
 }
 
-// Function to set the display format of a date picker control.
 HB_FUNC( SETDATEPICKERDATEFORMAT )
 {
 #ifndef UNICODE
    LPCSTR   lpFormat = hb_parc( 2 );
 #else
-   // Convert ANSI string to wide string if using Unicode.
    LPCWSTR  lpFormat = AnsiToWide( ( char * ) hb_parc( 2 ) );
 #endif
-   // Set the format string for the date picker control.
    hb_retl( ( BOOL ) SendMessage( hmg_par_raw_HWND( 1 ), DTM_SETFORMAT, 0, ( LPARAM ) lpFormat ) );
 
 #ifdef UNICODE
-   hb_xfree( ( TCHAR * ) lpFormat );  // Free memory if Unicode conversion was used.
+   hb_xfree( ( TCHAR * ) lpFormat );
 #endif
 }
 
-// Function to check if the date in the date picker control is valid and set.
 HB_FUNC( DTP_ISCHECKED )
 {
    SYSTEMTIME  st;
-
-   // Return TRUE if system time is valid, FALSE otherwise.
-   hmg_ret_L( SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) & st ) == GDT_VALID );
+   hmg_ret_L( SendMessage( hmg_par_raw_HWND( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st ) == GDT_VALID );
 }

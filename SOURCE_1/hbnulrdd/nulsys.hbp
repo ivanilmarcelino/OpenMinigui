@@ -1,0 +1,12 @@
+#
+# hbnulrdd.hbp
+#
+
+-hblib
+-inc
+
+-o../../harbour/hbnulrdd
+
+-I../../include
+
+nulsys.c

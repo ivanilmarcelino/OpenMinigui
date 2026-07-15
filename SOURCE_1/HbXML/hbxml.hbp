@@ -1,0 +1,17 @@
+#
+# hbxml.hbp
+#
+
+-hblib
+-inc
+-o../../harbour/lib/hbxml
+
+-I../../include
+
+-w3 -es2 -ko -q0
+
+{bcc}-hbx=../../include/hbxml.hbx
+
+hxmldoc.prg
+xmlparse.c
+

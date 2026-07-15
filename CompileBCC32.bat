@@ -14,7 +14,7 @@
 ::Defina PATH DO BORLAND/MINGW
 Set MG_BCC=D:\prgplus\Youtube\IDE\Tools\BCC
 
-Set path=%MG_HRB%\BIN;%MG_BCC%\BIN
+Set path=%MG_HRB%\BIN;%MG_BCC%\BIN;%path%
 
 
 ::/*FIM*/

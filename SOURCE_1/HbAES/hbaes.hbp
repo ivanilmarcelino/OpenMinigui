@@ -1,0 +1,20 @@
+#
+# hbaes.hbp
+#
+
+-hblib
+-inc
+-o../../harbour/lib/hbaes
+
+-I../../include;./include
+
+-w2 -es2 -ko -q0
+
+-hbx=../../include/hbaes.hbx
+
+aescrypt.prg
+padlock.c 
+aes.c 
+sha2.c 
+aescrypt2.c
+

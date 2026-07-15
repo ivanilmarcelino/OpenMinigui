@@ -47,10 +47,12 @@
    Parts of this code are contributed and used here under permission of the
    author:
    Copyright 2007-2017 (C) P.Chornyj <myorg63@mail.ru>
-  ----------------------------------------------------------------------*/
+ ----------------------------------------------------------------------*/
+
 #if !defined( __WINNT__ )
 #define __WINNT__
 #endif
+
 #include <mgdefs.h>
 #include "hbapierr.h"
 #include "hbapiitm.h"
@@ -58,10 +60,12 @@
 #if !defined( __XHARBOUR__ )
 #include "hbwinuni.h"
 #endif
+
 #if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0 < 0x030200 )
 #define HB_STRNLEN   hb_strnlen
 #define HB_STRNDUP   hb_strndup
 #endif
+
 #define MAX_ITEM_TEXT   256
 
 #include "c_menu.h"
@@ -71,6 +75,7 @@
 LPWSTR         AnsiToWide( LPCSTR );
 LPSTR          WideToAnsi( LPWSTR );
 #endif
+
 HINSTANCE      GetResources( void );
 extern HBITMAP Icon2Bmp( HICON hIcon );
 extern BOOL    SetAcceleratorTable( HWND, HACCEL );
@@ -161,7 +166,7 @@ HB_FUNC( ACCELERATORTABLE2ARRAY )
       {
          LPACCEL  lpAccel = ( LPACCEL ) hb_xalloc( cAccelEntries * sizeof( ACCEL ) );
 
-         if( NULL != lpAccel )
+         if( lpAccel )
          {
             if( CopyAcceleratorTable( hAccel, lpAccel, cAccelEntries ) )
             {
@@ -226,7 +231,7 @@ HB_FUNC( ARRAY2ACCELERATORTABLE )
    {
       LPACCEL  lpAccel = ( LPACCEL ) hb_xalloc( nLen * sizeof( ACCEL ) );
 
-      if( NULL != lpAccel )
+      if( lpAccel )
       {
          int   i;
 
@@ -281,7 +286,7 @@ HB_FUNC( COPYACCELERATORTABLE )
 
    hb_retni( 0 );
 
-   if( NULL != hAccelSrc )
+   if( hAccelSrc )
    {
       int   cAccelEntries = CopyAcceleratorTable( hAccelSrc, NULL, 0 );
 
@@ -289,7 +294,7 @@ HB_FUNC( COPYACCELERATORTABLE )
       {
          LPACCEL  lpAccelDst = ( LPACCEL ) hb_xalloc( cAccelEntries * sizeof( ACCEL ) );
 
-         if( NULL != lpAccelDst )
+         if( lpAccelDst )
          {
             hb_retni( CopyAcceleratorTable( hAccelSrc, lpAccelDst, cAccelEntries ) );
 
@@ -440,14 +445,13 @@ HB_FUNC( LOADACCELERATORS )
  */
 HB_FUNC( LOADMENU )
 {
-   HMENU       hMenu = ( HMENU ) NULL;
    HINSTANCE   hInstance = HB_ISNUM( 1 ) ? hmg_par_raw_HINSTANCE( 1 ) : GetResources();
    LPCTSTR     lpMenuName;
+   HMENU       hMenu = NULL;
 
    if( HB_ISNUM( 2 ) )
    {
       lpMenuName = MAKEINTRESOURCE( hmg_par_WORD( 2 ) );
-
       hMenu = LoadMenu( hInstance, lpMenuName );
    }
    else if( HB_ISCHAR( 2 ) )
@@ -553,13 +557,13 @@ HB_FUNC( TRACKPOPUPMENU )
 {
    HWND  hwnd = hmg_par_raw_HWND( 4 );
 
-   SetForegroundWindow( hwnd );           /* hack for Microsoft "feature" */
+   SetForegroundWindow( hwnd );           /* Microsoft "feature" workaround */
 
    TrackPopupMenu( hmg_par_raw_HMENU( 1 ), 0, hb_parni( 2 ), hb_parni( 3 ), 0, hwnd, NULL );
 
    if( hb_pcount() > 4 && HB_ISLOG( 5 ) && hb_parl( 5 ) )
    {
-      PostMessage( hwnd, WM_NULL, 0, 0 ); /* hack for tray menu closing */
+      PostMessage( hwnd, WM_NULL, 0, 0 ); /* tray menu workaround */
    }
 }
 
@@ -634,7 +638,7 @@ HB_FUNC( SETMENUDEFAULTITEM )
  */
 HB_FUNC( XCHECKMENUITEM )
 {
-   CheckMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_CHECKED );
+   CheckMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND | MF_CHECKED );
 }
 
 /*
@@ -657,7 +661,7 @@ HB_FUNC( XCHECKMENUITEM )
  */
 HB_FUNC( XUNCHECKMENUITEM )
 {
-   CheckMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_UNCHECKED );
+   CheckMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND | MF_UNCHECKED );
 }
 
 /*
@@ -680,7 +684,7 @@ HB_FUNC( XUNCHECKMENUITEM )
  */
 HB_FUNC( XENABLEMENUITEM )
 {
-   EnableMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_ENABLED );
+   EnableMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND | MF_ENABLED );
 }
 
 /*
@@ -704,7 +708,7 @@ HB_FUNC( XENABLEMENUITEM )
  */
 HB_FUNC( XDISABLEMENUITEM )
 {
-   EnableMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_GRAYED );
+   EnableMenuItem( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND | MF_GRAYED );
 }
 
 /*
@@ -787,6 +791,39 @@ HB_FUNC( CREATEPOPUPMENU )
    hmg_ret_raw_HMENU( CreatePopupMenu() );
 }
 
+// Determine the style of the menu item based on the nStyle parameter
+static UINT GetMenuStyle( int nStyle, HB_BOOL bOwnerDraw )
+{
+   if( bOwnerDraw )
+   {
+      switch( nStyle )
+      {
+         case 1:
+            return MF_OWNERDRAW | MF_MENUBREAK;
+
+         case 2:
+            return MF_OWNERDRAW | MF_MENUBARBREAK;
+
+         default:
+            return MF_OWNERDRAW;
+      }
+   }
+   else
+   {
+      switch( nStyle )
+      {
+         case 1:
+            return MF_STRING | MF_MENUBREAK;
+
+         case 2:
+            return MF_STRING | MF_MENUBARBREAK;
+
+         default:
+            return MF_STRING;
+      }
+   }
+}
+
 /*
  * FUNCTION: APPENDMENUSTRING
  *
@@ -796,7 +833,7 @@ HB_FUNC( CREATEPOPUPMENU )
  *   hMenu: HMENU - Handle to the menu to which the item will be appended.
  *   nIDNewItem: INT - The command ID of the new menu item.
  *   lpNewItem: STRING - The text of the new menu item.
- *   nStyle: INT - The style of the new menu item. Can be 0 (MF_STRING), 1 (MF_STRING | MF_MENUBREAK), or 2 (MF_STRING | MF_MENUBARBREAK).
+ *   nStyle: INT - The style of the new menu item.
  *
  * Returns:
  *   HB_BOOL - A logical value indicating whether the menu item was successfully appended.
@@ -816,71 +853,35 @@ HB_FUNC( CREATEPOPUPMENU )
 HB_FUNC( APPENDMENUSTRING )
 {
 #ifndef UNICODE
-   LPCSTR   lpNewItem = hb_parc( 3 );     // Get the text of the new menu item as an ANSI string
+   LPCSTR   lpNewItem = hb_parc( 3 );
 #else
-   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 3 ) ); // Convert the text of the new menu item to a wide string for Unicode
+   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 3 ) );
 #endif
-   UINT     Style;            // Variable to hold the style of the new menu item
+   UINT     Style = GetMenuStyle( hb_parni( 4 ), s_bCustomDraw );
 
-   // Check if custom menu drawing is enabled
    if( s_bCustomDraw )
    {
-      LPMENUITEM  lpMenuItem; // Pointer to a MENUITEM structure
-      UINT        cch = ( UINT ) HB_STRNLEN( lpNewItem, MAX_ITEM_TEXT * sizeof( TCHAR ) );   // Calculate the length of the menu item text
-      lpMenuItem = ( LPMENUITEM ) hb_xgrab( ( sizeof( MENUITEM ) ) );   // Allocate memory for the MENUITEM structure
-      ZeroMemory( lpMenuItem, sizeof( MENUITEM ) );                     // Initialize the MENUITEM structure to zero
+      LPMENUITEM  lpMenuItem = ( LPMENUITEM ) hb_xgrabz( sizeof( MENUITEM ) );
+      UINT        cch = ( UINT ) HB_STRNLEN( lpNewItem, MAX_ITEM_TEXT * sizeof( TCHAR ) );
 
-      // Set the properties of the MENUITEM structure
-      lpMenuItem->cbSize = hb_parni( 2 );                   // Set the size of the structure
-      lpMenuItem->uiID = hb_parni( 2 );                     // Set the command ID of the menu item
-      lpMenuItem->caption = HB_STRNDUP( lpNewItem, cch );   // Duplicate the menu item text
-      lpMenuItem->cch = cch;                    // Set the length of the menu item text
-      lpMenuItem->hBitmap = ( HBITMAP ) NULL;   // Set the bitmap handle to NULL
-      lpMenuItem->hFont = ( HFONT ) NULL;       // Set the font handle to NULL
-      lpMenuItem->uiItemType = hb_parni( 4 );   // Set the item type
-      lpMenuItem->hwnd = ( HWND ) NULL;         // Set the window handle to NULL
+      lpMenuItem->cbSize = sizeof( MENUITEMINFO );
+      lpMenuItem->uiID = hb_parni( 2 );
+      lpMenuItem->caption = HB_STRNDUP( lpNewItem, cch );
+      lpMenuItem->cch = cch;
+      lpMenuItem->hBitmap = NULL;
+      lpMenuItem->hFont = NULL;
+      lpMenuItem->uiItemType = hb_parni( 4 );
+      lpMenuItem->hwnd = NULL;
 
-      // Determine the style of the menu item based on the nStyle parameter
-      switch( hb_parni( 4 ) )
-      {
-         case 1:
-            Style = MF_OWNERDRAW | MF_MENUBREAK;      // Set style for owner-drawn menu item with a menu break
-            break;
-
-         case 2:
-            Style = MF_OWNERDRAW | MF_MENUBARBREAK;   // Set style for owner-drawn menu item with a menu bar break
-            break;
-
-         default:
-            Style = MF_OWNERDRAW;                     // Set style for owner-drawn menu item
-      }
-
-      // Append the menu item to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), Style, hb_parni( 2 ), ( LPTSTR ) lpMenuItem ) );
    }
    else
    {
-      // Determine the style of the menu item based on the nStyle parameter
-      switch( hb_parni( 4 ) )
-      {
-         case 1:
-            Style = MF_STRING | MF_MENUBREAK;         // Set style for string menu item with a menu break
-            break;
-
-         case 2:
-            Style = MF_STRING | MF_MENUBARBREAK;      // Set style for string menu item with a menu bar break
-            break;
-
-         default:
-            Style = MF_STRING;         // Set style for string menu item
-      }
-
-      // Append the menu item to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), Style, hb_parni( 2 ), lpNewItem ) );
    }
 
 #ifdef UNICODE
-   hb_xfree( lpNewItem );              // Free the wide string memory if Unicode is defined
+   hb_xfree( lpNewItem );
 #endif
 }
 
@@ -913,38 +914,32 @@ HB_FUNC( APPENDMENUSTRING )
 HB_FUNC( APPENDMENUPOPUP )
 {
 #ifndef UNICODE
-   LPCSTR   lpNewItem = hb_parc( 3 );  // Get the text of the new menu item as an ANSI string
+   LPCSTR   lpNewItem = hb_parc( 3 );
 #else
-   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 3 ) ); // Convert the text of the new menu item to a wide string for Unicode
+   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 3 ) );
 #endif
-
-   // Check if custom menu drawing is enabled
    if( s_bCustomDraw )
    {
-      LPMENUITEM  lpMenuItem; // Pointer to a MENUITEM structure
-      UINT        cch = ( UINT ) HB_STRNLEN( lpNewItem, MAX_ITEM_TEXT * sizeof( TCHAR ) );   // Calculate the length of the menu item text
-      lpMenuItem = ( LPMENUITEM ) hb_xgrabz( ( sizeof( MENUITEM ) ) );  // Allocate and zero memory for the MENUITEM structure
+      LPMENUITEM  lpMenuItem = ( LPMENUITEM ) hb_xgrabz( sizeof( MENUITEM ) );
+      UINT        cch = ( UINT ) HB_STRNLEN( lpNewItem, MAX_ITEM_TEXT * sizeof( TCHAR ) );
 
-      // Set the properties of the MENUITEM structure
-      lpMenuItem->cbSize = hb_parni( 2 );                   // Set the size of the structure
-      lpMenuItem->uiID = hb_parni( 2 );                     // Set the command ID of the menu item
-      lpMenuItem->caption = HB_STRNDUP( lpNewItem, cch );   // Duplicate the menu item text
-      lpMenuItem->cch = cch;                    // Set the length of the menu item text
-      lpMenuItem->hBitmap = ( HBITMAP ) NULL;   // Set the bitmap handle to NULL
-      lpMenuItem->hFont = hmg_par_raw_HFONT( 5 );  // Set the font handle
-      lpMenuItem->uiItemType = hb_parni( 4 );      // Set the item type
+      lpMenuItem->cbSize = sizeof( MENUITEMINFO );
+      lpMenuItem->uiID = hb_parni( 2 );
+      lpMenuItem->caption = HB_STRNDUP( lpNewItem, cch );
+      lpMenuItem->cch = cch;
+      lpMenuItem->hBitmap = NULL;
+      lpMenuItem->hFont = hmg_par_raw_HFONT( 5 );
+      lpMenuItem->uiItemType = hb_parni( 4 );
 
-      // Append the popup menu item to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), MF_POPUP | MF_OWNERDRAW, hb_parni( 2 ), ( LPTSTR ) lpMenuItem ) );
    }
    else
    {
-      // Append the popup menu item to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), MF_POPUP | MF_STRING, hb_parni( 2 ), lpNewItem ) );
    }
 
 #ifdef UNICODE
-   hb_xfree( lpNewItem );  // Free the wide string memory if Unicode is defined
+   hb_xfree( lpNewItem );
 #endif
 }
 
@@ -972,18 +967,15 @@ HB_FUNC( APPENDMENUPOPUP )
  */
 HB_FUNC( APPENDMENUSEPARATOR )
 {
-   // Check if custom menu drawing is enabled
    if( s_bCustomDraw )
    {
-      LPMENUITEM  lpMenuItem = ( LPMENUITEM ) hb_xgrabz( ( sizeof( MENUITEM ) ) );  // Allocate and zero memory for the MENUITEM structure
-      lpMenuItem->uiItemType = 1000;   // Set the item type to separator
+      LPMENUITEM  lpMenuItem = ( LPMENUITEM ) hb_xgrabz( sizeof( MENUITEM ) );
+      lpMenuItem->uiItemType = 1000;      /* separator marker */
 
-      // Append the separator to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), MF_SEPARATOR | MF_OWNERDRAW, 0, ( LPTSTR ) lpMenuItem ) );
    }
    else
    {
-      // Append the separator to the menu and return the result
       hb_retl( AppendMenu( hmg_par_raw_HMENU( 1 ), MF_SEPARATOR, 0, NULL ) );
    }
 }
@@ -1013,16 +1005,14 @@ HB_FUNC( APPENDMENUSEPARATOR )
 HB_FUNC( MODIFYMENUITEM )
 {
 #ifndef UNICODE
-   LPCSTR   lpNewItem = hb_parc( 4 );  // Get the new text of the menu item as an ANSI string
+   LPCSTR   lpNewItem = hb_parc( 4 );
 #else
-   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 4 ) ); // Convert the new text of the menu item to a wide string for Unicode
+   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 4 ) );
 #endif
-
-   // Modify the menu item and return the result
    hb_retl( ModifyMenu( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND | MF_STRING, hb_parni( 3 ), lpNewItem ) );
 
 #ifdef UNICODE
-   hb_xfree( lpNewItem );              // Free the wide string memory if Unicode is defined
+   hb_xfree( lpNewItem );
 #endif
 }
 
@@ -1051,16 +1041,14 @@ HB_FUNC( MODIFYMENUITEM )
 HB_FUNC( INSERTMENUITEM )
 {
 #ifndef UNICODE
-   LPCSTR   lpNewItem = hb_parc( 4 );  // Get the text of the new menu item as an ANSI string
+   LPCSTR   lpNewItem = hb_parc( 4 );
 #else
-   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 4 ) ); // Convert the text of the new menu item to a wide string for Unicode
+   LPWSTR   lpNewItem = AnsiToWide( ( char * ) hb_parc( 4 ) );
 #endif
-
-   // Insert the menu item at the specified position and return the result
    hb_retl( InsertMenu( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND | MF_STRING, hb_parni( 3 ), lpNewItem ) );
 
 #ifdef UNICODE
-   hb_xfree( lpNewItem );  // Free the wide string memory if Unicode is defined
+   hb_xfree( lpNewItem );
 #endif
 }
 
@@ -1085,16 +1073,13 @@ HB_FUNC( INSERTMENUITEM )
  */
 HB_FUNC( REMOVEMENUITEM )
 {
-   // Remove the menu item at the specified position and return the result
    hb_retl( RemoveMenu( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND ) );
 }
 
 HB_FUNC( MENUITEM_SETBITMAPS )
 {
-   HBITMAP  himage1;
    int      Transparent = s_bCustomDraw ? 0 : 1;
-
-   himage1 = HMG_LoadPicture( hb_parc( 3 ), -1, -1, NULL, 0, Transparent, -1, 0, HB_FALSE, 255 );
+   HBITMAP  himage1 = HMG_LoadPicture( hb_parc( 3 ), -1, -1, NULL, 0, Transparent, -1, 0, HB_FALSE, 255 );
 
    if( s_bCustomDraw )
    {
@@ -1107,7 +1092,7 @@ HB_FUNC( MENUITEM_SETBITMAPS )
       if( GetMenuItemInfo( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), FALSE, &MenuItemInfo ) )
       {
          pMENUITEM = ( MENUITEM * ) MenuItemInfo.dwItemData;
-         if( pMENUITEM->hBitmap != NULL )
+         if( pMENUITEM->hBitmap )
          {
             DeleteObject( pMENUITEM->hBitmap );
          }
@@ -1117,10 +1102,7 @@ HB_FUNC( MENUITEM_SETBITMAPS )
    }
    else
    {
-      HBITMAP  himage2;
-
-      himage2 = HMG_LoadPicture( hb_parc( 4 ), -1, -1, NULL, 0, Transparent, -1, 0, HB_FALSE, 255 );
-
+      HBITMAP  himage2 = HMG_LoadPicture( hb_parc( 4 ), -1, -1, NULL, 0, Transparent, -1, 0, HB_FALSE, 255 );
       SetMenuItemBitmaps( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
    }
 
@@ -1143,18 +1125,17 @@ HB_FUNC( MENUITEM_SETCHECKMARKS )
 
       if( GetMenuItemInfo( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), FALSE, &MenuItemInfo ) )
       {
-         if( MenuItemInfo.hbmpChecked != NULL )
+         if( MenuItemInfo.hbmpChecked )
          {
             DeleteObject( MenuItemInfo.hbmpChecked );
          }
 
-         MenuItemInfo.hbmpChecked = himage1;
-
-         if( MenuItemInfo.hbmpUnchecked != NULL )
+         if( MenuItemInfo.hbmpUnchecked )
          {
             DeleteObject( MenuItemInfo.hbmpUnchecked );
          }
 
+         MenuItemInfo.hbmpChecked = himage1;
          MenuItemInfo.hbmpUnchecked = himage2;
 
          SetMenuItemInfo( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), FALSE, &MenuItemInfo );
@@ -1164,8 +1145,8 @@ HB_FUNC( MENUITEM_SETCHECKMARKS )
 
 HB_FUNC( MENUITEM_SETICON )
 {
-   HBITMAP  himage1;
    HICON    hIcon;
+   HBITMAP  himage1;
 
 #ifndef UNICODE
    LPCSTR   lpIconName = hb_parc( 3 );
@@ -1173,12 +1154,11 @@ HB_FUNC( MENUITEM_SETICON )
    LPWSTR   lpIconName = AnsiToWide( ( char * ) hb_parc( 3 ) );
 #endif
    hIcon = ( HICON ) LoadImage( GetResources(), lpIconName, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_DEFAULTCOLOR );
-   if( hIcon == NULL )
+   if( !hIcon )
    {
       hIcon = ( HICON ) LoadImage( NULL, lpIconName, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTCOLOR );
    }
 
-   // convert icon to bitmap
    himage1 = Icon2Bmp( hIcon );
 
    if( s_bCustomDraw )
@@ -1192,7 +1172,7 @@ HB_FUNC( MENUITEM_SETICON )
       if( GetMenuItemInfo( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), FALSE, &MenuItemInfo ) )
       {
          lpMenuItem = ( LPMENUITEM ) MenuItemInfo.dwItemData;
-         if( lpMenuItem->hBitmap != NULL )
+         if( lpMenuItem->hBitmap )
          {
             DeleteObject( lpMenuItem->hBitmap );
          }
@@ -1230,7 +1210,7 @@ HB_FUNC( MENUITEM_SETFONT )
 
          if( GetObjectType( hmg_par_raw_HGDIOBJ( 3 ) ) == OBJ_FONT )
          {
-            if( lpMenuItem->hFont != NULL )
+            if( lpMenuItem->hFont )
             {
                DeleteObject( lpMenuItem->hFont );
             }
@@ -1245,32 +1225,32 @@ HB_FUNC( XGETMENUCAPTION )
 {
    if( s_bCustomDraw )
    {
-#ifdef UNICODE
-      LPSTR          pStr;
-#endif
       MENUITEMINFO   MenuItemInfo;
       MENUITEM       *lpMenuItem;
 
       MenuItemInfo.cbSize = sizeof( MENUITEMINFO );
       MenuItemInfo.fMask = MIIM_DATA;
-      GetMenuItemInfo( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), FALSE, &MenuItemInfo );
 
-      lpMenuItem = ( MENUITEM * ) MenuItemInfo.dwItemData;
-
-      if( lpMenuItem->caption != NULL )
-      {
-#ifndef UNICODE
-         hb_retclen( lpMenuItem->caption, lpMenuItem->cch );
-#else
-         pStr = WideToAnsi( lpMenuItem->caption );
-         hb_retclen( pStr, lpMenuItem->cch );
-         hb_xfree( pStr );
-#endif
-      }
-      else
+      if
+      (
+         !GetMenuItemInfo( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), FALSE, &MenuItemInfo )
+      || ( lpMenuItem = ( MENUITEM * ) MenuItemInfo.dwItemData ) == NULL
+      || lpMenuItem->caption == NULL
+      )
       {
          hb_retc( "" );
+         return;
       }
+
+#ifndef UNICODE
+      hb_retclen( lpMenuItem->caption, lpMenuItem->cch );
+#else
+      {
+         LPSTR pStr = WideToAnsi( lpMenuItem->caption );
+         hb_retc( pStr );
+         hb_xfree( pStr );
+      }
+#endif
    }
 }
 
@@ -1282,36 +1262,34 @@ HB_FUNC( XSETMENUCAPTION )
       LPCSTR         lpNewItem = hb_parc( 3 );
 #else
       LPWSTR         lpNewItem = AnsiToWide( ( char * ) hb_parc( 3 ) );
-      LPSTR          pStr;
 #endif
       MENUITEMINFO   MenuItemInfo;
       MENUITEM       *lpMenuItem;
 
       MenuItemInfo.cbSize = sizeof( MENUITEMINFO );
       MenuItemInfo.fMask = MIIM_DATA;
-      GetMenuItemInfo( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), FALSE, &MenuItemInfo );
 
-      lpMenuItem = ( MENUITEM * ) MenuItemInfo.dwItemData;
+      if
+      (
+         !GetMenuItemInfo( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), FALSE, &MenuItemInfo )
+      || ( lpMenuItem = ( MENUITEM * ) MenuItemInfo.dwItemData ) == NULL
+      || lpMenuItem->caption == NULL
+      )
+      {
+#ifdef UNICODE
+         hb_xfree( lpNewItem );
+#endif
+         return;
+      }
 
-      if( lpMenuItem->caption != NULL )
+      if( lpMenuItem->caption )
       {
          UINT  cch = ( UINT ) HB_STRNLEN( lpNewItem, MAX_ITEM_TEXT * sizeof( TCHAR ) );
 
-#ifndef UNICODE
-         hb_retclen( lpMenuItem->caption, lpMenuItem->cch );
-#else
-         pStr = WideToAnsi( lpMenuItem->caption );
-         hb_retclen( pStr, lpMenuItem->cch );
-         hb_xfree( pStr );
-#endif
          hb_xfree( lpMenuItem->caption );
 
          lpMenuItem->cch = cch;
          lpMenuItem->caption = HB_STRNDUP( lpNewItem, cch );
-      }
-      else
-      {
-         hb_retc( "" );
       }
 
 #ifdef UNICODE
@@ -1324,28 +1302,14 @@ HB_FUNC( XGETMENUCHECKSTATE )
 {
    UINT  state = GetMenuState( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND );
 
-   if( state != 0xFFFFFFFF )
-   {
-      hmg_ret_L( ( state & MF_CHECKED ) );
-   }
-   else
-   {
-      hb_retl( HB_FALSE );
-   }
+   hmg_ret_L( state != 0xFFFFFFFF && ( state & MF_CHECKED ) );
 }
 
 HB_FUNC( XGETMENUENABLEDSTATE )
 {
    UINT  state = GetMenuState( hmg_par_raw_HMENU( 1 ), hb_parni( 2 ), MF_BYCOMMAND );
 
-   if( state != 0xFFFFFFFF )
-   {
-      hmg_ret_L( !( ( state & MF_GRAYED ) || ( state & MF_DISABLED ) ) );
-   }
-   else
-   {
-      hb_retl( HB_FALSE );
-   }
+   hmg_ret_L( state != 0xFFFFFFFF && !( ( state & MF_GRAYED ) || ( state & MF_DISABLED ) ) );
 }
 
 HB_FUNC( ISMENU )
@@ -1415,7 +1379,7 @@ HB_FUNC( _ONDRAWMENUITEM )
       return;
    }
 
-   if( lpMenuItem->hFont != NULL )
+   if( lpMenuItem->hFont )
    {
       oldfont = ( HFONT ) SelectObject( lpdis->hDC, lpMenuItem->hFont );
    }
@@ -1464,16 +1428,16 @@ HB_FUNC( _ONDRAWMENUITEM )
    }
 
    //draw menu item background
-   DrawItemBk( lpdis->hDC, lpdis->rcItem, fSelected, fGrayed, lpMenuItem->uiItemType, ( ( lpMenuItem->hBitmap == NULL ) && ( !fChecked ) ) );
+   DrawItemBk( lpdis->hDC, lpdis->rcItem, fSelected, fGrayed, lpMenuItem->uiItemType, ( !lpMenuItem->hBitmap && !fChecked ) );
 
    // draw menu item border
    if( fSelected && ( !fGrayed ) )
    {
-      DrawSelectedItemBorder( lpdis->hDC, lpdis->rcItem, lpMenuItem->uiItemType, ( ( lpMenuItem->hBitmap == NULL ) && ( !fChecked ) ) );
+      DrawSelectedItemBorder( lpdis->hDC, lpdis->rcItem, lpMenuItem->uiItemType, ( !lpMenuItem->hBitmap && !fChecked ) );
    }
 
    // draw bitmap
-   if( ( lpMenuItem->hBitmap != NULL ) && ( !fChecked ) )
+   if( lpMenuItem->hBitmap && !fChecked )
    {
       DrawGlyph
       (
@@ -1544,8 +1508,8 @@ HB_FUNC( _ONDRAWMENUITEM )
       MenuItemInfo.fMask = MIIM_CHECKMARKS;
       GetMenuItemInfo( ( HMENU ) lpdis->hwndItem, lpdis->itemID, FALSE, &MenuItemInfo );
 
-      size.cx = bm_size;   //GetSystemMetrics(SM_CXMENUCHECK);
-      size.cy = bm_size;   //GetSystemMetrics(SM_CYMENUCHECK);
+      size.cx = bm_size;
+      size.cy = bm_size;
       DrawCheck( lpdis->hDC, size, lpdis->rcItem, fGrayed, fSelected, MenuItemInfo.hbmpChecked );
    }
 
@@ -1771,7 +1735,7 @@ VOID DrawSelectedItemBorder( HDC hDC, RECT r, UINT itemType, BOOL clear )
 
 VOID DrawCheck( HDC hdc, SIZE size, RECT rect, BOOL disabled, BOOL selected, HBITMAP hbitmap )
 {
-   if( hbitmap != 0 )
+   if( hbitmap )
    {
       DrawGlyph
       (
@@ -1947,7 +1911,7 @@ HB_FUNC( SETMENUCOLORS )
 {
    PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
 
-   if( ( pArray != NULL ) && ( hb_arrayLen( pArray ) >= 28 ) )
+   if( pArray && ( hb_arrayLen( pArray ) >= 28 ) )
    {
       clrMenuBar1 = hmg_parv_COLORREF( 1, 1 );
       clrMenuBar2 = hmg_parv_COLORREF( 1, 2 );
@@ -1981,7 +1945,7 @@ HB_FUNC( SETMENUCOLORS )
 }
 
 /*
- * Call this funtions on WM_DESTROY, WM_MEASUREITEM of menu owner window
+ * Call this functions on WM_DESTROY, WM_MEASUREITEM of menu owner window
  */
 HB_FUNC( _ONDESTROYMENU )
 {
@@ -1990,7 +1954,6 @@ HB_FUNC( _ONDESTROYMENU )
    if( IsMenu( menu ) )
    {
       HB_BOOL  bResult = _DestroyMenu( menu );
-
 #ifdef _ERRORMSG_
       if( !bResult )
       {
@@ -2025,13 +1988,13 @@ static BOOL _DestroyMenu( HMENU menu )
 
       GetMenuItemInfo( menu, i, TRUE, &MenuItemInfo );
 
-      if( MenuItemInfo.hbmpChecked != NULL )
+      if( MenuItemInfo.hbmpChecked )
       {
          bResult = DeleteObject( MenuItemInfo.hbmpChecked );
          MenuItemInfo.hbmpChecked = NULL;
       }
 
-      if( MenuItemInfo.hbmpUnchecked != NULL )
+      if( MenuItemInfo.hbmpUnchecked )
       {
          bResult = bResult && DeleteObject( MenuItemInfo.hbmpUnchecked );
          MenuItemInfo.hbmpUnchecked = NULL;
@@ -2042,13 +2005,13 @@ static BOOL _DestroyMenu( HMENU menu )
          LPMENUITEM  lpMenuItem;
          lpMenuItem = ( LPMENUITEM ) MenuItemInfo.dwItemData;
 
-         if( lpMenuItem->caption != NULL )
+         if( lpMenuItem->caption )
          {
             hb_xfree( lpMenuItem->caption );
             lpMenuItem->caption = NULL;
          }
 
-         if( lpMenuItem->hBitmap != NULL )
+         if( lpMenuItem->hBitmap )
          {
             bResult = bResult && DeleteObject( lpMenuItem->hBitmap );
             lpMenuItem->hBitmap = NULL;
@@ -2065,7 +2028,7 @@ static BOOL _DestroyMenu( HMENU menu )
 
       pSubMenu = GetSubMenu( menu, i );
 
-      if( pSubMenu != NULL )
+      if( pSubMenu )
       {
          bResult = bResult && _DestroyMenu( pSubMenu );
       }
@@ -2154,8 +2117,6 @@ HB_FUNC( _COLORMENU )
    }
 
    iMenuInfo.hbrBack = CreateSolidBrush( RGB( nRed, nGreen, nBlue ) );
-
    SetMenuInfo( iMenu, &iMenuInfo );
-
    DrawMenuBar( ( HWND ) hWnd );
 }
